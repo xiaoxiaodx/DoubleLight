@@ -1,0 +1,34 @@
+<RCC>
+    <qresource prefix="/">
+        <file>qml/HomeMenu.qml</file>
+        <file>qml/HomeTitleBar.qml</file>
+        <file>qml/MainContent.qml</file>
+        <file>qml/liveVedio/LiveContent.qml</file>
+        <file>qml/liveVedio/LiveVideo.qml</file>
+        <file>qml/liveVedio/VedioLayout.qml</file>
+        <file>qml/liveVedio/VideoLivePlay.qml</file>
+        <file>qml/main.qml</file>
+        <file>qml/simpleControl/LineEdit.qml</file>
+        <file>qml/simpleControl/MyComBox.qml</file>
+        <file>qml/simpleControl/MyTextInput.qml</file>
+        <file>qml/simpleControl/QmlButton.qml</file>
+        <file>qml/simpleControl/QmlCheck.qml</file>
+        <file>qml/simpleControl/QmlDialog.qml</file>
+        <file>qml/simpleControl/QmlImageButton.qml</file>
+        <file>qml/simpleControl/QmlImageTarBar.qml</file>
+        <file>qml/simpleControl/QmlTabBarButtonH.qml</file>
+        <file>qml/simpleControl/QmlTabButton.qml</file>
+        <file>qml/simpleControl/SwitchButton.qml</file>
+        <file>images/lock.png</file>
+        <file>images/lock_p.png</file>
+        <file>images/logo.png</file>
+        <file>images/recordv.png</file>
+        <file>images/recordv_p.png</file>
+        <file>images/replay.png</file>
+        <file>images/replay_p.png</file>
+        <file>qml/QmlToast.qml</file>
+        <file>qml/DeviceConfig.qml</file>
+        <file>images/file.png</file>
+        <file>images/fileopen.png</file>
+    </qresource>
+</RCC>
