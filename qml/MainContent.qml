@@ -140,6 +140,7 @@ Rectangle {
                 SequentialAnimation {
                     id:animationWarnOpacity
                     loops: Animation.Infinite
+                    NumberAnimation { target: imgWar; property: "opacity"; to: 1; duration: 300 }
                     NumberAnimation { target: imgWar; property: "opacity"; to: 1; duration: 500 }
                     NumberAnimation { target: imgWar; property: "opacity"; to: 0; duration: 300 }
                 }
@@ -159,7 +160,7 @@ Rectangle {
                 id:imgRecord
                 width: 57
                 height: 24
-                anchors.left: parent.right
+                anchors.left: parent.left
                 anchors.leftMargin: 20
                 anchors.top: parent.top
                 anchors.topMargin: 20
@@ -169,11 +170,13 @@ Rectangle {
                 SequentialAnimation {
                     id:animationRecordOpacity
                     loops: Animation.Infinite
-                    NumberAnimation { target: imgWar; property: "opacity"; to: 1; duration: 600 }
-                    NumberAnimation { target: imgWar; property: "opacity"; to: 0; duration: 300 }
+                    NumberAnimation { target: imgRecord; property: "opacity"; to: 1; duration: 500 }
+                    NumberAnimation { target: imgRecord; property: "opacity"; to: 1; duration: 500 }
+                    NumberAnimation { target: imgRecord; property: "opacity"; to: 0; duration: 500 }
                 }
                 function startAnimation(){
 
+                    console.debug("******************dsa4d56sa4f56dsa4")
                     animationRecordOpacity.start();
                 }
                 function stopAnimation(){

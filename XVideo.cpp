@@ -18,6 +18,8 @@ XVideo::XVideo()
     QSize size;
     size.setWidth(640);
     size.setHeight(360);
+
+
     // m_renderThread = new RenderThread(size,&listYuv,&yuvData,nullptr);
 }
 
@@ -25,7 +27,6 @@ void XVideo::startNormalVideo()
 {
     qDebug()<<"startNormalVideo ";
     createSearchIp();
-
 
 }
 
@@ -44,6 +45,7 @@ void XVideo::createYouseePull()
         connect(this,&XVideo::signal_startinit,mYouSeeParse,&YouSeeParse::slot_init);
         connect(this,&XVideo::signal_stop,mYouSeeParse,&YouSeeParse::slot_stopPlay);
         connect(this,&XVideo::signal_getInitPar,mYouSeeParse,&YouSeeParse::slot_getInitPar);
+
         connect(youseeThread,&QThread::finished,youseeThread,&QThread::deleteLater);
 
         youseeThread->start();
@@ -90,8 +92,7 @@ void XVideo::initVariable()
     isStartRecord = false;
 
     mshotScreenFilePath = "";
-    m_Img = new QImage();
-    m_Img->fill(QColor("black"));
+
     preAudioTime = 0;
 
 }
@@ -160,7 +161,7 @@ void XVideo::createHttpApi(){
 
     if(httpDevice == nullptr){
         httpThread = new QThread;
-        httpDevice = new CHttpApiDevice("INEW-004122-JWGWM", "10.67.1.156",8564, "admin", "admin");
+        httpDevice = new CHttpApiDevice("INEW-004122-JWGWM", m_ip,8564, "admin", "admin");
         connect(httpDevice, &CHttpApiDevice::signal_ReadMsg, this, &XVideo::slog_HttpmsgCb);
         connect(this, &XVideo::signal_getInitPar,httpDevice,&CHttpApiDevice::slot_httpGetInitPar);
         connect(this, &XVideo::signal_httpParSet,httpDevice,&CHttpApiDevice::slot_httpParSet);
@@ -188,6 +189,7 @@ void XVideo::fun_temOffset(QVariant mvalue){
 
 void XVideo::slog_HttpmsgCb(QMap<QString,QVariant> map) {
 
+    qDebug()<<" slog_HttpmsgCb ";
     emit signal_httpUiParSet(QVariant::fromValue(map));
 
 }
@@ -226,44 +228,44 @@ void XVideo::createSearchIp()
 void XVideo::recSearchIp(QString ip)
 {
     qDebug()<<"my recSearchIp:"<<ip;
-    if(m_ip == ""){
-        m_ip = "10.67.1.169";
 
-    }
+    m_ip = ip;
+
+
 
 }
 
 void XVideo::funScreenShot()
 {
-    isScreenShot = true;
-    if(m_Img != nullptr && (!m_Img->isNull())){
+    //    isScreenShot = true;
+    //    if(m_Img != nullptr && (!m_Img->isNull())){
 
-        QString filename;
+    //        QString filename;
 
-        QDir dir;
-        if(mshotScreenFilePath == ""){
+    //        QDir dir;
+    //        if(mshotScreenFilePath == ""){
 
-            mshotScreenFilePath = dir.absolutePath() +"/ScreenShot";
-        }
-        QString desFileDir = mshotScreenFilePath +"/" +mDid;
-        if (!dir.exists(desFileDir))
-        {
-            bool res = dir.mkpath(desFileDir);
-            qDebug() << "新建最终目录是否成功:" << res;
-        }
+    //            mshotScreenFilePath = dir.absolutePath() +"/ScreenShot";
+    //        }
+    //        QString desFileDir = mshotScreenFilePath +"/" +mDid;
+    //        if (!dir.exists(desFileDir))
+    //        {
+    //            bool res = dir.mkpath(desFileDir);
+    //            qDebug() << "新建最终目录是否成功:" << res;
+    //        }
 
-        QString curTimeStr = QDateTime::currentDateTime().toString("yyyyMMdd_hhmmss");
-        QString tmpFileName = mDid+"_" + curTimeStr+".png";
+    //        QString curTimeStr = QDateTime::currentDateTime().toString("yyyyMMdd_hhmmss");
+    //        QString tmpFileName = mDid+"_" + curTimeStr+".png";
 
-        filename = desFileDir + "/"+tmpFileName;
+    //        filename = desFileDir + "/"+tmpFileName;
 
-        qDebug()<<" filename    "<<filename;
+    //        qDebug()<<" filename    "<<filename;
 
-        if(m_Img->save(filename,0))
-            qDebug()<<"图片保存成功";
-        else
-            qDebug()<<"图片保存失败";
-    }
+    //        if(m_Img->save(filename,0))
+    //            qDebug()<<"图片保存成功";
+    //        else
+    //            qDebug()<<"图片保存失败";
+    //    }
 }
 
 
@@ -272,8 +274,7 @@ void XVideo::slot_timeout()
     //qDebug()<<"slot_timeout thread:"<<QThread::currentThreadId()<<" "<<listImgInfo.size();
     // qDebug()<<"slot_timeout thread:" <<listImgInfo.size();
     int size = listImgInfo.size();
-    if(size >= 3){
-
+    if(size >= 5){
 
         //如果不增加这句代码 ，则会出现视频不会第一时间显示，而是显示灰色图像
         if(!isFirstData){
@@ -281,47 +282,42 @@ void XVideo::slot_timeout()
             emit signal_loginStatus("Get the stream successfully");
             isFirstData = true;
         }
-        update();
+
+
+        if(listImgInfo.first().pImg != nullptr){
+
+            m_Imginfo = listImgInfo.takeFirst();
+            update();
+
+        }
+
     }
 }
 #include <QFontMetrics>
 
 void XVideo::paint(QPainter *painter)
 {
-    if(listImgInfo.size() <=0)
+    if(listImgInfo.size() <3)
         return;
-
     QFont font("Microsoft Yahei", 20);
     QFontMetrics fm(font);
-//    int pixelsWide = fm.horizontalAdvance("What's the width of this text?");
-//    int pixelsHigh = fm.height();
+    //    int pixelsWide = fm.horizontalAdvance("What's the width of this text?");
+    //    int pixelsHigh = fm.height();
 
     QPen pen(QBrush(QColor(0,255,0)),1);
     painter->setPen(pen);
     painter->setFont(font);
 
-    ImageInfo imginfo = listImgInfo.takeFirst();
+    if(m_Imginfo.pImg != nullptr){
 
-    if(imginfo.pImg != nullptr){
-        //qDebug()<<" xvideo w h:"<<this->width()<<"  "<<this->height();
-//        int contentW = this->width();
-//        int contentH = this->height();
+        painter->drawImage(QRect(0,0,width(),height()), *m_Imginfo.pImg);
 
-//        QRect rectFill;
-//        if(contentW*3/4 > contentH){
-//            rectFill.setWidth(contentW);
-//            rectFill.setHeight()
-//        }
-
-        painter->drawImage(QRect(0,0,width(),height()), *imginfo.pImg);
-
-
-        if(imginfo.isDrawLine){
+        if(m_Imginfo.isDrawLine){
             qreal kX = (qreal)this->width()/(qreal)384;
             qreal kY = (qreal)this->height()/(qreal)288;
 
 
-            QList<RectInfo> listRect = imginfo.listRect;
+            QList<RectInfo> listRect = m_Imginfo.listRect;
             for(int i=0;i<listRect.size();i++){
                 RectInfo oriRectinfo = listRect.at(i);
                 QRect oriRect = oriRectinfo.rect;
@@ -339,11 +335,17 @@ void XVideo::paint(QPainter *painter)
             }
 
 
-            if(mYouSeeParse != nullptr)
-                emit signal_temp(imginfo.temp);
+            if(mYouSeeParse != nullptr){
+                QMap<QString,QVariant> map;
+                map.insert("parType","temp");
+                map.insert("tempValue",m_Imginfo.temp);
+                emit signal_tempPar(map);
+
+            }
         }
 
-        delete imginfo.pImg;
+        delete m_Imginfo.pImg;
+
     }
 }
 
@@ -412,8 +414,6 @@ void XVideo::slot_recPcmALaw( char * buff,int len,quint64 time)
 
 void XVideo::fun_timeSwitch(bool isChecked){
     qDebug()<< "    fun_timeSwitch  "<<isChecked;
-
-
     QMap<QString , QVariant> map;
     map.insert("cmd","setosdparam");
     map.insert("enable",isChecked);
@@ -442,12 +442,19 @@ void XVideo::fun_recordPathSet(QVariant mvalue){
 }
 void XVideo::fun_temDrift(QVariant mvalue)
 {
-    float temDrift = mvalue.toFloat();
 
-    if(mYouSeeParse != nullptr){
+    YouSeeParse::temp_offset = mvalue.toFloat()/2;
+    //    qDebug()<<" fun_temDrift    ";
+    //    if(mYouSeeParse != nullptr){
 
-        // mYouSeeParse
-    }
+    //        float temDrift = mvalue.toFloat();
+    //        bool isSucc = mYouSeeParse->slot_setTemOffset(temDrift);
+
+    //        qDebug()<<" fun_temDrift    "<<isSucc;
+
+    //    }
+
+
 }
 
 void XVideo::funSetShotScrennFilePath(QString str)

@@ -5,6 +5,7 @@ Button{
 
     property color colorNor: "#476BFD"
     property color colorPressed:"#aa476BFD"
+    property color fontColor: "#ffffff"
     property int borderW: 0
     property string borderColor: ""
     property int mRadius: 10
@@ -28,7 +29,7 @@ Button{
             text:control.text
             font.pixelSize: fontsize
             font.family: "Microsoft Yahei"
-            color: "#ffffff"
+            color: fontColor
         }
 
     }

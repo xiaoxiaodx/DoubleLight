@@ -203,7 +203,7 @@ static float getTempAavl(s16* IrdaDataFloat, int height, int width, u16 slop ,s1
                 temp += value;
                 tempCnt++;
             }
-           // std::cout<<" "<<value;
+            // std::cout<<" "<<value;
         }
         //std::cout<<"\r\n";
     }
@@ -226,14 +226,14 @@ static float getTempAavl(s16* IrdaDataFloat, int height, int width, u16 slop ,s1
     //std::cout<<"\r\n";
     avl = temp/tempCnt2;
     //qDebug()<<"avl: "<<avl<<", temp cnt:"<<tempCnt2;
-//    for (j = 0 ;j < h; j ++)
-//    {
-//     for (i = 0; i < w; i++)
-//     {
-//         std::cout<<" "<<innerData[((y + j) * width) + (x + i)]/slop + offset;
-//     }
-//     std::cout<<"\r\n";
-//    }
+    //    for (j = 0 ;j < h; j ++)
+    //    {
+    //     for (i = 0; i < w; i++)
+    //     {
+    //         std::cout<<" "<<innerData[((y + j) * width) + (x + i)]/slop + offset;
+    //     }
+    //     std::cout<<"\r\n";
+    //    }
 
 
     return (avl + YouSeeParse::temp_offset);
@@ -244,6 +244,9 @@ static float getTempAavl(s16* IrdaDataFloat, int height, int width, u16 slop ,s1
 /*
 预览回调, 此回调触发在工作线程
 */
+
+IplImage* pFrame = NULL;
+IplImage* pFrameSrc = NULL;
 static void __stdcall _previewCallback(s32 errorCode, DataFrame* frame, void* customData) {
     if (YET_None == errorCode) {
 
@@ -262,15 +265,15 @@ static void __stdcall _previewCallback(s32 errorCode, DataFrame* frame, void* cu
         CvRect mdrects;
         HotnessResetData(tempData, tempHead->Width,tempHead->Height, p,tempHead->Slope,tempHead->Offset);
 
-
-        IplImage*pFrame=cvCreateImageHeader(cvSize(tempHead->Width,tempHead->Height),IPL_DEPTH_8U,1);
+        if(pFrame == NULL)
+            pFrame=cvCreateImageHeader(cvSize(tempHead->Width,tempHead->Height),IPL_DEPTH_8U,1);
         cvSetData(pFrame,p,tempHead->Width);
-
 
         stor = cvCreateMemStorage(0);
         cont=cvSegmentFGMask(pFrame,true,20.0,stor,cvPoint(0,0));
 
-        IplImage* pFrameSrc=cvCreateImageHeader(cvSize(tempHead->Width,tempHead->Height),IPL_DEPTH_32F,1);
+        if(pFrameSrc == NULL)
+            pFrameSrc=cvCreateImageHeader(cvSize(tempHead->Width,tempHead->Height),IPL_DEPTH_32F,1);
 
         CvFont font;
         cvInitFont(&font, CV_FONT_HERSHEY_SIMPLEX ,0.5, 0.5);
@@ -280,20 +283,9 @@ static void __stdcall _previewCallback(s32 errorCode, DataFrame* frame, void* cu
         float maxAvgT = -1;
         for(int i=0;cont!=0;cont=cont->h_next,i++)
         {
-
             mdrects=((CvContour*)cont)->rect;
-            //            if(mdrects.width < 20 || mdrects.height < 20)
-            //            {
-            //                continue;
-            //            }
-
-
             float avgT = getTempAavl(tempData, tempHead->Height, tempHead->Width, tempHead->Slope, tempHead->Offset, &mdrects) ;
 
-            //            CvPoint pt1(mdrects.x,mdrects.y);
-            //            CvPoint pt2(pt1.x + mdrects.width,pt1.y+mdrects.height);
-            //            cvDrawRect(pFrameSrc,pt1,pt2,CvScalar(255,0,0));
-            //            cvPutText(pFrameSrc,QString::number(avgT, 'f', 1).toLatin1(),pt1,&font,CvScalar(255,0,0));
             RectInfo rectinfo;
             rectinfo.rect.setRect(mdrects.x,mdrects.y,mdrects.width,mdrects.height);
             rectinfo.temp = avgT;
@@ -305,15 +297,23 @@ static void __stdcall _previewCallback(s32 errorCode, DataFrame* frame, void* cu
                     maxAvgT = avgT;
                 }
             }
-
         }
 
-        info.pImg =  new QImage((uchar*)pFrameSrc->imageData, tempHead->Width, tempHead->Height, QImage::Format_RGB32);
-        info.temp = maxAvgT;
-        info.isDrawLine = true;
-        YouSeeParse::listImgtmpInfo->append(info);
-        cvReleaseImage(&pFrameSrc);
 
+        if(YouSeeParse::listImgtmpInfo->size() <= 30){
+            try {
+                  info.pImg =  new QImage((uchar*)pFrameSrc->imageData, tempHead->Width, tempHead->Height, QImage::Format_RGB32);
+                    // 其它代码
+            } catch ( const std::bad_alloc& e ) {
+                  DebugLog::getInstance()->writeLog("Yousee 图片分配内存失败");
+                  info.pImg = nullptr;
+            }
+            info.temp = maxAvgT;
+            info.isDrawLine = true;
+            YouSeeParse::listImgtmpInfo->append(info);
+        }
+
+        cvReleaseMemStorage(&stor);
     }else {
         //接收数据失败, 预览内置自动恢复, YET_PreviewRecoverBegin-YET_PreviewRecoverEnd
         DebugLog::getInstance()->writeLog("recevie fail :PreviewCallback,errorCode "+errorCode);
@@ -330,24 +330,31 @@ void YouSeeParse::slot_getInitPar()
     slot_parSet(map);
 }
 
-void YouSeeParse::slot_parSet(QMap<QString,QVariant> map)
+bool YouSeeParse::slot_parSet(QMap<QString,QVariant> map)
 {
     QString strcmd = map.value("cmd").toString();
 
     if(_shellView.userHandle < 0){
         DebugLog::getInstance()->writeLog(tr("设置参数时，句柄为空"));
 
-        return;
+        return false;
     }
 
-    s32 ret ;
+    s32 ret =1;
     if(strcmd.compare("temOffset") == 0){
         float temp = map.value("value").toFloat();
         FixInfo fixInfo;
         Yoseen_GetFixInfo(_shellView.userHandle, &fixInfo);
         qDebug()<<"相对湿度:"<<fixInfo.RelativeHumidity<<"降雨强度:"<<fixInfo.RainfallIntensity<<", 降雪强度:"<<fixInfo.RainfallIntensity<<", 温度漂移:"<<fixInfo.TempOffset<<", TargetDistance:"<<fixInfo.TargetDistance<<", 大气压使能:"<<fixInfo.EnableAtmFix;
         fixInfo.TempOffset = temp;//温漂
-        Yoseen_SetFixInfo(_shellView.userHandle, &fixInfo);//previewInfo.Hwnd = NULL;
+        ret = Yoseen_SetFixInfo(_shellView.userHandle, &fixInfo);//previewInfo.Hwnd = NULL;
+    }else if(strcmd.compare("getTemOffset")==0){
+        FixInfo fixInfo;
+        Yoseen_GetFixInfo(_shellView.userHandle, &fixInfo);
+        qDebug()<<"相对湿度:"<<fixInfo.RelativeHumidity<<"降雨强度:"<<fixInfo.RainfallIntensity<<", 降雪强度:"<<fixInfo.RainfallIntensity<<", 温度漂移:"<<fixInfo.TempOffset<<", TargetDistance:"<<fixInfo.TargetDistance<<", 大气压使能:"<<fixInfo.EnableAtmFix;
+
+
+
     }else if(strcmd.compare("setosdparam")==0){
         bool enable = map.value("enable").toBool();
 
@@ -374,14 +381,24 @@ void YouSeeParse::slot_parSet(QMap<QString,QVariant> map)
 
     }
 
+    if(ret ==0 )
+        return true;
+    else{
+        qDebug()<< "    yousee:"<<strcmd<<" "<<ret;
+        return false;
+    }
 }
-void YouSeeParse::slot_setTemOffset(float temp){
+bool YouSeeParse::slot_setTemOffset(float temp){
 
 
-    if(_shellView.userHandle > 0){
-
+    if(_shellView.userHandle >= 0){
+        QMap<QString,QVariant> map;
+        map.insert("cmd","temOffset");
+        map.insert("value",temp);
+        return slot_parSet(map);
     }else{
         DebugLog::getInstance()->writeLog(tr("温漂设置失败"));
+        return false;
     }
 
 }

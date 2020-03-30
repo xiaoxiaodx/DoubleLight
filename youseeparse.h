@@ -83,10 +83,10 @@ public slots:
     void slot_login();
     void slot_startPlay(s32 dataType);
     void slot_stopPlay();
-    void slot_setTemOffset(float tem);
+    bool slot_setTemOffset(float tem);
 
     void slot_getInitPar();
-    void slot_parSet(QMap<QString,QVariant>);
+    bool slot_parSet(QMap<QString,QVariant>);
 
 private:
 
@@ -96,6 +96,7 @@ private:
     QMutex mMutex;
     bool isForceFinish = false;
     ShellView _shellView = { 0 };
+
 };
 
 #endif // YOUSEEPARSE_H

@@ -39,34 +39,26 @@ Rectangle {
                 video.startNormalVideo();
 
             }else if(videoType === 2){
-                //video.startTemperatureVideo();
+                video.startTemperatureVideo();
             }
         }
 
         onSignal_loginStatus: main.showToast(msg);
 
-        onSignal_temp:{
-            var num = parseFloat(deviceconfig.getWarnTem()).toFixed(2)
-            //console.debug("temp ***** "+tempV+"   "+num)
-            if( Number(tempV) >= Number(num)){
-                vedioLayout.startWarn();
-            }else{
-                vedioLayout.endWarn();
-            }
-        }
-        onSignal_httpUiParSet: {
+//        onSignal_temp:{
+//            var num = parseFloat(deviceconfig.getWarnTem()).toFixed(2)
+//            //console.debug("temp ***** "+tempV+"   "+num)
+//            if( Number(tempV) >= Number(num)){
+//                vedioLayout.startWarn();
+//            }else{
+//                vedioLayout.endWarn();
+//            }
+//        }
+        onSignal_tempPar:tempParCallback(map);
 
-                var strcmd = map.cmd;
+        onSignal_httpUiParSet:httpParCallback(map);
 
 
-                console.debug(" " + strcmd);
-                if(strcmd === "getrecordparam"){
-                    var enable = map.enable;
-
-                }else if(strcmd === "getrecordparam"){
-
-                }
-        }
     }
 
     MouseArea{
@@ -95,6 +87,35 @@ Rectangle {
         onS_temMax:video.fun_temMax(mvalue);
         onS_temMin:video.fun_temMin(mvalue);
         onS_temOffset:video.fun_temOffset(mvalue);
+    }
+
+    function httpParCallback(smap){
+        console.debug("sss");
+        console.debug("smap:"+smap)
+        var strcmd = smap.cmd;
+console.debug("strcmd:"+strcmd)
+
+        console.debug(" " + strcmd);
+        if(strcmd === "getrecordparam"){
+            var enable = map.enable;
+
+        }else if(strcmd === "getrecordparam"){
+
+        }
+    }
+    function tempParCallback(smap){
+
+        var cmdType = smap.parType;
+
+        if(cmdType === "temp"){
+            var num = parseFloat(deviceconfig.getWarnTem()).toFixed(2)
+            var tempV = smap.tempValue;
+            if( Number(tempV) >= Number(num)){
+                vedioLayout.startWarn();
+            }else{
+                vedioLayout.endWarn();
+            }
+        }
     }
 }
 

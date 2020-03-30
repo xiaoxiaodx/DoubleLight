@@ -67,13 +67,15 @@ public slots:
     void slot_msgEvent();
     void slot_httpParSet(QMap<QString,QVariant> map);
     void slot_httpGetInitPar();
+    void slot_resendCmd();
 signals:
     void signal_ReadMsg(QMap<QString,QVariant>);//QJsonObject
     void signal_httpErr();
+    void signal_MsgReply(QString cmd);
 private:
     int connectCount = 0;
 
-    void send_httpParSet(QMap<QString,QVariant> map);
+    bool send_httpParSet(QMap<QString,QVariant> map);
     void LoginDevice();
     void LogoutDevice();
     void HttpGetOsdParam();
@@ -85,9 +87,12 @@ private:
     void HttpSetDate();
     QMap<QString,QVariant> curCmdState;
 
+    QList<QMap<QString,QVariant>> listResendCmd;
     const bool cmdSend = false;
     const bool cmdSendSucc = true;
     QMutex mMutex;
+
+    QTimer *timerReSendCmd = nullptr;
 
 };
 

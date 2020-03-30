@@ -45,5 +45,6 @@
         <file>images/icon_question.png</file>
         <file>images/lablerecord.png</file>
         <file>qml/simpleControl/SimpleSwich.qml</file>
+        <file>qml/dialog/AskDialog.qml</file>
     </qresource>
 </RCC>

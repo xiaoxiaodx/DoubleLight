@@ -25,7 +25,7 @@ void AviRecord::slot_writeImage(QImage img,int capx,int capy,int capw,int caph)
     ffmpegConvert.rgb32ToH264(img2,arr,isGotPic);
 
 
-    qDebug()<<"h264 录像数据:"<<arr.length();
+   // qDebug()<<"h264 录像数据:"<<arr.length();
     if(isGotPic)
         slot_writeVedio(arr.data(),arr.length(),1000);
 

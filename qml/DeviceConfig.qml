@@ -134,7 +134,7 @@ Rectangle {
                 anchors.leftMargin: 1
                 anchors.verticalCenter: rectTempDrift.verticalCenter
                 border.width: 0
-                inputLimite:Qt.ImhFormattedNumbersOnly
+                inputLimite:Qt.ImhDigitsOnly
                 font.pixelSize: fontSize
                 placeholderText: ""
                 isNeedDoubleClickEdit: false
@@ -159,9 +159,11 @@ Rectangle {
                     anchors.fill: parent
                     onPressed: {
                         imgValueUp.source="qrc:/images/arrow_up_p.png"
-                        var num = parseFloat(inputTempDrift.text).toFixed(2)
+                        var num = parseInt(inputTempDrift.text)
+                        if(num >= 2)
+                            return
 
-                        inputTempDrift.text = ""+(Number(num)+Number(0.01)).toFixed(2)
+                        inputTempDrift.text = ""+(Number(num)+Number(1))
 
                     }
                     onReleased: imgValueUp.source="qrc:/images/arrow_up.png"
@@ -181,9 +183,12 @@ Rectangle {
                     onPressed: {
 
                         imgValuedown.source="qrc:/images/arrow_low_p.png"
-                        var num = parseFloat(inputTempDrift.text).toFixed(2)
+                        var num = parseInt(inputTempDrift.text)
 
-                        inputTempDrift.text = ""+(Number(num)-Number(0.01)).toFixed(2)
+                        if(num <= -2)
+                            return
+
+                        inputTempDrift.text = ""+(Number(num)-Number(1))
                     }
                     onReleased: imgValuedown.source="qrc:/images/arrow_low.png"
                 }
@@ -457,109 +462,109 @@ Rectangle {
         }
 
 
-        Column{
+//        Column{
 
-            anchors.left: rectRecordPath.left
-            anchors.top: rectRecordPath.bottom
-            anchors.topMargin: 10
-            spacing: 5
-            Rectangle{
-                width: 300
-                height: 60
-                anchors.horizontalCenter: parent.horizontalCenter
+//            anchors.left: rectRecordPath.left
+//            anchors.top: rectRecordPath.bottom
+//            anchors.topMargin: 10
+//            spacing: 5
+//            Rectangle{
+//                width: 300
+//                height: 60
+//                anchors.horizontalCenter: parent.horizontalCenter
 
-                LineEdit {
-                    id: intputMax
-                    width: 300
-                    height: 60
-                    font.pixelSize: fontSize
-                    placeholderText: ""
-                    isNeedDoubleClickEdit: false
-                    textLeftPadding:0
-                    txtColor: Qt.rgba(0,0,0,0.65)
-                    color: "#DEDFE3"
+//                LineEdit {
+//                    id: intputMax
+//                    width: 300
+//                    height: 60
+//                    font.pixelSize: fontSize
+//                    placeholderText: ""
+//                    isNeedDoubleClickEdit: false
+//                    textLeftPadding:0
+//                    txtColor: Qt.rgba(0,0,0,0.65)
+//                    color: "#DEDFE3"
 
-                }
-                Button{
-                    id:btnInputMax
-                    anchors.left: intputMax.right
-                    anchors.leftMargin: 10
-                    anchors.verticalCenter: intputMax.verticalCenter
-                    width: 100
-                    height: 60
-                    text:"tempMax"
-                    onClicked: {
-                        s_temMax(intputMax.text)
-                    }
+//                }
+//                Button{
+//                    id:btnInputMax
+//                    anchors.left: intputMax.right
+//                    anchors.leftMargin: 10
+//                    anchors.verticalCenter: intputMax.verticalCenter
+//                    width: 100
+//                    height: 60
+//                    text:"tempMax"
+//                    onClicked: {
+//                        s_temMax(intputMax.text)
+//                    }
 
-                }
-            }
+//                }
+//            }
 
-            Rectangle{
-                width: 300
-                height: 60
-                anchors.horizontalCenter: parent.horizontalCenter
+//            Rectangle{
+//                width: 300
+//                height: 60
+//                anchors.horizontalCenter: parent.horizontalCenter
 
-                LineEdit {
-                    id: intputmin
-                    width: 300
-                    height: 60
-                    font.pixelSize: fontSize
-                    placeholderText: ""
-                    isNeedDoubleClickEdit: false
-                    textLeftPadding:0
-                    txtColor: Qt.rgba(0,0,0,0.65)
+//                LineEdit {
+//                    id: intputmin
+//                    width: 300
+//                    height: 60
+//                    font.pixelSize: fontSize
+//                    placeholderText: ""
+//                    isNeedDoubleClickEdit: false
+//                    textLeftPadding:0
+//                    txtColor: Qt.rgba(0,0,0,0.65)
 
-                    color: "#DEDFE3"
+//                    color: "#DEDFE3"
 
-                }
-                Button{
-                    id:btnInputMin
-                    anchors.left: intputmin.right
-                    anchors.leftMargin: 10
-                    anchors.verticalCenter: intputmin.verticalCenter
-                    width: 100
-                    height: 60
-                    text: "tempMin"
-                    onClicked: {
-                        s_temMin(intputmin.text)
-                    }
+//                }
+//                Button{
+//                    id:btnInputMin
+//                    anchors.left: intputmin.right
+//                    anchors.leftMargin: 10
+//                    anchors.verticalCenter: intputmin.verticalCenter
+//                    width: 100
+//                    height: 60
+//                    text: "tempMin"
+//                    onClicked: {
+//                        s_temMin(intputmin.text)
+//                    }
 
-                }
-            }
+//                }
+//            }
 
-            Rectangle{
-                width: 300
-                height: 60
-                anchors.horizontalCenter: parent.horizontalCenter
+//            Rectangle{
+//                width: 300
+//                height: 60
+//                anchors.horizontalCenter: parent.horizontalCenter
 
-                LineEdit {
-                    id: intputOffset
-                    width: 300
-                    height: 60
-                    font.pixelSize: fontSize
-                    placeholderText: ""
-                    isNeedDoubleClickEdit: false
-                    textLeftPadding:0
-                    txtColor: Qt.rgba(0,0,0,0.65)
-                    color: "#DEDFE3"
+//                LineEdit {
+//                    id: intputOffset
+//                    width: 300
+//                    height: 60
+//                    font.pixelSize: fontSize
+//                    placeholderText: ""
+//                    isNeedDoubleClickEdit: false
+//                    textLeftPadding:0
+//                    txtColor: Qt.rgba(0,0,0,0.65)
+//                    color: "#DEDFE3"
 
-                }
-                Button{
-                    id:btnInputOffset
-                    anchors.left: intputOffset.right
-                    anchors.leftMargin: 10
-                    anchors.verticalCenter: intputOffset.verticalCenter
-                    width: 100
-                    height: 60
-                    text: "tempOffset"
-                    onClicked: {
-                        s_temOffset(intputOffset.text)
-                    }
+//                }
+//                Button{
+//                    id:btnInputOffset
+//                    anchors.left: intputOffset.right
+//                    anchors.leftMargin: 10
+//                    anchors.verticalCenter: intputOffset.verticalCenter
+//                    width: 100
+//                    height: 60
+//                    text: "tempOffset"
+//                    onClicked: {
+//                        s_temOffset(intputOffset.text)
+//                    }
 
-                }
-            }
-        }
+//                }
+//            }
+//        }
 
     }
 

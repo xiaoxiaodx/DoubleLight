@@ -43,31 +43,26 @@ bool CHttpApiDevice::createConnect() {
         g_tcpsocket = new QTcpSocket;
         //timeHttpSocket = new QTimer;
 
+        timerReSendCmd = new QTimer;
+        connect(timerReSendCmd, &QTimer::timeout, this, &CHttpApiDevice::slot_resendCmd);
+
         connect(g_tcpsocket, SIGNAL(readyRead()), this, SLOT(slot_ReadMsg()));
-        connect(g_tcpsocket, SIGNAL(connected()), this, SLOT(slot_Connected()));
-        connect(g_tcpsocket, SIGNAL(disconnected()), this, SLOT(slot_disconnected()));
+        // connect(g_tcpsocket, SIGNAL(connected()), this, SLOT(slot_Connected()));
+        // connect(g_tcpsocket, SIGNAL(disconnected()), this, SLOT(slot_disconnected()));
         // connect(timeHttpSocket, SIGNAL(timeout()), this, SLOT(slot_connectServer()));
 
         g_tcpsocket->setReadBufferSize(1024*1024);
         //g_tcpsocket->setSocketOption(QAbstractSocket::LowDelayOption, 1);
-        g_tcpsocket->connectToHost(this->g_ip,this->g_port);
-
-        if(g_tcpsocket->waitForConnected(2000)){
-
-        }
-
-    } else {
-        g_tcpsocket->connectToHost(this->g_ip,this->g_port);
-
     }
 
-    if(!g_tcpsocket->waitForConnected(2000)){
-        connectCount ++;
-        if(connectCount > 5)
-            return false;
-        return createConnect();
-    }else
+
+    g_tcpsocket->connectToHost(this->g_ip,this->g_port);
+
+    if(g_tcpsocket->waitForConnected(1000)){
         return true;
+    }else{
+        return false;
+    }
 }
 
 int CHttpApiDevice::CjsonMakeHttpHead(QJsonObject *msgObject, JsonMsg_T *msg) {
@@ -119,22 +114,26 @@ int CHttpApiDevice::HttpMsgCallBack(char * pData) {
             QJsonObject object = doucment.object();  // 转化为对象
             QString cmd = object.value("cmd").toString();
 
+
             if(curCmdState.value("cmd").toString().compare(cmd))
             {
                 qDebug()<<"接收的命令与发送的命令不一致";
             }
             curCmdState.insert("state",cmdSendSucc);
 
+
             QMap<QString,QVariant> callbackMap;
             callbackMap.insert("cmd",cmd);
             if("login" == cmd) {
                 loginFlag = true;
 
-
+                qDebug()<<"*****";
                 if (object.contains("data")) {  // 包含指定的 key
                     QJsonValue value = object.value("data");
+                    qDebug()<<"*****    1";
                     if ( value.isObject() ) {  // Page 的 value 是对象
                         QJsonObject obj = value.toObject();
+                        qDebug()<<"*****    2";
                         if (obj.contains("sessionid")) {
                             QJsonValue value = obj.value("sessionid");
                             if (value.isString()) {
@@ -169,6 +168,10 @@ int CHttpApiDevice::HttpMsgCallBack(char * pData) {
                 }
             }
 
+            qDebug()<<"接收的命:"<<cmd;
+            emit signal_MsgReply(cmd);
+
+            qDebug()<<"signal_ReadMsg   ";
             emit signal_ReadMsg(callbackMap);
 
         } else {
@@ -179,13 +182,26 @@ int CHttpApiDevice::HttpMsgCallBack(char * pData) {
     }
 }
 
+void CHttpApiDevice::slot_resendCmd(){
+
+    if(listResendCmd.size() <= 0){
+        if(timerReSendCmd != nullptr)
+            timerReSendCmd->stop();
+        return;
+    }
+
+
+    QMap<QString,QVariant> map = listResendCmd.takeFirst();
+    slot_httpParSet(map);
+
+}
 void CHttpApiDevice::slot_httpGetInitPar()
 {
     qDebug()<<" slot_httpGetInitPar **************";
     QMap<QString,QVariant> map;
     map.insert("cmd","getosdparam");
     slot_httpParSet(map);
-    map.insert("cmd","setDate");
+    map.insert("cmd","setcurrenttime");
     slot_httpParSet(map);
 }
 
@@ -247,12 +263,12 @@ void CHttpApiDevice::slot_disconnected() {
 }
 void CHttpApiDevice::slot_connectServer() {
     qDebug()<<"time out  ";
-    if(false == g_httpTcpConnectState) {
-        g_tcpsocket->abort();
-        g_tcpsocket->connectToHost(g_ip, g_port);
-    } else {
-        timeHttpSocket->stop();
-    }
+    //    if(false == g_httpTcpConnectState) {
+    //        g_tcpsocket->abort();
+    //        g_tcpsocket->connectToHost(g_ip, g_port);
+    //    } else {
+    //        timeHttpSocket->stop();
+    //    }
 }
 
 
@@ -295,31 +311,47 @@ void CHttpApiDevice::HttpGetOsdParam(){
 
 
 }
-void CHttpApiDevice::send_httpParSet(QMap<QString,QVariant> map)
+bool CHttpApiDevice::send_httpParSet(QMap<QString,QVariant> map)
 {
 
-    QMutexLocker locker(&mMutex);
+
     QString cmd = map.value("cmd").toString();
-    QEventLoop loop;
-    QTimer timer;
+
+    QEventLoop loop ;
+
+
+    //QTimer timer;
     curCmdState.insert("cmd",cmd);
     curCmdState.insert("state",cmdSend);
     curCmdState.insert("checkedCount",0);
-    timer.start(100);
-    connect(&timer,&QTimer::timeout,[&]{
-        bool isSendSucc = curCmdState.value("state").toBool();
-        if(isSendSucc){
-            qDebug()<<"消息发送成功   "<<cmd;
-            loop.exit();
-        }
-        int checkedCount = curCmdState.value("checkedCount").toInt();
-        if(checkedCount > 4){
-            qDebug()<<"消息发送失败   "<<cmd<<checkedCount;
-            loop.exit();
-        }
-        checkedCount++;
-        curCmdState.insert("checkedCount",checkedCount);
+
+    connect(this,&CHttpApiDevice::signal_MsgReply,[&](QString cmd){
+
+
+
+        qDebug()<<"signal_MsgReply "<<loop.isRunning();
+        loop.exit();
+
+
+
     });
+    //    timer.start(100);
+    //    connect(&timer,&QTimer::timeout,[&]{
+    //        bool isSendSucc = curCmdState.value("state").toBool();
+    //        if(isSendSucc){
+    //            qDebug()<<"消息发送成功   "<<cmd;
+    //            loop.exit();
+    //        }
+    //        int checkedCount = curCmdState.value("checkedCount").toInt();
+    //        if(checkedCount > 4){
+    //            qDebug()<<"消息发送失败   "<<cmd<<checkedCount;
+    //            loop.exit();
+    //        }
+    //        checkedCount++;
+    //        curCmdState.insert("checkedCount",checkedCount);
+    //    });
+
+
 
     if(cmd.compare("setosdparam")==0){
         bool enable = map.value("enable").toBool();
@@ -328,33 +360,73 @@ void CHttpApiDevice::send_httpParSet(QMap<QString,QVariant> map)
         HttpGetOsdParam();
     }else if(cmd.compare("login") ==0){
         if(createConnect()){
+            qDebug()<<"http 连接成功";
             LoginDevice();
-
         }else{
             qDebug()<<"http 连接超时";
-
         }
     }else if(cmd.compare("loginout") ==0){
         LogoutDevice();
-    }else if(cmd.compare("setDate") ==0){
+    }else if(cmd.compare("setcurrenttime") ==0){
         HttpSetDate();
     }
 
+    qDebug()<<"开始循环***";
     loop.exec();
+    qDebug()<<"结束循环***";
+
+
+
+    QString sendCmd = curCmdState.value("cmd").toString();
+    if(cmd.compare(sendCmd) == 0 && curCmdState.value("state").toBool()){
+        return true;
+    }else{
+
+        return false;
+    }
+
 }
 
 void CHttpApiDevice::slot_httpParSet(QMap<QString,QVariant> map)
 {
-    QMap<QString ,QVariant> mapLogin;
-    mapLogin.insert("cmd","login");
-    send_httpParSet(mapLogin);
-    QThread::msleep(100);
-    send_httpParSet(map);
-    QThread::msleep(100);
-    QMap<QString ,QVariant> mapLogout;
-    mapLogout.insert("cmd","loginout");
-    send_httpParSet(mapLogout);
-    QThread::msleep(100);
+
+    qDebug()<<" slot_httpParSet";
+    QMutexLocker locker(&mMutex);
+    QMap<QString ,QVariant> mapSend;
+    mapSend.insert("cmd","login");
+
+    qDebug()<<"+****1";
+    bool sendSucc = false;
+    if(send_httpParSet(mapSend)){//登录
+        qDebug()<<"+****2";
+        if(send_httpParSet(map)){//登出
+            qDebug()<<"+****3";
+            mapSend.insert("cmd","loginout");
+            send_httpParSet(mapSend);
+
+            sendSucc = true;
+        }
+    }
+
+    qDebug()<<"+****1";
+    if(sendSucc){
+
+        qDebug()<<"一次数据请求成功"<<map.value("cmd").toString();;
+
+    }else{
+        qDebug()<<"数据发送失败："<<map.value("cmd").toString();
+        listResendCmd.append(map);
+
+        if(!timerReSendCmd->isActive()){
+            timerReSendCmd->start(500);
+        }
+    }
+
+    qDebug()<<"+****2";
+    if(g_tcpsocket != nullptr){
+        g_tcpsocket->disconnectFromHost();
+        g_tcpsocket->abort();
+    }
 }
 
 void CHttpApiDevice::HttpSetDate()
@@ -374,7 +446,6 @@ void CHttpApiDevice::HttpSetDate()
     dataObj.insert("utc", dateT.toString("yyyy-MM-ddThh:mm:ssZ"));//设置utc时间，格式："2000-10-10T03:39:44Z"
     msgObject.insert("data", QJsonValue(dataObj));
     SendRequestMsg(msgObject);
-
 }
 
 void CHttpApiDevice::HttpSetOsdParam(int osdTimeEnable){

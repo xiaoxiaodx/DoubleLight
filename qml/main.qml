@@ -3,7 +3,7 @@ import QtQuick.Controls 1.4
 import QtQuick.Window 2.12
 import QtQml 2.12
 
-
+import "./dialog"
 
 //import DeviceManagerment 1.0
 Window {
@@ -75,7 +75,13 @@ Window {
             else if(main.visibility === 4)
                 main.visibility = "Windowed"
         }
-        onWinClose:Qt.quit();
+        onWinClose:{
+            askDialog.width = 427
+            askDialog.height = 176
+            askDialog.askStr = qsTr("确认退出系统吗？")
+            askDialog.open()
+          //  Qt.quit();
+        }
         onDragPosChange:main.setDlgPoint(mx,my);
 
         //        QmlWatingBusy{
@@ -199,7 +205,12 @@ Window {
         }
     }
 
+    AskDialog{
+        id:askDialog
 
+
+
+    }
 
     Loader{
         id:loaderToast
@@ -210,6 +221,7 @@ Window {
 
         sourceComponent: null
     }
+
     Component {
         id: toast
         QmlToast{

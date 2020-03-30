@@ -81,10 +81,13 @@ signals:
     void signal_setRecordingFilePath(QString str);
     //
     void signal_temp(float tempV);
-    //
+    //私有流参数
     void signal_httpParSet(QMap<QString,QVariant> map);
     void signal_httpUiParSet(QVariant map);
     void signal_getInitPar();
+    //红外参数
+    void signal_tempPar(QVariant map);
+
 public slots:
     void slot_recH264(char *buff,int len,quint64 time);
     void slot_recPcmALaw(char *buff,int len,quint64 time);
@@ -117,8 +120,7 @@ private:
 
     QTimer timerUpdate;
 
-    QImage *m_Img;
-
+    ImageInfo m_Imginfo;
 
     bool isImgUpdate;
 

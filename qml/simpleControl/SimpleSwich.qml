@@ -6,12 +6,20 @@ Image {
     property bool checked: false
     width: 30
     height: 15
-    source: checked?"qrc:/images/switch_off.png":"qrc:/images/switch_on.png"
+    source: checked?"qrc:/images/switch_on.png":"qrc:/images/switch_off.png"
     MouseArea{
 
         anchors.fill: parent
 
-        onClicked: checked = !checked
+        onClicked: {
+            if(checked)
+                checked = false
+            else
+                checked = true
+
+
+        }
+
     }
 
 }
