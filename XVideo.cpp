@@ -10,6 +10,8 @@ XVideo::XVideo()
 
     initVariable();
 
+    //createHttpApi();
+
     connect(&timerUpdate,&QTimer::timeout,this,&XVideo::slot_timeout);
 
     timerUpdate.start(15);
@@ -23,6 +25,8 @@ void XVideo::startNormalVideo()
 {
     qDebug()<<"startNormalVideo ";
     createSearchIp();
+
+
 }
 
 void XVideo::startTemperatureVideo()
@@ -39,7 +43,9 @@ void XVideo::createYouseePull()
         mYouSeeParse->setList(listImgInfo);
         connect(this,&XVideo::signal_startinit,mYouSeeParse,&YouSeeParse::slot_init);
         connect(this,&XVideo::signal_stop,mYouSeeParse,&YouSeeParse::slot_stopPlay);
+        connect(this,&XVideo::signal_getInitPar,mYouSeeParse,&YouSeeParse::slot_getInitPar);
         connect(youseeThread,&QThread::finished,youseeThread,&QThread::deleteLater);
+
         youseeThread->start();
     }
     emit signal_startinit();
@@ -124,6 +130,13 @@ void XVideo::createFFmpegDecodec()
 
 }
 
+void XVideo::fun_getInitPar()
+{
+    qDebug()<<"fun_getInitPar";
+    // emit signal_getInitPar();
+
+}
+
 
 void XVideo::createTcpThread()
 {
@@ -138,17 +151,44 @@ void XVideo::createTcpThread()
         worker->moveToThread(m_readThread);
         m_readThread->start();
         emit signal_connentSer(m_ip,555);
-
     }
+    createHttpApi();
+
 }
 
 void XVideo::createHttpApi(){
 
     if(httpDevice == nullptr){
+        httpThread = new QThread;
         httpDevice = new CHttpApiDevice("INEW-004122-JWGWM", "10.67.1.156",8564, "admin", "admin");
-        connect(httpDevice, SIGNAL(signal_ReadMsg(int, QString)), this, SLOT(slog_HttpmsgCb(int, QString)));
+        connect(httpDevice, &CHttpApiDevice::signal_ReadMsg, this, &XVideo::slog_HttpmsgCb);
+        connect(this, &XVideo::signal_getInitPar,httpDevice,&CHttpApiDevice::slot_httpGetInitPar);
+        connect(this, &XVideo::signal_httpParSet,httpDevice,&CHttpApiDevice::slot_httpParSet);
+        httpDevice->moveToThread(httpThread);
+        httpThread->start();
+
+
+        emit signal_getInitPar();
     }
-    httpDevice->HttpSetOsdParam(1);
+}
+
+
+void XVideo::fun_temMax(QVariant mvalue){
+    YouSeeParse::check_max_temp = mvalue.toFloat();
+    qDebug()<<" check_max_temp  "<<YouSeeParse::check_max_temp;
+}
+void XVideo::fun_temMin(QVariant mvalue){
+    YouSeeParse::check_min_temp = mvalue.toFloat();
+    qDebug()<<" check_min_temp  "<<YouSeeParse::check_min_temp;
+}
+void XVideo::fun_temOffset(QVariant mvalue){
+    YouSeeParse::temp_offset = mvalue.toFloat();
+    qDebug()<<" temp_offset  "<<YouSeeParse::temp_offset;
+}
+
+void XVideo::slog_HttpmsgCb(QMap<QString,QVariant> map) {
+
+    emit signal_httpUiParSet(QVariant::fromValue(map));
 
 }
 
@@ -185,8 +225,12 @@ void XVideo::createSearchIp()
 
 void XVideo::recSearchIp(QString ip)
 {
-    m_ip = ip;
-    qDebug()<<"ip:"<<ip;
+    qDebug()<<"my recSearchIp:"<<ip;
+    if(m_ip == ""){
+        m_ip = "10.67.1.169";
+
+    }
+
 }
 
 void XVideo::funScreenShot()
@@ -237,18 +281,67 @@ void XVideo::slot_timeout()
             emit signal_loginStatus("Get the stream successfully");
             isFirstData = true;
         }
-         update();
+        update();
     }
 }
+#include <QFontMetrics>
 
 void XVideo::paint(QPainter *painter)
 {
     if(listImgInfo.size() <=0)
         return;
+
+    QFont font("Microsoft Yahei", 20);
+    QFontMetrics fm(font);
+//    int pixelsWide = fm.horizontalAdvance("What's the width of this text?");
+//    int pixelsHigh = fm.height();
+
+    QPen pen(QBrush(QColor(0,255,0)),1);
+    painter->setPen(pen);
+    painter->setFont(font);
+
     ImageInfo imginfo = listImgInfo.takeFirst();
+
     if(imginfo.pImg != nullptr){
+        //qDebug()<<" xvideo w h:"<<this->width()<<"  "<<this->height();
+//        int contentW = this->width();
+//        int contentH = this->height();
+
+//        QRect rectFill;
+//        if(contentW*3/4 > contentH){
+//            rectFill.setWidth(contentW);
+//            rectFill.setHeight()
+//        }
 
         painter->drawImage(QRect(0,0,width(),height()), *imginfo.pImg);
+
+
+        if(imginfo.isDrawLine){
+            qreal kX = (qreal)this->width()/(qreal)384;
+            qreal kY = (qreal)this->height()/(qreal)288;
+
+
+            QList<RectInfo> listRect = imginfo.listRect;
+            for(int i=0;i<listRect.size();i++){
+                RectInfo oriRectinfo = listRect.at(i);
+                QRect oriRect = oriRectinfo.rect;
+                QRectF desRect(oriRect.x()*kX,oriRect.y()*kY,oriRect.width()*kX,oriRect.height()*kY);
+                QString strText = QString::number(oriRectinfo.temp, 'f', 1);
+
+                //painter->save();
+                //QPen pen(QBrush(QColor(0,255,0)),2,Qt::DashLine);
+                //painter->setPen(pen);
+                painter->drawRect(desRect);
+                //painter->restore();
+
+                painter->drawText(desRect.x(),desRect.y()-3,strText);
+
+            }
+
+
+            if(mYouSeeParse != nullptr)
+                emit signal_temp(imginfo.temp);
+        }
 
         delete imginfo.pImg;
     }
@@ -258,7 +351,7 @@ void XVideo::paint(QPainter *painter)
 void XVideo::slot_recH264(char* h264Arr,int arrlen,quint64 time)
 {
 
-   // qDebug()<<QString(__FUNCTION__) + "    "+QString::number(__LINE__) ;
+    // qDebug()<<QString(__FUNCTION__) + "    "+QString::number(__LINE__) ;
     createFFmpegDecodec();
 
     if(pffmpegCodec != nullptr){
@@ -319,6 +412,12 @@ void XVideo::slot_recPcmALaw( char * buff,int len,quint64 time)
 
 void XVideo::fun_timeSwitch(bool isChecked){
     qDebug()<< "    fun_timeSwitch  "<<isChecked;
+
+
+    QMap<QString , QVariant> map;
+    map.insert("cmd","setosdparam");
+    map.insert("enable",isChecked);
+    emit signal_httpParSet(map);
 }
 void XVideo::fun_warnSwith(bool mchecked){
 
@@ -341,9 +440,14 @@ void XVideo::fun_screenShotPathSet(QVariant mvalue){
 void XVideo::fun_recordPathSet(QVariant mvalue){
 
 }
-void XVideo::fun_temOffset(QVariant mvalue)
+void XVideo::fun_temDrift(QVariant mvalue)
 {
+    float temDrift = mvalue.toFloat();
 
+    if(mYouSeeParse != nullptr){
+
+        // mYouSeeParse
+    }
 }
 
 void XVideo::funSetShotScrennFilePath(QString str)

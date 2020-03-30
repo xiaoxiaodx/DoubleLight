@@ -3,8 +3,6 @@
         <file>qml/HomeMenu.qml</file>
         <file>qml/HomeTitleBar.qml</file>
         <file>qml/MainContent.qml</file>
-        <file>qml/liveVedio/LiveContent.qml</file>
-        <file>qml/liveVedio/LiveVideo.qml</file>
         <file>qml/liveVedio/VedioLayout.qml</file>
         <file>qml/liveVedio/VideoLivePlay.qml</file>
         <file>qml/main.qml</file>
@@ -30,5 +28,22 @@
         <file>qml/DeviceConfig.qml</file>
         <file>images/file.png</file>
         <file>images/fileopen.png</file>
+        <file>qml/HomeStates.qml</file>
+        <file>images/warn_ico.png</file>
+        <file>images/arrow_low.png</file>
+        <file>images/arrow_low_p.png</file>
+        <file>images/arrow_up.png</file>
+        <file>images/arrow_up_p.png</file>
+        <file>images/switch_off.png</file>
+        <file>images/switch_on.png</file>
+        <file>images/win_close.png</file>
+        <file>images/win_close_p.png</file>
+        <file>images/win_max.png</file>
+        <file>images/win_max_p.png</file>
+        <file>images/win_min.png</file>
+        <file>images/win_min_P.png</file>
+        <file>images/icon_question.png</file>
+        <file>images/lablerecord.png</file>
+        <file>qml/simpleControl/SimpleSwich.qml</file>
     </qresource>
 </RCC>

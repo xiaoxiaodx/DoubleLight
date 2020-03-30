@@ -21,12 +21,12 @@ Image {
         hoverEnabled: true
 
         onEntered:{
-            mouse.enabled = true
+            //mouse.enabled = true
             mimg.source = imgSourseHover
         }
 
         onExited: {
-            mouse.enabled = true
+            //mouse.enabled = true
             mimg.source = imgSourseNormal
         }
 

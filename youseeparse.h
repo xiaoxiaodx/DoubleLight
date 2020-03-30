@@ -14,6 +14,7 @@
 
 #define CHECK_MAX_TEMP (42)
 #define CHECK_MIN_TEMP (30)
+#define TEMP_OFFSET 3.5
 
 #define FACECOORDINATES_HOST ("192.168.0.103")
 #define FACECOORDINATES_PORT (6000)
@@ -33,13 +34,20 @@ typedef struct _FACEDATA_T {
     FACECOORDINATES_T * faceCoordinatesData;
     int faceCoordinatesCnt;//检测到的人脸数量
 }FACEDATA_T;
-class ImageInfo{
 
+class RectInfo{
+public:
+    QRect rect;
+    float temp;
+};
+class ImageInfo{
 public:
     QImage *pImg;
     quint64 time;
     bool isDrawLine = false;
-    bool isWarn = false;
+
+    QList<RectInfo> listRect;
+    float temp = 0;
 };
 
 typedef struct _ShellView {
@@ -62,8 +70,11 @@ public:
     ~YouSeeParse();
     void forceFinish();
     static QList<ImageInfo> *listImgtmpInfo;
-    static float warnTempThreshold;
+
     static void setList(QList<ImageInfo> &list);
+    static float temp_offset ;
+    static float check_max_temp ;
+    static float check_min_temp ;
 signals:
     void signal_senImg(QImage *);
 public slots:
@@ -72,7 +83,10 @@ public slots:
     void slot_login();
     void slot_startPlay(s32 dataType);
     void slot_stopPlay();
+    void slot_setTemOffset(float tem);
 
+    void slot_getInitPar();
+    void slot_parSet(QMap<QString,QVariant>);
 
 private:
 

@@ -63,41 +63,41 @@ Rectangle {
         }
 
 
-//        Row{
-//            id:windowAdjust
-//            anchors.right: parent.right
-//            anchors.rightMargin: 10
-//            anchors.verticalCenter: parent.verticalCenter
-//            spacing:10
-//            QmlImageButton{
-//                width: 36
-//                height: 36
-//                imgSourseHover: "qrc:/images/wMin_enter.png"
-//                imgSourseNormal: "qrc:/images/wMin.png"
-//                imgSoursePress: "qrc:/images/wMin_enter.png"
-//                onClick:winMin()
-//            }
-//            QmlImageButton{
-//                width: 36
-//                height: 36
-//                imgSourseHover: "qrc:/images/wMax_enter.png"
-//                imgSourseNormal: "qrc:/images/wMax.png"
-//                imgSoursePress: "qrc:/images/wMax_enter.png"
-//                onClick:winMax()
+        Row{
+            id:windowAdjust
+            anchors.right: parent.right
+            anchors.rightMargin: 10
+            anchors.verticalCenter: parent.verticalCenter
+            spacing:20
+            QmlImageButton{
+                width: 20
+                height: 20
+                imgSourseHover: "qrc:/images/win_min_p.png"
+                imgSourseNormal: "qrc:/images/win_min.png"
+                imgSoursePress: "qrc:/images/win_min_p.png"
+                onClick:winMin()
+            }
+            QmlImageButton{
+                width: 20
+                height: 20
+                imgSourseHover: "qrc:/images/win_max_p.png"
+                imgSourseNormal: "qrc:/images/win_max.png"
+                imgSoursePress: "qrc:/images/win_max_p.png"
+                onClick:winMax()
 
-//            }
-//            QmlImageButton{
-//                width: 36
-//                height: 36
-//                imgSourseHover: "qrc:/images/wClose_enter.png"
-//                imgSourseNormal: "qrc:/images/wClose.png"
-//                imgSoursePress: "qrc:/images/wClose_enter.png"
-//                onClick:winClose()
+            }
+            QmlImageButton{
+                width: 20
+                height: 20
+                imgSourseHover: "qrc:/images/win_close_p.png"
+                imgSourseNormal: "qrc:/images/win_close.png"
+                imgSoursePress: "qrc:/images/win_close_p.png"
+                onClick:winClose()
 
 
-//            }
+            }
 
-//        }
+        }
 
     }
 

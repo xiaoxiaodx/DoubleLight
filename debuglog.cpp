@@ -18,19 +18,31 @@ DebugLog* DebugLog::getInstance()
 }
 #include <QTextStream>
 #include <QDebug>
+#include <QDateTime>
+#include <QDir>
 void DebugLog::writeLog(QString str)
 {
 
     if(file == NULL){
 
+
+
+        QDir dir;
+        if (dir.exists("activexDebug.log"))
+        {
+           QFile::remove("activexDebug.log");
+        }
+
+
         file = new QFile("activexDebug.log");
+
     }
 
     if(file->open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Append)){
-
+        QString curTime = QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss   ");
         qDebug()<<" writeLog    "<<str;
         QTextStream out(file);
-        out << str << "\n";
+        out <<curTime<< str << "\n";
         file->close();
     }
 }

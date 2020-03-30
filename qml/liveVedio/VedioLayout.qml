@@ -1,12 +1,12 @@
 import QtQuick 2.0
-
+import QtQuick.Layouts 1.12
 Rectangle {
 
     id:root
 
     property int rowNum: 1
     property int columnNum: 2
-    property alias myModel: repeater.model
+    //property alias myModel: repeater.model
 
     property int currentIndex: -1
 
@@ -20,48 +20,65 @@ Rectangle {
 
     color: "#252525"
 
-    Repeater{
-        id:repeater
+//    Repeater{
+//        id:repeater
 
 
-        VideoLivePlay{
-            id:video
-            width: (index === currentIndex && model.isMax >0)?root.width:((root.width)/columnNum)
-            height: (index === currentIndex && model.isMax>0)?root.height:((root.height)/rowNum)
+        RowLayout{
+            anchors.fill: parent
+            id: rowlayout
+            spacing: 0
+            VideoLivePlay{
+                id:videoNormal
+                color: "#252525"
+                Layout.fillHeight: true;
+                Layout.fillWidth: true
+                videoType:1
+                mIsSelected: 1 === currentIndex
 
-           // x:(index === currentIndex && model.isMax >0)?0:(index* width)
-            //y:(index === currentIndex && model.isMax >0)?0:Math.floor(index/rowNum) * height
-            x:model.isMax >0?0:index* width
-            y:0
-            z:model.isMax >0?1:0
-            videoType:model.videoType
-            color: "#3A3D41"
-            mIsSelected: index === currentIndex
+                onClick: {
 
-          //  belongDeviceName:model.deviceName
-            onClick: {
+                    currentIndex = 1
+
+                }
+
+                onDoubleClick: {
+                    if(videoTemp.visible){
+                        videoTemp.visible = false;
+                    }else{
+                        videoTemp.visible = true;
+                    }
+                }
 
 
-
-                currentIndex = index
-
-                s_click(currentIndex)
             }
 
-            onDoubleClick: {
-                //console.debug("VideoLivePlay onDoubleClick")
+            VideoLivePlay{
 
-                if( model.isMax > 0 )
-                     model.isMax = 0;
-                else
-                    model.isMax = 1;
+                id:videoTemp
+                videoType:2
+                Layout.fillHeight: true;
+                Layout.fillWidth: true
+                color: "#252525"
+                mIsSelected: 2 === currentIndex
+                onClick: {
+                    currentIndex = 2
+                }
 
-                s_doubleClick(index,model.isMax)
+                onDoubleClick: {
+
+                    if(videoNormal.visible){
+                        videoNormal.visible = false;
+                    }else{
+                        videoNormal.visible = true;
+                    }
+                }
+
+
             }
-
-
         }
-    }
+
+
 
 
 

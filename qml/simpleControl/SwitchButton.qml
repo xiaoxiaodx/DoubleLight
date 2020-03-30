@@ -7,12 +7,12 @@ Rectangle {
     property string bgColor: "red"
     property string indicatorColor: "white"
 
-    property bool checked: true
+    property bool checked: false
 
     property int radiusX: checked?(width-height/2):height/2
 
 
-    signal checkedChange(bool value)
+    //signal checkedChange(bool value)
 
 
     property int bgHeight: 2
@@ -88,7 +88,7 @@ Rectangle {
 
                     timer.stop()
                     checked = !checked
-                    checkedChange(checked)
+                    //checkedChange(checked)
                 }
             }else{
                 radiusX -= deXY;
@@ -98,7 +98,7 @@ Rectangle {
 
                     timer.stop()
                     checked = !checked
-                    checkedChange(checked)
+                   // checkedChange(checked)
                 }
             }
             mycanvas.requestPaint()

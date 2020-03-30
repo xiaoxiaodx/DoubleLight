@@ -17,6 +17,8 @@ Rectangle{
     property bool isNeedDoubleClickEdit: true
     property int fontPixSize: 10
     property bool isClick: false
+
+    property alias inputLimite: input.inputMethodHints
     Image {
         id: img
         visible: isNeedImg?true:false
@@ -34,7 +36,6 @@ Rectangle{
         anchors.leftMargin: textLeftPadding
         y:2
         // anchors.verticalCenter: parent.verticalCenter
-
         font.pixelSize: fontPixSize
         verticalAlignment: Text.AlignVCenter
         //cursorPosition:12

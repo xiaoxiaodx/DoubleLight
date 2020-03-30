@@ -7,6 +7,16 @@ import "../qml/liveVedio"
 import "simpleControl"
 Rectangle {
 
+    enum ADJUSTW {
+        WTOP,
+        WBOTTOM,
+        WLEFT,
+        WRIGHT,
+        WLEFTTOP,
+        WRIGHTTOP,
+        WLEFTBOTTOM,
+        WRIGHTBOTTOM
+    }
     id: maincontent;
 
     property bool fullscreen: false
@@ -27,6 +37,8 @@ Rectangle {
 
 
     property int modelDataCurrentIndex: -1
+
+
     visible: false
 
     signal winMin();
@@ -36,6 +48,7 @@ Rectangle {
 
     HomeMenu{
         id:homeMenu
+        property bool isDoubleClick: false
         anchors.top: parent.top
         anchors.left: parent.left
         width: parent.width
@@ -44,6 +57,12 @@ Rectangle {
             GradientStop { position: 0.0; color: "#5D9CFF"}
             GradientStop { position: 1.0; color: "#2D76E7"}
         }
+
+
+        onSwinMin:  winMin()
+        onSwinClose: winClose()
+        onSwinMax: winMax()
+
         MouseArea{
             property point clickPoint: "0,0"
 
@@ -51,26 +70,26 @@ Rectangle {
             acceptedButtons: Qt.LeftButton
             propagateComposedEvents: true
             onPressed: {
+                homeMenu.isDoubleClick = true;
                 clickPoint  = Qt.point(mouse.x, mouse.y)
             }
             //双击过程会出现拖拉事件，导致窗口最大化到还原过程出现bug,因此禁掉
-            //            onDoubleClicked: {
-            //                enabled = false;
-            //                winMax();
-            //                enabled = true;
-            //            }
+            onDoubleClicked: {
+                homeMenu.isDoubleClick = true;
+                winMax();
+
+            }
             onPositionChanged: {
 
-                var offset = Qt.point(mouse.x - clickPoint.x, mouse.y - clickPoint.y)
+                if(!homeMenu.isDoubleClick){
+                    var offset = Qt.point(mouse.x - clickPoint.x, mouse.y - clickPoint.y)
 
-                dragPosChange(offset.x, offset.y)
+                    dragPosChange(offset.x, offset.y)
+                }
+                homeMenu.isDoubleClick = false;
             }
         }
-        onMCurIndexChanged: {
-            if(mCurIndex == 2){
-                deviceconfig.open();
-            }
-        }
+
     }
 
 
@@ -79,7 +98,7 @@ Rectangle {
         Component.onCompleted: {
 
             listDeviceDataModel.append({videoType:1,isMax:0,deviceName:""});
-            listDeviceDataModel.append({videoType:2,isMax:0,deviceName:""});
+            listDeviceDataModel.append({videoType:1,isMax:0,deviceName:""});
         }
     }
 
@@ -88,186 +107,142 @@ Rectangle {
         anchors.left: parent.left
         anchors.top: homeMenu.bottom
         width: parent.width
-        height: parent.height - homeMenu.height
+        height: parent.height - homeMenu.height - mhomeStateBar.height
         color: "#252525"
         VedioLayout{
             id: vedioLayout
             height: parent.height
             width: parent.width;
 
+            property bool isWarn: false
 
-            myModel: listDeviceDataModel
             onS_click: modelDataCurrentIndex=clickIndex
-
+            z:homeMenu.mCurIndex == 0?1:0
             onS_doubleClick: {
 
 
+
+            }
+
+
+
+            Image{
+                id:imgWar
+                width: 58
+                height: 58
+                anchors.right: parent.right
+                anchors.rightMargin: 13
+                anchors.top: parent.top
+                anchors.topMargin: 68
+                source: "qrc:/images/warn_ico.png"
+                z:2
+                opacity: 0
+                SequentialAnimation {
+                    id:animationWarnOpacity
+                    loops: Animation.Infinite
+                    NumberAnimation { target: imgWar; property: "opacity"; to: 1; duration: 500 }
+                    NumberAnimation { target: imgWar; property: "opacity"; to: 0; duration: 300 }
+                }
+                function startAnimation(){
+
+                    animationWarnOpacity.start();
+                }
+                function stopAnimation(){
+
+                    animationWarnOpacity.stop();
+                    imgWar.opacity = 0;
+                }
+            }
+
+
+            Image{
+                id:imgRecord
+                width: 57
+                height: 24
+                anchors.left: parent.right
+                anchors.leftMargin: 20
+                anchors.top: parent.top
+                anchors.topMargin: 20
+                source: "qrc:/images/lablerecord.png"
+                z:2
+                opacity: 0
+                SequentialAnimation {
+                    id:animationRecordOpacity
+                    loops: Animation.Infinite
+                    NumberAnimation { target: imgWar; property: "opacity"; to: 1; duration: 600 }
+                    NumberAnimation { target: imgWar; property: "opacity"; to: 0; duration: 300 }
+                }
+                function startAnimation(){
+
+                    animationRecordOpacity.start();
+                }
+                function stopAnimation(){
+
+                    animationRecordOpacity.stop();
+                    imgRecord.opacity = 0;
+                }
+            }
+
+
+
+            function startWarn(){
+                if(vedioLayout.isWarn)
+                    return;
+                if(deviceconfig.getSwitchScreenShot())
+                    screenv.funScreenShoot(deviceconfig.getScrennShotPath(),main,0 ,68,main.width,main.height-68);
+                vedioLayout.isWarn = true;
+                imgWar.startAnimation();
+            }
+            function endWarn(){
+                if(!vedioLayout.isWarn)
+                    return;
+                vedioLayout.isWarn = false;
+                imgWar.stopAnimation();
+
+            }
+
+            function startRecordLable(){
+                imgRecord.startAnimation();
+            }
+            function stopRecordLable(){
+                imgRecord.stopAnimation();
             }
         }
+
         Rectangle{
-            id:screenShotMask
-            anchors.fill: parent
-            color: "white"
-            opacity: 0
-
-            SequentialAnimation {
-
-                id:animationOpacity
-                NumberAnimation { target: screenShotMask; property: "opacity"; to: 0.5; duration: 100 }
-                NumberAnimation { target: screenShotMask; property: "opacity"; to: 0; duration: 100 }
-            }
-            function startAnimation(){
-                animationOpacity.start();
-            }
+            id:rectRepaly
+            width: parent.width
+            height: parent.height
+            color: "#ffffff"
+            z:homeMenu.mCurIndex == 1?1:0
         }
+
+        DeviceConfig{
+
+            id:deviceconfig
+            anchors.fill: parent
+            color: "#DFE1E6"
+            z:homeMenu.mCurIndex == 2?1:0
+
+        }
+
+
+
+
+
+
     }
 
-
-    Rectangle{
+    HomeStates{
         id:mhomeStateBar
         width: parent.width
         height:50
         anchors.bottom: parent.bottom
-
-        gradient: Gradient {
-            GradientStop { position: 0.0; color: "#5D9CFF"}
-            GradientStop { position: 1.0; color: "#2D76E7"}
-        }
-
-
-
-        states: [
-            State {
-                name: "show"; PropertyChanges { target: mhomeStateBar; opacity: 1 }
-            },
-            State {
-                name: "hide"; PropertyChanges { target: mhomeStateBar;  opacity: 0 }
-            }]
-
-        transitions: Transition {
-            PropertyAnimation  {properties: "opacity"; duration: 600; easing.type: Easing.Linear  }
-        }
-
-        MouseArea{
-            id:mouse
-            anchors.fill: parent
-            hoverEnabled: true
-            //enabled: true
-            // preventStealing:true
-            propagateComposedEvents:true
-            onEntered:{
-
-                mhomeStateBar.state = "show"
-
-                //enabled = false;
-            }
-            onExited:mhomeStateBar.state = "hide"
-
-        }
-
-
-        Row{
-            id:windowAdjust
-            anchors.right: parent.right
-            anchors.rightMargin: 60
-            anchors.verticalCenter: parent.verticalCenter
-            spacing:40
-            Image{
-                id:img1
-                width: 34
-                height: 34
-                source: "qrc:/images/lock.png"
-                property bool isLock: false
-                MouseArea{
-                    anchors.fill:parent
-                    onPressed: {
-
-                        if(img1.isLock){
-                            img1.source = "qrc:/images/lock.png"
-
-                        }else{
-                            img1.source = "qrc:/images/lock_p.png"
-                        }
-                        img1.isLock = !img1.isLock;
-                    }
-
-                }
-            }
-            Image{
-                id:img2
-                width: 34
-                height: 34
-                source: "qrc:/images/recordv.png"
-                property bool isRecord: false
-                MouseArea{
-                    anchors.fill:parent
-                    onPressed: {
-                        if(img2.isRecord){
-
-
-                            if(screenv.funEndScreenRecrod()){
-                                img2.source = "qrc:/images/recordv.png"
-                                img2.isRecord = false;
-                            }
-
-                        }else{
-
-                            if(screenv.funStartScreenRecrod(deviceconfig.getRecordPath())){
-                                img2.source = "qrc:/images/recordv_p.png";
-                                img2.isRecord = true;
-                            }
-                        }
-
-                    }
-                }
-            }
-
-            Image{
-                id:img3
-                width: 34
-                height: 34
-                source: "qrc:/images/replay.png"
-                MouseArea{
-                    anchors.fill:parent
-                    onPressed: {
-                        img3.source = "qrc:/images/replay_p.png"
-
-                    }
-                    onReleased:img3.source = "qrc:/images/replay.png"
-                }
-            }
-        }
-    }
-
-    Timer{
-        id:delayTimer
-
-        triggeredOnStart:true
-
-        repeat:true
-
-        interval: 65;
-
-        onTriggered: {
-
-        }
-
 
     }
 
     ScreenVideo{
         id:screenv
     }
-
-
-    DeviceConfig{
-        id:deviceconfig
-        width: 1888
-        height: 922
-
-
-    }
-
-
 
 }

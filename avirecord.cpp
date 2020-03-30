@@ -98,7 +98,7 @@ void AviRecord::slot_startRecord(QString did,long long pts)
     }
 
 
-     startTime = QDateTime::currentDateTime().toMSecsSinceEpoch();
+    startTime = QDateTime::currentDateTime().toMSecsSinceEpoch();
 
     QString filename = desFileDir+ "/"+mDid+"_"+QString::number(startTime)+".avi";
 

@@ -13,7 +13,6 @@
 #include <QQuickWindow>
 #include "tcpworker.h"
 
-
 #include "render/renderthread.h"
 #include "ffmpegcodec.h"
 #include "mysearch1.h"
@@ -21,6 +20,7 @@
 
 #include "avirecord.h"
 #include "chttpapidevice.h"
+
 
 class XVideo : public QQuickPaintedItem
 {
@@ -40,9 +40,15 @@ public:
     Q_INVOKABLE void    fun_recordSwith(bool mchecked);
     Q_INVOKABLE void    fun_temSet(QVariant mvalue);
     Q_INVOKABLE void    fun_screenShotPathSet(QVariant mvalue);
-    Q_INVOKABLE void   fun_recordPathSet(QVariant mvalue);
-    Q_INVOKABLE void    fun_temOffset(QVariant mvalue);
+    Q_INVOKABLE void    fun_recordPathSet(QVariant mvalue);
+    Q_INVOKABLE void    fun_temDrift(QVariant mvalue);
 
+    Q_INVOKABLE void fun_getInitPar();
+
+
+    Q_INVOKABLE void fun_temMax(QVariant mvalue);
+    Q_INVOKABLE void fun_temMin(QVariant mvalue);
+    Q_INVOKABLE void fun_temOffset(QVariant mvalue);
     explicit XVideo();
     ~XVideo();
 
@@ -56,7 +62,6 @@ signals:
     void signal_loginStatus(QString msg);
     void signal_waitingLoad(QString msgload);
     void signal_endLoad();
-
     //
     void signal_update();
     //搜索的信号
@@ -74,11 +79,16 @@ signals:
     void signal_startRecord(QString did,long long tempTime);
     void signal_endRecord();
     void signal_setRecordingFilePath(QString str);
-
+    //
+    void signal_temp(float tempV);
+    //
+    void signal_httpParSet(QMap<QString,QVariant> map);
+    void signal_httpUiParSet(QVariant map);
+    void signal_getInitPar();
 public slots:
     void slot_recH264(char *buff,int len,quint64 time);
     void slot_recPcmALaw(char *buff,int len,quint64 time);
-
+    void slog_HttpmsgCb(QMap<QString,QVariant>);
     void slot_timeout();
 
     //void ready();
@@ -145,10 +155,10 @@ private:
     QThread *youseeThread = nullptr;
     YouSeeParse *mYouSeeParse = nullptr;
 
-
     QThread *recordThread = nullptr;
     AviRecord *aviRecord = nullptr;
 
+    QThread *httpThread = nullptr;
     CHttpApiDevice *httpDevice = nullptr;
 };
 

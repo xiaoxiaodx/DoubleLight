@@ -12,8 +12,6 @@ extern "C"{
 #include "libavcodec/avcodec.h"
 }
 
-
-
 #include <QObject>
 #include <QDebug>
 #include <QString>

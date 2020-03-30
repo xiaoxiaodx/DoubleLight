@@ -4,6 +4,7 @@ import QtQuick.Controls 1.4
 import "../simpleControl"
 Rectangle {
 
+    id:mPlayRect
     signal doubleClick(bool isFullScreen);
     signal click();
     signal s_showToastMsg(string str)
@@ -13,50 +14,70 @@ Rectangle {
     property string recordingFilePath: ""
     property bool mIsSelected: false
     property int videoType : 0
-    border.color: mIsSelected?"#ff6815":"#252525"
+    border.color: mIsSelected?"#EF9D36":"#252525"
     border.width: 2
+
+    signal s_startTemWarn();
+    signal s_endTemWarn();
 
 
     XVideo{
         id:video
-        anchors.fill: parent
-        anchors.margins: 2
+
+        //anchors.fill: parent
+
+        width:(mPlayRect.width*3/4>mPlayRect.height?mPlayRect.height*4/3:mPlayRect.width) - 4
+        height: (mPlayRect.width*3/4>mPlayRect.height?mPlayRect.height:mPlayRect.width*3/4) - 4
+
+        anchors.horizontalCenter: mPlayRect.horizontalCenter
+        anchors.verticalCenter: mPlayRect.verticalCenter
+
 
         Component.onCompleted: {
+
             if(videoType === 1){
                 video.startNormalVideo();
 
             }else if(videoType === 2){
-                video.startTemperatureVideo();
+                //video.startTemperatureVideo();
             }
         }
-        MouseArea{
-            anchors.fill: parent
-            hoverEnabled: true
-            propagateComposedEvents:true
-
-            onClicked: click();
-
-            onDoubleClicked:doubleClick(true);
-
-        }
-
-//        Rectangle{
-//            id:screenBlack
-//            anchors.fill: parent
-//            visible:true
-//            color: "#252525"
-//        }
-
-
 
         onSignal_loginStatus: main.showToast(msg);
+
+        onSignal_temp:{
+            var num = parseFloat(deviceconfig.getWarnTem()).toFixed(2)
+            //console.debug("temp ***** "+tempV+"   "+num)
+            if( Number(tempV) >= Number(num)){
+                vedioLayout.startWarn();
+            }else{
+                vedioLayout.endWarn();
+            }
+        }
+        onSignal_httpUiParSet: {
+
+                var strcmd = map.cmd;
+
+
+                console.debug(" " + strcmd);
+                if(strcmd === "getrecordparam"){
+                    var enable = map.enable;
+
+                }else if(strcmd === "getrecordparam"){
+
+                }
+        }
     }
 
-    function screenShotBtnClick(){
+    MouseArea{
+        anchors.fill: parent
+        hoverEnabled: true
+        propagateComposedEvents:true
 
-        screenShotMask.startAnimation();
-        video.funScreenShot();
+        onClicked: click();
+
+        onDoubleClicked:doubleClick(true);
+
     }
     Connections{
         target: deviceconfig
@@ -68,8 +89,12 @@ Rectangle {
         onS_temSet:video.fun_temSet( mvalue);
         onS_screenShotPathSet:video.fun_screenShotPathSet( mvalue);
         onS_recordPathSet:video.fun_recordPathSet(mvalue);
-        onS_temOffset:video.fun_temOffset(mvalue);
+        onS_temDrift:video.fun_temDrift(mvalue);
+        //onS_getInitPar:video.fun_getInitPar();
 
+        onS_temMax:video.fun_temMax(mvalue);
+        onS_temMin:video.fun_temMin(mvalue);
+        onS_temOffset:video.fun_temOffset(mvalue);
     }
 }
 

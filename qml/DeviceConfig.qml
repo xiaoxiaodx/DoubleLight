@@ -4,21 +4,8 @@ import QtGraphicalEffects 1.12
 import QtQuick.Dialogs 1.3
 import Qt.labs.settings 1.0
 import "simpleControl"
-Popup {
+Rectangle {
     id: root
-    x: parent.width/2 - root.width/2
-    y: parent.height/2 - root.height/2
-    width: 380
-    height: 253
-    modal: true
-    focus: true
-    //设置窗口关闭方式为按“Esc”键关闭
-    closePolicy: Popup.OnEscape
-    //设置窗口的背景控件，不设置的话Popup的边框会显示出来
-    background: rect
-
-    property int fontSize: 14
-
 
     signal s_timeSwith(bool mchecked);
     signal s_warnSwith(bool mchecked);
@@ -28,20 +15,35 @@ Popup {
     signal s_temSet(var mvalue);
     signal s_screenShotPathSet(var mvalue);
     signal s_recordPathSet(var mvalue);
+    signal s_temDrift(var mvalue);
+    signal s_getInitPar();
+
+
     signal s_temOffset(var mvalue);
-
-
+    signal s_temMax(var mvalue);
+    signal s_temMin(var mvalue);
+    property int fontSize: 14
     Settings {
         id:setting
-        property alias recordPath: inputScreenShotPath.text
-        property alias screenShotPath: inputRecordPath.text
+        property alias recordPath: inputRecordPath.text
+        property alias screenShotPath: inputScreenShotPath.text
+        property alias temDrift:inputTempDrift.text
+        property alias warnTem:inputTem.text
+
+        property alias switchTime:swithTime.checked
+        property alias switchWarn:swichWarn.checked
+        property alias switchScreenShot:swichScreenShot.checked
+        property alias switchBeer:swichBeer.checked
+        property alias switchRecord:swichRecord.checked
     }
 
     Rectangle {
         id: rect
-        anchors.fill: parent
+        anchors.verticalCenter: parent.verticalCenter
+        anchors.horizontalCenter: parent.horizontalCenter
+        width: parent.width -40
+        height: parent.height -40
         color: "#F8FAFD"
-
 
         Text {
             id: labelTime
@@ -74,15 +76,14 @@ Popup {
             anchors.topMargin: 20
         }
 
-        SwitchButton{
+        SimpleSwich{
             id:swithTime
             width: 30
             height: 15
             anchors.left: labelSwitchTime.right
             anchors.leftMargin: 20
             anchors.verticalCenter: labelSwitchTime.verticalCenter
-            bgColor: "#476BFD"
-            onCheckedChange: s_timeSwith(checked)
+            onCheckedChanged: s_timeSwith(checked)
         }
 
         Text {
@@ -116,6 +117,89 @@ Popup {
             anchors.topMargin: 24
         }
 
+        Rectangle{
+            id:rectTempDrift
+            color: "#D6D8DB"
+            width: 88
+            height: 32
+            radius: 4
+            anchors.left: txtTempDrift.right
+            anchors.verticalCenter: txtTempDrift.verticalCenter
+            anchors.leftMargin: 20
+            LineEdit {
+                id: inputTempDrift
+                width: rectTempDrift.width  - 22
+                height: rectTempDrift.height -2
+                anchors.left: parent.left
+                anchors.leftMargin: 1
+                anchors.verticalCenter: rectTempDrift.verticalCenter
+                border.width: 0
+                inputLimite:Qt.ImhFormattedNumbersOnly
+                font.pixelSize: fontSize
+                placeholderText: ""
+                isNeedDoubleClickEdit: false
+                textLeftPadding:0
+                txtColor: Qt.rgba(0,0,0,0.65)
+                color: "#F8FAFD"
+                onTextChanged: {
+                    s_temDrift(inputTempDrift.text);
+
+                }
+            }
+            Image {
+                id: imgValueUp
+                width: 20
+                height: 15
+                source: "qrc:/images/arrow_up.png"
+                anchors.right: parent.right
+                anchors.rightMargin: 1
+                anchors.top: parent.top
+                anchors.topMargin: 1
+                MouseArea{
+                    anchors.fill: parent
+                    onPressed: {
+                        imgValueUp.source="qrc:/images/arrow_up_p.png"
+                        var num = parseFloat(inputTempDrift.text).toFixed(2)
+
+                        inputTempDrift.text = ""+(Number(num)+Number(0.01)).toFixed(2)
+
+                    }
+                    onReleased: imgValueUp.source="qrc:/images/arrow_up.png"
+                }
+            }
+            Image {
+                id: imgValuedown
+                width: 20
+                height: 15
+                source: "qrc:/images/arrow_low.png"
+                anchors.right: imgValueUp.right
+                anchors.top: imgValueUp.bottom
+                anchors.topMargin: 1
+                MouseArea{
+                    anchors.fill: parent
+
+                    onPressed: {
+
+                        imgValuedown.source="qrc:/images/arrow_low_p.png"
+                        var num = parseFloat(inputTempDrift.text).toFixed(2)
+
+                        inputTempDrift.text = ""+(Number(num)-Number(0.01)).toFixed(2)
+                    }
+                    onReleased: imgValuedown.source="qrc:/images/arrow_low.png"
+                }
+            }
+
+        }
+
+        Text {
+            id: txtTemp
+            text: qsTr("℃")
+            font.pixelSize: fontSize
+            anchors.verticalCenter: rectTempDrift.verticalCenter
+            anchors.left: rectTempDrift.right
+            anchors.topMargin: 6
+        }
+
         Text {
             id: txtSwichWarn
             text: qsTr("报警开关")
@@ -125,15 +209,14 @@ Popup {
             anchors.topMargin: 26
         }
 
-        SwitchButton{
+        SimpleSwich{
             id:swichWarn
             width: 30
             height: 15
             anchors.left: txtSwichWarn.right
             anchors.leftMargin: 20
             anchors.verticalCenter: txtSwichWarn.verticalCenter
-            bgColor: "#476BFD"
-            onCheckedChange: s_warnSwith(checked)
+            onCheckedChanged: s_warnSwith(checked)
         }
         Text {
             id: txtWarnTemSet
@@ -178,15 +261,14 @@ Popup {
             anchors.left: txtSwichWarn.left
             anchors.topMargin: 26
         }
-        SwitchButton{
+        SimpleSwich{
             id:swichScreenShot
             width: 30
             height: 15
             anchors.left: txtSwichScreenShot.right
             anchors.leftMargin: 20
             anchors.verticalCenter: txtSwichScreenShot.verticalCenter
-            bgColor: "#476BFD"
-            onCheckedChange: s_screenShotSwith(checked)
+            onCheckedChanged: s_screenShotSwith(checked)
         }
 
         Text {
@@ -260,15 +342,14 @@ Popup {
             anchors.left: txtSwichScreenShot.left
             anchors.topMargin: 26
         }
-        SwitchButton{
+        SimpleSwich{
             id:swichBeer
             width: 30
             height: 15
             anchors.left: txtSwichBeer.right
             anchors.leftMargin: 20
             anchors.verticalCenter: txtSwichBeer.verticalCenter
-            bgColor: "#476BFD"
-            onCheckedChange: s_beerSwith(checked)
+            onCheckedChanged: s_beerSwith(checked)
         }
 
 
@@ -301,15 +382,14 @@ Popup {
             anchors.topMargin: 20
             anchors.leftMargin: 48
         }
-        SwitchButton{
+        SimpleSwich{
             id:swichRecord
             width: 30
             height: 15
             anchors.left: txtSwichRecord.right
             anchors.leftMargin: 20
             anchors.verticalCenter: txtSwichRecord.verticalCenter
-            bgColor: "#476BFD"
-            onCheckedChange: s_recordSwith(checked)
+            onCheckedChanged: s_recordSwith(checked)
         }
 
         Text {
@@ -377,13 +457,110 @@ Popup {
         }
 
 
-        layer.enabled: true
-        layer.effect: DropShadow {
-            transparentBorder: true
-            horizontalOffset: 4
-            verticalOffset: 4
-            color:"#80000000"
+        Column{
+
+            anchors.left: rectRecordPath.left
+            anchors.top: rectRecordPath.bottom
+            anchors.topMargin: 10
+            spacing: 5
+            Rectangle{
+                width: 300
+                height: 60
+                anchors.horizontalCenter: parent.horizontalCenter
+
+                LineEdit {
+                    id: intputMax
+                    width: 300
+                    height: 60
+                    font.pixelSize: fontSize
+                    placeholderText: ""
+                    isNeedDoubleClickEdit: false
+                    textLeftPadding:0
+                    txtColor: Qt.rgba(0,0,0,0.65)
+                    color: "#DEDFE3"
+
+                }
+                Button{
+                    id:btnInputMax
+                    anchors.left: intputMax.right
+                    anchors.leftMargin: 10
+                    anchors.verticalCenter: intputMax.verticalCenter
+                    width: 100
+                    height: 60
+                    text:"tempMax"
+                    onClicked: {
+                        s_temMax(intputMax.text)
+                    }
+
+                }
+            }
+
+            Rectangle{
+                width: 300
+                height: 60
+                anchors.horizontalCenter: parent.horizontalCenter
+
+                LineEdit {
+                    id: intputmin
+                    width: 300
+                    height: 60
+                    font.pixelSize: fontSize
+                    placeholderText: ""
+                    isNeedDoubleClickEdit: false
+                    textLeftPadding:0
+                    txtColor: Qt.rgba(0,0,0,0.65)
+
+                    color: "#DEDFE3"
+
+                }
+                Button{
+                    id:btnInputMin
+                    anchors.left: intputmin.right
+                    anchors.leftMargin: 10
+                    anchors.verticalCenter: intputmin.verticalCenter
+                    width: 100
+                    height: 60
+                    text: "tempMin"
+                    onClicked: {
+                        s_temMin(intputmin.text)
+                    }
+
+                }
+            }
+
+            Rectangle{
+                width: 300
+                height: 60
+                anchors.horizontalCenter: parent.horizontalCenter
+
+                LineEdit {
+                    id: intputOffset
+                    width: 300
+                    height: 60
+                    font.pixelSize: fontSize
+                    placeholderText: ""
+                    isNeedDoubleClickEdit: false
+                    textLeftPadding:0
+                    txtColor: Qt.rgba(0,0,0,0.65)
+                    color: "#DEDFE3"
+
+                }
+                Button{
+                    id:btnInputOffset
+                    anchors.left: intputOffset.right
+                    anchors.leftMargin: 10
+                    anchors.verticalCenter: intputOffset.verticalCenter
+                    width: 100
+                    height: 60
+                    text: "tempOffset"
+                    onClicked: {
+                        s_temOffset(intputOffset.text)
+                    }
+
+                }
+            }
         }
+
     }
 
     FileDialog {
@@ -397,7 +574,7 @@ Popup {
             if(pathname === "recordPath"){
                 var str = fileDialog.fileUrl.toString();
                 inputRecordPath.text = str.replace('file:///','');
-               // devicemanagerment.recordingPath = txtVedioSavePath.text
+                // devicemanagerment.recordingPath = txtVedioSavePath.text
             }else if(pathname === "screenShotPath"){
                 inputScreenShotPath.text = fileDialog.fileUrl.toString().replace('file:///','');
                 //devicemanagerment.screenShotPath = txtscreenshotSavePath.text
@@ -416,33 +593,32 @@ Popup {
     function getScrennShotPath(){
         return setting.screenShotPath;
     }
-
-    function setDlgPoint(dlgX ,dlgY)
-    {
-        //设置窗口拖拽不能超过父窗口
-        if(root.x + dlgX < 0)
-        {
-            root.x = 0
-        }
-        else if(root.x + dlgX > root.parent.width - root.width)
-        {
-            root.x = root.parent.width - root.width
-        }
-        else
-        {
-            root.x = root.x + dlgX
-        }
-        if(root.y + dlgY < 0)
-        {
-            root.y = 0
-        }
-        else if(root.y + dlgY > root.parent.height - root.height)
-        {
-            root.y = root.parent.height - root.height
-        }
-        else
-        {
-            root.y = root.y + dlgY
-        }
+    function getTemDrift(){
+        return setting.temDrift
     }
+    function getWarnTem(){
+        return setting.warnTem
+    }
+    function getSwitchWarn()
+    {
+        return setting.switchWarn;
+    }
+
+    function getSwitchTime(){
+        return setting.switchTime
+    }
+
+    function getSwitchRecord(){
+        return setting.switchRecord
+    }
+
+    function getSwitchScreenShot(){
+        return setting.switchScreenShot
+    }
+
+    function getSwitchBeer(){
+        return setting.switchBeer
+    }
+
+
 }

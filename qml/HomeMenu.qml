@@ -6,6 +6,9 @@ Rectangle {
 
     property alias mCurIndex: tabbarBtn.curIndex
 
+    signal swinMin();
+    signal swinMax();
+    signal swinClose();
 
     Image {
         id: btnImg
@@ -37,6 +40,42 @@ Rectangle {
             tabbarBtn.barModel.append({txtStr:qsTr("主预览")})//,imgSrc:"qrc:/images/homemenuClose.png",imgSrcEnter:"qrc:/images/homemenuClose.png"})
             tabbarBtn.barModel.append({txtStr:qsTr("录像回放")})//,imgSrc:"qrc:/images/homemenuClose.png",imgSrcEnter:"qrc:/images/homemenuClose.png"})
             tabbarBtn.barModel.append({txtStr:qsTr("设备配置")})//,imgSrc:"qrc:/images/homemenuClose.png",imgSrcEnter:"qrc:/images/homemenuClose.png"})
+
+        }
+
+    }
+
+    Row{
+        id:windowAdjust
+        anchors.right: parent.right
+        anchors.rightMargin: 10
+        anchors.verticalCenter: parent.verticalCenter
+        spacing:20
+        QmlImageButton{
+            width: 20
+            height: 20
+            imgSourseHover: "qrc:/images/win_min_P.png"
+            imgSourseNormal: "qrc:/images/win_min.png"
+            imgSoursePress: "qrc:/images/win_min_P.png"
+            onClick:swinMin()
+        }
+        QmlImageButton{
+            width: 20
+            height: 20
+            imgSourseHover: "qrc:/images/win_max_p.png"
+            imgSourseNormal: "qrc:/images/win_max.png"
+            imgSoursePress: "qrc:/images/win_max_p.png"
+            onClick:swinMax()
+
+        }
+        QmlImageButton{
+            width: 20
+            height: 20
+            imgSourseHover: "qrc:/images/win_close_p.png"
+            imgSourseNormal: "qrc:/images/win_close.png"
+            imgSoursePress: "qrc:/images/win_close_p.png"
+            onClick:swinClose()
+
 
         }
 

@@ -8,6 +8,22 @@ ScreenVideo::ScreenVideo(QObject *parent) : QObject(parent)
 
 }
 
+bool ScreenVideo::funScreenShoot(QString path,QQuickWindow *quic,int capx,int capy,int capw,int caph)
+{
+
+
+    qDebug()<<"screnn "<<path;
+
+    QImage img= quic->grabWindow();
+
+    QImage img1 = img.copy( capx, capy, capw, caph);
+
+    QString  time = QDateTime::currentDateTime().toString("yyMMddhhmmss");
+
+    img.save(path+"/"+time+".png","PNG");
+
+}
+
 
 bool ScreenVideo::funStartScreenRecrod(QString str)
 {
