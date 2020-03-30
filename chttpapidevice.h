@@ -11,6 +11,7 @@
 #include <QTimer>
 #include <QThread>
 #include <QMutex>
+#include <QEventLoop>
 using namespace std;
 
 typedef struct _JsonMsg_T{
@@ -68,6 +69,7 @@ public slots:
     void slot_httpParSet(QMap<QString,QVariant> map);
     void slot_httpGetInitPar();
     void slot_resendCmd();
+    //void slot_exitLoop(QString );
 signals:
     void signal_ReadMsg(QMap<QString,QVariant>);//QJsonObject
     void signal_httpErr();
@@ -93,6 +95,7 @@ private:
     QMutex mMutex;
 
     QTimer *timerReSendCmd = nullptr;
+    QEventLoop loop ;
 
 };
 

@@ -13,11 +13,11 @@ YouSeeParse::YouSeeParse(QObject *parent) : QObject(parent)
 
 }
 
-
 void YouSeeParse::setList(QList<ImageInfo> &list)
 {
     listImgtmpInfo = &list;
 }
+
 void YouSeeParse::slot_discover()
 {
     //发现在线设备, 返回响应链表
@@ -167,18 +167,12 @@ static CvSeq*cvSegmentFGMask( CvArr* _mask, bool poly1Hull0,float perimScale,
 }
 
 static float getTempAavl(s16* IrdaDataFloat, int height, int width, u16 slop ,s16 offset , CvRect * rec) {
-
-    //起始位置：(rec.x, rec.y) （1， 4）
-    //大小：(rec.width, rec.height)（3， 4）
-    //qDebug()<<"aavg:"<<mresult->aavg<<"min temp:"<<mresult->amin<<",max temp:"<<mresult->amax<<"start position ("<<rec->x<<", "<<rec->y<<"), size: ("<<rec->width<<", "<<rec->height<<"), slot:"<<slop<<", offset:"<<offset<<"width:"<<width;
-    //qDebug()<<"start position ("<<IrdaDataFloat[0]<<", "<<IrdaDataFloat[1]<<"), size: ("<<IrdaDataFloat[2]<<", "<<IrdaDataFloat[3]<<"), 4:"<<IrdaDataFloat[4]<<", 5:"<<IrdaDataFloat[5];
     float temp = 0.0;
     float value =0.0;
     int tempCnt = 0;
     float avl = 0.0;
     float max = 0.0,min = 41.0;
     static float *tempData = (float *)malloc(height*width * sizeof (float));
-
     int i = rec->x,j = rec->y;
     int x = rec->x, y = rec->y, w = rec->width, h = rec->height;
     signed short *innerData = IrdaDataFloat;
@@ -188,7 +182,6 @@ static float getTempAavl(s16* IrdaDataFloat, int height, int width, u16 slop ,s1
         for(i = x;i < (x+w);i++)
         {
             value = (((float)innerData[j * width + i])/slop + offset);
-            //tempCnt++;
             if(value >= YouSeeParse::check_min_temp && value <= YouSeeParse::check_max_temp) {
                 if(value > max)
                 {
@@ -203,12 +196,9 @@ static float getTempAavl(s16* IrdaDataFloat, int height, int width, u16 slop ,s1
                 temp += value;
                 tempCnt++;
             }
-            // std::cout<<" "<<value;
         }
-        //std::cout<<"\r\n";
     }
     avl = temp/tempCnt;
-    //qDebug()<<"avl: "<<avl<<", temp cnt:"<<tempCnt<<", max:"<<max<<",min:"<<min;
     temp = 0;
     value =0;
     float tempCnt2 = 0;
@@ -223,20 +213,20 @@ static float getTempAavl(s16* IrdaDataFloat, int height, int width, u16 slop ,s1
         temp += tempData[i];
         tempCnt2++;
     }
-    //std::cout<<"\r\n";
     avl = temp/tempCnt2;
-    //qDebug()<<"avl: "<<avl<<", temp cnt:"<<tempCnt2;
-    //    for (j = 0 ;j < h; j ++)
-    //    {
-    //     for (i = 0; i < w; i++)
-    //     {
-    //         std::cout<<" "<<innerData[((y + j) * width) + (x + i)]/slop + offset;
-    //     }
-    //     std::cout<<"\r\n";
-    //    }
 
-
-    return (avl + YouSeeParse::temp_offset);
+    if(avl < 34.0 && avl >= 31.0)
+    {
+        avl = (avl - 31.0)*0.3 + 35.5;
+    }
+        else if(avl >= 34.0 && avl < 35.0)
+    {
+        avl = (avl - 34) + 36.5 + YouSeeParse::temp_offset;
+    } else {
+        avl = avl + 3.5 + YouSeeParse::temp_offset;
+    }
+    //qDebug()<<"1111avl: "<<avl;
+    return (avl);// + YouSeeParse::temp_offset
 }
 
 
@@ -371,14 +361,16 @@ bool YouSeeParse::slot_parSet(QMap<QString,QVariant> map)
         QDate date = dateT.date();
         QTime time = dateT.time();
         ctlx.Type = CtlXType_SetTime;
-        ctlx.Data.Time.year = date.day();
+        ctlx.Data.Time.year = 2004;//date.day()
         ctlx.Data.Time.mon = date.month();
         ctlx.Data.Time.day = date.day();
         ctlx.Data.Time.hour = time.hour();
         ctlx.Data.Time.min = time.minute();
         ctlx.Data.Time.sec = time.second();
         ret = Yoseen_SendControlX(_shellView.userHandle, &ctlx);
-
+        ctlx.Type = CtlXType_GetTime;
+        ret = Yoseen_SendControlX(_shellView.userHandle, &ctlx);
+        qDebug()<<"========> year:"<<ctlx.Data.Time.year;
     }
 
     if(ret ==0 )

@@ -27,8 +27,16 @@ CHttpApiDevice::CHttpApiDevice(QString devid, QString ip, unsigned short port, Q
 
 
     timeoutCnt = new QTimer;
-    //connect(timeoutCnt, SIGNAL(timeout()), this, SLOT(slot_msgEvent()));
-    //QTcpSocket *g_tcpsocket;
+
+
+    connect(this,&CHttpApiDevice::signal_MsgReply,[&](QString cmd){
+
+
+        qDebug()<<"signal_MsgReply "<<loop.isRunning()<<"   cmd:"<<cmd;
+        if(loop.isRunning())
+            loop.exit();
+
+    });
 }
 
 CHttpApiDevice::~CHttpApiDevice()
@@ -168,9 +176,9 @@ int CHttpApiDevice::HttpMsgCallBack(char * pData) {
                 }
             }
 
+
             qDebug()<<"接收的命:"<<cmd;
             emit signal_MsgReply(cmd);
-
             qDebug()<<"signal_ReadMsg   ";
             emit signal_ReadMsg(callbackMap);
 
@@ -315,42 +323,15 @@ bool CHttpApiDevice::send_httpParSet(QMap<QString,QVariant> map)
 {
 
 
+    QMutexLocker locker(&mMutex);
     QString cmd = map.value("cmd").toString();
-
-    QEventLoop loop ;
-
 
     //QTimer timer;
     curCmdState.insert("cmd",cmd);
     curCmdState.insert("state",cmdSend);
     curCmdState.insert("checkedCount",0);
 
-    connect(this,&CHttpApiDevice::signal_MsgReply,[&](QString cmd){
-
-
-
-        qDebug()<<"signal_MsgReply "<<loop.isRunning();
-        loop.exit();
-
-
-
-    });
-    //    timer.start(100);
-    //    connect(&timer,&QTimer::timeout,[&]{
-    //        bool isSendSucc = curCmdState.value("state").toBool();
-    //        if(isSendSucc){
-    //            qDebug()<<"消息发送成功   "<<cmd;
-    //            loop.exit();
-    //        }
-    //        int checkedCount = curCmdState.value("checkedCount").toInt();
-    //        if(checkedCount > 4){
-    //            qDebug()<<"消息发送失败   "<<cmd<<checkedCount;
-    //            loop.exit();
-    //        }
-    //        checkedCount++;
-    //        curCmdState.insert("checkedCount",checkedCount);
-    //    });
-
+    qDebug()<<" send_httpParSet ";
 
 
     if(cmd.compare("setosdparam")==0){
@@ -364,6 +345,9 @@ bool CHttpApiDevice::send_httpParSet(QMap<QString,QVariant> map)
             LoginDevice();
         }else{
             qDebug()<<"http 连接超时";
+            if(loop.isRunning())
+                loop.exit();
+
         }
     }else if(cmd.compare("loginout") ==0){
         LogoutDevice();
@@ -391,7 +375,7 @@ void CHttpApiDevice::slot_httpParSet(QMap<QString,QVariant> map)
 {
 
     qDebug()<<" slot_httpParSet";
-    QMutexLocker locker(&mMutex);
+
     QMap<QString ,QVariant> mapSend;
     mapSend.insert("cmd","login");
 

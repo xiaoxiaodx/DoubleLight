@@ -19,6 +19,7 @@ XVideo::XVideo()
     size.setWidth(640);
     size.setHeight(360);
 
+    m_Imginfo.pImg = nullptr;
 
     // m_renderThread = new RenderThread(size,&listYuv,&yuvData,nullptr);
 }
@@ -134,7 +135,7 @@ void XVideo::createFFmpegDecodec()
 void XVideo::fun_getInitPar()
 {
     qDebug()<<"fun_getInitPar";
-    // emit signal_getInitPar();
+     emit signal_getInitPar();
 
 }
 
@@ -229,7 +230,7 @@ void XVideo::recSearchIp(QString ip)
 {
     qDebug()<<"my recSearchIp:"<<ip;
 
-    m_ip = ip;
+    m_ip = "10.67.1.133";
 
 
 
@@ -285,7 +286,8 @@ void XVideo::slot_timeout()
 
 
         if(listImgInfo.first().pImg != nullptr){
-
+            if( m_Imginfo.pImg != nullptr)
+                delete m_Imginfo.pImg;
             m_Imginfo = listImgInfo.takeFirst();
             update();
 
@@ -293,12 +295,12 @@ void XVideo::slot_timeout()
 
     }
 }
+
 #include <QFontMetrics>
 
 void XVideo::paint(QPainter *painter)
 {
-    if(listImgInfo.size() <3)
-        return;
+
     QFont font("Microsoft Yahei", 20);
     QFontMetrics fm(font);
     //    int pixelsWide = fm.horizontalAdvance("What's the width of this text?");
@@ -344,7 +346,7 @@ void XVideo::paint(QPainter *painter)
             }
         }
 
-        delete m_Imginfo.pImg;
+
 
     }
 }
@@ -366,9 +368,16 @@ void XVideo::slot_recH264(char* h264Arr,int arrlen,quint64 time)
 
             if (Img != nullptr && (!Img->isNull()))
             {
+
                 ImageInfo imgInfo;
                 imgInfo.pImg = Img;
                 imgInfo.time = time;
+
+                if(YouSeeParse::listImgtmpInfo->size() > 0){
+                    ImageInfo tmpIf = YouSeeParse::listImgtmpInfo->at(0);
+                    imgInfo.listRect = tmpIf.listRect;
+                    imgInfo.isDrawLine = true;
+                }
 
                 //qDebug()<<QString(__FUNCTION__) + "    "+QString::number(__LINE__) ;
                 if(listImgInfo.size() < minBuffLen){
@@ -444,15 +453,15 @@ void XVideo::fun_temDrift(QVariant mvalue)
 {
 
     YouSeeParse::temp_offset = mvalue.toFloat()/2;
-    //    qDebug()<<" fun_temDrift    ";
-    //    if(mYouSeeParse != nullptr){
+//        qDebug()<<" fun_temDrift    ";
+//        if(mYouSeeParse != nullptr){
 
-    //        float temDrift = mvalue.toFloat();
-    //        bool isSucc = mYouSeeParse->slot_setTemOffset(temDrift);
+//            float temDrift = mvalue.toFloat();
+//            bool isSucc = mYouSeeParse->slot_setTemOffset(temDrift);
 
-    //        qDebug()<<" fun_temDrift    "<<isSucc;
+//            qDebug()<<" fun_temDrift    "<<isSucc;
 
-    //    }
+//        }
 
 
 }
