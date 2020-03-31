@@ -170,13 +170,12 @@ private:
     static QVariantList listRectInfo;
 
 
-    qreal showRectX = 110;
-    qreal showRectY = 256;
-    qreal showRectW = 236;
-    qreal showRectH = 267;
-
-    qreal showParentW = 682;
-    qreal showParentH = 500;
+    qreal showRectX = 68;
+    qreal showRectY = 54;
+    qreal showRectW = 340;
+    qreal showRectH = 316;
+    qreal showParentW = 496;
+    qreal showParentH = 371;
 
 };
 

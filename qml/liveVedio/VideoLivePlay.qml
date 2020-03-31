@@ -1,5 +1,6 @@
 import QtQuick 2.0
 import XVideo 1.0
+import Qt.labs.settings 1.0
 import QtQuick.Controls 1.4
 import "../simpleControl"
 Rectangle {
@@ -33,6 +34,20 @@ Rectangle {
     property int    wRIGHTBOTTOM:8
     property int    wCenter:9
     property point mousePressPt1: "0,0"
+
+
+    Settings {
+        id:rectSetting
+//        property alias recordPath: inputRecordPath.text
+//        property alias screenShotPath: inputScreenShotPath.text
+//        property alias temDrift:inputTempDrift.text
+//        property alias warnTem:inputTem.text
+//        property alias switchTime:swithTime.checked
+//        property alias switchWarn:swichWarn.checked
+//        property alias switchScreenShot:swichScreenShot.checked
+//        property alias switchBeer:swichBeer.checked
+//        property alias switchRecord:swichRecord.checked
+    }
 
     XVideo{
         id:video
@@ -96,7 +111,7 @@ Rectangle {
             width: 200
             height: 200
             color: "#505D9CFF"
-            visible: videoType === 1
+            visible:false// videoType === -1
             MouseArea{
                 id:areaTop
                 x:mouseAdjustWidth1

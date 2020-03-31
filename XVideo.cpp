@@ -23,9 +23,6 @@ XVideo::XVideo()
 
     m_Imginfo.pImg = nullptr;
 
-
-
-
     // m_renderThread = new RenderThread(size,&listYuv,&yuvData,nullptr);
 }
 
@@ -41,6 +38,7 @@ void XVideo::startTemperatureVideo()
     qDebug()<<"startTemperatureVideo ";
     createYouseePull();
 }
+
 void XVideo::createYouseePull()
 {
     if(mYouSeeParse == nullptr){
@@ -57,8 +55,8 @@ void XVideo::createYouseePull()
         youseeThread->start();
     }
     emit signal_startinit();
-
 }
+
 void XVideo::finishYouPull()
 {
     if(mYouSeeParse != nullptr){
@@ -367,13 +365,12 @@ void XVideo::paint(QPainter *painter)
                 QVariantMap vmap = listRectInfo.at(i).toMap();
                 QRectF desRect = vmap.value("rect").toRectF();
 
-                if(rectF.contains(desRect)){
+                if(rectF.intersects(desRect)){
 
                     QString strText = vmap.value("temp").toString();
                     painter->drawRect(desRect);
                     painter->drawText(desRect.x(),desRect.y()-3,strText);
                 }
-
             }
         }
 
