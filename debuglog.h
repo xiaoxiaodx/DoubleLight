@@ -3,11 +3,13 @@
 
 #include <QObject>
 #include <QFile>
+#include <QMutex>
 class DebugLog : public QObject
 {
     Q_OBJECT
 public:
     explicit DebugLog(QObject *parent = nullptr);
+
 
     static DebugLog *Log;
     static DebugLog *getInstance();
@@ -17,6 +19,7 @@ signals:
 public slots:
 
 private:
+     QMutex fileMutex;
     QFile *file = NULL;
 };
 

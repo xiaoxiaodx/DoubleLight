@@ -4,22 +4,26 @@
 #include <render/texturenode.h>
 #include <QPainter>
 QVariantList XVideo::listRectInfo;//tcp流画矩形使用的流
+
+QList<ImageInfo*> XVideo::listImgtmpInfo;
+QMutex XVideo::listImgmutex;
 XVideo::XVideo()
 {
-    setFlag(QQuickItem::ItemHasContents);
+   // setFlag(QQuickItem::ItemHasContents);
 
 
-    setRenderTarget(QQuickPaintedItem::FramebufferObject);
+   // setRenderTarget(QQuickPaintedItem::FramebufferObject);
     initVariable();
 
 
-
+    m_Imginfo = new ImageInfo;
+    m_Imginfo->pImg = nullptr;
 
     QSize size;
     size.setWidth(640);
     size.setHeight(360);
 
-    m_Imginfo.pImg = nullptr;
+
 
     // m_renderThread = new RenderThread(size,&listYuv,&yuvData,nullptr);
 }
@@ -51,11 +55,9 @@ void XVideo::createYouseePull()
         youseeThread = new QThread;
         mYouSeeParse = new YouSeeParse;
         mYouSeeParse->moveToThread(youseeThread);
-        mYouSeeParse->setList(listImgInfo);
         connect(this,&XVideo::signal_startinit,mYouSeeParse,&YouSeeParse::slot_init);
         connect(this,&XVideo::signal_stop,mYouSeeParse,&YouSeeParse::slot_stopPlay);
         connect(this,&XVideo::signal_getInitPar,mYouSeeParse,&YouSeeParse::slot_getInitPar);
-
         connect(youseeThread,&QThread::finished,youseeThread,&QThread::deleteLater);
 
         youseeThread->start();
@@ -78,7 +80,7 @@ void XVideo::finishYouPull()
 void XVideo::initVariable()
 {
 
-    listImgInfo.clear();
+    // listImgInfo.clear();
 
 
     minBuffLen = 50;
@@ -218,7 +220,7 @@ void XVideo::createSearchIp()
         psearch->moveToThread(searchThread);
         searchThread->start();
     }
-    m_ip = "192.168.1.101";
+    m_ip = "10.67.1.177";
     emit signal_resetSearch();
 
 
@@ -239,7 +241,7 @@ void XVideo::recSearchIp(QString ip)
 {
     qDebug()<<"my recSearchIp:"<<ip;
 
-    m_ip = "192.168.1.101";
+      m_ip = "10.67.1.177";
 
 
 
@@ -247,63 +249,63 @@ void XVideo::recSearchIp(QString ip)
 
 void XVideo::funScreenShot()
 {
-    //    isScreenShot = true;
-    //    if(m_Img != nullptr && (!m_Img->isNull())){
 
-    //        QString filename;
-
-    //        QDir dir;
-    //        if(mshotScreenFilePath == ""){
-
-    //            mshotScreenFilePath = dir.absolutePath() +"/ScreenShot";
-    //        }
-    //        QString desFileDir = mshotScreenFilePath +"/" +mDid;
-    //        if (!dir.exists(desFileDir))
-    //        {
-    //            bool res = dir.mkpath(desFileDir);
-    //            qDebug() << "新建最终目录是否成功:" << res;
-    //        }
-
-    //        QString curTimeStr = QDateTime::currentDateTime().toString("yyyyMMdd_hhmmss");
-    //        QString tmpFileName = mDid+"_" + curTimeStr+".png";
-
-    //        filename = desFileDir + "/"+tmpFileName;
-
-    //        qDebug()<<" filename    "<<filename;
-
-    //        if(m_Img->save(filename,0))
-    //            qDebug()<<"图片保存成功";
-    //        else
-    //            qDebug()<<"图片保存失败";
-    //    }
 }
 
 
 void XVideo::slot_timeout()
 {
-    //qDebug()<<"slot_timeout thread:"<<QThread::currentThreadId()<<" "<<listImgInfo.size();
-    // qDebug()<<"slot_timeout thread:" <<listImgInfo.size();
-    int size = listImgInfo.size();
-    if(size >= 2){
 
-        //如果不增加这句代码 ，则会出现视频不会第一时间显示，而是显示灰色图像
-        if(!isFirstData){
 
-            emit signal_loginStatus("Get the stream successfully");
-            isFirstData = true;
+    if(worker != nullptr){
+        int size = listImgInfo.size();
+        if(size >= 2){
+
+            //如果不增加这句代码 ，则会出现视频不会第一时间显示，而是显示灰色图像
+            if(!isFirstData){
+                emit signal_loginStatus("Get the stream successfully");
+                isFirstData = true;
+            }
+
+            ImageInfo *pimgInfo = listImgInfo.takeFirst();
+
+            if(m_Imginfo != nullptr){
+                if(m_Imginfo->pImg != nullptr)
+                    delete m_Imginfo->pImg;
+                delete m_Imginfo;
+                m_Imginfo = nullptr;
+            }
+            m_Imginfo = pimgInfo;
+
+            update();
+
         }
+    }else if(mYouSeeParse != nullptr){
+        QMutexLocker locker(&listImgmutex);
+        int size = listImgtmpInfo.size();
+        if(size >= 2){
 
+            //如果不增加这句代码 ，则会出现视频不会第一时间显示，而是显示灰色图像
+            if(!isFirstData){
+                emit signal_loginStatus("Get the stream successfully");
+                isFirstData = true;
+            }
 
-        if(listImgInfo.first().pImg != nullptr){
-            if( m_Imginfo.pImg != nullptr)
-                delete m_Imginfo.pImg;
-            m_Imginfo = listImgInfo.takeFirst();
+            ImageInfo* pimgInfo = listImgtmpInfo.takeFirst();
+
+            if(m_Imginfo != nullptr){
+                if(m_Imginfo->pImg != nullptr)
+                    delete m_Imginfo->pImg;
+                delete m_Imginfo;
+                m_Imginfo = nullptr;
+            }
+            m_Imginfo = pimgInfo;
+
             update();
         }
     }
-
-
 }
+
 
 #include <QFontMetrics>
 
@@ -323,21 +325,19 @@ void XVideo::paint(QPainter *painter)
     painter->setFont(font);
 
 
-    if(m_Imginfo.pImg != nullptr){
+    if(m_Imginfo->pImg != nullptr){
 
-
-
-
-        if(m_Imginfo.isDrawLine){
+        if(m_Imginfo->isDrawLine){
+            DebugLog::getInstance()->writeLog("painter hongwai start***");
             qreal kX = (qreal)this->width()/(qreal)384;
             qreal kY = (qreal)this->height()/(qreal)288;
 
             // QVariantList listVar;
             listRectInfo.clear();
-            painter->drawImage(QRect(0,0,width(),height()), *m_Imginfo.pImg);
+            painter->drawImage(QRect(0,0,width(),height()), *(m_Imginfo->pImg));
             QPainterPath path;
-            for(int i=0;i<m_Imginfo.listRect.size();i++){
-                RectInfo oriRectinfo = m_Imginfo.listRect.at(i);
+            for(int i=0;i<m_Imginfo->listRect.size();i++){
+                RectInfo oriRectinfo = m_Imginfo->listRect.at(i);
                 QRect oriRect = oriRectinfo.rect;
                 QRectF desRect(oriRect.x()*kX,oriRect.y()*kY,oriRect.width()*kX,oriRect.height()*kY);
                 QString strText = QString::number(oriRectinfo.temp, 'f', 1);
@@ -347,32 +347,28 @@ void XVideo::paint(QPainter *painter)
                 map.insert("temp",strText);
                 listRectInfo.append(map);
 
-               // path.addRect(desRect);
-                //path.addText(desRect.x(),desRect.y()-3,painter->font(),strText);
                 painter->drawRect(desRect);
                 painter->drawText(desRect.x(),desRect.y()-3,strText);
 
             }
-          //  painter->drawPath(path);
-
 
             if(mYouSeeParse != nullptr){
                 QMap<QString,QVariant> map;
                 map.insert("parType","temp");
-                map.insert("tempValue",m_Imginfo.temp);
+                map.insert("tempValue",m_Imginfo->temp);
                 emit signal_tempPar(map);
-                //emit signal_sendListRect(listVar);
-                //qDebug()<<"yousee 流线程:"<<QThread::currentThreadId();
-            }
-        }else{
 
+            }
+            DebugLog::getInstance()->writeLog("painter hongwai end***");
+        }else{
+            DebugLog::getInstance()->writeLog("painter kejianguang start***");
             qreal kX = (qreal)this->width()/(qreal)384;
             qreal kY = (qreal)this->height()/(qreal)288;
 
             qreal kshowRectX = (qreal)this->width()/showParentW;
             qreal kshowRectY = (qreal)this->height()/showParentH;
 
-            painter->drawImage(QRect(0,0,width(),height()), *m_Imginfo.pImg);
+            painter->drawImage(QRect(0,0,width(),height()), *m_Imginfo->pImg);
 
             painter->save();
             QRectF rectF(showRectX * kshowRectX,showRectY*kshowRectY,showRectW*kshowRectX,showRectH*kshowRectY);
@@ -395,6 +391,7 @@ void XVideo::paint(QPainter *painter)
                 painter->drawRect(desRect);
                 painter->drawText(desRect.x(),desRect.y()-3,strText);
             }
+            DebugLog::getInstance()->writeLog("painter kejianguang end***");
         }
     }
 
@@ -429,9 +426,9 @@ void XVideo::slot_recH264(char* h264Arr,int arrlen,quint64 time)
             if (Img != nullptr && (!Img->isNull()))
             {
 
-                ImageInfo imgInfo;
-                imgInfo.pImg = Img;
-                imgInfo.time = time;
+                ImageInfo *imgInfo = new ImageInfo;
+                imgInfo->pImg = Img;
+                imgInfo->time = time;
                 if(listImgInfo.size() < minBuffLen){
 
                     listImgInfo.append(imgInfo);

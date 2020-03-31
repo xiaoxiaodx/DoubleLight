@@ -23,9 +23,8 @@ DebugLog* DebugLog::getInstance()
 void DebugLog::writeLog(QString str)
 {
 
+    QMutexLocker locker(&fileMutex);
     if(file == NULL){
-
-
 
         QDir dir;
         if (dir.exists("activexDebug.log"))

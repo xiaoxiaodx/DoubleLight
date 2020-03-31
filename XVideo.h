@@ -21,7 +21,7 @@
 #include "avirecord.h"
 #include "chttpapidevice.h"
 
-
+#include "debuglog.h"
 class XVideo : public QQuickPaintedItem
 {
     Q_OBJECT
@@ -54,6 +54,8 @@ public:
     explicit XVideo();
     ~XVideo();
 
+    static QList<ImageInfo* > listImgtmpInfo;//yousee 使用
+    static QMutex listImgmutex;
 signals:
     //tcp
     void signal_connentSer(QString ip,int port);
@@ -117,13 +119,14 @@ private:
     void createHttpApi();
     void initVariable();
 
-    QList<ImageInfo> listImgInfo;
+
+    QList<ImageInfo*> listImgInfo; // tcp使用
 
     FfmpegCodec *pffmpegCodec = nullptr;
 
     QTimer timerUpdate;
 
-    ImageInfo m_Imginfo;
+    ImageInfo *m_Imginfo = nullptr;
 
     bool isImgUpdate;
 

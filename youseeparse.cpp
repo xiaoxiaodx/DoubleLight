@@ -1,7 +1,8 @@
 #include "youseeparse.h"
 #include "debuglog.h"
 #include "YoseenAlg.h"
-QList<ImageInfo>* YouSeeParse::listImgtmpInfo;
+
+#include "XVideo.h"
 
 float YouSeeParse::temp_offset = TEMP_OFFSET;
 float YouSeeParse::check_max_temp = CHECK_MAX_TEMP;
@@ -12,11 +13,6 @@ YouSeeParse::YouSeeParse(QObject *parent) : QObject(parent)
 {
 
 
-}
-
-void YouSeeParse::setList(QList<ImageInfo> &list)
-{
-    listImgtmpInfo = &list;
 }
 
 void YouSeeParse::slot_discover()
@@ -241,9 +237,10 @@ IplImage* pFrameSrc = NULL;
 static void __stdcall _previewCallback(s32 errorCode, DataFrame* frame, void* customData) {
     if (YET_None == errorCode) {
 
-
+        DebugLog::getInstance()->writeLog("_previewCallback start***");
+        QMutexLocker locker(&XVideo::listImgmutex);
         //数据过多则不处理了
-        if(YouSeeParse::listImgtmpInfo->size() >= 30)return;
+        if(XVideo::listImgtmpInfo.size() >= 30)return;
 
         DataFrameHeader* tempHead = (DataFrameHeader*)frame->Head;
         s16* tempData = (s16*) frame->Temp;//得到温度 坐标 表（一个像素点表示一个温度值）
@@ -272,7 +269,7 @@ static void __stdcall _previewCallback(s32 errorCode, DataFrame* frame, void* cu
         cvInitFont(&font, CV_FONT_HERSHEY_SIMPLEX ,0.5, 0.5);
         cvSetData(pFrameSrc,(uchar*)frame->Bmp,tempHead->Width*4);
 
-        ImageInfo info;
+        ImageInfo *info = new ImageInfo;
         float maxAvgT = -1;
         for(int i=0;cont!=0;cont=cont->h_next,i++)
         {
@@ -282,7 +279,7 @@ static void __stdcall _previewCallback(s32 errorCode, DataFrame* frame, void* cu
             RectInfo rectinfo;
             rectinfo.rect.setRect(mdrects.x,mdrects.y,mdrects.width,mdrects.height);
             rectinfo.temp = avgT;
-            info.listRect.append(rectinfo);
+            info->listRect.append(rectinfo);
             if(maxAvgT == -1){
                 maxAvgT = avgT;
             }else{
@@ -295,17 +292,18 @@ static void __stdcall _previewCallback(s32 errorCode, DataFrame* frame, void* cu
 
 
         try {
-            info.pImg =  new QImage((uchar*)pFrameSrc->imageData, tempHead->Width, tempHead->Height, QImage::Format_RGB32);
+            info->pImg =  new QImage((uchar*)pFrameSrc->imageData, tempHead->Width, tempHead->Height, QImage::Format_RGB32);
             // 其它代码
         } catch ( const std::bad_alloc& e ) {
             DebugLog::getInstance()->writeLog("Yousee 图片分配内存失败");
-            info.pImg = nullptr;
+            info->pImg = nullptr;
         }
-        info.temp = maxAvgT;
-        info.isDrawLine = true;
-        YouSeeParse::listImgtmpInfo->append(info);
+        info->temp = maxAvgT;
+        info->isDrawLine = true;
 
+        XVideo::listImgtmpInfo.append(info);
 
+        DebugLog::getInstance()->writeLog("_previewCallback end***");
         cvReleaseMemStorage(&stor);
     }else {
         //接收数据失败, 预览内置自动恢复, YET_PreviewRecoverBegin-YET_PreviewRecoverEnd

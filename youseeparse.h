@@ -69,10 +69,7 @@ public:
     explicit YouSeeParse(QObject *parent = nullptr);
     ~YouSeeParse();
     void forceFinish();
-    static QList<ImageInfo> *listImgtmpInfo;
 
-
-    static void setList(QList<ImageInfo> &list);
     static float temp_offset ;
     static float check_max_temp ;
     static float check_min_temp ;

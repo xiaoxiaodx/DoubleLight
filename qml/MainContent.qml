@@ -291,7 +291,8 @@ Rectangle {
                     screenv.funScreenShoot(deviceconfig.getScrennShotPath(),main,0 ,68,main.width,main.height-68);
 
                 imgWar.startAnimation();
-                playWarn.play()
+                if(deviceconfig.getSwitchBeer())
+                    playWarn.play()
             }
 
 
