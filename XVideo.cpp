@@ -14,9 +14,7 @@ XVideo::XVideo()
 
 
 
-    connect(&timerUpdate,&QTimer::timeout,this,&XVideo::slot_timeout);
 
-    timerUpdate.start(20);
     QSize size;
     size.setWidth(640);
     size.setHeight(360);
@@ -31,12 +29,20 @@ void XVideo::startNormalVideo()
     qDebug()<<"startNormalVideo ";
     createSearchIp();
 
+    connect(&timerUpdate,&QTimer::timeout,this,&XVideo::slot_timeout);
+
+    timerUpdate.start(15);
+
 }
 
 void XVideo::startTemperatureVideo()
 {
     qDebug()<<"startTemperatureVideo ";
     createYouseePull();
+
+    connect(&timerUpdate,&QTimer::timeout,this,&XVideo::slot_timeout);
+
+    timerUpdate.start(15);
 }
 
 void XVideo::createYouseePull()
@@ -212,7 +218,7 @@ void XVideo::createSearchIp()
         psearch->moveToThread(searchThread);
         searchThread->start();
     }
-    m_ip = "10.67.1.138";
+    m_ip = "10.67.1.177";
     emit signal_resetSearch();
 
 
@@ -233,7 +239,7 @@ void XVideo::recSearchIp(QString ip)
 {
     qDebug()<<"my recSearchIp:"<<ip;
 
-    m_ip = "10.67.1.138";
+    m_ip = "10.67.1.177";
 
 
 
@@ -304,7 +310,7 @@ void XVideo::slot_timeout()
 
 void XVideo::paint(QPainter *painter)
 {
-    painter->beginNativePainting();
+    //painter->beginNativePainting();
 
     QFont font("Microsoft Yahei", 20);
 
@@ -318,6 +324,7 @@ void XVideo::paint(QPainter *painter)
 
 
     if(m_Imginfo.pImg != nullptr){
+
 
 
 
@@ -340,30 +347,27 @@ void XVideo::paint(QPainter *painter)
                 map.insert("temp",strText);
                 listRectInfo.append(map);
 
-                path.addRect(desRect);
-                path.addText(desRect.x(),desRect.y()-3,painter->font(),strText);
-                //painter->drawRect(desRect);
-                //painter->drawText(desRect.x(),desRect.y()-3,strText);
-            }
-            painter->drawPath(path);
+               // path.addRect(desRect);
+                //path.addText(desRect.x(),desRect.y()-3,painter->font(),strText);
+                painter->drawRect(desRect);
+                painter->drawText(desRect.x(),desRect.y()-3,strText);
 
-            if(mYouSeeParse != nullptr){
-                QMap<QString,QVariant> map;
-                map.insert("parType","temp");
-                map.insert("tempValue",m_Imginfo.temp);
-                emit signal_tempPar(map);
-                //emit signal_sendListRect(listVar);
-                //qDebug()<<"yousee 流线程:"<<QThread::currentThreadId();
             }
+          //  painter->drawPath(path);
+
+
+//            if(mYouSeeParse != nullptr){
+//                QMap<QString,QVariant> map;
+//                map.insert("parType","temp");
+//                map.insert("tempValue",m_Imginfo.temp);
+//                emit signal_tempPar(map);
+//                //emit signal_sendListRect(listVar);
+//                //qDebug()<<"yousee 流线程:"<<QThread::currentThreadId();
+//            }
         }else{
 
-            //qDebug()<<"tcp 流线程:"<<QThread::currentThreadId();
-            //qDebug()<<"tcp 矩形:"<<listRectInfo.size();
             qreal kshowRectX = (qreal)this->width()/showParentW;
             qreal kshowRectY = (qreal)this->height()/showParentH;
-
-
-
 
             painter->drawImage(QRect(0,0,width(),height()), *m_Imginfo.pImg);
 
@@ -377,8 +381,6 @@ void XVideo::paint(QPainter *painter)
             qreal kshowX = (qreal)rectF.width()/(qreal)this->width();
             qreal kshowY = (qreal)rectF.height()/(qreal)this->height();
 
-            //qDebug()<<"比例："<<kshowX<<"  "<<kshowY<<"    矩形："<<rectF;
-
             QPainterPath path;
             for (int i=0;i<listRectInfo.size();i++) {
                 QVariantMap vmap = listRectInfo.at(i).toMap();
@@ -386,11 +388,7 @@ void XVideo::paint(QPainter *painter)
 
                 QRectF desRect(rectF.x()+tmpRect.x()*kshowX,rectF.y()+tmpRect.y()*kshowY,tmpRect.width()*kshowX,tmpRect.height()*kshowY);
 
-
-                //qDebug()<<"矩形1："<<tmpRect<<"    矩形2："<<desRect;
                 QString strText = vmap.value("temp").toString();
-                //painter->drawRect(desRect);
-                //painter->drawText(desRect.x(),desRect.y()-3,strText);
                 path.addRect(desRect);
                 path.addText(desRect.x(),desRect.y()-3,painter->font(),strText);
 
@@ -398,7 +396,7 @@ void XVideo::paint(QPainter *painter)
             }
         }
     }
-    painter->endNativePainting();
+
 }
 
 void XVideo::fun_setRectPar(int sx,int sy,int sw,int sh,int pw,int ph){

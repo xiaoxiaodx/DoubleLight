@@ -107,6 +107,8 @@ protected:
     void paint(QPainter *painter);
 private:
 
+
+
     void createSearchIp();
     void createTcpThread();
     void createFFmpegDecodec();

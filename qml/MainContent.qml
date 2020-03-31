@@ -192,11 +192,11 @@ Rectangle {
             function startWarn(){
 
 
-                if(!warnTimer.running){
-                    warnTimer.start();
-                }else{
-                    warnTimer.isFinish = false;
-                }
+//                if(!warnTimer.running){
+//                    warnTimer.start();
+//                }else{
+//                    warnTimer.isFinish = false;
+//                }
 
             }
 
