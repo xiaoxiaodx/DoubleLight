@@ -6,8 +6,10 @@
 QVariantList XVideo::listRectInfo;//tcp流画矩形使用的流
 XVideo::XVideo()
 {
-    //setFlag(QQuickItem::ItemHasContents);
+    setFlag(QQuickItem::ItemHasContents);
 
+
+    setRenderTarget(QQuickPaintedItem::FramebufferObject);
     initVariable();
 
 
@@ -20,6 +22,9 @@ XVideo::XVideo()
     size.setHeight(360);
 
     m_Imginfo.pImg = nullptr;
+
+
+
 
     // m_renderThread = new RenderThread(size,&listYuv,&yuvData,nullptr);
 }
@@ -72,7 +77,7 @@ void XVideo::initVariable()
     listImgInfo.clear();
 
 
-    minBuffLen = 15;
+    minBuffLen = 50;
 
     worker = nullptr;
     m_readThread = nullptr;
@@ -298,6 +303,7 @@ void XVideo::slot_timeout()
 
 #include <QFontMetrics>
 
+
 void XVideo::paint(QPainter *painter)
 {
 
@@ -348,18 +354,43 @@ void XVideo::paint(QPainter *painter)
 
             //qDebug()<<"tcp 流线程:"<<QThread::currentThreadId();
             //qDebug()<<"tcp 矩形:"<<listRectInfo.size();
+            qreal kshowX = (qreal)this->width()/showParentW;
+            qreal kshowY = (qreal)this->height()/showParentH;
+
+            painter->save();
+            QRectF rectF(showRectX * kshowX,showRectY*kshowY,showRectW*kshowX,showRectH*kshowY);
+            QPen pen(QBrush(QColor(255,0,0)),1);
+            painter->setPen(pen);
+            painter->drawRect(rectF);
+            painter->restore();
             for (int i=0;i<listRectInfo.size();i++) {
                 QVariantMap vmap = listRectInfo.at(i).toMap();
                 QRectF desRect = vmap.value("rect").toRectF();
-                QString strText = vmap.value("temp").toString();
-                painter->drawRect(desRect);
-                painter->drawText(desRect.x(),desRect.y()-3,strText);
+
+                if(rectF.contains(desRect)){
+
+                    QString strText = vmap.value("temp").toString();
+                    painter->drawRect(desRect);
+                    painter->drawText(desRect.x(),desRect.y()-3,strText);
+                }
+
             }
         }
 
 
 
     }
+}
+
+void XVideo::fun_setRectPar(int sx,int sy,int sw,int sh,int pw,int ph){
+
+     showRectX = sx;
+     showRectY = sy;
+     showRectW = sw;
+     showRectH = sh;
+
+     showParentW = pw;
+     showParentH = ph;
 }
 
 //tcpworker 线程
@@ -376,21 +407,13 @@ void XVideo::slot_recH264(char* h264Arr,int arrlen,quint64 time)
             Img = pffmpegCodec->decodeVFrame((unsigned char*)h264Arr,arrlen);
 
             // qDebug()<<QString(__FUNCTION__) + "    "+QString::number(__LINE__) ;
-
+            //qDebug()<<"h264:"<<listImgInfo.size();
             if (Img != nullptr && (!Img->isNull()))
             {
 
                 ImageInfo imgInfo;
                 imgInfo.pImg = Img;
                 imgInfo.time = time;
-
-//                if(YouSeeParse::listImgtmpInfo->size() > 0){
-//                    ImageInfo tmpIf = YouSeeParse::listImgtmpInfo->at(0);
-//                    imgInfo.listRect = tmpIf.listRect;
-//                    imgInfo.isDrawLine = true;
-//                }
-
-                //qDebug()<<QString(__FUNCTION__) + "    "+QString::number(__LINE__) ;
                 if(listImgInfo.size() < minBuffLen){
 
                     listImgInfo.append(imgInfo);

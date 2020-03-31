@@ -140,6 +140,7 @@ Rectangle {
                 isNeedDoubleClickEdit: false
                 textLeftPadding:0
                 txtColor: Qt.rgba(0,0,0,0.65)
+                text: "0"
                 color: "#F8FAFD"
                 onTextChanged: {
                     s_temDrift(inputTempDrift.text);
@@ -198,7 +199,7 @@ Rectangle {
 
         Text {
             id: txtTemp
-            text: qsTr("℃")
+            text: qsTr(" ℃")
             font.pixelSize: fontSize
             anchors.verticalCenter: rectTempDrift.verticalCenter
             anchors.left: rectTempDrift.right
@@ -245,6 +246,7 @@ Rectangle {
             isNeedDoubleClickEdit: false
             textLeftPadding:0
             txtColor: Qt.rgba(0,0,0,0.65)
+            text: "38"
             color: "#F8FAFD"
             onTextChanged: s_temSet(inputTem.text)
         }
@@ -281,7 +283,7 @@ Rectangle {
             text: qsTr("抓拍存储路径")
             font.pixelSize: fontSize
             anchors.left: swichScreenShot.right
-            anchors.leftMargin: 20
+            anchors.leftMargin: 100
             anchors.verticalCenter: swichScreenShot.verticalCenter
         }
         Rectangle{
@@ -402,7 +404,7 @@ Rectangle {
             text: qsTr("录像存储路径")
             font.pixelSize: fontSize
             anchors.left: swichRecord.right
-            anchors.leftMargin: 20
+            anchors.leftMargin: 100
             anchors.verticalCenter: swichRecord.verticalCenter
         }
         Rectangle{

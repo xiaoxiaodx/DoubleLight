@@ -50,6 +50,7 @@ public:
     Q_INVOKABLE void fun_temMax(QVariant mvalue);
     Q_INVOKABLE void fun_temMin(QVariant mvalue);
     Q_INVOKABLE void fun_temOffset(QVariant mvalue);
+    Q_INVOKABLE void fun_setRectPar(int sx,int sy,int sw,int sh,int pw,int ph);
     explicit XVideo();
     ~XVideo();
 
@@ -167,6 +168,16 @@ private:
     TcpWorker *worker = nullptr;
 
     static QVariantList listRectInfo;
+
+
+    qreal showRectX = 110;
+    qreal showRectY = 256;
+    qreal showRectW = 236;
+    qreal showRectH = 267;
+
+    qreal showParentW = 682;
+    qreal showParentH = 500;
+
 };
 
 #endif // XVideo_H

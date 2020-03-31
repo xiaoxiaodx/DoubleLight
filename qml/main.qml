@@ -35,12 +35,10 @@ Window {
 //            onlinestate:
 //        */
 //        function findDeviceByName( name){
-
 //            for(var i=0;i<listdeviceInfo.count;i++){
 //                var map = listdeviceInfo.get(i);
 //                if(name === map.devicename){
 //                    return map
-
 //                }
 //            }
 //            return null;
@@ -79,7 +77,8 @@ Window {
             askDialog.width = 427
             askDialog.height = 176
             askDialog.askStr = qsTr("确认退出系统吗？")
-            askDialog.open()
+            askDialog.curType = askDialog.exeClose
+            askDialog.open();
           //  Qt.quit();
         }
         onDragPosChange:main.setDlgPoint(mx,my);
@@ -155,7 +154,6 @@ Window {
                 adjustWindow(MainContent.ADJUSTW.WLEFTBOTTOM,offsetX,offsetY);
             }
             //setDlgPoint(offset.x, 0)
-
         }
     }
 
@@ -208,7 +206,11 @@ Window {
     AskDialog{
         id:askDialog
 
+        onS_CurTypeMsg: {
 
+            if(askDialog.exeClose === type)
+                Qt.quit();
+        }
 
     }
 

@@ -17,9 +17,14 @@ Popup {
     //设置窗口的背景控件，不设置的话Popup的边框会显示出来
     background: rect
 
+    property int curType: -1;
+
     //signal s_deviceIDstr(var name,var strID,var strAccoount,var strPassword)
 
     signal s_showToast(var str1)
+    signal s_CurTypeMsg(var type);
+
+    property int exeClose: 0
 
     Rectangle {
         id: rect
@@ -71,9 +76,11 @@ Popup {
                 anchors.fill: parent
                 onClicked: {
 
+                    if(curType > -1){
+                        s_CurTypeMsg(curType)
+                    }
                     root.close()
                 }
-
             }
         }
 
