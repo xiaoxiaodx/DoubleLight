@@ -58,9 +58,9 @@ void ScreenVideo::funScreenRecrod(QQuickWindow *quic,int capx,int capy,int capw,
 bool  ScreenVideo::funEndScreenRecrod()
 {
     //这里加个阻塞等待
-    if(writeAvi != nullptr && writeAvi->isRecording){
-        return true;
-    }
+//    if(writeAvi != nullptr && writeAvi->isRecording){
+//        return false;
+//    }
     emit signal_endWriteAvi();
     return true;
 }

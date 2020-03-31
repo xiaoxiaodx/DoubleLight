@@ -140,7 +140,7 @@ Rectangle {
                 opacity: 0
                 SequentialAnimation {
                     id:animationWarnOpacity
-                    loops: Animation.Infinite
+                    //loops: Animation.Infinite
                     NumberAnimation { target: imgWar; property: "opacity"; to: 1; duration: 300 }
                     NumberAnimation { target: imgWar; property: "opacity"; to: 1; duration: 500 }
                     NumberAnimation { target: imgWar; property: "opacity"; to: 0; duration: 300 }
@@ -192,11 +192,11 @@ Rectangle {
             function startWarn(){
 
 
-//                if(!warnTimer.running){
-//                    warnTimer.start();
-//                }else{
-//                    warnTimer.isFinish = false;
-//                }
+                if(!warnTimer.running){
+                    warnTimer.start();
+                }else{
+                    warnTimer.isFinish = false;
+                }
 
             }
 

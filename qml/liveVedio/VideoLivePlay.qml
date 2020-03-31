@@ -54,8 +54,8 @@ Rectangle {
 
         //anchors.fill: parent
 
-        width:(mPlayRect.width*3/4>mPlayRect.height?mPlayRect.height*4/3:mPlayRect.width) - 6
-        height: (mPlayRect.width*3/4>mPlayRect.height?mPlayRect.height:mPlayRect.width*3/4) - 6
+        width:(mPlayRect.width*0.75>mPlayRect.height?mPlayRect.height*1.333:mPlayRect.width) -6
+        height: (mPlayRect.width*0.75>mPlayRect.height?mPlayRect.height:mPlayRect.width*0.75) -6
 
         anchors.horizontalCenter: mPlayRect.horizontalCenter
         anchors.verticalCenter: mPlayRect.verticalCenter
@@ -111,7 +111,7 @@ Rectangle {
             width: 200
             height: 200
             color: "#505D9CFF"
-            visible:false// videoType === -1
+            visible:false//videoType === 1
             MouseArea{
                 id:areaTop
                 x:mouseAdjustWidth1
