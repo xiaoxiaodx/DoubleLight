@@ -173,9 +173,9 @@ private:
     qreal showRectX = 68;
     qreal showRectY = 54;
     qreal showRectW = 340;
-    qreal showRectH = 316;
+    qreal showRectH = 255;
     qreal showParentW = 496;
-    qreal showParentH = 371;
+    qreal showParentH = 372;
 
 };
 

@@ -16,8 +16,8 @@ Rectangle {
     property string recordingFilePath: ""
     property bool mIsSelected: false
     property int videoType : 0
-    border.color: mIsSelected?"#EF9D36":"#252525"
-    border.width: 2
+    border.color: mIsSelected?"#98C5FF":"#252525"
+    border.width: 3
 
     signal s_startTemWarn();
     signal s_endTemWarn();
@@ -54,8 +54,8 @@ Rectangle {
 
         //anchors.fill: parent
 
-        width:(mPlayRect.width*3/4>mPlayRect.height?mPlayRect.height*4/3:mPlayRect.width) - 4
-        height: (mPlayRect.width*3/4>mPlayRect.height?mPlayRect.height:mPlayRect.width*3/4) - 4
+        width:(mPlayRect.width*3/4>mPlayRect.height?mPlayRect.height*4/3:mPlayRect.width) - 6
+        height: (mPlayRect.width*3/4>mPlayRect.height?mPlayRect.height:mPlayRect.width*3/4) - 6
 
         anchors.horizontalCenter: mPlayRect.horizontalCenter
         anchors.verticalCenter: mPlayRect.verticalCenter

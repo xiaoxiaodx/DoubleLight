@@ -212,7 +212,7 @@ void XVideo::createSearchIp()
         psearch->moveToThread(searchThread);
         searchThread->start();
     }
-    m_ip = "10.67.1.55";
+    m_ip = "10.67.1.138";
     emit signal_resetSearch();
 
 
@@ -233,7 +233,7 @@ void XVideo::recSearchIp(QString ip)
 {
     qDebug()<<"my recSearchIp:"<<ip;
 
-    m_ip = "10.67.1.55";
+    m_ip = "10.67.1.138";
 
 
 
@@ -304,8 +304,10 @@ void XVideo::slot_timeout()
 
 void XVideo::paint(QPainter *painter)
 {
+    painter->beginNativePainting();
 
     QFont font("Microsoft Yahei", 20);
+
     QFontMetrics fm(font);
     //    int pixelsWide = fm.horizontalAdvance("What's the width of this text?");
     //    int pixelsHigh = fm.height();
@@ -314,16 +316,19 @@ void XVideo::paint(QPainter *painter)
     painter->setPen(pen);
     painter->setFont(font);
 
+
     if(m_Imginfo.pImg != nullptr){
 
-        painter->drawImage(QRect(0,0,width(),height()), *m_Imginfo.pImg);
+
 
         if(m_Imginfo.isDrawLine){
             qreal kX = (qreal)this->width()/(qreal)384;
             qreal kY = (qreal)this->height()/(qreal)288;
 
-           // QVariantList listVar;
+            // QVariantList listVar;
             listRectInfo.clear();
+            painter->drawImage(QRect(0,0,width(),height()), *m_Imginfo.pImg);
+            QPainterPath path;
             for(int i=0;i<m_Imginfo.listRect.size();i++){
                 RectInfo oriRectinfo = m_Imginfo.listRect.at(i);
                 QRect oriRect = oriRectinfo.rect;
@@ -335,10 +340,12 @@ void XVideo::paint(QPainter *painter)
                 map.insert("temp",strText);
                 listRectInfo.append(map);
 
-                painter->drawRect(desRect);
-                painter->drawText(desRect.x(),desRect.y()-3,strText);
+                path.addRect(desRect);
+                path.addText(desRect.x(),desRect.y()-3,painter->font(),strText);
+                //painter->drawRect(desRect);
+                //painter->drawText(desRect.x(),desRect.y()-3,strText);
             }
-            //qDebug()<<"yousee 矩形:"<<listRectInfo.size();
+            painter->drawPath(path);
 
             if(mYouSeeParse != nullptr){
                 QMap<QString,QVariant> map;
@@ -352,42 +359,57 @@ void XVideo::paint(QPainter *painter)
 
             //qDebug()<<"tcp 流线程:"<<QThread::currentThreadId();
             //qDebug()<<"tcp 矩形:"<<listRectInfo.size();
-            qreal kshowX = (qreal)this->width()/showParentW;
-            qreal kshowY = (qreal)this->height()/showParentH;
+            qreal kshowRectX = (qreal)this->width()/showParentW;
+            qreal kshowRectY = (qreal)this->height()/showParentH;
+
+
+
+
+            painter->drawImage(QRect(0,0,width(),height()), *m_Imginfo.pImg);
 
             painter->save();
-            QRectF rectF(showRectX * kshowX,showRectY*kshowY,showRectW*kshowX,showRectH*kshowY);
+            QRectF rectF(showRectX * kshowRectX,showRectY*kshowRectY,showRectW*kshowRectX,showRectH*kshowRectY);
             QPen pen(QBrush(QColor(255,0,0)),1);
             painter->setPen(pen);
             painter->drawRect(rectF);
             painter->restore();
+
+            qreal kshowX = (qreal)rectF.width()/(qreal)this->width();
+            qreal kshowY = (qreal)rectF.height()/(qreal)this->height();
+
+            //qDebug()<<"比例："<<kshowX<<"  "<<kshowY<<"    矩形："<<rectF;
+
+            QPainterPath path;
             for (int i=0;i<listRectInfo.size();i++) {
                 QVariantMap vmap = listRectInfo.at(i).toMap();
-                QRectF desRect = vmap.value("rect").toRectF();
+                QRectF tmpRect = vmap.value("rect").toRectF();
 
-                if(rectF.intersects(desRect)){
+                QRectF desRect(rectF.x()+tmpRect.x()*kshowX,rectF.y()+tmpRect.y()*kshowY,tmpRect.width()*kshowX,tmpRect.height()*kshowY);
 
-                    QString strText = vmap.value("temp").toString();
-                    painter->drawRect(desRect);
-                    painter->drawText(desRect.x(),desRect.y()-3,strText);
-                }
+
+                //qDebug()<<"矩形1："<<tmpRect<<"    矩形2："<<desRect;
+                QString strText = vmap.value("temp").toString();
+                //painter->drawRect(desRect);
+                //painter->drawText(desRect.x(),desRect.y()-3,strText);
+                path.addRect(desRect);
+                path.addText(desRect.x(),desRect.y()-3,painter->font(),strText);
+
+                painter->drawPath(path);
             }
         }
-
-
-
     }
+    painter->endNativePainting();
 }
 
 void XVideo::fun_setRectPar(int sx,int sy,int sw,int sh,int pw,int ph){
 
-     showRectX = sx;
-     showRectY = sy;
-     showRectW = sw;
-     showRectH = sh;
+    showRectX = sx;
+    showRectY = sy;
+    showRectW = sw;
+    showRectH = sh;
 
-     showParentW = pw;
-     showParentH = ph;
+    showParentW = pw;
+    showParentH = ph;
 }
 
 //tcpworker 线程
@@ -489,12 +511,12 @@ void XVideo::fun_recordPathSet(QVariant mvalue){
 void XVideo::fun_temDrift(QVariant mvalue)
 {
     YouSeeParse::temp_offset = mvalue.toFloat()/2;
-//        qDebug()<<" fun_temDrift    ";
-//        if(mYouSeeParse != nullptr){
-//            float temDrift = mvalue.toFloat();
-//            bool isSucc = mYouSeeParse->slot_setTemOffset(temDrift);
-//            qDebug()<<" fun_temDrift    "<<isSucc;
-//        }
+    //        qDebug()<<" fun_temDrift    ";
+    //        if(mYouSeeParse != nullptr){
+    //            float temDrift = mvalue.toFloat();
+    //            bool isSucc = mYouSeeParse->slot_setTemOffset(temDrift);
+    //            qDebug()<<" fun_temDrift    "<<isSucc;
+    //        }
 }
 
 void XVideo::funSetShotScrennFilePath(QString str)
