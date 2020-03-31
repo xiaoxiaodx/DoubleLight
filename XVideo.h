@@ -44,6 +44,7 @@ public:
     Q_INVOKABLE void    fun_temDrift(QVariant mvalue);
 
     Q_INVOKABLE void fun_getInitPar();
+    Q_INVOKABLE void fun_getListRect(QVariant);
 
 
     Q_INVOKABLE void fun_temMax(QVariant mvalue);
@@ -73,6 +74,8 @@ signals:
     //yousee的信号
     void signal_startinit();
     void signal_stop();
+    void signal_tempPar(QVariant map);
+    void signal_sendListRect(QVariant map);
     //record
     void signal_recordAudio(char *buff,int len,long long tempTime);
     void signal_recordVedio(char *buff,int len,long long tempTime);
@@ -86,7 +89,7 @@ signals:
     void signal_httpUiParSet(QVariant map);
     void signal_getInitPar();
     //红外参数
-    void signal_tempPar(QVariant map);
+
 
 public slots:
     void slot_recH264(char *buff,int len,quint64 time);
@@ -110,9 +113,6 @@ private:
     void createAviRecord();
     void createHttpApi();
     void initVariable();
-
-    QThread *m_readThread = nullptr;
-    TcpWorker *worker = nullptr;
 
     QList<ImageInfo> listImgInfo;
 
@@ -162,6 +162,11 @@ private:
 
     QThread *httpThread = nullptr;
     CHttpApiDevice *httpDevice = nullptr;
+
+    QThread *m_readThread = nullptr;
+    TcpWorker *worker = nullptr;
+
+    static QVariantList listRectInfo;
 };
 
 #endif // XVideo_H

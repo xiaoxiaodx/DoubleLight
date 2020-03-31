@@ -9,6 +9,7 @@ Rectangle {
     signal click();
     signal s_showToastMsg(string str)
 
+    signal s_sendList(var vmap)
 
     property string shotScrennFilePath: ""
     property string recordingFilePath: ""
@@ -39,38 +40,43 @@ Rectangle {
                 video.startNormalVideo();
 
             }else if(videoType === 2){
-                video.startTemperatureVideo();
+              //  video.startTemperatureVideo();
             }
         }
 
         onSignal_loginStatus: main.showToast(msg);
 
-//        onSignal_temp:{
-//            var num = parseFloat(deviceconfig.getWarnTem()).toFixed(2)
-//            //console.debug("temp ***** "+tempV+"   "+num)
-//            if( Number(tempV) >= Number(num)){
-//                vedioLayout.startWarn();
-//            }else{
-//                vedioLayout.endWarn();
-//            }
-//        }
+        //        onSignal_temp:{
+        //            var num = parseFloat(deviceconfig.getWarnTem()).toFixed(2)
+        //            //console.debug("temp ***** "+tempV+"   "+num)
+        //            if( Number(tempV) >= Number(num)){
+        //                vedioLayout.startWarn();
+        //            }else{
+        //                vedioLayout.endWarn();
+        //            }
+        //        }
         onSignal_tempPar:tempParCallback(map);
 
         onSignal_httpUiParSet:httpParCallback(map);
 
 
+        onSignal_sendListRect:s_sendList(map)
     }
 
     MouseArea{
         anchors.fill: parent
-        hoverEnabled: true
+        //hoverEnabled: true
         propagateComposedEvents:true
 
-        onClicked: click();
+        onClicked: {
 
+            click()
+            mouse.accepted = false
+        }
         onDoubleClicked:doubleClick(true);
 
     }
+
     Connections{
         target: deviceconfig
         onS_timeSwith:video.fun_timeSwitch(mchecked);
@@ -93,10 +99,10 @@ Rectangle {
         console.debug("sss");
         console.debug("smap:"+smap)
         var strcmd = smap.cmd;
-console.debug("strcmd:"+strcmd)
+        console.debug("strcmd:"+strcmd)
 
         console.debug(" " + strcmd);
-        if(strcmd === "getrecordparam"){
+        if(strcmd === "getosdparam"){
             var enable = map.enable;
 
         }else if(strcmd === "getrecordparam"){
@@ -113,10 +119,13 @@ console.debug("strcmd:"+strcmd)
             if( Number(tempV) >= Number(num)){
                 vedioLayout.startWarn();
             }else{
-                vedioLayout.endWarn();
+                //  vedioLayout.endWarn();
             }
         }
     }
+
+
+
 }
 
 

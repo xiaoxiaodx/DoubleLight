@@ -71,6 +71,7 @@ public:
     void forceFinish();
     static QList<ImageInfo> *listImgtmpInfo;
 
+
     static void setList(QList<ImageInfo> &list);
     static float temp_offset ;
     static float check_max_temp ;

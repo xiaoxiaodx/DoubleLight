@@ -3,6 +3,7 @@ import QtQuick.Controls 1.4
 import QtQuick.Window 2.12
 import QtQml 2.12
 import ScreenVideo 1.0
+import QtMultimedia 5.8
 import "../qml/liveVedio"
 import "simpleControl"
 Rectangle {
@@ -170,9 +171,10 @@ Rectangle {
                 SequentialAnimation {
                     id:animationRecordOpacity
                     loops: Animation.Infinite
-                    NumberAnimation { target: imgRecord; property: "opacity"; to: 1; duration: 500 }
-                    NumberAnimation { target: imgRecord; property: "opacity"; to: 1; duration: 500 }
-                    NumberAnimation { target: imgRecord; property: "opacity"; to: 0; duration: 500 }
+                   // alwaysRunToEnd: true
+                    NumberAnimation { target: imgRecord; property: "opacity"; to: 1; duration: 300 }
+                    NumberAnimation { target: imgRecord; property: "opacity"; to: 1; duration: 300 }
+                    NumberAnimation { target: imgRecord; property: "opacity"; to: 0; duration: 300 }
                 }
                 function startAnimation(){
 
@@ -187,22 +189,37 @@ Rectangle {
             }
 
 
-
             function startWarn(){
-                if(vedioLayout.isWarn)
-                    return;
-                if(deviceconfig.getSwitchScreenShot())
-                    screenv.funScreenShoot(deviceconfig.getScrennShotPath(),main,0 ,68,main.width,main.height-68);
-                vedioLayout.isWarn = true;
-                imgWar.startAnimation();
-            }
-            function endWarn(){
-                if(!vedioLayout.isWarn)
-                    return;
-                vedioLayout.isWarn = false;
-                imgWar.stopAnimation();
+
+
+                if(!warnTimer.running){
+                    warnTimer.start();
+                }else{
+                    warnTimer.isFinish = false;
+                }
 
             }
+
+
+
+//            function startWarn(){
+//                return;
+//                if(vedioLayout.isWarn)
+//                    return;
+//                if(deviceconfig.getSwitchScreenShot())
+//                    screenv.funScreenShoot(deviceconfig.getScrennShotPath(),main,0 ,68,main.width,main.height-68);
+//                vedioLayout.isWarn = true;
+//                imgWar.startAnimation();
+//                playWarn.play()
+//            }
+//            function endWarn(){
+//                return;
+//                if(!vedioLayout.isWarn)
+//                    return;
+//                vedioLayout.isWarn = false;
+//                imgWar.stopAnimation();
+//                playWarn.stop();
+//            }
 
             function startRecordLable(){
                 imgRecord.startAnimation();
@@ -221,19 +238,11 @@ Rectangle {
         }
 
         DeviceConfig{
-
             id:deviceconfig
             anchors.fill: parent
             color: "#DFE1E6"
             z:homeMenu.mCurIndex == 2?1:0
-
         }
-
-
-
-
-
-
     }
 
     HomeStates{
@@ -248,4 +257,44 @@ Rectangle {
         id:screenv
     }
 
+    MediaPlayer {
+        id: playWarn
+        // loops:MediaPlayer.Infinite
+        source: "qrc:/alarm.wav"
+    }
+
+    Timer{
+        id:warnTimer
+        property bool isFinish: true
+        repeat: true
+        interval: 1000
+        triggeredOnStart:true
+        onTriggered: {
+//            if(vedioLayout.isWarn){
+//                warnTimer.stop();
+//                return;
+//            }
+
+            console.debug("dingshiqi:" + isFinish)
+            if(!isFinish){
+                isFinish = true;
+            }else{
+                isFinish = false;
+                imgWar.stopAnimation();
+                warnTimer.stop();
+                return;
+            }
+
+
+            if(deviceconfig.getSwitchWarn()){
+                if(deviceconfig.getSwitchScreenShot())
+                    screenv.funScreenShoot(deviceconfig.getScrennShotPath(),main,0 ,68,main.width,main.height-68);
+
+                imgWar.startAnimation();
+                playWarn.play()
+            }
+
+
+        }
+    }
 }

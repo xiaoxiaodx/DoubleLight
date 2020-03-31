@@ -2,6 +2,7 @@
 #include "debuglog.h"
 #include "YoseenAlg.h"
 QList<ImageInfo>* YouSeeParse::listImgtmpInfo;
+
 float YouSeeParse::temp_offset = TEMP_OFFSET;
 float YouSeeParse::check_max_temp = CHECK_MAX_TEMP;
 float YouSeeParse::check_min_temp = CHECK_MIN_TEMP;
@@ -219,7 +220,7 @@ static float getTempAavl(s16* IrdaDataFloat, int height, int width, u16 slop ,s1
     {
         avl = (avl - 31.0)*0.3 + 35.5;
     }
-        else if(avl >= 34.0 && avl < 35.0)
+    else if(avl >= 34.0 && avl < 35.0)
     {
         avl = (avl - 34) + 36.5 + YouSeeParse::temp_offset;
     } else {
@@ -241,6 +242,8 @@ static void __stdcall _previewCallback(s32 errorCode, DataFrame* frame, void* cu
     if (YET_None == errorCode) {
 
 
+        //数据过多则不处理了
+        if(YouSeeParse::listImgtmpInfo->size() >= 30)return;
 
         DataFrameHeader* tempHead = (DataFrameHeader*)frame->Head;
         s16* tempData = (s16*) frame->Temp;//得到温度 坐标 表（一个像素点表示一个温度值）
@@ -290,18 +293,18 @@ static void __stdcall _previewCallback(s32 errorCode, DataFrame* frame, void* cu
         }
 
 
-        if(YouSeeParse::listImgtmpInfo->size() <= 30){
-            try {
-                  info.pImg =  new QImage((uchar*)pFrameSrc->imageData, tempHead->Width, tempHead->Height, QImage::Format_RGB32);
-                    // 其它代码
-            } catch ( const std::bad_alloc& e ) {
-                  DebugLog::getInstance()->writeLog("Yousee 图片分配内存失败");
-                  info.pImg = nullptr;
-            }
-            info.temp = maxAvgT;
-            info.isDrawLine = true;
-            YouSeeParse::listImgtmpInfo->append(info);
+
+        try {
+            info.pImg =  new QImage((uchar*)pFrameSrc->imageData, tempHead->Width, tempHead->Height, QImage::Format_RGB32);
+            // 其它代码
+        } catch ( const std::bad_alloc& e ) {
+            DebugLog::getInstance()->writeLog("Yousee 图片分配内存失败");
+            info.pImg = nullptr;
         }
+        info.temp = maxAvgT;
+        info.isDrawLine = true;
+        YouSeeParse::listImgtmpInfo->append(info);
+
 
         cvReleaseMemStorage(&stor);
     }else {

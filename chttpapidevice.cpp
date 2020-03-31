@@ -375,7 +375,6 @@ void CHttpApiDevice::slot_httpParSet(QMap<QString,QVariant> map)
 {
 
     qDebug()<<" slot_httpParSet";
-
     QMap<QString ,QVariant> mapSend;
     mapSend.insert("cmd","login");
 

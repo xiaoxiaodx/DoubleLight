@@ -3,18 +3,18 @@
 #include <QDebug>
 #include <render/texturenode.h>
 #include <QPainter>
-
+QVariantList XVideo::listRectInfo;//tcp流画矩形使用的流
 XVideo::XVideo()
 {
     //setFlag(QQuickItem::ItemHasContents);
 
     initVariable();
 
-    //createHttpApi();
+
 
     connect(&timerUpdate,&QTimer::timeout,this,&XVideo::slot_timeout);
 
-    timerUpdate.start(15);
+    timerUpdate.start(20);
     QSize size;
     size.setWidth(640);
     size.setHeight(360);
@@ -135,7 +135,7 @@ void XVideo::createFFmpegDecodec()
 void XVideo::fun_getInitPar()
 {
     qDebug()<<"fun_getInitPar";
-     emit signal_getInitPar();
+    // emit signal_getInitPar();
 
 }
 
@@ -154,7 +154,7 @@ void XVideo::createTcpThread()
         m_readThread->start();
         emit signal_connentSer(m_ip,555);
     }
-    createHttpApi();
+    //createHttpApi();
 
 }
 
@@ -209,7 +209,7 @@ void XVideo::createSearchIp()
         psearch->moveToThread(searchThread);
         searchThread->start();
     }
-    m_ip = "";
+    m_ip = "10.67.1.55";
     emit signal_resetSearch();
 
 
@@ -230,7 +230,7 @@ void XVideo::recSearchIp(QString ip)
 {
     qDebug()<<"my recSearchIp:"<<ip;
 
-    m_ip = "10.67.1.133";
+    m_ip = "10.67.1.55";
 
 
 
@@ -275,7 +275,7 @@ void XVideo::slot_timeout()
     //qDebug()<<"slot_timeout thread:"<<QThread::currentThreadId()<<" "<<listImgInfo.size();
     // qDebug()<<"slot_timeout thread:" <<listImgInfo.size();
     int size = listImgInfo.size();
-    if(size >= 5){
+    if(size >= 2){
 
         //如果不增加这句代码 ，则会出现视频不会第一时间显示，而是显示灰色图像
         if(!isFirstData){
@@ -290,10 +290,10 @@ void XVideo::slot_timeout()
                 delete m_Imginfo.pImg;
             m_Imginfo = listImgInfo.takeFirst();
             update();
-
         }
-
     }
+
+
 }
 
 #include <QFontMetrics>
@@ -318,31 +318,42 @@ void XVideo::paint(QPainter *painter)
             qreal kX = (qreal)this->width()/(qreal)384;
             qreal kY = (qreal)this->height()/(qreal)288;
 
-
-            QList<RectInfo> listRect = m_Imginfo.listRect;
-            for(int i=0;i<listRect.size();i++){
-                RectInfo oriRectinfo = listRect.at(i);
+           // QVariantList listVar;
+            listRectInfo.clear();
+            for(int i=0;i<m_Imginfo.listRect.size();i++){
+                RectInfo oriRectinfo = m_Imginfo.listRect.at(i);
                 QRect oriRect = oriRectinfo.rect;
                 QRectF desRect(oriRect.x()*kX,oriRect.y()*kY,oriRect.width()*kX,oriRect.height()*kY);
                 QString strText = QString::number(oriRectinfo.temp, 'f', 1);
 
-                //painter->save();
-                //QPen pen(QBrush(QColor(0,255,0)),2,Qt::DashLine);
-                //painter->setPen(pen);
+                QVariantMap map;
+                map.insert("rect",desRect);
+                map.insert("temp",strText);
+                listRectInfo.append(map);
+
                 painter->drawRect(desRect);
-                //painter->restore();
-
                 painter->drawText(desRect.x(),desRect.y()-3,strText);
-
             }
-
+            //qDebug()<<"yousee 矩形:"<<listRectInfo.size();
 
             if(mYouSeeParse != nullptr){
                 QMap<QString,QVariant> map;
                 map.insert("parType","temp");
                 map.insert("tempValue",m_Imginfo.temp);
                 emit signal_tempPar(map);
+                //emit signal_sendListRect(listVar);
+                //qDebug()<<"yousee 流线程:"<<QThread::currentThreadId();
+            }
+        }else{
 
+            //qDebug()<<"tcp 流线程:"<<QThread::currentThreadId();
+            //qDebug()<<"tcp 矩形:"<<listRectInfo.size();
+            for (int i=0;i<listRectInfo.size();i++) {
+                QVariantMap vmap = listRectInfo.at(i).toMap();
+                QRectF desRect = vmap.value("rect").toRectF();
+                QString strText = vmap.value("temp").toString();
+                painter->drawRect(desRect);
+                painter->drawText(desRect.x(),desRect.y()-3,strText);
             }
         }
 
@@ -373,11 +384,11 @@ void XVideo::slot_recH264(char* h264Arr,int arrlen,quint64 time)
                 imgInfo.pImg = Img;
                 imgInfo.time = time;
 
-                if(YouSeeParse::listImgtmpInfo->size() > 0){
-                    ImageInfo tmpIf = YouSeeParse::listImgtmpInfo->at(0);
-                    imgInfo.listRect = tmpIf.listRect;
-                    imgInfo.isDrawLine = true;
-                }
+//                if(YouSeeParse::listImgtmpInfo->size() > 0){
+//                    ImageInfo tmpIf = YouSeeParse::listImgtmpInfo->at(0);
+//                    imgInfo.listRect = tmpIf.listRect;
+//                    imgInfo.isDrawLine = true;
+//                }
 
                 //qDebug()<<QString(__FUNCTION__) + "    "+QString::number(__LINE__) ;
                 if(listImgInfo.size() < minBuffLen){
@@ -392,12 +403,18 @@ void XVideo::slot_recH264(char* h264Arr,int arrlen,quint64 time)
     }
 }
 
+void XVideo::fun_getListRect(QVariant var){
+    qDebug()<<"tcp 流线程 fun_getListRect:"<<QThread::currentThreadId()<<"    "<<var;
+    if(worker != nullptr)
+    {
+        listRectInfo = var.toList();
+    }
+}
+
 
 //tcpworker 线程
 void XVideo::slot_recPcmALaw( char * buff,int len,quint64 time)
 {
-
-
     preAudioTime = time;
     createFFmpegDecodec();
 
@@ -451,29 +468,25 @@ void XVideo::fun_recordPathSet(QVariant mvalue){
 }
 void XVideo::fun_temDrift(QVariant mvalue)
 {
-
     YouSeeParse::temp_offset = mvalue.toFloat()/2;
 //        qDebug()<<" fun_temDrift    ";
 //        if(mYouSeeParse != nullptr){
-
 //            float temDrift = mvalue.toFloat();
 //            bool isSucc = mYouSeeParse->slot_setTemOffset(temDrift);
-
 //            qDebug()<<" fun_temDrift    "<<isSucc;
-
 //        }
-
-
 }
 
 void XVideo::funSetShotScrennFilePath(QString str)
 {
     mshotScreenFilePath = str;
 }
+
 void XVideo::funSetRecordingFilePath(QString str)
 {
 
 }
+
 XVideo::~XVideo()
 {
     qDebug()<<mDid + " 析构   XVideo";

@@ -46,5 +46,6 @@
         <file>images/lablerecord.png</file>
         <file>qml/simpleControl/SimpleSwich.qml</file>
         <file>qml/dialog/AskDialog.qml</file>
+        <file>alarm.wav</file>
     </qresource>
 </RCC>
