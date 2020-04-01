@@ -6,7 +6,7 @@
 #define SEARCH_HOSTADDR ("239.255.255.250")
 #define SEARCH_PORT (3808)
 #define SOCKET_RECEIVE_BUFFER (1024*1024*8)
-
+#include <debuglog.h>
 MySearch1::MySearch1(QObject *parent) : QObject(parent)
 {
 
@@ -19,19 +19,27 @@ MySearch1::~MySearch1()
 //初始化搜索
 void MySearch1::startSearch()
 {
+
+    qDebug()<<"startSearch ***";
     if(s_searchsocket == NULL){
 
         s_searchsocket = new QUdpSocket(this);//udp
         if(s_searchsocket->state()!=s_searchsocket->BoundState) {
-            if( !s_searchsocket->bind(QHostAddress::AnyIPv4, SEARCH_PORT, QUdpSocket::ShareAddress) ) {
-                qDebug()<<"bind failed , UDP search initialization error !"<<endl;
+             qDebug()<<"bind ********** !"<<s_searchsocket->state();
+
+            if( !s_searchsocket->bind(SEARCH_PORT, QUdpSocket::ReuseAddressHint) ) {
+                qDebug()<<"bind ********** !"<<s_searchsocket->state();
+
+            }else{
+                qDebug()<<"bind 成功" ;
+
             }
         } else {
             qDebug()<<"socket state failed , UDP search initialization error !"<<endl;
         }
-
-        if( s_searchsocket->joinMulticastGroup(QHostAddress(SEARCH_HOSTADDR)) ) {
-            s_searchsocket->setSocketOption(QAbstractSocket::MulticastLoopbackOption, 0);
+        //qDebug()<<"startSearch ***2";
+        if(1) { //s_searchsocket->joinMulticastGroup(QHostAddress(SEARCH_HOSTADDR))
+           // s_searchsocket->setSocketOption(QAbstractSocket::MulticastLoopbackOption, 0);
             //设置缓冲区
             s_searchsocket->setSocketOption(QAbstractSocket::ReceiveBufferSizeSocketOption, SOCKET_RECEIVE_BUFFER);
             s_searchsocket->setSocketOption(QAbstractSocket::MulticastTtlOption, 2);
@@ -39,6 +47,9 @@ void MySearch1::startSearch()
             connect(s_searchsocket,SIGNAL(readyRead()),this,SLOT(readResultMsg()));
             sendSearch();
         } else {
+
+
+            qDebug()<<s_searchsocket->error();
             qDebug()<<"join multicast Group failed , UDP search initialization errro !"<<endl;
         }
     }
@@ -47,8 +58,6 @@ void MySearch1::startSearch()
 
 void MySearch1::resetSearch()
 {
-
-
     if(s_searchsocket != NULL)
     {
 
@@ -95,7 +104,9 @@ void MySearch1::readResultMsg()
                         QJsonValue value = obj.value("ip");
                         if (value.isString()) {
                             QString ip = value.toString();
-                            //qDebug() << "ip : " << ip;
+                            qDebug() << "ip : " << ip;
+
+                            DebugLog::getInstance()->writeLog("ip:"+ip);
                             emit signal_sendIp(ip);
                         }
                     }

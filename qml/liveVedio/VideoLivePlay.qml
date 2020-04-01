@@ -76,10 +76,10 @@ Rectangle {
         Component.onCompleted: {
 
             if(videoType === 1){
-               //video.startNormalVideo();
+               video.startNormalVideo();
 
             }else if(videoType === 2){
-              //  video.startTemperatureVideo();
+               video.startTemperatureVideo();
             }
         }
 
