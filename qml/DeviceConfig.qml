@@ -146,6 +146,7 @@ Rectangle {
                     txtColor: Qt.rgba(0,0,0,0.65)
                     text: "0"
                     color: "#F8FAFD"
+                    isReadOnly:true
                     onTextChanged: {
                         s_temOffset(inputTempDrift.text);
 
@@ -165,7 +166,7 @@ Rectangle {
                         onPressed: {
                             imgValueUp.source="qrc:/images/arrow_up_p.png"
                             var num = parseInt(inputTempDrift.text)
-                            if(num >= 100)
+                            if(num >= 2)
                                 return
 
                             inputTempDrift.text = ""+(Number(num)+Number(1))
@@ -190,7 +191,7 @@ Rectangle {
                             imgValuedown.source="qrc:/images/arrow_low_p.png"
                             var num = parseInt(inputTempDrift.text)
 
-                            if(num <= 0)
+                            if(num <= -2)
                                 return
 
                             inputTempDrift.text = ""+(Number(num)-Number(1))
@@ -244,10 +245,22 @@ Rectangle {
                     isNeedDoubleClickEdit: false
                     textLeftPadding:0
                     txtColor: Qt.rgba(0,0,0,0.65)
-                    text: "0"
+                    text: "4"
+                    isReadOnly:true
                     color: "#F8FAFD"
                     onTextChanged: {
-                        s_temMin(inputTempMin.text);
+                        if(inputTempMin.text === "1")
+                            s_temMin("21");
+                        else if(inputTempMin.text === "2")
+                            s_temMin("24");
+                        else if(inputTempMin.text === "3")
+                            s_temMin("26");
+                        else if(inputTempMin.text === "4")
+                            s_temMin("28");
+                        else if(inputTempMin.text === "5")
+                            s_temMin("30");
+                        else if(inputTempMin.text === "6")
+                            s_temMin("32");
 
                     }
                 }
@@ -265,7 +278,7 @@ Rectangle {
                         onPressed: {
                             imgValueMinUp.source="qrc:/images/arrow_up_p.png"
                             var num = parseInt(inputTempMin.text)
-                            if(num >= 100)
+                            if(num >= 6)
                                 return
 
                             inputTempMin.text = ""+(Number(num)+Number(1))
@@ -343,7 +356,7 @@ Rectangle {
                     isNeedDoubleClickEdit: false
                     textLeftPadding:0
                     txtColor: Qt.rgba(0,0,0,0.65)
-                    text: "0"
+                    text: "50"
                     color: "#F8FAFD"
                     onTextChanged: {
                         s_temMax(inputTempMax.text);

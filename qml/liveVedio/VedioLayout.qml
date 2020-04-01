@@ -55,30 +55,26 @@ Rectangle {
 
         }
 
-//        VideoLivePlay{
-//            id:videoTemp
-//            videoType:2
-//            Layout.fillHeight: true;
-//            Layout.fillWidth: true
-//            color: "#252525"
-//            mIsSelected: 2 === currentIndex
-//            onClick: {
-//                currentIndex = 2
-//            }
+        VideoLivePlay{
+            id:videoTemp
+            videoType:2
+            Layout.fillHeight: true;
+            Layout.fillWidth: true
+            color: "#252525"
+            mIsSelected: 2 === currentIndex
+            onClick: {
+                currentIndex = 2
+            }
 
-//            onDoubleClick: {
+            onDoubleClick: {
 
-//                if(videoNormal.visible){
-//                    videoNormal.visible = false;
-//                }else{
-//                    videoNormal.visible = true;
-//                }
-//            }
-
-
-
-
-//        }
+                if(videoNormal.visible){
+                    videoNormal.visible = false;
+                }else{
+                    videoNormal.visible = true;
+                }
+            }
+        }
     }
 
 

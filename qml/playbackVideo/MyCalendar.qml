@@ -234,12 +234,12 @@ Popup {
                 anchors.verticalCenter: parent.verticalCenter
                 anchors.right: parent.right
                 anchors.rightMargin: 16
-                colorNor:"#409EFF"
-                colorPressed: "#cc409EFF"
+                colorNor:"#ffffff"
+                colorPressed: "#ffffff"
                 borderColor: "#D9D9D9"
+                fontColor: "#3B84F6"
                 borderW: 0
-                mRadius:3
-                fontsize: 10
+                fontsize: 14
 
                 text: qsTr("确定")
                 onClicked: {

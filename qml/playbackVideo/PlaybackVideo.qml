@@ -218,7 +218,7 @@ Rectangle {
 
 
 
-        Rectangle{
+        TimeLine{
             id:timeline
             width:parent.width
             height:74
@@ -262,8 +262,8 @@ Rectangle {
         width: 280
         height: 314
         dim:false
-        x:timeRect.x
-        y:timeRect.y-314-10
+        x:228
+        y:parent.height -115-314-2
         onS_dayChange:{
 
         }

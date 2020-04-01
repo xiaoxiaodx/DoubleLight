@@ -19,6 +19,7 @@ Rectangle{
     property bool isClick: false
 
     property alias inputLimite: input.inputMethodHints
+    property alias isReadOnly: input.readOnly
     Image {
         id: img
         visible: isNeedImg?true:false
@@ -34,6 +35,7 @@ Rectangle{
         height: parent.height - 2
         anchors.left: isNeedImg?img.right:parent.left
         anchors.leftMargin: textLeftPadding
+
         y:2
         // anchors.verticalCenter: parent.verticalCenter
         font.pixelSize: fontPixSize
@@ -46,13 +48,10 @@ Rectangle{
             textColor: txtColor
             placeholderTextColor: placeholderTxtColor
             selectedTextColor: selectTxtColor
-
-
             background: Rectangle {
                 color: txtBgColor
                 implicitWidth: rectlineEdit.width
                 implicitHeight: rectlineEdit.height-4
-
                 radius: 1
             }
         }
