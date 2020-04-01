@@ -7,7 +7,15 @@ ReplayTimeline::ReplayTimeline()
 {
 
     replayCurrentTime.setHMS(14,10,15);
-    setFlag(QQuickItem::ItemHasContents);
+
+//    setAcceptHoverEvents(true);
+//    setAcceptedMouseButtons(Qt::AllButtons);
+//    setFlag(ItemAcceptsInputMethod, true);
+
+    rectFIndicator.setX(30);
+    rectFIndicator.setY(34);
+    rectFIndicator.setWidth(4);
+    rectFIndicator.setHeight(20);
     init();
 }
 ReplayTimeline::~ReplayTimeline()
@@ -86,7 +94,7 @@ void ReplayTimeline::initTimeLineInterval()
 TimeInterval* ReplayTimeline::findInterval(QList<TimeInterval*> &list,QTime &time)
 {
 
-   // qDebug()<<"当前值："<<time.toString("hh:mm:ss");
+    // qDebug()<<"当前值："<<time.toString("hh:mm:ss");
     for (int i=0;i<list.size();i++) {
         TimeInterval *timeI = list.at(i);
         QTime tmpStart = timeI->startTime;
@@ -101,7 +109,6 @@ TimeInterval* ReplayTimeline::findInterval(QList<TimeInterval*> &list,QTime &tim
 
 void ReplayTimeline::paint(QPainter *painter)
 {
-
 
     painter->setRenderHint(QPainter::Antialiasing);   //线条抗锯齿
     painter->setRenderHint(QPainter::TextAntialiasing);
@@ -130,6 +137,18 @@ void ReplayTimeline::drawBg(QPainter *painter){
 
 }
 
+void ReplayTimeline::setSizeType(int type)
+{
+    if(type == 0){
+        scaleType = TIMELINE24H;
+    }else if(type == 1)
+        scaleType = TIMELINE2H;
+    else if(type == 2)
+        scaleType= TIMELINE1H;
+    else if(type == 3)
+        scaleType = TIMELINE30M;
+    update();
+}
 
 void ReplayTimeline::drawScale(QPainter *painter,IntervalType type)
 {
@@ -140,8 +159,8 @@ void ReplayTimeline::drawScale(QPainter *painter,IntervalType type)
     qreal contentWidth ;
     //字体
     QFont newFont;
-    newFont.setPixelSize(12);
-    newFont.setFamily("HelveticaNeue");
+    newFont.setPixelSize(14);
+    newFont.setFamily("Microsoft Yahei");
     QFontMetrics fontMetrics(newFont);
     painter->setFont(newFont);
     splictlineCount = 24-1;
@@ -199,18 +218,44 @@ void ReplayTimeline::drawScale(QPainter *painter,IntervalType type)
         if(min == 24*60)
             showtimeStr = "24:00";
         QRect rect = fontMetrics.boundingRect(showtimeStr);
-        painter->drawText(linex - rect.width()/2,rectTimeLine.y() - rect.height(),showtimeStr);
+        painter->drawText(linex - rect.width()/2,rectTimeLine.y()-10,showtimeStr);
         painter->restore();
     }
+
+    drawValue(painter);
 }
 
+
+void ReplayTimeline::drawValue(QPainter *painter)
+{
+
+
+
+}
 void ReplayTimeline::setDate(QDate date)
 {
 
 }
-void ReplayTimeline::on_pushButton_date_clicked()
-{
-   emit signal_popDateDialog();
-}
 
+//void ReplayTimeline::mousePressEvent(QMouseEvent* event){
+
+//}
+//void ReplayTimeline::mouseMoveEvent(QMouseEvent *event){
+
+//    qDebug()<<" mouseMoveEvent  ";
+
+//}
+
+//void ReplayTimeline::hoverMoveEvent(QMouseEvent *event){
+//    qDebug()<<" hoverMoveEvent  ";
+//    if(rectFIndicator.contains(event->pos())){
+
+//        qDebug()<<" mouseMoveEvent **** ";
+//        rectFIndicator.setSize(QSize(2,2));
+//        update();
+//    }
+//}
+//void ReplayTimeline::mouseReleaseEvent(QMouseEvent *event){
+
+//}
 

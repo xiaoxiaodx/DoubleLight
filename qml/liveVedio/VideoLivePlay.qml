@@ -76,7 +76,7 @@ Rectangle {
         Component.onCompleted: {
 
             if(videoType === 1){
-               video.startNormalVideo();
+               //video.startNormalVideo();
 
             }else if(videoType === 2){
               //  video.startTemperatureVideo();
@@ -329,8 +329,6 @@ Rectangle {
         onS_temMax:video.fun_temMax(mvalue);
         onS_temMin:video.fun_temMin(mvalue);
         onS_temOffset:video.fun_temOffset(mvalue);
-
-
     }
 
     function httpParCallback(smap){

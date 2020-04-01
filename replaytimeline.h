@@ -28,13 +28,16 @@ public:
 class ReplayTimeline : public QQuickPaintedItem
 {
     Q_OBJECT
+
+
 public:
     explicit ReplayTimeline();
     ~ReplayTimeline();
+
+    Q_INVOKABLE void setSizeType(int type);
     void init();
     void setDate(QDate date);
-signals:
-    void signal_popDateDialog();
+
 public slots:
     void slot_24hSelect();
     void slot_2hSelect();
@@ -42,8 +45,11 @@ public slots:
     void slot_30mSelect();
 protected:
     void paint(QPainter *painter);
-private slots:
-    void on_pushButton_date_clicked();
+
+//    void mousePressEvent(QMouseEvent* event);
+//    void mouseMoveEvent(QMouseEvent *event);
+//    void mouseReleaseEvent(QMouseEvent *event);
+//    void hoverMoveEvent(QMouseEvent *event);
 
 private:
     Ui::ReplayTimeline *ui;
@@ -53,7 +59,7 @@ private:
 
     void drawBg(QPainter *painter);
     void drawScale(QPainter *painter,IntervalType type);
-
+    void drawValue(QPainter *painter);
     IntervalType scaleType = TIMELINE24H;//刻度类型
 
     QTime replayCurrentTime;
@@ -67,6 +73,8 @@ private:
     QList<TimeInterval*> listVideoInterval2;
     QList<TimeInterval*> listVideoInterval3;
     QList<TimeInterval*> listVideoInterval4;
+
+    QRectF rectFIndicator;
 
 };
 

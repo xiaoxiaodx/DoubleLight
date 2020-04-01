@@ -57,8 +57,8 @@ Rectangle {
 
             MediaPlayer{
                 id:player
-               // source: fd.fileUrl
-                autoPlay: true
+                source: "file:///F:/work/doubleLight/avi/1080p.avi";
+                //autoPlay: true
                 //volume: voice.value
             }
             VideoOutput {
@@ -92,7 +92,6 @@ Rectangle {
                         hoverEnabled: true
                         onPressed: imgslow.source = "qrc:/images/play_slow_p.png"
                         onReleased: imgslow.source = "qrc:/images/play_slow.png"
-
                     }
                 }
 
@@ -106,8 +105,11 @@ Rectangle {
                     MouseArea{
                         anchors.fill: parent
                         hoverEnabled: true
-                        onPressed: imgplay.source = "qrc:/images/play_h.png"
+                        onPressed: {
 
+                            imgplay.source = "qrc:/images/play_h.png"
+                            player.play();
+                        }
                         onReleased: imgplay.source = "qrc:/images/play.png"
                     }
                 }
@@ -165,7 +167,10 @@ Rectangle {
                             onClicked: rowAdjustSize.curIndex = index
                         }
                     }
+                }
 
+                onCurIndexChanged: {
+                    timeline.setSizeType(curIndex);
                 }
             }
 
@@ -213,14 +218,41 @@ Rectangle {
 
 
 
-        TimeLine{
+        Rectangle{
             id:timeline
             width:parent.width
             height:74
             anchors.bottom:parent.bottom
+            property point mousePressPt: "0,0"
+            Rectangle{
+                id:rectIndicator
+                color: "#FE4932"
+                width: 8
+                height: 20
+                radius: 4
+                x:30-4
+                y:34
+                MouseArea{
 
+                    anchors.fill: parent
+                    hoverEnabled: true
 
+                    onPressed: mousePressPt  = Qt.point(mouse.x, mouse.y)
+                    onEntered: {
+                        rectIndicator.color = "red";
+                    }
+                    onExited: {
+                        rectIndicator.color = "#FE4932";
+                    }
+                    onPositionChanged: {
+                        if(pressed){
+                            var offsetX = mouse.x - mousePressPt.x
+                            rectIndicator.x = rectIndicator.x +offsetX
 
+                        }
+                    }
+                }
+            }
         }
     }
 
