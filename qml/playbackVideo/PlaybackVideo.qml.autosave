@@ -234,8 +234,6 @@ Rectangle {
         y:timeRect.y-314-10
         onS_dayChange:{
 
-
-            getRecordInfo(2,value)
         }
 
         onS_mouthChange:getRecordInfo(1,value)

@@ -48,7 +48,19 @@ Rectangle {
 //        property alias switchBeer:swichBeer.checked
 //        property alias switchRecord:swichRecord.checked
     }
+    MouseArea{
+        anchors.fill: parent
+        //hoverEnabled: true
+        propagateComposedEvents:true
 
+        onClicked: {
+
+            click()
+            mouse.accepted = false
+        }
+        onDoubleClicked:doubleClick(true);
+
+    }
     XVideo{
         id:video
 
@@ -67,7 +79,7 @@ Rectangle {
                video.startNormalVideo();
 
             }else if(videoType === 2){
-                video.startTemperatureVideo();
+              //  video.startTemperatureVideo();
             }
         }
 
@@ -90,19 +102,7 @@ Rectangle {
         onSignal_sendListRect:s_sendList(map)
 
 
-        MouseArea{
-            anchors.fill: parent
-            //hoverEnabled: true
-            propagateComposedEvents:true
 
-            onClicked: {
-
-                click()
-                mouse.accepted = false
-            }
-            onDoubleClicked:doubleClick(true);
-
-        }
 
         Rectangle{
             id:rectadmjt

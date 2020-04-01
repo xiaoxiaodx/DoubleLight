@@ -31,7 +31,8 @@ SOURCES += \
     avirecord.cpp \
     screenvideo.cpp \
     ffmpegconvert.cpp \
-    chttpapidevice.cpp
+    chttpapidevice.cpp \
+    replaytimeline.cpp
 
 RESOURCES += qml.qrc
 
@@ -69,7 +70,8 @@ HEADERS += \
     common.h \
     screenvideo.h \
     ffmpegconvert.h \
-    chttpapidevice.h
+    chttpapidevice.h \
+    replaytimeline.h
 
 
 INCLUDEPATH += $$PWD/avi

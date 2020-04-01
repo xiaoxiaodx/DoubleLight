@@ -5,6 +5,7 @@ import QtQml 2.12
 import ScreenVideo 1.0
 import QtMultimedia 5.8
 import "../qml/liveVedio"
+import "../qml/playbackVideo"
 import "simpleControl"
 Rectangle {
 
@@ -71,13 +72,15 @@ Rectangle {
             acceptedButtons: Qt.LeftButton
             propagateComposedEvents: true
             onPressed: {
-                homeMenu.isDoubleClick = true;
+                homeMenu.isDoubleClick = false;
                 clickPoint  = Qt.point(mouse.x, mouse.y)
             }
-            //双击过程会出现拖拉事件，导致窗口最大化到还原过程出现bug,因此禁掉
+
             onDoubleClicked: {
-                homeMenu.isDoubleClick = true;
+
+                homeMenu.isDoubleClick = true
                 winMax();
+
 
             }
             onPositionChanged: {
@@ -87,9 +90,12 @@ Rectangle {
 
                     dragPosChange(offset.x, offset.y)
                 }
-                homeMenu.isDoubleClick = false;
+
+
             }
         }
+
+
 
     }
 
@@ -108,7 +114,7 @@ Rectangle {
         anchors.left: parent.left
         anchors.top: homeMenu.bottom
         width: parent.width
-        height: parent.height - homeMenu.height - mhomeStateBar.height
+        height: parent.height - homeMenu.height
         color: "#252525"
         VedioLayout{
             id: vedioLayout
@@ -126,7 +132,6 @@ Rectangle {
             }
 
 
-
             Image{
                 id:imgWar
                 width: 58
@@ -141,9 +146,10 @@ Rectangle {
                 SequentialAnimation {
                     id:animationWarnOpacity
                     //loops: Animation.Infinite
+                    alwaysRunToEnd: true
+                    NumberAnimation { target: imgWar; property: "opacity"; to: 1; duration: 200 }
                     NumberAnimation { target: imgWar; property: "opacity"; to: 1; duration: 300 }
-                    NumberAnimation { target: imgWar; property: "opacity"; to: 1; duration: 500 }
-                    NumberAnimation { target: imgWar; property: "opacity"; to: 0; duration: 300 }
+                    NumberAnimation { target: imgWar; property: "opacity"; to: 0; duration: 200 }
                 }
                 function startAnimation(){
 
@@ -171,14 +177,13 @@ Rectangle {
                 SequentialAnimation {
                     id:animationRecordOpacity
                     loops: Animation.Infinite
-                   // alwaysRunToEnd: true
+                    // alwaysRunToEnd: true
                     NumberAnimation { target: imgRecord; property: "opacity"; to: 1; duration: 300 }
                     NumberAnimation { target: imgRecord; property: "opacity"; to: 1; duration: 300 }
                     NumberAnimation { target: imgRecord; property: "opacity"; to: 0; duration: 300 }
                 }
                 function startAnimation(){
 
-                    console.debug("******************dsa4d56sa4f56dsa4")
                     animationRecordOpacity.start();
                 }
                 function stopAnimation(){
@@ -191,35 +196,14 @@ Rectangle {
 
             function startWarn(){
 
-
+                if(!deviceconfig.getSwitchWarn())
+                    return;
                 if(!warnTimer.running){
                     warnTimer.start();
-                }else{
-                    warnTimer.isFinish = false;
                 }
-
+                warnTimer.haveWarnMsg = true;
             }
 
-
-
-//            function startWarn(){
-//                return;
-//                if(vedioLayout.isWarn)
-//                    return;
-//                if(deviceconfig.getSwitchScreenShot())
-//                    screenv.funScreenShoot(deviceconfig.getScrennShotPath(),main,0 ,68,main.width,main.height-68);
-//                vedioLayout.isWarn = true;
-//                imgWar.startAnimation();
-//                playWarn.play()
-//            }
-//            function endWarn(){
-//                return;
-//                if(!vedioLayout.isWarn)
-//                    return;
-//                vedioLayout.isWarn = false;
-//                imgWar.stopAnimation();
-//                playWarn.stop();
-//            }
 
             function startRecordLable(){
                 imgRecord.startAnimation();
@@ -227,9 +211,11 @@ Rectangle {
             function stopRecordLable(){
                 imgRecord.stopAnimation();
             }
+
+
         }
 
-        Rectangle{
+        PlaybackVideo{
             id:rectRepaly
             width: parent.width
             height: parent.height
@@ -239,19 +225,14 @@ Rectangle {
 
         DeviceConfig{
             id:deviceconfig
-            anchors.fill: parent
+            height: parent.height
+            width: parent.width;
             color: "#DFE1E6"
             z:homeMenu.mCurIndex == 2?1:0
         }
     }
 
-    HomeStates{
-        id:mhomeStateBar
-        width: parent.width
-        height:50
-        anchors.bottom: parent.bottom
 
-    }
 
     ScreenVideo{
         id:screenv
@@ -259,42 +240,37 @@ Rectangle {
 
     MediaPlayer {
         id: playWarn
-        // loops:MediaPlayer.Infinite
         source: "qrc:/alarm.wav"
     }
 
     Timer{
         id:warnTimer
-        property bool isFinish: true
+        property bool haveWarnMsg: false
         repeat: true
         interval: 1000
         triggeredOnStart:true
         onTriggered: {
-//            if(vedioLayout.isWarn){
-//                warnTimer.stop();
-//                return;
-//            }
 
-            console.debug("dingshiqi:" + isFinish)
-            if(!isFinish){
-                isFinish = true;
-            }else{
-                isFinish = false;
-                imgWar.stopAnimation();
+            console.debug("dingshiqi:")
+            //如果此时没有报警,则关闭定时器
+            if(!haveWarnMsg){
                 warnTimer.stop();
                 return;
             }
 
+            //播放过程都会自动停止
 
-            if(deviceconfig.getSwitchWarn()){
-                if(deviceconfig.getSwitchScreenShot())
-                    screenv.funScreenShoot(deviceconfig.getScrennShotPath(),main,0 ,68,main.width,main.height-68);
+            //开启动画
+            imgWar.startAnimation();
+            //开启录屏
+            if(deviceconfig.getSwitchScreenShot())
+                screenv.funScreenShoot(deviceconfig.getScrennShotPath(),main,0 ,68,main.width,main.height-68);
+            //开启声音
+            if(deviceconfig.getSwitchBeer())
+                playWarn.play()
 
-                imgWar.startAnimation();
-                if(deviceconfig.getSwitchBeer())
-                    playWarn.play()
-            }
 
+            haveWarnMsg = false;
 
         }
     }

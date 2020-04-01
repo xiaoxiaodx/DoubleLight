@@ -11,45 +11,12 @@ Rectangle{
         GradientStop { position: 1.0; color: "#2D76E7"}
     }
 
-
-
-    //    states: [
-    //        State {
-    //            name: "show"; PropertyChanges { target: mhomeStateBar; opacity: 1 }
-    //        },
-    //        State {
-    //            name: "hide"; PropertyChanges { target: mhomeStateBar;  opacity: 0 }
-    //        }]
-
-    //    transitions: Transition {
-    //        PropertyAnimation  {properties: "opacity"; duration: 600; easing.type: Easing.Linear  }
-    //    }
-
-    //    MouseArea{
-    //        id:mouse
-    //        anchors.fill: parent
-    //        hoverEnabled: true
-    //        //enabled: true
-    //        // preventStealing:true
-    //        propagateComposedEvents:true
-    //        onEntered:{
-
-    //            mhomeStateBar.state = "show"
-
-    //            //enabled = false;
-    //        }
-    //        onExited:mhomeStateBar.state = "hide"
-
-    //    }
-
-
     Row{
         id:windowAdjust
         anchors.right: parent.right
         anchors.rightMargin: 60
         anchors.verticalCenter: parent.verticalCenter
         spacing:40
-        visible: homeMenu.mCurIndex === 0
         Image{
             id:img1
             width: 34
@@ -77,32 +44,29 @@ Rectangle{
             width: 34
             height: 34
             source: "qrc:/images/recordv.png"
-            property bool isRecord: false
+            property bool isChecked: false
             MouseArea{
                 anchors.fill:parent
-                onPressed: {
+                onClicked: {
 
                     if(!deviceconfig.getSwitchRecord()){
                         main.showToast(qsTr("禁止录像"))
                         return;
-                    }
-                    if(img2.isRecord){
-
-                        captureScrennTimer.stop()
-                        if(screenv.funEndScreenRecrod()){
-                            img2.source = "qrc:/images/recordv.png"
-                            img2.isRecord = false;
-                            vedioLayout.stopRecordLable();
-                        }
-
                     }else{
+                       if(!img2.isChecked){
 
-                        if(screenv.funStartScreenRecrod(deviceconfig.getRecordPath())){
-                            captureScrennTimer.start();
-                            img2.source = "qrc:/images/recordv_p.png";
-                            vedioLayout.startRecordLable();
-                            img2.isRecord = true;
-                        }
+                           img2.isChecked = true;
+                           img2.source = "qrc:/images/recordv_p.png"
+                           captureScrennTimer.isRecord = true
+                           vedioLayout.startRecordLable();
+                           if(!captureScrennTimer.running)
+                               captureScrennTimer.start()
+                       } else{
+                            img2.isChecked = false;
+                          img2.source = "qrc:/images/recordv.png"
+                           captureScrennTimer.isRecord = false
+                           vedioLayout.stopRecordLable();
+                       }
                     }
 
                 }
@@ -128,14 +92,43 @@ Rectangle{
     Timer{
         id:captureScrennTimer
 
+        property int tCount: 0
+        property bool isRecord: false
+        property int min30count: 25*60*30;
         triggeredOnStart:true
 
         repeat:true
 
-        interval: 65;
+        interval: 40;
 
         onTriggered: {
+
+            if(!isRecord){
+                tCount = 0 ;
+                screenv.funEndScreenRecrod()
+                captureScrennTimer.stop();
+                return;
+            }
+
+            if(tCount === 0){//时钟为0时 开始新的一次文件录像
+                if(!screenv.funStartScreenRecrod(deviceconfig.getRecordPath()))
+                  return
+            }
+
             screenv.funScreenRecrod(main,0 ,68,main.width,main.height-68);
+
+
+            tCount++;
+            if(tCount >= min30count){
+
+                if(screenv.funEndScreenRecrod()){
+                    tCount = 0 ;
+                }
+            }
+
+
+
+
         }
     }
 }

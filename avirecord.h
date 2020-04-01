@@ -13,10 +13,13 @@ class AviRecord : public QObject
     Q_OBJECT
 public:
     explicit AviRecord(QString did);
-    bool isRecording = false;
+    bool isStart = false;
+    bool isWriteSucc = false;
    ~AviRecord();
 signals:
 
+    void signal_startSucc(bool isSucc);
+    void signal_endSucc(bool isSucc);
 public slots:
     void slot_writeAudio(char *buff,int len,long long tempTime);
     void slot_writeVedio(char *buff,int len,long long tempTime);

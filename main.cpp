@@ -2,6 +2,7 @@
 #include <QQmlApplicationEngine>
 #include "XVideo.h"
 #include "screenvideo.h"
+#include "replaytimeline.h"
 int main(int argc, char *argv[])
 {
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
@@ -17,6 +18,7 @@ int main(int argc, char *argv[])
     QQmlApplicationEngine engine;
     qmlRegisterType<XVideo>("XVideo", 1, 0, "XVideo");
     qmlRegisterType<ScreenVideo>("ScreenVideo", 1, 0, "ScreenVideo");
+    qmlRegisterType<ReplayTimeline>("TimeLine", 1, 0, "TimeLine");
     engine.load(QUrl(QStringLiteral("qrc:/qml/main.qml")));
 
 
@@ -37,7 +39,7 @@ int main(int argc, char *argv[])
     // XVideo 为QPaint显示视频(光栅绘图)
 
     //qmlRegisterType<DeviceManagerment>("DeviceManagerment", 1, 0, "DeviceManagerment");
-    //qmlRegisterType<TimeLine>("TimeLine", 1, 0, "TimeLine");
+
 
 
     return app.exec();

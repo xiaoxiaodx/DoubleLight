@@ -47,5 +47,27 @@
         <file>qml/simpleControl/SimpleSwich.qml</file>
         <file>qml/dialog/AskDialog.qml</file>
         <file>alarm.wav</file>
+        <file>qml/playbackVideo/MyCalendar.qml</file>
+        <file>qml/playbackVideo/PlaybackVideo.qml</file>
+        <file>images/play.png</file>
+        <file>images/play_fast.png</file>
+        <file>images/play_fast_h.png</file>
+        <file>images/play_fast_p.png</file>
+        <file>images/play_h.png</file>
+        <file>images/play_slow.png</file>
+        <file>images/play_slow_h.png</file>
+        <file>images/play_slow_p.png</file>
+        <file>images/date.png</file>
+        <file>images/date_h.png</file>
+        <file>images/date_p.png</file>
+        <file>images/date_s.png</file>
+        <file>images/yearnext.png</file>
+        <file>images/yearnext_p.png</file>
+        <file>images/yearpre.png</file>
+        <file>images/yearpre_p.png</file>
+        <file>images/mouthnext.png</file>
+        <file>images/mouthnext_p.png</file>
+        <file>images/mouthpre.png</file>
+        <file>images/mouthpre_p.png</file>
     </qresource>
 </RCC>

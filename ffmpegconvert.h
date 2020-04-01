@@ -19,12 +19,13 @@ class FfmpegConvert : public QObject
 public:
     explicit FfmpegConvert(QObject *parent = nullptr);
   void rgb32ToH264(QImage img,QByteArray &arr,bool &gotpic);
+  void initConvert();
+  void unInitConvert();
 signals:
 
 public slots:
 private:
-    void initConvert();
-    void unInitConvert();
+
 
 
     SwsContext *swsCtx = nullptr;

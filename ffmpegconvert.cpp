@@ -2,13 +2,13 @@
 #include <QDebug>
 FfmpegConvert::FfmpegConvert(QObject *parent) : QObject(parent)
 {
-    initConvert();
+   // initConvert();
     //QImage *img = new QImage();
 
-    if(testImg.load("wocao.png"))
-    {
-        qDebug()<<"图片加载成功";
-    }
+//    if(testImg.load("wocao.png"))
+//    {
+//        qDebug()<<"图片加载成功";
+//    }
     //rgb32ToH264();
 
 }
@@ -125,20 +125,6 @@ void FfmpegConvert::rgb32ToH264(QImage img,QByteArray &arr,bool &gotpic)
     if (outSliceH <= 0)
         qDebug()<<"outSliceH fail";
 
-    // qDebug()<<"yuvFrame "<<yuvFrame->linesize[0]<<" "<<yuvFrame->linesize[1]<<" "<<yuvFrame->linesize[2];
-//    QFile file("testAvi.yuv");
-//    if(file.open(QIODevice::WriteOnly | QIODevice::Append)){
-//        int wh = 960*600;
-//        QByteArray arr1;
-//        arr1.append((char*)yuvFrame->data[0],wh);
-//        arr1.append((char*)yuvFrame->data[1],wh/4);
-//        arr1.append((char*)yuvFrame->data[2],wh/4);
-//        int len =file.write(arr1.data(),arr1.length());
-
-//        qDebug()<<"write  yuv succ :"<<arr1.length() << "    "<<len;
-//    }else{
-//        qDebug()<<"file open fail:";
-//    }
 
     /* 8 H264编码 */
     // 将未压缩的AVFrame数据(yuv)给编码器

@@ -35,14 +35,21 @@ bool ScreenVideo::funStartScreenRecrod(QString str)
         connect(this,&ScreenVideo::signal_readyWriteAvi,writeAvi,&AviRecord::slot_readyRecord);
         connect(this,&ScreenVideo::signal_endWriteAvi,writeAvi,&AviRecord::slot_endRecord);
         connect(this,&ScreenVideo::signal_writeAvi,writeAvi,&AviRecord::slot_writeImage);
+        connect(writeAvi,&AviRecord::signal_startSucc,this,&ScreenVideo::slot_startSucc);
+        connect(writeAvi,&AviRecord::signal_endSucc,this,&ScreenVideo::slot_endSucc);
         writeAvi->moveToThread(writeAviThread);
         writeAviThread->start();
-
     }
-    //这里加个阻塞等待
 
     emit signal_readyWriteAvi(str);
-    return true;
+    loop.exec();
+    return isStartSucc;
+}
+
+void ScreenVideo::slot_startSucc(bool isSucc){
+    qDebug()<<"slot_startSucc   "<<isSucc;
+    isStartSucc = isSucc;
+    loop.exit();
 }
 
 void ScreenVideo::funScreenRecrod(QQuickWindow *quic,int capx,int capy,int capw,int caph)
@@ -57,11 +64,20 @@ void ScreenVideo::funScreenRecrod(QQuickWindow *quic,int capx,int capy,int capw,
 
 bool  ScreenVideo::funEndScreenRecrod()
 {
-    //这里加个阻塞等待
-//    if(writeAvi != nullptr && writeAvi->isRecording){
-//        return false;
-//    }
+    if(writeAvi == nullptr){
+        return false;
+    }
+    qDebug()<<"signal_endWriteAvi";
     emit signal_endWriteAvi();
-    return true;
+    loop.exec();
+    return isEndSucc;
+}
+
+void ScreenVideo::slot_endSucc(bool isSucc){
+    qDebug()<<"funEndScreenRecrod   "<<isSucc;
+    isEndSucc = isSucc;
+    loop.exit();
+
+
 }
 

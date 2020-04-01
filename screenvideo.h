@@ -32,6 +32,8 @@ signals:
 
 
 public slots:
+    void slot_startSucc(bool isSucc);
+    void slot_endSucc(bool isSucc);
 private:
 
     void createOpencvW();
@@ -44,6 +46,9 @@ private:
     FfmpegConvert convern;
 
     int index = 1;
+    QEventLoop loop;
+    bool isStartSucc = false;
+    bool isEndSucc = false;
 
 };
 

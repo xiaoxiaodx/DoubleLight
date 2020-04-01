@@ -1,5 +1,6 @@
 import QtQuick 2.0
 import QtQuick.Layouts 1.12
+import "../"
 Rectangle {
 
     id:root
@@ -24,8 +25,10 @@ Rectangle {
     //        id:repeater
 
     RowLayout{
-        anchors.fill: parent
+
         id: rowlayout
+        width: parent.width
+        height: parent.height - mhomeStateBar.height
         spacing: 0
         VideoLivePlay{
             id:videoNormal
@@ -76,6 +79,14 @@ Rectangle {
 
 
         }
+    }
+
+
+    HomeStates{
+        id:mhomeStateBar
+        width: parent.width
+        height:50
+        anchors.bottom: parent.bottom
     }
 
 

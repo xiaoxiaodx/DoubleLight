@@ -15,6 +15,9 @@ Popup {
     background: rect
 
 
+    property color fontColor: "#333333"
+    property color bgColor: "#ffffff"
+
     signal s_yearChange(var value)
     signal s_mouthChange(var value)
     signal s_dayChange(var value)
@@ -22,7 +25,8 @@ Popup {
     Rectangle {
         id: rect
         anchors.fill: parent
-        color: "transparent"
+        color: bgColor
+        radius: 4
         Calendar{
             id:the_calendar
             width: parent.width
@@ -35,7 +39,7 @@ Popup {
                 background: Rectangle{
                     id:background
                     anchors.fill: parent
-                    color:"#191919"
+                    color:bgColor
                 }
 
                 //标题年月
@@ -87,7 +91,6 @@ Popup {
                     QmlImageButton {
                         id: mouthPre
 
-
                         anchors.verticalCenter: parent.verticalCenter
                         anchors.left: parent.left
                         anchors.leftMargin: 38
@@ -130,7 +133,7 @@ Popup {
                         width: labelYear.width + labelMonth.width
                         height: parent.height
                         anchors.horizontalCenter: parent.horizontalCenter
-                        color: "transparent"
+                        color: bgColor
                         Label {
                             id: labelYear
                             anchors.verticalCenter: parent.verticalCenter
@@ -140,8 +143,8 @@ Popup {
                             //elide: Text.ElideRight
                             horizontalAlignment: Text.AlignLeft
                             font.pixelSize: 14
-                            font.family: "Microsoft Yahei"
-                            color: "white"
+
+                            color: fontColor
                         }
 
                         Label {
@@ -154,8 +157,8 @@ Popup {
                             //elide: Text.ElideRight
                             horizontalAlignment: Text.AlignRight
                             font.pixelSize: 14
-                            font.family: "Microsoft Yahei"
-                            color: "white"
+
+                            color:fontColor
                         }
                     }
 
@@ -174,12 +177,12 @@ Popup {
                     Label {
                         text: control.__locale.dayName(styleData.dayOfWeek, control.dayOfWeekFormat)
                         anchors.centerIn: parent
-                        color: "white"
+                        color: fontColor
                         font.pixelSize: 14
-                        //font.family: "SimSun"
+
                     }
                 }
-
+                //日期
                 dayDelegate: Rectangle {
                     //选中-当月未选中-其他
                     //                color: styleData.selected
@@ -188,18 +191,18 @@ Popup {
                     //                          ?Qt.rgba(6/255,45/255,51/255,1)
                     //                          : Qt.rgba(3/255,28/255,35/255,1));
                     //color: styleData.selected?"#409EFF":((styleData.visibleMonth && styleData.valid)?(calendarEventModel.getDateEvent(styleData.date)):"#191919")
-                    color: (styleData.visibleMonth && styleData.valid)?(calendarEventModel.getDateEvent(styleData.date)):"#191919"
+                    color: bgColor//(styleData.visibleMonth && styleData.valid)?(calendarEventModel.getDateEvent(styleData.date)):bgColor
                     border.width: 2
                     border.color: styleData.selected?"#21e9cc":"transparent"
                     Label {
                         text: styleData.date.getDate()
                         anchors.centerIn: parent
                         font.pixelSize: 14
-                        font.family: "SimSun"
+
                         //                    color: styleData.valid
                         //                           ?Qt.rgba(197/255,1,1,1)
                         //                           : Qt.rgba(16/255,100/255,100/255,1)
-                        color: styleData.today?"red":((styleData.visibleMonth && styleData.valid)?"white":Qt.rgba(255,255,255,0.25))
+                        color: styleData.today?"red":((styleData.visibleMonth && styleData.valid)?fontColor:Qt.rgba(0,0,0,0.25))
                         //color:styleData.visibleDay?"red":"white"
                     }
                 }
@@ -212,7 +215,7 @@ Popup {
             id:bottomRect
             width: parent.width
             height: 40
-            color: "#191919"
+            color: bgColor
             anchors.bottom: parent.bottom
             Text {
                 id: txtToday
@@ -220,7 +223,7 @@ Popup {
                 anchors.leftMargin: 16
                 anchors.verticalCenter: parent.verticalCenter
                 font.pixelSize: 10
-                color: "white"
+                color: fontColor
                 text: Qt.formatDate(the_calendar.selectedDate,"yyyy-MM-dd")
             }
 
@@ -238,7 +241,7 @@ Popup {
                 mRadius:3
                 fontsize: 10
 
-                text: qsTr("ensure")
+                text: qsTr("确定")
                 onClicked: {
                     s_dayChange(Qt.formatDate(the_calendar.selectedDate,"yyyyMMdd000000"))
                     root.close()
