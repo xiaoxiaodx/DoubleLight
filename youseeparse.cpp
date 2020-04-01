@@ -210,19 +210,36 @@ static float getTempAavl(s16* IrdaDataFloat, int height, int width, u16 slop ,s1
         temp += tempData[i];
         tempCnt2++;
     }
-    avl = temp/tempCnt2;
 
-    if(avl < 34.0 && avl >= 31.0)
+    avl = temp/tempCnt2;
+    float coe = 0.2;
+    if(YouSeeParse::check_min_temp >= 20 && YouSeeParse::check_min_temp < 25 )
     {
-        avl = (avl - 31.0)*0.3 + 35.5;
+        coe = 0.2;
     }
-    else if(avl >= 34.0 && avl < 35.0)
+    else if(YouSeeParse::check_min_temp >= 25 && YouSeeParse::check_min_temp < 35 )
     {
-        avl = (avl - 34) + 36.5 + YouSeeParse::temp_offset;
-    } else {
-        avl = avl + 3.5 + YouSeeParse::temp_offset;
+        coe = 0.3;
     }
-    //qDebug()<<"1111avl: "<<avl;
+
+    qDebug()<<"1111avl: "<<avl;
+    if(avl < (YouSeeParse::check_min_temp + TEMP_LEVEL) && avl >= YouSeeParse::check_min_temp)
+    {
+        avl = (avl - YouSeeParse::check_min_temp)*coe + 35.5;
+    }
+    else if(avl >= (YouSeeParse::check_min_temp + TEMP_LEVEL) && avl < (YouSeeParse::check_min_temp + TEMP_LEVEL + 1))
+    {
+        avl = (avl - (YouSeeParse::check_min_temp + TEMP_LEVEL)) + 36.5 + YouSeeParse::temp_offset;
+    }
+    else if(avl >= (YouSeeParse::check_min_temp + TEMP_LEVEL + 1))
+    {
+        avl = avl + TEMP_LEVEL + YouSeeParse::temp_offset;
+    }
+    else if(avl < YouSeeParse::check_min_temp)
+    {
+        qDebug()<<"avl ERROR: "<<avl;
+    }
+    //qDebug()<<"2222avl: "<<avl;
     return (avl);// + YouSeeParse::temp_offset
 }
 
@@ -260,7 +277,7 @@ static void __stdcall _previewCallback(s32 errorCode, DataFrame* frame, void* cu
         cvSetData(pFrame,p,tempHead->Width);
 
         stor = cvCreateMemStorage(0);
-        cont=cvSegmentFGMask(pFrame,true,20.0,stor,cvPoint(0,0));
+        cont=cvSegmentFGMask(pFrame,true,10.0,stor,cvPoint(0,0));
 
         if(pFrameSrc == NULL)
             pFrameSrc=cvCreateImageHeader(cvSize(tempHead->Width,tempHead->Height),IPL_DEPTH_32F,1);
@@ -275,6 +292,10 @@ static void __stdcall _previewCallback(s32 errorCode, DataFrame* frame, void* cu
         {
             mdrects=((CvContour*)cont)->rect;
             float avgT = getTempAavl(tempData, tempHead->Height, tempHead->Width, tempHead->Slope, tempHead->Offset, &mdrects) ;
+            if(mdrects.width < TEMP_MIN_INTERVAL && mdrects.height < TEMP_MIN_INTERVAL)
+            {
+                continue;
+            }
 
             RectInfo rectinfo;
             rectinfo.rect.setRect(mdrects.x,mdrects.y,mdrects.width,mdrects.height);

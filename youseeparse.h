@@ -12,9 +12,11 @@
 #include "opencv2/core/core_c.h"
 #include "opencv2/imgproc/imgproc_c.h"
 
-#define CHECK_MAX_TEMP (42)
-#define CHECK_MIN_TEMP (30)
+#define CHECK_MAX_TEMP (100)
+#define CHECK_MIN_TEMP (28)
 #define TEMP_OFFSET 0
+#define TEMP_LEVEL  5.0
+#define TEMP_MIN_INTERVAL 5
 
 #define FACECOORDINATES_HOST ("192.168.0.103")
 #define FACECOORDINATES_PORT (6000)
