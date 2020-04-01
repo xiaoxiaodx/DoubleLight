@@ -324,12 +324,13 @@ Rectangle {
         onS_temSet:video.fun_temSet( mvalue);
         onS_screenShotPathSet:video.fun_screenShotPathSet( mvalue);
         onS_recordPathSet:video.fun_recordPathSet(mvalue);
-        onS_temDrift:video.fun_temDrift(mvalue);
+        //onS_temDrift:video.fun_temDrift(mvalue);
         //onS_getInitPar:video.fun_getInitPar();
-
         onS_temMax:video.fun_temMax(mvalue);
         onS_temMin:video.fun_temMin(mvalue);
         onS_temOffset:video.fun_temOffset(mvalue);
+
+
     }
 
     function httpParCallback(smap){

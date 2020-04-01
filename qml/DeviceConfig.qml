@@ -15,7 +15,8 @@ Rectangle {
     signal s_temSet(var mvalue);
     signal s_screenShotPathSet(var mvalue);
     signal s_recordPathSet(var mvalue);
-    signal s_temDrift(var mvalue);
+//    signal s_temDrift(var mvalue);
+
     signal s_getInitPar();
 
 
@@ -146,7 +147,7 @@ Rectangle {
                     text: "0"
                     color: "#F8FAFD"
                     onTextChanged: {
-                        s_temDrift(inputTempDrift.text);
+                        s_temOffset(inputTempDrift.text);
 
                     }
                 }
@@ -164,7 +165,7 @@ Rectangle {
                         onPressed: {
                             imgValueUp.source="qrc:/images/arrow_up_p.png"
                             var num = parseInt(inputTempDrift.text)
-                            if(num >= 2)
+                            if(num >= 100)
                                 return
 
                             inputTempDrift.text = ""+(Number(num)+Number(1))
@@ -189,7 +190,7 @@ Rectangle {
                             imgValuedown.source="qrc:/images/arrow_low_p.png"
                             var num = parseInt(inputTempDrift.text)
 
-                            if(num <= -2)
+                            if(num <= 0)
                                 return
 
                             inputTempDrift.text = ""+(Number(num)-Number(1))
@@ -209,13 +210,213 @@ Rectangle {
                 anchors.topMargin: 6
             }
 
+            ////////////
+            Text {
+                id: txtTempMin
+                text: qsTr("最小温度检测")
+                font.pixelSize: fontSize
+                anchors.top: txtTempDrift.bottom
+                anchors.right: txtTempDrift.right
+
+                anchors.topMargin: 30
+            }
+
+            Rectangle{
+                id:rectTempMin
+                color: "#D6D8DB"
+                width: 88
+                height: 32
+                radius: 4
+                anchors.left: txtTempMin.right
+                anchors.verticalCenter: txtTempMin.verticalCenter
+                anchors.leftMargin: 20
+                LineEdit {
+                    id: inputTempMin
+                    width: rectTempMin.width  - 22
+                    height: rectTempMin.height -2
+                    anchors.left: parent.left
+                    anchors.leftMargin: 1
+                    anchors.verticalCenter: rectTempMin.verticalCenter
+                    border.width: 0
+                    inputLimite:Qt.ImhDigitsOnly
+                    font.pixelSize: fontSize
+                    placeholderText: ""
+                    isNeedDoubleClickEdit: false
+                    textLeftPadding:0
+                    txtColor: Qt.rgba(0,0,0,0.65)
+                    text: "0"
+                    color: "#F8FAFD"
+                    onTextChanged: {
+                        s_temMin(inputTempMin.text);
+
+                    }
+                }
+                Image {
+                    id: imgValueMinUp
+                    width: 20
+                    height: 15
+                    source: "qrc:/images/arrow_up.png"
+                    anchors.right: parent.right
+                    anchors.rightMargin: 1
+                    anchors.top: parent.top
+                    anchors.topMargin: 1
+                    MouseArea{
+                        anchors.fill: parent
+                        onPressed: {
+                            imgValueMinUp.source="qrc:/images/arrow_up_p.png"
+                            var num = parseInt(inputTempMin.text)
+                            if(num >= 100)
+                                return
+
+                            inputTempMin.text = ""+(Number(num)+Number(1))
+
+                        }
+                        onReleased: imgValueMinUp.source="qrc:/images/arrow_up.png"
+                    }
+                }
+                Image {
+                    id: imgValueMindown
+                    width: 20
+                    height: 15
+                    source: "qrc:/images/arrow_low.png"
+                    anchors.right: imgValueMinUp.right
+                    anchors.top: imgValueMinUp.bottom
+                    anchors.topMargin: 1
+                    MouseArea{
+                        anchors.fill: parent
+
+                        onPressed: {
+
+                            imgValueMindown.source="qrc:/images/arrow_low_p.png"
+                            var num = parseInt(inputTempMin.text)
+
+                            if(num <= 0)
+                                return
+
+                            inputTempMin.text = ""+(Number(num)-Number(1))
+                        }
+                        onReleased: imgValueMindown.source="qrc:/images/arrow_low.png"
+                    }
+                }
+
+            }
+
+            Text {
+                id: txtTemp1
+                text: qsTr(" ℃")
+                font.pixelSize: fontSize
+                anchors.verticalCenter: rectTempMin.verticalCenter
+                anchors.left: rectTempMin.right
+                anchors.topMargin: 6
+            }
+            ////////////
+            Text {
+                id: txtTempMax
+                text: qsTr("最大温度检测")
+                font.pixelSize: fontSize
+                anchors.top: txtTempMin.bottom
+                anchors.right: txtTempMin.right
+                anchors.topMargin: 30
+            }
+
+            Rectangle{
+                id:rectTempMax
+                color: "#D6D8DB"
+                width: 88
+                height: 32
+                radius: 4
+                anchors.left: txtTempMax.right
+                anchors.leftMargin: 20
+                anchors.verticalCenter: txtTempMax.verticalCenter
+
+                LineEdit {
+                    id: inputTempMax
+                    width: rectTempMax.width  - 22
+                    height: rectTempMax.height -2
+                    anchors.left: parent.left
+                    anchors.leftMargin: 1
+                    anchors.verticalCenter: rectTempMax.verticalCenter
+                    border.width: 0
+                    inputLimite:Qt.ImhDigitsOnly
+                    font.pixelSize: fontSize
+                    placeholderText: ""
+                    isNeedDoubleClickEdit: false
+                    textLeftPadding:0
+                    txtColor: Qt.rgba(0,0,0,0.65)
+                    text: "0"
+                    color: "#F8FAFD"
+                    onTextChanged: {
+                        s_temMax(inputTempMax.text);
+
+                    }
+                }
+                Image {
+                    id: imgValueMaxUp
+                    width: 20
+                    height: 15
+                    source: "qrc:/images/arrow_up.png"
+                    anchors.right: parent.right
+                    anchors.rightMargin: 1
+                    anchors.top: parent.top
+                    anchors.topMargin: 1
+                    MouseArea{
+                        anchors.fill: parent
+                        onPressed: {
+                            imgValueMaxUp.source="qrc:/images/arrow_up_p.png"
+                            var num = parseInt(inputTempMax.text)
+                            if(num >= 100)
+                                return
+
+                            inputTempMax.text = ""+(Number(num)+Number(1))
+
+                        }
+                        onReleased: imgValueMaxUp.source="qrc:/images/arrow_up.png"
+                    }
+                }
+                Image {
+                    id: imgValueMaxdown
+                    width: 20
+                    height: 15
+                    source: "qrc:/images/arrow_low.png"
+                    anchors.right: imgValueMaxUp.right
+                    anchors.top: imgValueMaxUp.bottom
+                    anchors.topMargin: 1
+                    MouseArea{
+                        anchors.fill: parent
+
+                        onPressed: {
+
+                            imgValueMaxdown.source="qrc:/images/arrow_low_p.png"
+                            var num = parseInt(inputTempMax.text)
+
+                            if(num <= 0)
+                                return
+
+                            inputTempMax.text = ""+(Number(num)-Number(1))
+                        }
+                        onReleased: imgValueMaxdown.source="qrc:/images/arrow_low.png"
+                    }
+                }
+
+            }
+
+            Text {
+                id: txtTemp2
+                text: qsTr(" ℃")
+                font.pixelSize: fontSize
+                anchors.verticalCenter: rectTempMax.verticalCenter
+                anchors.left: rectTempMax.right
+
+            }
+            /////////////////
+
             Text {
                 id: txtSwichWarn
                 text: qsTr("报警开关")
                 font.pixelSize: fontSize
                 anchors.top: txtTempDrift.bottom
                 anchors.left: txtTempDrift.left
-                anchors.topMargin: 26
+                anchors.topMargin: 134
             }
 
             SimpleSwich{
@@ -378,7 +579,7 @@ Rectangle {
                 height: 1
                 color: "#e2e2e2"
                 anchors.top: parent.top
-                anchors.topMargin: 448
+                anchors.topMargin: 556
                 anchors.horizontalCenter: parent.horizontalCenter
             }
 
