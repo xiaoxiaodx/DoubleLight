@@ -3,6 +3,7 @@
 #include "XVideo.h"
 #include "screenvideo.h"
 #include "replaytimeline.h"
+#include "xvideoreplay.h"
 int main(int argc, char *argv[])
 {
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
@@ -19,6 +20,8 @@ int main(int argc, char *argv[])
     qmlRegisterType<XVideo>("XVideo", 1, 0, "XVideo");
     qmlRegisterType<ScreenVideo>("ScreenVideo", 1, 0, "ScreenVideo");
     qmlRegisterType<ReplayTimeline>("TimeLine", 1, 0, "TimeLine");
+    qmlRegisterType<XVideoReplay>("XVideoReplay", 1, 0, "XVideoReplay");
+
     engine.load(QUrl(QStringLiteral("qrc:/qml/main.qml")));
 
 

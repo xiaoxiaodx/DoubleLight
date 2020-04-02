@@ -222,7 +222,7 @@ static float getTempAavl(s16* IrdaDataFloat, int height, int width, u16 slop ,s1
         coe = 0.3;
     }
 
-    qDebug()<<"1111avl: "<<avl;
+   // qDebug()<<"1111avl: "<<avl;
     if(avl < (YouSeeParse::check_min_temp + TEMP_LEVEL) && avl >= YouSeeParse::check_min_temp)
     {
         avl = (avl - YouSeeParse::check_min_temp)*coe + 35.5;

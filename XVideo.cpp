@@ -39,10 +39,12 @@ void XVideo::startNormalVideo()
 
 }
 
-void XVideo::startTemperatureVideo()
+void XVideo::startTemperatureVideo(float tp)
 {
     qDebug()<<"startTemperatureVideo ";
     createYouseePull();
+
+    warnTemp = tp;
 
     connect(&timerUpdate,&QTimer::timeout,this,&XVideo::slot_timeout);
 
@@ -348,9 +350,18 @@ void XVideo::paint(QPainter *painter)
                 map.insert("temp",strText);
                 listRectInfo.append(map);
 
-                painter->drawRect(desRect);
-                painter->drawText(desRect.x(),desRect.y()-3,strText);
 
+                if(oriRectinfo.temp>warnTemp){
+                    painter->save();
+                    painter->setPen(QPen(QBrush(QColor(255,0,0)),2));
+                    painter->drawRect(desRect);
+                    painter->drawText(desRect.x(),desRect.y()-3,strText);
+                    painter->restore();
+
+                }else{
+                    painter->drawRect(desRect);
+                    painter->drawText(desRect.x(),desRect.y()-3,strText);
+                }
             }
 
             if(mYouSeeParse != nullptr){
@@ -497,7 +508,7 @@ void XVideo::fun_recordSwith(bool mchecked){
 
 }
 void XVideo::fun_temSet(QVariant mvalue){
-
+    warnTemp = mvalue.toFloat();
 }
 void XVideo::fun_screenShotPathSet(QVariant mvalue){
 

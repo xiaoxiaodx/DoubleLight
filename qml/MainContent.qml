@@ -215,7 +215,7 @@ Rectangle {
 
         }
 
-        Rectangle{
+        PlaybackVideo{
             id:rectRepaly
             width: parent.width
             height: parent.height

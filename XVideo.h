@@ -31,7 +31,7 @@ public:
     Q_INVOKABLE void funSetRecordingFilePath(QString str);
 
     Q_INVOKABLE void startNormalVideo();
-    Q_INVOKABLE void startTemperatureVideo();
+    Q_INVOKABLE void startTemperatureVideo(float warnTemp);
 
     Q_INVOKABLE void    fun_timeSwitch(bool isChecked);
     Q_INVOKABLE void    fun_warnSwith(bool mchecked);
@@ -51,6 +51,7 @@ public:
     Q_INVOKABLE void fun_temMin(QVariant mvalue);
     Q_INVOKABLE void fun_temOffset(QVariant mvalue);
     Q_INVOKABLE void fun_setRectPar(int sx,int sy,int sw,int sh,int pw,int ph);
+
     explicit XVideo();
     ~XVideo();
 
@@ -175,6 +176,7 @@ private:
     static QVariantList listRectInfo;
 
 
+    float warnTemp = 0;
     qreal showRectX = 65;
     qreal showRectY = 41;
     qreal showRectW = 349;

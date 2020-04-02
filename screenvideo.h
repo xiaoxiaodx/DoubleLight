@@ -21,7 +21,7 @@ public:
     Q_INVOKABLE void funScreenRecrod(QQuickWindow *quic,int x,int y,int w,int h);
     Q_INVOKABLE bool funEndScreenRecrod();
     Q_INVOKABLE bool funScreenShoot(QString path,QQuickWindow *quic,int x,int y,int w,int h);
-
+    Q_INVOKABLE QString funGetCurPaht();
 public:
     explicit ScreenVideo(QObject *parent = nullptr);
 

@@ -23,7 +23,13 @@ bool ScreenVideo::funScreenShoot(QString path,QQuickWindow *quic,int capx,int ca
     img.save(path+"/"+time+".png","PNG");
 
 }
+#include <QDir>
+QString ScreenVideo::funGetCurPaht()
+{
+    QDir dir;
+    return dir.currentPath();
 
+}
 
 bool ScreenVideo::funStartScreenRecrod(QString str)
 {

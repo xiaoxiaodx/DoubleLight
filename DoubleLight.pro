@@ -6,11 +6,26 @@ CONFIG += c++11
 # depend on your compiler). Refer to the documentation for the
 # deprecated API to know how to port your code away from it.
 DEFINES += QT_DEPRECATED_WARNINGS
+# 版本信息
+VERSION = 1.0.0
 
-# You can also make your code fail to compile if it uses deprecated APIs.
-# In order to do so, uncomment the following line.
-# You can also select to disable deprecated APIs only up to a certain version of Qt.
-#DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
+# 图标
+RC_ICONS = myico.ico
+
+# 公司名称
+QMAKE_TARGET_COMPANY = "高至科技"
+
+# 产品名称
+QMAKE_TARGET_PRODUCT = "测温平台"
+
+# 文件说明
+QMAKE_TARGET_DESCRIPTION = "Qt Creator based on Qt 5.12.2 (MINGW 2020, 64 bit)"
+
+# 版权信息
+QMAKE_TARGET_COPYRIGHT = "Copyright 2020-2016 The Qt Company Ltd. All rights reserved."
+
+# 中文（简体）
+RC_LANG = 0x0004
 
 SOURCES += \
         main.cpp \
@@ -95,19 +110,21 @@ LIBS += $$PWD/third/yousee/YoseenFfmpeg.lib
 LIBS += $$PWD/third/yousee/YoseenSDK.lib
 
 INCLUDEPATH += $$PWD/OpenCV4.1.1x64/include
-LIBS += $$PWD/OpenCV4.1.1x64/x64/mingw/bin/libopencv_calib3d411.dll
-LIBS += $$PWD/OpenCV4.1.1x64/x64/mingw/bin/libopencv_dnn411.dll
-LIBS += $$PWD/OpenCV4.1.1x64/x64/mingw/bin/libopencv_flann411.dll
-LIBS += $$PWD/OpenCV4.1.1x64/x64/mingw/bin/libopencv_gapi411.dll
-LIBS += $$PWD/OpenCV4.1.1x64/x64/mingw/bin/libopencv_imgcodecs411.dll
+#LIBS += $$PWD/OpenCV4.1.1x64/x64/mingw/bin/libopencv_calib3d411.dll
+#LIBS += $$PWD/OpenCV4.1.1x64/x64/mingw/bin/libopencv_dnn411.dll
+#LIBS += $$PWD/OpenCV4.1.1x64/x64/mingw/bin/libopencv_flann411.dll
+#LIBS += $$PWD/OpenCV4.1.1x64/x64/mingw/bin/libopencv_gapi411.dll
+#LIBS += $$PWD/OpenCV4.1.1x64/x64/mingw/bin/libopencv_imgcodecs411.dll
 LIBS += $$PWD/OpenCV4.1.1x64/x64/mingw/bin/libopencv_imgproc411.dll
-LIBS += $$PWD/OpenCV4.1.1x64/x64/mingw/bin/libopencv_ml411.dll
-LIBS += $$PWD/OpenCV4.1.1x64/x64/mingw/bin/libopencv_features2d411.dll
+#LIBS += $$PWD/OpenCV4.1.1x64/x64/mingw/bin/libopencv_ml411.dll
+#LIBS += $$PWD/OpenCV4.1.1x64/x64/mingw/bin/libopencv_features2d411.dll
+
 LIBS += $$PWD/OpenCV4.1.1x64/x64/mingw/bin/libopencv_core411.dll
 LIBS += $$PWD/OpenCV4.1.1x64/x64/mingw/bin/libopencv_highgui411.dll
-LIBS += $$PWD/OpenCV4.1.1x64/x64/mingw/bin/libopencv_objdetect411.dll
-LIBS += $$PWD/OpenCV4.1.1x64/x64/mingw/bin/libopencv_video411.dll
-LIBS += $$PWD/OpenCV4.1.1x64/x64/mingw/bin/libopencv_photo411.dll
-LIBS += $$PWD/OpenCV4.1.1x64/x64/mingw/bin/libopencv_stitching411.dll
-LIBS += $$PWD/OpenCV4.1.1x64/x64/mingw/bin/libopencv_videoio411.dll
+
+#LIBS += $$PWD/OpenCV4.1.1x64/x64/mingw/bin/libopencv_objdetect411.dll
+#LIBS += $$PWD/OpenCV4.1.1x64/x64/mingw/bin/libopencv_video411.dll
+#LIBS += $$PWD/OpenCV4.1.1x64/x64/mingw/bin/libopencv_photo411.dll
+#LIBS += $$PWD/OpenCV4.1.1x64/x64/mingw/bin/libopencv_stitching411.dll
+#LIBS += $$PWD/OpenCV4.1.1x64/x64/mingw/bin/libopencv_videoio411.dll
 
