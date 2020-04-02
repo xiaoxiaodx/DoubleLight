@@ -176,7 +176,7 @@ private:
     static QVariantList listRectInfo;
 
 
-    float warnTemp = 0;
+    static float warnTemp ;
     qreal showRectX = 65;
     qreal showRectY = 41;
     qreal showRectW = 349;

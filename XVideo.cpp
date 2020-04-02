@@ -7,6 +7,8 @@ QVariantList XVideo::listRectInfo;//tcp流画矩形使用的流
 
 QList<ImageInfo*> XVideo::listImgtmpInfo;
 QMutex XVideo::listImgmutex;
+
+ float XVideo::warnTemp=0 ;
 XVideo::XVideo()
 {
    // setFlag(QQuickItem::ItemHasContents);
@@ -404,7 +406,9 @@ void XVideo::paint(QPainter *painter)
                 QRectF desRect(rectF.x()+oriRect.x()*kX*kshowX,rectF.y()+oriRect.y()*kshowY*kY,oriRect.width()*kX*kshowX,oriRect.height()*kY*kshowY);
                 QString strText = vmap.value("temp").toString();
 
+
                 if(strText.toFloat()>warnTemp){
+                    qDebug()<<" "<<strText.toFloat();
                     painter->save();
                     painter->setPen(QPen(QBrush(QColor(255,0,0)),2));
                     painter->drawRect(desRect);

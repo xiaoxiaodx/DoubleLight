@@ -91,6 +91,9 @@ void MySearch1::readResultMsg()
     //QByteArray tmpdata=s_searchsocket->readAll();
     s_searchsocket->readDatagram(msg,2048);
 
+    qDebug()<<" readResultMsg   ************";
+
+
     QJsonParseError jsonError;
     QJsonDocument doucment = QJsonDocument::fromJson(msg, &jsonError);  // 转化为 JSON 文档
     if (!doucment.isNull() && (jsonError.error == QJsonParseError::NoError)) {  // 解析未发生错误
