@@ -23,10 +23,7 @@ extern "C"{
 
 #include <QObject>
 
-enum ENUM_CODEC_TYPE{
-    AV_NAKESTREAM = 1,
-    AV_FILE
-};
+
 
 class FFmpegReplay : public QObject
 {

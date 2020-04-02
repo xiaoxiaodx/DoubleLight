@@ -11,6 +11,16 @@ FfmpegConvert::FfmpegConvert(QObject *parent) : QObject(parent)
 //    }
     //rgb32ToH264();
 
+
+    fileSaveYuv = new QFile("F:/work/doubleLight/avi/testAvi.yuv");
+
+    if(fileSaveYuv->open(QIODevice::WriteOnly)){
+
+        qDebug()<<" 读取yuv数据的文件已经打开    ";
+
+
+
+    }
 }
 void FfmpegConvert::unInitConvert()
 {
@@ -119,7 +129,7 @@ void FfmpegConvert::rgb32ToH264(QImage img,QByteArray &arr,bool &gotpic)
     //qDebug()<<" rgbFrame :"<<rgbFrame->linesize[0]<<"   "<<rgbFrame->linesize[1]<<" "<<rgbFrame->linesize[2];
 
     //7 像素格式转换，转换后的YUV数据存放在yuvFrame
-    int outSliceH = sws_scale(swsCtx, rgbFrame->data, rgbFrame->linesize, 0, 600,
+    int outSliceH = sws_scale(swsCtx,  (const uint8_t* const*)rgbFrame->data, rgbFrame->linesize, 0, 600,
                               yuvFrame->data, yuvFrame->linesize
                               );
     if (outSliceH <= 0)
@@ -130,7 +140,19 @@ void FfmpegConvert::rgb32ToH264(QImage img,QByteArray &arr,bool &gotpic)
     // 将未压缩的AVFrame数据(yuv)给编码器
     //yuvFrame->pts = count++ * (codecCtx->time_base.num * 1000 / codecCtx->time_base.den);
 
-    yuvFrame->pts = (count++) * (codecCtx->time_base.den)  / (codecCtx->time_base.num *25);
+    //yuvFrame->pts = (count++) * (codecCtx->time_base.den)  / (codecCtx->time_base.num *25);
+
+
+
+
+
+
+    qDebug()<<"***width***:"<<yuvFrame->linesize[0]<<yuvFrame->linesize[1]<<yuvFrame->linesize[2];
+    int wh = 960*600;
+    fileSaveYuv->write((char*)yuvFrame->data[0],yuvFrame->linesize[0]*600);
+    fileSaveYuv->write((char*)yuvFrame->data[1],yuvFrame->linesize[1]*600/4);
+    fileSaveYuv->write((char*)yuvFrame->data[2],yuvFrame->linesize[2]*600/4);
+
 
     ret = avcodec_send_frame(codecCtx, yuvFrame);
     if (ret != 0)
@@ -145,16 +167,16 @@ void FfmpegConvert::rgb32ToH264(QImage img,QByteArray &arr,bool &gotpic)
         return;
     }
 
-    //    qDebug()<<"获取一幅图:"<<pkt.size;
-    //    QFile file1("testAvi.h264");
-    //    if(file1.open(QIODevice::WriteOnly | QIODevice::Append)){
+        qDebug()<<"获取一幅图:"<<pkt.size;
+        QFile file1("testAvi.h264");
+        if(file1.open(QIODevice::WriteOnly | QIODevice::Append)){
 
-    //        int len =file1.write((char*)pkt.data,pkt.size);
+            int len =file1.write((char*)pkt.data,pkt.size);
 
-    //        qDebug()<<"write  h264 succ :"<<len;
-    //    }else{
-    //        qDebug()<<"file open fail:";
-    //    }
+            qDebug()<<"write  h264 succ :"<<len;
+        }else{
+            qDebug()<<"file open fail:";
+        }
 
 
     gotpic = true;

@@ -6,6 +6,8 @@
 #include "render/texturenode.h"
 #include "render/renderthread.h"
 #include <QQuickWindow>
+#include "ffmpegreplay.h"
+#include <QFile>
 class XVideoReplay : public QQuickItem
 {
     Q_OBJECT
@@ -29,8 +31,13 @@ private:
     QThread *pThreadFfmpeg;
     RenderThread *m_renderThread{nullptr};
 
+    QByteArray yuvArr;
+    yuvInfo yuvData;
+    QList<yuvInfo> listYuv;
+    FFmpegReplay freplay;
+    QFile *yuvfile;
 
-
+    QTimer timer;
 };
 
 #endif // XVIDEOREPLAY_H

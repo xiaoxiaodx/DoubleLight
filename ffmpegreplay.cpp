@@ -1,5 +1,9 @@
 #include "ffmpegreplay.h"
 #include <QDebug>
+enum ENUM_CODEC_TYPE{
+    AV_NAKESTREAM = 1,
+    AV_FILE
+};
 FFmpegReplay::FFmpegReplay(QObject *parent) : QObject(parent)
 {
 

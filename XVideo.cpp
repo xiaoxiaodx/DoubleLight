@@ -30,7 +30,7 @@ XVideo::XVideo()
 
 void XVideo::startNormalVideo()
 {
-    qDebug()<<"startNormalVideo ";
+    DebugLog::getInstance()->writeLog("startNormalVideo ");
     createSearchIp();
 
     connect(&timerUpdate,&QTimer::timeout,this,&XVideo::slot_timeout);
@@ -41,7 +41,8 @@ void XVideo::startNormalVideo()
 
 void XVideo::startTemperatureVideo(float tp)
 {
-    qDebug()<<"startTemperatureVideo ";
+    DebugLog::getInstance()->writeLog("startTemperatureVideo ");
+
     createYouseePull();
 
     warnTemp = tp;
@@ -165,10 +166,10 @@ void XVideo::createTcpThread()
         connect(m_readThread,&QThread::finished,m_readThread,&QThread::deleteLater);
         worker->moveToThread(m_readThread);
         m_readThread->start();
-        m_ip = "10.67.1.62";
         emit signal_connentSer(m_ip,555);
+
     }
-    //createHttpApi();
+    createHttpApi();
 
 }
 
@@ -223,31 +224,34 @@ void XVideo::createSearchIp()
         psearch->moveToThread(searchThread);
         searchThread->start();
     }
-    m_ip = "";
+
     emit signal_resetSearch();
 
 
-    QTimer::singleShot(2000,[&]{
-        if(m_ip == ""){
-            qDebug()<<"*************";
-            //emit signal_resetSearch();
 
-        }else{
-            createTcpThread();
-        }
 
-    });
+//    QTimer::singleShot(2000,[&]{
+//        if(m_ip == ""){
+//            qDebug()<<"*************";
+//            emit signal_resetSearch();
+
+//        }else{
+
+//            createTcpThread();
+//        }
+
+//    });
 
 }
 
 void XVideo::recSearchIp(QString ip)
 {
-    qDebug()<<"my recSearchIp:"<<ip;
+
+   DebugLog::getInstance()->writeLog("my recSearchIp:"+ip);
+    //qDebug()<<"my recSearchIp:"<<ip;
 
       m_ip = ip;//"192.168.1.101";
-
-
-
+      createTcpThread();
 }
 
 void XVideo::funScreenShot()
@@ -331,7 +335,7 @@ void XVideo::paint(QPainter *painter)
     if(m_Imginfo->pImg != nullptr){
 
         if(m_Imginfo->isDrawLine){
-            DebugLog::getInstance()->writeLog("painter hongwai start***");
+            //DebugLog::getInstance()->writeLog("painter hongwai start***");
             qreal kX = (qreal)this->width()/(qreal)384;
             qreal kY = (qreal)this->height()/(qreal)288;
 
@@ -371,9 +375,9 @@ void XVideo::paint(QPainter *painter)
                 emit signal_tempPar(map);
 
             }
-            DebugLog::getInstance()->writeLog("painter hongwai end***");
+           // DebugLog::getInstance()->writeLog("painter hongwai end***");
         }else{
-            DebugLog::getInstance()->writeLog("painter kejianguang start***");
+           // DebugLog::getInstance()->writeLog("painter kejianguang start***");
             qreal kX = (qreal)this->width()/(qreal)384;
             qreal kY = (qreal)this->height()/(qreal)288;
 
@@ -398,12 +402,21 @@ void XVideo::paint(QPainter *painter)
                 QRectF oriRect = vmap.value("rect").toRectF();
 
                 QRectF desRect(rectF.x()+oriRect.x()*kX*kshowX,rectF.y()+oriRect.y()*kshowY*kY,oriRect.width()*kX*kshowX,oriRect.height()*kY*kshowY);
-
                 QString strText = vmap.value("temp").toString();
-                painter->drawRect(desRect);
-                painter->drawText(desRect.x(),desRect.y()-3,strText);
+
+                if(strText.toFloat()>warnTemp){
+                    painter->save();
+                    painter->setPen(QPen(QBrush(QColor(255,0,0)),2));
+                    painter->drawRect(desRect);
+                    painter->drawText(desRect.x(),desRect.y()-3,strText);
+                    painter->restore();
+
+                }else{
+                    painter->drawRect(desRect);
+                    painter->drawText(desRect.x(),desRect.y()-3,strText);
+                }
             }
-            DebugLog::getInstance()->writeLog("painter kejianguang end***");
+           // DebugLog::getInstance()->writeLog("painter kejianguang end***");
         }
     }
 

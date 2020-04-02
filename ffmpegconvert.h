@@ -12,7 +12,7 @@ extern "C"{
 #include "libavutil/opt.h"
 #include "libavcodec/avcodec.h"
 }
-
+#include <QFile>
 class FfmpegConvert : public QObject
 {
     Q_OBJECT
@@ -36,6 +36,9 @@ private:
     AVFrame *rgbFrame = nullptr;
     AVPacket pkt;
     QImage testImg;
+
+
+    QFile *fileSaveYuv;
 };
 
 #endif // FFMPEGCONVERT_H

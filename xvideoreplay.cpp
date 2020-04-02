@@ -2,11 +2,47 @@
 
 XVideoReplay::XVideoReplay()
 {
+    QSize size;
+    size.setWidth(640);
+    size.setHeight(360);
+    m_renderThread = new RenderThread(size,&listYuv,&yuvData,nullptr);
 
+    //  freplay.slot_openFile();
+    //ready();
+
+    yuvData.data = new uchar[960*600 * 3 /2];
+
+    yuvfile = new QFile("myYuv.yuv");
+
+    if(yuvfile->open(QIODevice::ReadOnly)){
+
+            qDebug()<<"yuv 文件打开成功";
+         yuvArr = yuvfile->readAll();
+
+    }
+
+
+
+    connect(&timer,&QTimer::timeout,[&]{
+
+
+       // qDebug()<<"dsadsa1";
+        yuvData.resolutionH = 600;
+        yuvData.resolutionW = 960;
+        memcpy(yuvData.data,yuvArr.data(),960*600*3/2);
+
+        yuvArr.remove(0,960*600*3/2);
+        // qDebug()<<"dsadsa2";
+    });
+    timer.start(25);
 }
 
 
-void XVideoReplay::funStartOpen(QString str){}
+void XVideoReplay::funStartOpen(QString str){
+
+
+
+}
 void XVideoReplay::ready()
 {
     qDebug()<<"function ready";
@@ -35,7 +71,7 @@ QSGNode* XVideoReplay::updatePaintNode(QSGNode *oldNode, UpdatePaintNodeData *)
         m_renderThread->context->setShareContext(current);
         m_renderThread->context->create();
         m_renderThread->context->moveToThread(m_renderThread); //context有线程归属性，一个context只能被它关联的线程调用makeCurrent，不能被其它线程调用;也只能有一个对应的surface
-                                                               //一个线程在同一时刻也只能有一个context
+        //一个线程在同一时刻也只能有一个context
         current->makeCurrent(window()); //恢复绑定
         qDebug()<<"invokeMethod ready";
         QMetaObject::invokeMethod(this, "ready"); //跨线程调用

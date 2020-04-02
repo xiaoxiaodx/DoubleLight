@@ -1,7 +1,7 @@
 #include "tcpworker.h"
 #include<QFile>
 
-
+#include "debuglog.h"
 TcpWorker::TcpWorker(QObject *parent) : QObject(parent)
 {
 
@@ -37,7 +37,7 @@ void TcpWorker::initVariable()
 void TcpWorker::creatNewTcpConnect(QString ip, int port)
 {
 
-    qDebug()<<"tcp开始连接  "+ip+"  "+QString::number(port);
+    DebugLog::getInstance()->writeLog("tcp开始连接  "+ip+"  "+QString::number(port));
     this->ip = ip;
     this->port = port;
     if(tcpSocket == nullptr){
@@ -58,7 +58,7 @@ void TcpWorker::creatNewTcpConnect(QString ip, int port)
         timerConnectSer->start(3000);
 
     }
-    qDebug()<<"tcp连接创建完成"+m_did;
+    DebugLog::getInstance()->writeLog("tcp连接创建完成"+m_did);
 }
 
 void TcpWorker::slot_disConnectSer()
@@ -104,7 +104,7 @@ void TcpWorker::slot_timerConnectSer()
 void TcpWorker::slot_tcpConnected()
 {
 
-    qDebug()<<m_did <<" tcp连接成功";
+    DebugLog::getInstance()->writeLog( " tcp连接成功");
     isConnected = true;
     slot_tcpSendAuthentication(m_did,m_usrName,m_password);
 }

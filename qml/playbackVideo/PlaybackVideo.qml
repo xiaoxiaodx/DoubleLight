@@ -42,19 +42,17 @@ Rectangle {
         width: parent.width
         height: parent.height
 
-        color: "#252525"
+        color: "red"
 
         XVideoReplay{
             id:screen
-
             width:maincontent.width
-            height:maincontent.height - videoControl.height - timeline.height
-
+            height:maincontent.height - rowRectHeight.height - timeline.height
         }
 
 
         Rectangle{
-
+            id:rowRectHeight
             width: parent.width
             height: 40
             anchors.bottom: timeline.top

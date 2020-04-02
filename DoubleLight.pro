@@ -1,30 +1,29 @@
 QT += quick
 CONFIG += c++11
-
+ 
 # The following define makes your compiler emit warnings if you use
 # any Qt feature that has been marked deprecated (the exact warnings
 # depend on your compiler). Refer to the documentation for the
 # deprecated API to know how to port your code away from it.
 DEFINES += QT_DEPRECATED_WARNINGS
-# 鐗堟湰淇℃伅
+# 版本信息
 VERSION = 1.0.0
-
-# 鍥炬爣
+# 图标
 RC_ICONS = myico.ico
+TARGET=GAOZHI_TCS
+# 公司名称
+QMAKE_TARGET_COMPANY = "高至科技"
 
-# 鍏徃鍚嶇О
-QMAKE_TARGET_COMPANY = "楂樿嚦绉戞妧"
+# 产品名称
+QMAKE_TARGET_PRODUCT = "测温平台"
 
-# 浜у搧鍚嶇О
-QMAKE_TARGET_PRODUCT = "娴嬫俯骞冲彴"
-
-# 鏂囦欢璇存槑
+# 文件说明
 QMAKE_TARGET_DESCRIPTION = "Qt Creator based on Qt 5.12.2 (MINGW 2020, 64 bit)"
 
-# 鐗堟潈淇℃伅
+# 版权信息
 QMAKE_TARGET_COPYRIGHT = "Copyright 2020-2016 The Qt Company Ltd. All rights reserved."
 
-# 涓枃锛堢畝浣擄級
+# 中文（简体）
 RC_LANG = 0x0004
 
 SOURCES += \

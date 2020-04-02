@@ -38,7 +38,7 @@ void YouSeeParse::slot_discover()
             u8* p = (u8*)& ip;
             swprintf(w, 16, L"%d.%d.%d.%d, ", *(p + 3), *(p + 2), *(p + 1), *p);
             QString degstr = QString::number(*(p + 3))+"."+QString::number(*(p + 2))+"."+ QString::number(*(p + 1))+"."+ QString::number(*p);
-            DebugLog::getInstance()->writeLog(degstr);
+            DebugLog::getInstance()->writeLog("红外地址:"+degstr);
             w += wcslen(w);
             dcr = dcr->pNext;
         }
@@ -254,7 +254,7 @@ IplImage* pFrameSrc = NULL;
 static void __stdcall _previewCallback(s32 errorCode, DataFrame* frame, void* customData) {
     if (YET_None == errorCode) {
 
-        DebugLog::getInstance()->writeLog("_previewCallback start***");
+        //DebugLog::getInstance()->writeLog("_previewCallback start***");
         QMutexLocker locker(&XVideo::listImgmutex);
         //数据过多则不处理了
         if(XVideo::listImgtmpInfo.size() >= 30)return;
@@ -324,7 +324,7 @@ static void __stdcall _previewCallback(s32 errorCode, DataFrame* frame, void* cu
 
         XVideo::listImgtmpInfo.append(info);
 
-        DebugLog::getInstance()->writeLog("_previewCallback end***");
+       // DebugLog::getInstance()->writeLog("_previewCallback end***");
         cvReleaseMemStorage(&stor);
     }else {
         //接收数据失败, 预览内置自动恢复, YET_PreviewRecoverBegin-YET_PreviewRecoverEnd
