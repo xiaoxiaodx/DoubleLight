@@ -23,9 +23,9 @@ signals:
 protected:
     QSGNode* updatePaintNode(QSGNode *old, UpdatePaintNodeData *);
 public slots:
-
-private:
     void ready();
+private:
+
 
 
     QThread *pThreadFfmpeg;

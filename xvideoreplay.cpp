@@ -2,6 +2,7 @@
 
 XVideoReplay::XVideoReplay()
 {
+    setFlag(QQuickItem::ItemHasContents);
     QSize size;
     size.setWidth(640);
     size.setHeight(360);
@@ -12,7 +13,7 @@ XVideoReplay::XVideoReplay()
 
     yuvData.data = new uchar[960*600 * 3 /2];
 
-    yuvfile = new QFile("myYuv.yuv");
+    yuvfile = new QFile("testAvi.yuv");
 
     if(yuvfile->open(QIODevice::ReadOnly)){
 

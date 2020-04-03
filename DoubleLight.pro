@@ -7,7 +7,7 @@ CONFIG += c++11
 # deprecated API to know how to port your code away from it.
 DEFINES += QT_DEPRECATED_WARNINGS
 # 版本信息
-VERSION = 1.0.0
+VERSION = 1.0
 # 图标
 RC_ICONS = myico.ico
 TARGET=GAOZHI_TCS

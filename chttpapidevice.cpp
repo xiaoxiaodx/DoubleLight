@@ -230,6 +230,11 @@ void CHttpApiDevice::slot_ReadMsg() {
             continue;
         }
 
+        //不包含则返回
+        if(!oneData.compare("HTTP/1.1 200 OK")==0){
+            return ;
+        }
+
         char *pOneData = oneData.toLatin1().data();
         //消息是否正确
         if(!(strstr(pOneData,"HTTP/1.1 200 OK"))) {
@@ -242,6 +247,8 @@ void CHttpApiDevice::slot_ReadMsg() {
             bodylen = atoi(ptr+16);
         }
 
+        if(!ptr)
+            return;
         //find body
         ptr = strstr(ptr, "\r\n\r\n");
         if(ptr == NULL) {

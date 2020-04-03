@@ -18,8 +18,6 @@ FfmpegConvert::FfmpegConvert(QObject *parent) : QObject(parent)
 
         qDebug()<<" 读取yuv数据的文件已经打开    ";
 
-
-
     }
 }
 void FfmpegConvert::unInitConvert()

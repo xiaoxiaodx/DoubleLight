@@ -201,7 +201,7 @@ void XVideo::fun_temMin(QVariant mvalue){
     qDebug()<<" check_min_temp  "<<YouSeeParse::check_min_temp;
 }
 void XVideo::fun_temOffset(QVariant mvalue){
-    YouSeeParse::temp_offset = mvalue.toFloat();
+    YouSeeParse::temp_offset = mvalue.toFloat()/2;
     qDebug()<<" temp_offset  "<<YouSeeParse::temp_offset;
 }
 
@@ -536,6 +536,7 @@ void XVideo::fun_recordPathSet(QVariant mvalue){
 void XVideo::fun_temDrift(QVariant mvalue)
 {
     YouSeeParse::temp_offset = mvalue.toFloat()/2;
+    qDebug()<<"dsadsa"<<YouSeeParse::temp_offset;
     //        qDebug()<<" fun_temDrift    ";
     //        if(mYouSeeParse != nullptr){
     //            float temDrift = mvalue.toFloat();
