@@ -19,13 +19,15 @@ Window {
     width:1000
     height:800
 
+    property bool isLocker: false
     visibility : "Windowed"
 
     property int mouseAdjustWidth: 10
     property int minW: 960
     property int minH: 600
     property string toastStr: ""
-
+    signal lockerCHange(bool lockchange);
+    onIsLockerChanged: lockerCHange(isLocker)
 //    ListModel{
 //        id:listdeviceInfo
 //        /*
@@ -89,6 +91,20 @@ Window {
         //            width: 100
         //            height: 100
         //        }
+    }
+
+    Rectangle{
+        color: "#00000000"
+        width: parent.width
+        height: parent.height
+        visible: isLocker
+        MouseArea{
+            anchors.fill: parent
+            onClicked: {
+                isLocker = false;
+            }
+        }
+
     }
     property point mousePressPt: "0,0"
     MouseArea{

@@ -163,7 +163,7 @@ void XVideo::createTcpThread()
         connect(m_readThread,&QThread::finished,m_readThread,&QThread::deleteLater);
         worker->moveToThread(m_readThread);
         m_readThread->start();
-        m_ip = "10.67.1.62";
+       // m_ip = "10.67.1.62";
         emit signal_connentSer(m_ip,555);
     }
     //createHttpApi();
@@ -196,7 +196,7 @@ void XVideo::fun_temMin(QVariant mvalue){
     qDebug()<<" check_min_temp  "<<YouSeeParse::check_min_temp;
 }
 void XVideo::fun_temOffset(QVariant mvalue){
-    YouSeeParse::temp_offset = mvalue.toFloat();
+    YouSeeParse::temp_offset = mvalue.toFloat()/2;
     qDebug()<<" temp_offset  "<<YouSeeParse::temp_offset;
 }
 
@@ -221,7 +221,7 @@ void XVideo::createSearchIp()
         psearch->moveToThread(searchThread);
         searchThread->start();
     }
-    m_ip = "";
+   // m_ip = "";
     emit signal_resetSearch();
 
 
@@ -235,7 +235,6 @@ void XVideo::createSearchIp()
         }
 
     });
-
 }
 
 void XVideo::recSearchIp(QString ip)
@@ -243,8 +242,6 @@ void XVideo::recSearchIp(QString ip)
     qDebug()<<"my recSearchIp:"<<ip;
 
       m_ip = ip;//"192.168.1.101";
-
-
 
 }
 

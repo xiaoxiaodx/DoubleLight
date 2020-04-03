@@ -21,19 +21,21 @@ Rectangle{
             id:img1
             width: 34
             height: 34
-            source: "qrc:/images/lock.png"
+            source:isLocker? "qrc:/images/lock_p.png":"qrc:/images/lock.png"
             property bool isLock: false
             MouseArea{
                 anchors.fill:parent
-                onPressed: {
+                onClicked: {
 
-                    if(img1.isLock){
-                        img1.source = "qrc:/images/lock.png"
-                        //s_testClick()
-                    }else{
-                        img1.source = "qrc:/images/lock_p.png"
-                    }
-                    img1.isLock = !img1.isLock;
+//                    if(img1.isLock){
+ //                       img1.source = "qrc:/images/lock.png"
+
+                        isLocker = true;
+//                    }else{
+//                        img1.source = "qrc:/images/lock_p.png"
+
+//                    }
+//                    img1.isLock = !img1.isLock;
 
                 }
 

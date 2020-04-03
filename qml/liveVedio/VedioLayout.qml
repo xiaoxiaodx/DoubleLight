@@ -11,7 +11,7 @@ Rectangle {
 
     property int currentIndex: -1
 
-
+    property alias isShowScreen: mhomeStateBar.visible
 
     signal s_doubleClick(var index,var ismax);
     signal s_click(var clickIndex);
@@ -23,6 +23,20 @@ Rectangle {
 
     //    Repeater{
     //        id:repeater
+
+    property int lockPreIndex: -1
+
+    Connections{
+        target: main
+        onLockerCHange:{
+
+            if(lockchange){
+                lockPreIndex = currentIndex
+                currentIndex = -1
+            }else
+                currentIndex = lockPreIndex
+        }
+    }
 
     RowLayout{
 
@@ -81,7 +95,7 @@ Rectangle {
     HomeStates{
         id:mhomeStateBar
         width: parent.width
-        height:50
+        height:isLocker?0:50
         anchors.bottom: parent.bottom
     }
 

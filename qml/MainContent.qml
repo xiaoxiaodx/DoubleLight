@@ -41,20 +41,22 @@ Rectangle {
     property int modelDataCurrentIndex: -1
 
 
+
     visible: false
 
     signal winMin();
     signal winMax();
     signal winClose();
     signal dragPosChange(var mx,var my);
-
+    color: "#252525"
     HomeMenu{
         id:homeMenu
         property bool isDoubleClick: false
         anchors.top: parent.top
         anchors.left: parent.left
         width: parent.width
-        height: 68
+        height: isLocker?0:68
+
         gradient: Gradient {
             GradientStop { position: 0.0; color: "#5D9CFF"}
             GradientStop { position: 1.0; color: "#2D76E7"}
@@ -120,7 +122,7 @@ Rectangle {
             id: vedioLayout
             height: parent.height
             width: parent.width;
-
+            isShowScreen:!isLocker
             property bool isWarn: false
 
             onS_click: modelDataCurrentIndex=clickIndex

@@ -29,6 +29,8 @@ Rectangle {
         property alias recordPath: inputRecordPath.text
         property alias screenShotPath: inputScreenShotPath.text
         property alias temDrift:inputTempDrift.text
+        property alias tempMin: inputTempMin.text
+        property alias tempMax: inputTempMax.text
         property alias warnTem:inputTem.text
 
         property alias switchTime:swithTime.checked
