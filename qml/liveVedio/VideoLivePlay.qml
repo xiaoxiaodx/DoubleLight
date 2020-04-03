@@ -79,7 +79,7 @@ Rectangle {
                video.startNormalVideo();
 
             }else if(videoType === 2){
-               video.startTemperatureVideo();
+               video.startTemperatureVideo(deviceconfig.getWarnTem());
             }
         }
 

@@ -39,7 +39,7 @@ void DebugLog::writeLog(QString str)
 
     if(file->open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Append)){
         QString curTime = QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss   ");
-       // qDebug()<<" writeLog    "<<str;
+        qDebug()<<" writeLog    "<<str;
         QTextStream out(file);
         out <<curTime<< str << "\n";
         file->close();

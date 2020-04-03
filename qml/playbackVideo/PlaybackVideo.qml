@@ -1,15 +1,10 @@
 import QtQuick 2.0
 import QtQuick 2.12
-import QtQuick.Controls 2.12
-import QtQuick.Layouts 1.12
-import QtQuick.Controls.Styles 1.4
-import QtQuick.Controls 1.4
-import Qt.labs.platform 1.1
 
-import QtQuick.LocalStorage 2.0 as Sql
-import XVideo 1.0
+
 import TimeLine 1.0
-import QtMultimedia 5.8
+import XVideoReplay 1.0
+
 
 import "../liveVedio"
 import "../simpleControl"
@@ -47,29 +42,17 @@ Rectangle {
         width: parent.width
         height: parent.height
 
-        color: "#252525"
+        color: "red"
 
-        Rectangle{
+        XVideoReplay{
             id:screen
-            color:"#252525"
             width:maincontent.width
-            height:maincontent.height - videoControl.height - timeline.height
-
-            MediaPlayer{
-                id:player
-                source: "file:///F:/work/doubleLight/avi/1080p.avi";
-                //autoPlay: true
-                //volume: voice.value
-            }
-            VideoOutput {
-                anchors.fill: parent
-                source: player
-            }
+            height:maincontent.height - rowRectHeight.height - timeline.height
         }
 
 
         Rectangle{
-
+            id:rowRectHeight
             width: parent.width
             height: 40
             anchors.bottom: timeline.top
