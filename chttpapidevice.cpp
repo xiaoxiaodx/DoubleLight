@@ -156,7 +156,7 @@ int CHttpApiDevice::HttpMsgCallBack(char * pData) {
                     }
                 } else {
                     qDebug()<<"not find data ";
-                    return -1;
+                   // return -1;
                 }
             } else if ("loginout" == cmd) {
                 memset(this->sessionId, 0, sizeof(this->sessionId));
@@ -220,6 +220,7 @@ void CHttpApiDevice::slot_ReadMsg() {
     QString dataStr = QString( msgdata.data() );
     QStringList listData = dataStr.split("HTTP/1.1");
 
+    qDebug()<<" slot_ReadMsg    ***1";
     //验证 HTTP消息，并进行消息分发
     for (int i=0;i<listData.size();i++) {//解决连包问题
         char bodyData[4096]={0};
@@ -230,10 +231,6 @@ void CHttpApiDevice::slot_ReadMsg() {
             continue;
         }
 
-        //不包含则返回
-        if(!oneData.compare("HTTP/1.1 200 OK")==0){
-            return ;
-        }
 
         char *pOneData = oneData.toLatin1().data();
         //消息是否正确
@@ -265,6 +262,7 @@ void CHttpApiDevice::slot_ReadMsg() {
             continue;
         }
     }
+      qDebug()<<" slot_ReadMsg    ***1";
 }
 void CHttpApiDevice::slot_Connected() {
     this->g_httpTcpConnectState = true;
@@ -338,7 +336,7 @@ bool CHttpApiDevice::send_httpParSet(QMap<QString,QVariant> map)
     curCmdState.insert("state",cmdSend);
     curCmdState.insert("checkedCount",0);
 
-    qDebug()<<" send_httpParSet ";
+    qDebug()<<" send_httpParSet "<<map;
 
 
     if(cmd.compare("setosdparam")==0){
@@ -398,7 +396,7 @@ void CHttpApiDevice::slot_httpParSet(QMap<QString,QVariant> map)
         }
     }
 
-    qDebug()<<"+****1";
+    qDebug()<<"+**slot_httpParSet**1";
     if(sendSucc){
 
         qDebug()<<"一次数据请求成功"<<map.value("cmd").toString();;

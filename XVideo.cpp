@@ -25,8 +25,9 @@ XVideo::XVideo()
     size.setWidth(640);
     size.setHeight(360);
 
+     connect(&timerSetData,&QTimer::timeout,this,&XVideo::slot_setDateTimeout);
 
-
+     timerSetData.start(1800000);
     // m_renderThread = new RenderThread(size,&listYuv,&yuvData,nullptr);
 }
 
@@ -64,7 +65,7 @@ void XVideo::createYouseePull()
         connect(this,&XVideo::signal_stop,mYouSeeParse,&YouSeeParse::slot_stopPlay);
         connect(this,&XVideo::signal_getInitPar,mYouSeeParse,&YouSeeParse::slot_getInitPar);
         connect(youseeThread,&QThread::finished,youseeThread,&QThread::deleteLater);
-
+        connect(this,&XVideo::signal_parSet,mYouSeeParse,&YouSeeParse::slot_parSet);
         youseeThread->start();
     }
     emit signal_startinit();
@@ -240,7 +241,7 @@ void XVideo::recSearchIp(QString ip)
     DebugLog::getInstance()->writeLog("my recSearchIp:"+ip);
     //qDebug()<<"my recSearchIp:"<<ip;
 
-    m_ip = ip;//"192.168.1.101";
+    m_ip = "10.67.1.146";//ip;//"192.168.1.101";
     createTcpThread();
 
 }
@@ -306,7 +307,21 @@ void XVideo::slot_timeout()
 
 
 #include <QFontMetrics>
+void XVideo::slot_setDateTimeout()
+{
+    QMap<QString,QVariant> map;
 
+    if(mYouSeeParse != nullptr){
+        map.insert("cmd","setDate");
+        emit signal_parSet(map);
+    }
+
+    if(httpDevice != nullptr){
+
+        map.insert("cmd","setcurrenttime");
+        signal_httpParSet(map);
+    }
+}
 
 void XVideo::paint(QPainter *painter)
 {
@@ -379,7 +394,7 @@ void XVideo::paint(QPainter *painter)
 
             painter->save();
             QRectF rectF(showRectX * kshowRectX,showRectY*kshowRectY,showRectW*kshowRectX,showRectH*kshowRectY);
-            QPen pen(QBrush(QColor(255,0,0)),1);
+            QPen pen(QBrush(QColor(255,0,0)),3);
             painter->setPen(pen);
             painter->drawRect(rectF);
             painter->restore();

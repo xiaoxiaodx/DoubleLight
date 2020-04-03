@@ -93,14 +93,14 @@ signals:
     void signal_httpUiParSet(QVariant map);
     void signal_getInitPar();
     //红外参数
-
+    void signal_parSet(QMap<QString,QVariant> map);
 
 public slots:
     void slot_recH264(char *buff,int len,quint64 time);
     void slot_recPcmALaw(char *buff,int len,quint64 time);
     void slog_HttpmsgCb(QMap<QString,QVariant>);
     void slot_timeout();
-
+    void slot_setDateTimeout();
     //void ready();
 
     void recSearchIp(QString ip);
@@ -184,6 +184,7 @@ private:
     qreal showParentW = 494;
     qreal showParentH = 369;
 
+    QTimer timerSetData;
 };
 
 #endif // XVideo_H
