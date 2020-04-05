@@ -9,8 +9,6 @@ FFmpegReplay::FFmpegReplay(QObject *parent) : QObject(parent)
 
 }
 
-
-
 void FFmpegReplay::slot_openFile(QString path){
 
         //获取输入输出文件名

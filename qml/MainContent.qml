@@ -38,7 +38,7 @@ Rectangle {
     property int curVindex: -1
 
 
-    property int modelDataCurrentIndex: -1
+ //   property int modelDataCurrentIndex: -1
 
 
 
@@ -125,13 +125,13 @@ Rectangle {
             isShowScreen:!isLocker
             property bool isWarn: false
 
-            onS_click: modelDataCurrentIndex=clickIndex
+          //  onS_click: modelDataCurrentIndex=clickIndex
             z:homeMenu.mCurIndex == 0?1:0
-            onS_doubleClick: {
+//            onS_doubleClick: {
 
 
 
-            }
+//            }
 
 
             Image{
@@ -266,7 +266,7 @@ Rectangle {
             imgWar.startAnimation();
             //开启录屏
             if(deviceconfig.getSwitchScreenShot())
-                screenv.funScreenShoot(deviceconfig.getScrennShotPath(),main,0 ,68,main.width,main.height-68);
+                screenv.funScreenShoot(deviceconfig.getScrennShotPath(),main,0 ,68,main.width,main.height-68,deviceconfig.getWarnTem());
             //开启声音
             if(deviceconfig.getSwitchBeer())
                 playWarn.play()

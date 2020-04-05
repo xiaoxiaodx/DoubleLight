@@ -523,7 +523,7 @@ Rectangle {
 
                     anchors.verticalCenter: rectScreenShotPath.verticalCenter
                     border.width: 0
-                    text:screenv.funGetCurPaht()
+                    text:screenv.funGetCurPath()
                     font.pixelSize: fontSize
                     placeholderText: ""
                     isNeedDoubleClickEdit: false
@@ -644,7 +644,7 @@ Rectangle {
 
                     anchors.verticalCenter: rectRecordPath.verticalCenter
                     border.width: 0
-                    text: screenv.funGetCurPaht()
+                    text: screenv.funGetCurPath()
                     font.pixelSize: fontSize
                     placeholderText: ""
                     isNeedDoubleClickEdit: false

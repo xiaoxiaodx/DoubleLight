@@ -13,13 +13,16 @@ XVideoReplay::XVideoReplay()
 
     yuvData.data = new uchar[960*600 * 3 /2];
 
-    yuvfile = new QFile("testAvi.yuv");
+    yuvfile = new QFile("171601.yuv");
 
     if(yuvfile->open(QIODevice::ReadOnly)){
 
-            qDebug()<<"yuv 文件打开成功";
-         yuvArr = yuvfile->readAll();
+        qDebug()<<"yuv 文件打开成功";
+        yuvArr = yuvfile->readAll();
 
+    }else{
+
+        qDebug()<<"yuv 文件打失败";
     }
 
 
@@ -27,23 +30,21 @@ XVideoReplay::XVideoReplay()
     connect(&timer,&QTimer::timeout,[&]{
 
 
-       // qDebug()<<"dsadsa1";
-        yuvData.resolutionH = 600;
-        yuvData.resolutionW = 960;
-        memcpy(yuvData.data,yuvArr.data(),960*600*3/2);
+        // qDebug()<<"dsadsa1";
 
-        yuvArr.remove(0,960*600*3/2);
+        if(yuvArr.size() > 0){
+            yuvData.resolutionH = 600;
+            yuvData.resolutionW = 960;
+            memcpy(yuvData.data,yuvArr.data(),960*600*3/2);
+
+            yuvArr.remove(0,960*600*3/2);
+        }
         // qDebug()<<"dsadsa2";
     });
-    timer.start(25);
+    timer.start(40);
 }
 
 
-void XVideoReplay::funStartOpen(QString str){
-
-
-
-}
 void XVideoReplay::ready()
 {
     qDebug()<<"function ready";

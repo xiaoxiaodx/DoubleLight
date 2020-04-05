@@ -6,49 +6,68 @@ CONFIG += c++11
 # depend on your compiler). Refer to the documentation for the
 # deprecated API to know how to port your code away from it.
 DEFINES += QT_DEPRECATED_WARNINGS
-# °æ±¾ÐÅÏ¢
+# ï¿½æ±¾ï¿½ï¿½Ï¢
 VERSION = 1.0
-# Í¼±ê
+# Í¼ï¿½ï¿½
 RC_ICONS = myico.ico
 TARGET=GAOZHI_TCS
-# ¹«Ë¾Ãû³Æ
-QMAKE_TARGET_COMPANY = "¸ßÖÁ¿Æ¼¼"
+# ï¿½ï¿½Ë¾ï¿½ï¿½ï¿½ï¿½
+QMAKE_TARGET_COMPANY = "ï¿½ï¿½ï¿½ï¿½ï¿½Æ¼ï¿½"
 
-# ²úÆ·Ãû³Æ
-QMAKE_TARGET_PRODUCT = "²âÎÂÆ½Ì¨"
+# ï¿½ï¿½Æ·ï¿½ï¿½ï¿½ï¿½
+QMAKE_TARGET_PRODUCT = "ï¿½ï¿½ï¿½ï¿½Æ½Ì¨"
 
-# ÎÄ¼þËµÃ÷
+# ï¿½Ä¼ï¿½Ëµï¿½ï¿½
 QMAKE_TARGET_DESCRIPTION = "Qt Creator based on Qt 5.12.2 (MINGW 2020, 64 bit)"
 
-# °æÈ¨ÐÅÏ¢
+# ï¿½ï¿½È¨ï¿½ï¿½Ï¢
 QMAKE_TARGET_COPYRIGHT = "Copyright 2020-2016 The Qt Company Ltd. All rights reserved."
 
-# ÖÐÎÄ£¨¼òÌå£©
+# ï¿½ï¿½ï¿½Ä£ï¿½ï¿½ï¿½ï¿½å£©
 RC_LANG = 0x0004
 
 SOURCES += \
         main.cpp \
-    mysearch1.cpp \
-    tcpworker.cpp \
-    XVideo.cpp \
-    youseeparse.cpp \
+    playVideo/XVideo.cpp \
+    playVideo/xvideoreplay.cpp \
+    recordVideo/captureScreen/screenvideo.cpp \
+    render/nv12render.cpp \
     render/renderthread.cpp \
     render/texturenode.cpp \
-    ffmpegcodec.cpp \
-    debuglog.cpp \
-    render/nv12render.cpp \
-    avi/avformat.cpp \
-    avi/avformat_input.cpp \
-    avi/avi_adapt.cpp \
-    avi/avienc_adapt.cpp \
-    avi/hi_avi.cpp \
-    avirecord.cpp \
-    screenvideo.cpp \
-    ffmpegconvert.cpp \
-    chttpapidevice.cpp \
-    replaytimeline.cpp \
-    xvideoreplay.cpp \
-    ffmpegreplay.cpp
+    thirdSrc/yousee/youseeparse.cpp \
+    util/debuglog.cpp \
+    qmlcplus/replaytimeline.cpp \
+    thirdSrc/ffmpeg/ffmpegcodec.cpp \
+    thirdSrc/ffmpeg/ffmpegconvert.cpp \
+    thirdSrc/ffmpeg/ffmpegreplay.cpp \
+    thirdSrc/ffmpeg/ffmpegwriteavi.cpp \
+    protocol/chttpapidevice.cpp \
+    protocol/mysearch1.cpp \
+    protocol/tcpworker.cpp \
+    playVideo/xvideotemp.cpp \
+    recordVideo/captureScreen/writeh264.cpp
+
+
+HEADERS += \
+    playVideo/XVideo.h \
+    playVideo/xvideoreplay.h \
+    recordVideo/captureScreen/screenvideo.h \
+    render/nv12render.h \
+    render/renderthread.h \
+    render/texturenode.h \
+    thirdSrc/yousee/youseeparse.h \
+    util/debuglog.h \
+    qmlcplus/replaytimeline.h \
+    thirdSrc/ffmpeg/ffmpegcodec.h \
+    thirdSrc/ffmpeg/ffmpegconvert.h \
+    thirdSrc/ffmpeg/ffmpegreplay.h \
+    thirdSrc/ffmpeg/ffmpegwriteavi.h \
+    protocol/chttpapidevice.h \
+    protocol/mysearch1.h \
+    protocol/tcpworker.h \
+    util/common.h \
+    playVideo/xvideotemp.h \
+    recordVideo/captureScreen/writeh264.h
 
 RESOURCES += qml.qrc
 
@@ -63,67 +82,34 @@ qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
-HEADERS += \
-    mysearch1.h \
-    tcpworker.h \
-    XVideo.h \
-    youseeparse.h \
-    render/renderthread.h \
-    render/texturenode.h \
-    ffmpegcodec.h \
-    debuglog.h \
-    render/nv12render.h \
-    avi/adapt.h \
-    avi/avformat.h \
-    avi/avi_adapt.h \
-    avi/avienc_adapt.h \
-    avi/common.h \
-    avi/debug.h \
-    avi/defs.h \
-    avi/hi_avi.h \
-    avi/hi_type.h \
-    avirecord.h \
-    common.h \
-    screenvideo.h \
-    ffmpegconvert.h \
-    chttpapidevice.h \
-    replaytimeline.h \
-    xvideoreplay.h \
-    ffmpegreplay.h
-
-
 INCLUDEPATH += $$PWD/avi
+INCLUDEPATH += $$PWD/protocol
+INCLUDEPATH += $$PWD/playVideo
+INCLUDEPATH += $$PWD/render
+INCLUDEPATH += $$PWD/thirdSrc
+INCLUDEPATH += $$PWD/thirdSrc/ffmpeg
+INCLUDEPATH += $$PWD/thirdSrc/yousee
+INCLUDEPATH += $$PWD/recordVideo/captureScreen
+INCLUDEPATH += $$PWD/util
+INCLUDEPATH += $$PWD/qmlcplus
 
-INCLUDEPATH += $$PWD/third/ffmpeg64/include
-LIBS += $$PWD/third/ffmpeg64/lib/avcodec.lib \
-        $$PWD/third/ffmpeg64/lib/avdevice.lib \
-        $$PWD/third/ffmpeg64/lib/avfilter.lib \
-        $$PWD/third/ffmpeg64/lib/avformat.lib \
-        $$PWD/third/ffmpeg64/lib/avutil.lib \
-        $$PWD/third/ffmpeg64/lib/postproc.lib \
-        $$PWD/third/ffmpeg64/lib/swresample.lib \
-        $$PWD/third/ffmpeg64/lib/swscale.lib
+INCLUDEPATH += $$PWD/thirdLib/ffmpeg64/include
+LIBS += $$PWD/thirdLib/ffmpeg64/lib/avcodec.lib \
+        $$PWD/thirdLib/ffmpeg64/lib/avdevice.lib \
+        $$PWD/thirdLib/ffmpeg64/lib/avfilter.lib \
+        $$PWD/thirdLib/ffmpeg64/lib/avformat.lib \
+        $$PWD/thirdLib/ffmpeg64/lib/avutil.lib \
+        $$PWD/thirdLib/ffmpeg64/lib/postproc.lib \
+        $$PWD/thirdLib/ffmpeg64/lib/swresample.lib \
+        $$PWD/thirdLib/ffmpeg64/lib/swscale.lib
 
-INCLUDEPATH += $$PWD/third/yousee/include
-LIBS += $$PWD/third/yousee/YoseenFfmpeg.lib
-LIBS += $$PWD/third/yousee/YoseenSDK.lib
+INCLUDEPATH += $$PWD/thirdLib/yousee/include
+LIBS += $$PWD/thirdLib/yousee/YoseenFfmpeg.lib
+LIBS += $$PWD/thirdLib/yousee/YoseenSDK.lib
 
-INCLUDEPATH += $$PWD/OpenCV4.1.1x64/include
-#LIBS += $$PWD/OpenCV4.1.1x64/x64/mingw/bin/libopencv_calib3d411.dll
-#LIBS += $$PWD/OpenCV4.1.1x64/x64/mingw/bin/libopencv_dnn411.dll
-#LIBS += $$PWD/OpenCV4.1.1x64/x64/mingw/bin/libopencv_flann411.dll
-#LIBS += $$PWD/OpenCV4.1.1x64/x64/mingw/bin/libopencv_gapi411.dll
-#LIBS += $$PWD/OpenCV4.1.1x64/x64/mingw/bin/libopencv_imgcodecs411.dll
-LIBS += $$PWD/OpenCV4.1.1x64/x64/mingw/bin/libopencv_imgproc411.dll
-#LIBS += $$PWD/OpenCV4.1.1x64/x64/mingw/bin/libopencv_ml411.dll
-#LIBS += $$PWD/OpenCV4.1.1x64/x64/mingw/bin/libopencv_features2d411.dll
+INCLUDEPATH += $$PWD/thirdLib/OpenCV4.1.1x64/include
+LIBS += $$PWD/thirdLib/OpenCV4.1.1x64/x64/mingw/bin/libopencv_imgproc411.dll
+LIBS += $$PWD/thirdLib/OpenCV4.1.1x64/x64/mingw/bin/libopencv_core411.dll
+LIBS += $$PWD/thirdLib/OpenCV4.1.1x64/x64/mingw/bin/libopencv_highgui411.dll
 
-LIBS += $$PWD/OpenCV4.1.1x64/x64/mingw/bin/libopencv_core411.dll
-LIBS += $$PWD/OpenCV4.1.1x64/x64/mingw/bin/libopencv_highgui411.dll
-
-#LIBS += $$PWD/OpenCV4.1.1x64/x64/mingw/bin/libopencv_objdetect411.dll
-#LIBS += $$PWD/OpenCV4.1.1x64/x64/mingw/bin/libopencv_video411.dll
-#LIBS += $$PWD/OpenCV4.1.1x64/x64/mingw/bin/libopencv_photo411.dll
-#LIBS += $$PWD/OpenCV4.1.1x64/x64/mingw/bin/libopencv_stitching411.dll
-#LIBS += $$PWD/OpenCV4.1.1x64/x64/mingw/bin/libopencv_videoio411.dll
 

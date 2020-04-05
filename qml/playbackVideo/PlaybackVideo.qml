@@ -42,7 +42,7 @@ Rectangle {
         width: parent.width
         height: parent.height
 
-        color: "red"
+        color: "#252525"
 
         XVideoReplay{
             id:screen
@@ -207,35 +207,42 @@ Rectangle {
             height:74
             anchors.bottom:parent.bottom
             property point mousePressPt: "0,0"
-            Rectangle{
-                id:rectIndicator
-                color: "#FE4932"
-                width: 8
-                height: 20
-                radius: 4
-                x:30-4
-                y:34
-                MouseArea{
+//            Rectangle{
+//                id:rectIndicator
+//                color: "#FE4932"
+//                width: 8
+//                height: 20
+//                radius: 4
+//                x:30-4
+//                y:34
+//                property bool isPress: false
+//                MouseArea{
+//                    anchors.fill: parent
+//                    hoverEnabled: true
 
-                    anchors.fill: parent
-                    hoverEnabled: true
+//                    onPressed: {
+//                        isPress = true;
+//                        mousePressPt  = Qt.point(mouse.x, mouse.y)
+//                    }
+//                    onEntered: {
+//                        rectIndicator.color = "red";
+//                    }
+//                    onExited: {
+//                        rectIndicator.color = "#FE4932";
+//                    }
+//                    onPositionChanged: {
+//                        if(pressed){
+//                            var offsetX = mouse.x - mousePressPt.x
+//                            rectIndicator.x = rectIndicator.x +offsetX
 
-                    onPressed: mousePressPt  = Qt.point(mouse.x, mouse.y)
-                    onEntered: {
-                        rectIndicator.color = "red";
-                    }
-                    onExited: {
-                        rectIndicator.color = "#FE4932";
-                    }
-                    onPositionChanged: {
-                        if(pressed){
-                            var offsetX = mouse.x - mousePressPt.x
-                            rectIndicator.x = rectIndicator.x +offsetX
-
-                        }
-                    }
-                }
-            }
+//                        }
+//                    }
+//                    onReleased: {
+//                        isPress = false;
+//                        TimeLine.
+//                    }
+//                }
+//            }
         }
     }
 

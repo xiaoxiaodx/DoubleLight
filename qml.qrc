@@ -4,7 +4,6 @@
         <file>qml/HomeTitleBar.qml</file>
         <file>qml/MainContent.qml</file>
         <file>qml/liveVedio/VedioLayout.qml</file>
-        <file>qml/liveVedio/VideoLivePlay.qml</file>
         <file>qml/main.qml</file>
         <file>qml/simpleControl/LineEdit.qml</file>
         <file>qml/simpleControl/MyComBox.qml</file>
@@ -69,5 +68,7 @@
         <file>images/mouthnext_p.png</file>
         <file>images/mouthpre.png</file>
         <file>images/mouthpre_p.png</file>
+        <file>qml/liveVedio/VideoTemp.qml</file>
+        <file>qml/liveVedio/VideoNormal.qml</file>
     </qresource>
 </RCC>

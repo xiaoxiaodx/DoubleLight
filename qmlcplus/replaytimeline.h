@@ -35,6 +35,8 @@ public:
     ~ReplayTimeline();
 
     Q_INVOKABLE void setSizeType(int type);
+
+    Q_INVOKABLE int getIndicatorTime();
     void init();
     void setDate(QDate date);
 
@@ -46,10 +48,10 @@ public slots:
 protected:
     void paint(QPainter *painter);
 
-//    void mousePressEvent(QMouseEvent* event);
-//    void mouseMoveEvent(QMouseEvent *event);
-//    void mouseReleaseEvent(QMouseEvent *event);
-//    void hoverMoveEvent(QMouseEvent *event);
+    void mousePressEvent(QMouseEvent* event);
+    void mouseMoveEvent(QMouseEvent *event);
+    void mouseReleaseEvent(QMouseEvent *event);
+    void hoverMoveEvent(QMouseEvent *event);
 
 private:
     Ui::ReplayTimeline *ui;
@@ -60,7 +62,8 @@ private:
     void drawBg(QPainter *painter);
     void drawScale(QPainter *painter,IntervalType type);
     void drawValue(QPainter *painter);
-    IntervalType scaleType = TIMELINE24H;//刻度类型
+    qreal getsecsPerPix();
+    IntervalType currentScaleType = TIMELINE24H;//刻度类型
 
     QTime replayCurrentTime;
     QList<TimeInterval*> listTimeInterval24H;
@@ -75,6 +78,8 @@ private:
     QList<TimeInterval*> listVideoInterval4;
 
     QRectF rectFIndicator;
+    bool isIndicatorPress = false;
+    QPoint pressPt;
 
 };
 

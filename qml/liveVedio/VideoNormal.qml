@@ -9,13 +9,10 @@ Rectangle {
     signal doubleClick(bool isFullScreen);
     signal click();
     signal s_showToastMsg(string str)
-
     signal s_sendList(var vmap)
 
-    property string shotScrennFilePath: ""
-    property string recordingFilePath: ""
     property bool mIsSelected: false
-    property int videoType : 0
+
     border.color: mIsSelected?"#98C5FF":"#252525"
     border.width: 3
 
@@ -36,18 +33,6 @@ Rectangle {
     property point mousePressPt1: "0,0"
 
 
-    Settings {
-        id:rectSetting
-//        property alias recordPath: inputRecordPath.text
-//        property alias screenShotPath: inputScreenShotPath.text
-//        property alias temDrift:inputTempDrift.text
-//        property alias warnTem:inputTem.text
-//        property alias switchTime:swithTime.checked
-//        property alias switchWarn:swichWarn.checked
-//        property alias switchScreenShot:swichScreenShot.checked
-//        property alias switchBeer:swichBeer.checked
-//        property alias switchRecord:swichRecord.checked
-    }
     MouseArea{
         anchors.fill: parent
         //hoverEnabled: true
@@ -73,35 +58,13 @@ Rectangle {
         anchors.verticalCenter: mPlayRect.verticalCenter
 
 
-        Component.onCompleted: {
+        Component.onCompleted:video.startNormalVideo()
 
-            if(videoType === 1){
-               video.startNormalVideo();
 
-            }else if(videoType === 2){
-               video.startTemperatureVideo(deviceconfig.getWarnTem());
-            }
-        }
 
         onSignal_loginStatus: main.showToast(msg);
 
-        //        onSignal_temp:{
-        //            var num = parseFloat(deviceconfig.getWarnTem()).toFixed(2)
-        //            //console.debug("temp ***** "+tempV+"   "+num)
-        //            if( Number(tempV) >= Number(num)){
-        //                vedioLayout.startWarn();
-        //            }else{
-        //                vedioLayout.endWarn();
-        //            }
-        //        }
-        onSignal_tempPar:tempParCallback(map);
-
         onSignal_httpUiParSet:httpParCallback(map);
-
-
-        onSignal_sendListRect:s_sendList(map)
-
-
 
 
         Rectangle{
@@ -316,19 +279,13 @@ Rectangle {
 
     Connections{
         target: deviceconfig
-        onS_timeSwith:video.fun_timeSwitch(mchecked);
-        onS_warnSwith:video.fun_warnSwith(mchecked);
-        onS_screenShotSwith:video.fun_warnSwith(mchecked);
-        onS_beerSwith:video.fun_beerSwith(mchecked);
-        onS_recordSwith:video.fun_recordSwith(mchecked);
-        onS_temSet:video.fun_temSet( mvalue);
-        onS_screenShotPathSet:video.fun_screenShotPathSet( mvalue);
-        onS_recordPathSet:video.fun_recordPathSet(mvalue);
-        //onS_temDrift:video.fun_temDrift(mvalue);
-        //onS_getInitPar:video.fun_getInitPar();
-        onS_temMax:video.fun_temMax(mvalue);
-        onS_temMin:video.fun_temMin(mvalue);
-        onS_temOffset:video.fun_temOffset(mvalue);
+        onS_timeSwith:video.fun_timeSwitch(mchecked);//时间使能
+        onS_temSet:video.fun_temSet( mvalue);//警报温度设置
+    }
+    Connections{
+        target: videoTemp
+        onS_sendList:video.fun_setListRect(vmap)
+
     }
 
     function httpParCallback(smap){
@@ -345,21 +302,10 @@ Rectangle {
 
         }
     }
-    function tempParCallback(smap){
 
-        var cmdType = smap.parType;
-
-        if(cmdType === "temp"){
-            var num = parseFloat(deviceconfig.getWarnTem()).toFixed(2)
-            var tempV = smap.tempValue;
-            if( Number(tempV) >= Number(num)){
-                vedioLayout.startWarn();
-            }else{
-                //  vedioLayout.endWarn();
-            }
-        }
+    function updateDate(){
+        video.fun_updateDate();
     }
-
 
 
 

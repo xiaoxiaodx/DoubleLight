@@ -1,9 +1,7 @@
 #include "youseeparse.h"
 #include "debuglog.h"
 #include "YoseenAlg.h"
-
-#include "XVideo.h"
-
+#include "xvideotemp.h"
 float YouSeeParse::temp_offset = TEMP_OFFSET;
 float YouSeeParse::check_max_temp = CHECK_MAX_TEMP;
 float YouSeeParse::check_min_temp = CHECK_MIN_TEMP;
@@ -222,7 +220,7 @@ static float getTempAavl(s16* IrdaDataFloat, int height, int width, u16 slop ,s1
         coe = 0.3;
     }
 
-   // qDebug()<<"1111avl: "<<avl;
+    // qDebug()<<"1111avl: "<<avl;
     if(avl < (YouSeeParse::check_min_temp + TEMP_LEVEL) && avl >= YouSeeParse::check_min_temp)
     {
         avl = (avl - YouSeeParse::check_min_temp)*coe + 35.5;
@@ -253,12 +251,6 @@ IplImage* pFrame = NULL;
 IplImage* pFrameSrc = NULL;
 static void __stdcall _previewCallback(s32 errorCode, DataFrame* frame, void* customData) {
     if (YET_None == errorCode) {
-
-        //DebugLog::getInstance()->writeLog("_previewCallback start***");
-        QMutexLocker locker(&XVideo::listImgmutex);
-        //数据过多则不处理了
-        if(XVideo::listImgtmpInfo.size() >= 30)return;
-
         DataFrameHeader* tempHead = (DataFrameHeader*)frame->Head;
         s16* tempData = (s16*) frame->Temp;//得到温度 坐标 表（一个像素点表示一个温度值）
         if(!tempHead){
@@ -297,10 +289,11 @@ static void __stdcall _previewCallback(s32 errorCode, DataFrame* frame, void* cu
                 continue;
             }
 
-            RectInfo rectinfo;
-            rectinfo.rect.setRect(mdrects.x,mdrects.y,mdrects.width,mdrects.height);
-            rectinfo.temp = avgT;
-            info->listRect.append(rectinfo);
+            QMap<QString,QVariant> map;
+            QRect rect(mdrects.x,mdrects.y,mdrects.width,mdrects.height);
+            map.insert("rect",rect);
+            map.insert("temp",avgT);
+            info->listRect.append(map);
             if(maxAvgT == -1){
                 maxAvgT = avgT;
             }else{
@@ -319,12 +312,17 @@ static void __stdcall _previewCallback(s32 errorCode, DataFrame* frame, void* cu
             DebugLog::getInstance()->writeLog("Yousee 图片分配内存失败");
             info->pImg = nullptr;
         }
-        info->temp = maxAvgT;
+        info->areaMaxtemp = maxAvgT;
         info->isDrawLine = true;
 
-        XVideo::listImgtmpInfo.append(info);
-
-       // DebugLog::getInstance()->writeLog("_previewCallback end***");
+        QMutexLocker locker(&XVideoTemp::buffMutex);
+        if(XVideoTemp::pBufferImginfo == nullptr)
+            XVideoTemp::pBufferImginfo = info;
+        else{
+            if(info->pImg != nullptr)
+                delete info->pImg;
+            delete info;
+        }
         cvReleaseMemStorage(&stor);
     }else {
         //接收数据失败, 预览内置自动恢复, YET_PreviewRecoverBegin-YET_PreviewRecoverEnd

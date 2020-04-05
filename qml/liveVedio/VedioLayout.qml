@@ -5,26 +5,55 @@ Rectangle {
 
     id:root
 
-    property int rowNum: 1
-    property int columnNum: 2
-    //property alias myModel: repeater.model
-
     property int currentIndex: -1
 
     property alias isShowScreen: mhomeStateBar.visible
 
-    signal s_doubleClick(var index,var ismax);
-    signal s_click(var clickIndex);
-    signal s_showToastMsg(string str)
-    signal s_deleteObject()
-    signal s1_authenticationFailue(string str)
-
     color: "#252525"
 
-    //    Repeater{
-    //        id:repeater
-
     property int lockPreIndex: -1
+
+    RowLayout{
+
+        id: rowlayout
+        width: parent.width
+        height: parent.height - mhomeStateBar.height
+        spacing: 0
+        VideoNormal{
+            id:videoNormal
+            color: "#252525"
+            Layout.fillHeight: true;
+            Layout.fillWidth: true
+            mIsSelected: 1 === currentIndex
+            onClick: currentIndex = 1
+
+            onDoubleClick: {
+                if(videoTemp.visible){
+                    videoTemp.visible = false;
+                }else{
+                    videoTemp.visible = true;
+                }
+            }
+        }
+
+        VideoTemp{
+            id:videoTemp
+
+            Layout.fillHeight: true;
+            Layout.fillWidth: true
+            color: "#252525"
+            mIsSelected: 2 === currentIndex
+            onClick: currentIndex = 2
+
+            onDoubleClick: {
+                if(videoNormal.visible){
+                    videoNormal.visible = false;
+                }else{
+                    videoNormal.visible = true;
+                }
+            }
+        }
+    }
 
     Connections{
         target: main
@@ -38,59 +67,6 @@ Rectangle {
         }
     }
 
-    RowLayout{
-
-        id: rowlayout
-        width: parent.width
-        height: parent.height - mhomeStateBar.height
-        spacing: 0
-        VideoLivePlay{
-            id:videoNormal
-            color: "#252525"
-            Layout.fillHeight: true;
-            Layout.fillWidth: true
-            videoType:1
-            mIsSelected: 1 === currentIndex
-
-            onClick: {
-
-                currentIndex = 1
-
-            }
-
-            onDoubleClick: {
-                if(videoTemp.visible){
-                    videoTemp.visible = false;
-                }else{
-                    videoTemp.visible = true;
-                }
-            }
-
-
-        }
-
-        VideoLivePlay{
-            id:videoTemp
-            videoType:2
-            Layout.fillHeight: true;
-            Layout.fillWidth: true
-            color: "#252525"
-            mIsSelected: 2 === currentIndex
-            onClick: {
-                currentIndex = 2
-            }
-
-            onDoubleClick: {
-
-                if(videoNormal.visible){
-                    videoNormal.visible = false;
-                }else{
-                    videoNormal.visible = true;
-                }
-            }
-        }
-    }
-
 
     HomeStates{
         id:mhomeStateBar
@@ -100,6 +76,17 @@ Rectangle {
     }
 
 
+
+    Timer{
+        id:updateTimer
+        repeat:true
+        interval: 1800000;
+
+        onTriggered: {
+            videoTemp.updateDate();
+            videoNormal.updateDate();
+        }
+    }
 
 
 

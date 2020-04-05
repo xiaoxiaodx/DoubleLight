@@ -48,8 +48,8 @@ public:
     quint64 time;
     bool isDrawLine = false;
 
-    QList<RectInfo> listRect;
-    float temp = 0;
+    QList<QVariantMap> listRect;
+    float areaMaxtemp = 0;
 };
 
 typedef struct _ShellView {

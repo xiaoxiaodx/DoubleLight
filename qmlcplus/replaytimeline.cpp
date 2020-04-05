@@ -6,11 +6,11 @@
 ReplayTimeline::ReplayTimeline()
 {
 
-    replayCurrentTime.setHMS(14,10,15);
+    replayCurrentTime.setHMS(14,0,1);
 
-//    setAcceptHoverEvents(true);
-//    setAcceptedMouseButtons(Qt::AllButtons);
-//    setFlag(ItemAcceptsInputMethod, true);
+    setAcceptHoverEvents(true);
+    setAcceptedMouseButtons(Qt::AllButtons);
+    setFlag(ItemAcceptsInputMethod, true);
 
     rectFIndicator.setX(30);
     rectFIndicator.setY(34);
@@ -20,7 +20,7 @@ ReplayTimeline::ReplayTimeline()
 }
 ReplayTimeline::~ReplayTimeline()
 {
-    delete ui;
+
 }
 
 void ReplayTimeline::init()
@@ -31,22 +31,22 @@ void ReplayTimeline::init()
 
 void ReplayTimeline::slot_24hSelect()
 {
-    scaleType = TIMELINE24H;
+    currentScaleType = TIMELINE24H;
     this->update();
 }
 void ReplayTimeline::slot_2hSelect()
 {
-    scaleType = TIMELINE2H;
+    currentScaleType = TIMELINE2H;
     this->update();
 }
 void ReplayTimeline::slot_1hSelect()
 {
-    scaleType = TIMELINE1H;
+    currentScaleType = TIMELINE1H;
     this->update();
 }
 void ReplayTimeline::slot_30mSelect()
 {
-    scaleType = TIMELINE30M;
+    currentScaleType = TIMELINE30M;
     this->update();
 }
 
@@ -133,20 +133,20 @@ void ReplayTimeline::drawBg(QPainter *painter){
     painter->restore();
 
     //绘制刻度
-    drawScale(painter,scaleType);
+    drawScale(painter,currentScaleType);
 
 }
 
 void ReplayTimeline::setSizeType(int type)
 {
     if(type == 0){
-        scaleType = TIMELINE24H;
+        currentScaleType = TIMELINE24H;
     }else if(type == 1)
-        scaleType = TIMELINE2H;
+        currentScaleType = TIMELINE2H;
     else if(type == 2)
-        scaleType= TIMELINE1H;
+        currentScaleType= TIMELINE1H;
     else if(type == 3)
-        scaleType = TIMELINE30M;
+        currentScaleType = TIMELINE30M;
     update();
 }
 
@@ -222,14 +222,41 @@ void ReplayTimeline::drawScale(QPainter *painter,IntervalType type)
         painter->restore();
     }
 
-    drawValue(painter);
+
+
+    int timeFromStart = startT.secsTo(replayCurrentTime);
+
+    qreal secsPerPix = getsecsPerPix();
+
+    int dpix = (qreal)timeFromStart/secsPerPix;
+
+    //  qDebug()<<"replayCurrentTime:"<<replayCurrentTime.fromMSecsSinceStartOfDay(<<"    startT:"<<startT;
+    qDebug()<<"replayCurrentTime:"<<replayCurrentTime<<"    startT:"<<startT;
+    qDebug()<<"timeFromStart:"<<timeFromStart<<"    secsPerPix:"<<secsPerPix;
+
+    qreal resX = dpix + 30;
+    qreal resY = rectFIndicator.y();
+    qreal resW = rectFIndicator.width();
+    qreal resH = rectFIndicator.height();
+    rectFIndicator.setRect(resX,resY,resW,resH);
+    painter->fillRect(rectFIndicator,QBrush(QColor(255,0,0)));
+
+    //drawValue(painter);
 }
 
 
 void ReplayTimeline::drawValue(QPainter *painter)
 {
 
+    //painter->setPen(QPen(QBrush(QColor(255,0,0)),1));
+    ;
 
+}
+
+int ReplayTimeline::getIndicatorTime()
+{
+
+    qDebug()<<"cureent time :"<<replayCurrentTime;
 
 }
 void ReplayTimeline::setDate(QDate date)
@@ -237,25 +264,56 @@ void ReplayTimeline::setDate(QDate date)
 
 }
 
-//void ReplayTimeline::mousePressEvent(QMouseEvent* event){
+void ReplayTimeline::mousePressEvent(QMouseEvent* event){
 
-//}
-//void ReplayTimeline::mouseMoveEvent(QMouseEvent *event){
 
-//    qDebug()<<" mouseMoveEvent  ";
+    if(rectFIndicator.contains(event->pos())){
+        //qDebug()<<  "mousePressEvent "<<rectFIndicator;
+        isIndicatorPress = true;
+        pressPt = event->pos();
+        update();
+    }
 
-//}
+}
+void ReplayTimeline::mouseMoveEvent(QMouseEvent *event){
 
-//void ReplayTimeline::hoverMoveEvent(QMouseEvent *event){
-//    qDebug()<<" hoverMoveEvent  ";
-//    if(rectFIndicator.contains(event->pos())){
 
-//        qDebug()<<" mouseMoveEvent **** ";
-//        rectFIndicator.setSize(QSize(2,2));
-//        update();
-//    }
-//}
-//void ReplayTimeline::mouseReleaseEvent(QMouseEvent *event){
+}
+qreal ReplayTimeline::getsecsPerPix()
+{
+    qreal totalInterval = this->width()-60;//时间总像素宽度
+    qreal secsPerPix; //每个像素是多少秒
+    if(currentScaleType == TIMELINE24H){
+        secsPerPix = 24*60*60/totalInterval;
+    }else if(currentScaleType == TIMELINE2H){
+        secsPerPix = 2*60*60/totalInterval;
+    }else if(currentScaleType == TIMELINE1H){
+        secsPerPix = 60*60/totalInterval;
+    }else if(currentScaleType == TIMELINE30M){
+        secsPerPix = 30*60/totalInterval;
+    }
+    return secsPerPix;
+}
+void ReplayTimeline::mouseReleaseEvent(QMouseEvent *event){
+    if(isIndicatorPress){
+        // qDebug()<<  "mouseReleaseEvent "<<rectFIndicator;
+        qreal dx = event->x() - pressPt.x();
+        isIndicatorPress = false;
+        qreal secsPerPix = getsecsPerPix();
+        int dSecs = (int)(secsPerPix * dx);
 
-//}
+        qDebug()<< "dx  "<<dx<<"    secs:"<<dSecs;
+
+        qDebug()<<"mouseReleaseEvent replayCurrentTime:"<<replayCurrentTime;
+        replayCurrentTime = replayCurrentTime.addSecs(dSecs);
+        qDebug()<<"mouseReleaseEvent replayCurrentTime1:"<<replayCurrentTime;
+        getIndicatorTime();
+        update();
+    }
+}
+
+
+void ReplayTimeline::hoverMoveEvent(QMouseEvent *event){
+
+}
 

@@ -15,7 +15,9 @@ class XVideoReplay : public QQuickItem
 public:
     explicit XVideoReplay();
 
-    Q_INVOKABLE void funStartOpen(QString str);
+//    Q_INVOKABLE void funPlay(QString str);
+//    Q_INVOKABLE void funPause();
+//    Q_INVOKABLE void funPlayVideoTimeChange(int pix);
 
 
 signals:
@@ -25,13 +27,17 @@ protected:
 public slots:
     void ready();
 private:
-
-
-
     QThread *pThreadFfmpeg;
     RenderThread *m_renderThread{nullptr};
 
     QByteArray yuvArr;
+
+    /*播放的视频信息，键值对形式存在
+        "videobuff":QByteArray buff   //视频数据buff,yuv格式
+        "videoStart":(int)       //视频开始时间:时分秒 hhmmss
+        "totalTime:":(int)      //视频总长
+    */
+    QVariant playMap;
     yuvInfo yuvData;
     QList<yuvInfo> listYuv;
     FFmpegReplay freplay;
