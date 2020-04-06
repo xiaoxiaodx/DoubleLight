@@ -45,7 +45,9 @@ SOURCES += \
     protocol/mysearch1.cpp \
     protocol/tcpworker.cpp \
     playVideo/xvideotemp.cpp \
-    recordVideo/captureScreen/writeh264.cpp
+    recordVideo/captureScreen/writeh264.cpp \
+    qmlcplus/warnmodeldata.cpp \
+    qmlcplus/warnmodel.cpp
 
 
 HEADERS += \
@@ -67,7 +69,9 @@ HEADERS += \
     protocol/tcpworker.h \
     util/common.h \
     playVideo/xvideotemp.h \
-    recordVideo/captureScreen/writeh264.h
+    recordVideo/captureScreen/writeh264.h \
+    qmlcplus/warnmodeldata.h \
+    qmlcplus/warnmodel.h
 
 RESOURCES += qml.qrc
 

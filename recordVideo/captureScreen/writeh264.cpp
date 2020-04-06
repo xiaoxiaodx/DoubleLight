@@ -109,7 +109,7 @@ void WriteH264::slot_screenShot(QImage img,int capx,int capy,int capw,int caph,f
             日志文件夹下放30个日志文件，一个日志文件代表一天，
             图片文件夹下放入告警抓拍图片
         */
-        QString warnLogAbsolutePath = mCaptureScreenPath + "log/"+curDateTime.date().toString("yyMMdd")+".log";
+        QString warnLogAbsolutePath = mCaptureScreenPath + "log/"+curDateTime.date().toString("yyyyMMdd")+".log";
 //        QFile imgInfofile(absolutePath);
 //        if(imgInfofile.open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Append)){
 //            QString imgInfoStr = absolutePath+" "+QString::number(warnTemp)+" "+imgInfofile.fileName();

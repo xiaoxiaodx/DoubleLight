@@ -70,5 +70,13 @@
         <file>images/mouthpre_p.png</file>
         <file>qml/liveVedio/VideoTemp.qml</file>
         <file>qml/liveVedio/VideoNormal.qml</file>
+        <file>qml/warnManager/WarnManager.qml</file>
+        <file>images/btnSelect.png</file>
+        <file>images/btnSelect_h.png</file>
+        <file>images/btnSelect_s.png</file>
+        <file>images/time.png</file>
+        <file>images/imgDelete.png</file>
+        <file>images/data1.png</file>
+        <file>qml/warnManager/SelectTime.qml</file>
     </qresource>
 </RCC>

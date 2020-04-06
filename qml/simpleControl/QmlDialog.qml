@@ -42,7 +42,7 @@ Popup {
             verticalAlignment: Text.AlignVCenter
 
             MouseArea {
-                property point clickPoint: "0,0"
+                property point clickPoint: "0,0";
 
                 anchors.fill: parent
                 acceptedButtons: Qt.LeftButton

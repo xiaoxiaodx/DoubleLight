@@ -257,8 +257,9 @@ Rectangle {
         onS_dayChange:{
 
         }
+        onS_dayChange1: txtDate.text = value
 
-        onS_mouthChange:getRecordInfo(1,value)
+        //onS_mouthChange:getRecordInfo(1,value)
 
         onS_yearChange: console.debug("onS_yearChange   "+value)
 

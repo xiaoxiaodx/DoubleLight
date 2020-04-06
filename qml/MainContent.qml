@@ -6,6 +6,7 @@ import ScreenVideo 1.0
 import QtMultimedia 5.8
 import "../qml/liveVedio"
 import "../qml/playbackVideo"
+import "../qml/warnManager"
 import "simpleControl"
 Rectangle {
 
@@ -231,6 +232,14 @@ Rectangle {
             width: parent.width;
             color: "#DFE1E6"
             z:homeMenu.mCurIndex == 2?1:0
+        }
+
+        WarnManager{
+            id:warnmanger
+            height: parent.height
+            width: parent.width;
+            color: "#DFE1E6"
+             z:homeMenu.mCurIndex == 3?1:0
         }
     }
 

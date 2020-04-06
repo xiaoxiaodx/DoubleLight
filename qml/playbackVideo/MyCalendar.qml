@@ -21,21 +21,23 @@ Popup {
     signal s_yearChange(var value)
     signal s_mouthChange(var value)
     signal s_dayChange(var value)
+    signal s_dayChange1(var value)
 
     Rectangle {
         id: rect
         anchors.fill: parent
         color: bgColor
         radius: 4
+
         Calendar{
             id:the_calendar
-            width: parent.width
-            height: parent.height - bottomRect.height
+            width: parent.width - 24
+            height: parent.height - 39
+            anchors.horizontalCenter: parent.horizontalCenter
             anchors.margins: 2
             style: CalendarStyle {
                 gridColor: "transparent"
                 //gridVisible: false
-
                 background: Rectangle{
                     id:background
                     anchors.fill: parent
@@ -46,16 +48,12 @@ Popup {
                 navigationBar:Item{
                     //color: "transparent"
                     height: 39
-
-
                     QmlImageButton {
                         id: yearPre
-
                         anchors.verticalCenter: parent.verticalCenter
                         anchors.left: parent.left
-                        anchors.leftMargin: 16
-                        width: 11
-                        height: 11
+                        width: 12
+                        height: 12
                         imgSourseNormal: "qrc:/images/yearpre.png"
                         imgSoursePress:"qrc:/images/yearpre_p.png"
                         imgSourseHover: imgSoursePress
@@ -74,9 +72,8 @@ Popup {
 
                         anchors.verticalCenter: parent.verticalCenter
                         anchors.right: parent.right
-                        anchors.rightMargin: 16
-                        width: 11
-                        height: 11
+                        width: 12
+                        height: 12
                         imgSourseNormal: "qrc:/images/yearnext.png"
                         imgSoursePress:"qrc:/images/yearnext_p.png"
                         imgSourseHover: imgSoursePress
@@ -92,10 +89,10 @@ Popup {
                         id: mouthPre
 
                         anchors.verticalCenter: parent.verticalCenter
-                        anchors.left: parent.left
-                        anchors.leftMargin: 38
-                        width: 7
-                        height: 11
+                        anchors.left: yearPre.right
+                        anchors.leftMargin: 10
+                        width: 12
+                        height: 12
                         imgSourseNormal: "qrc:/images/mouthpre.png"
                         imgSoursePress:"qrc:/images/mouthpre_p.png"
                         imgSourseHover:imgSoursePress
@@ -111,10 +108,10 @@ Popup {
                         id: mouthNext
 
                         anchors.verticalCenter: parent.verticalCenter
-                        anchors.right: parent.right
-                        anchors.rightMargin: 38
-                        width: 7
-                        height: 11
+                        anchors.right: yearNext.left
+                        anchors.rightMargin: 10
+                        width: 12
+                        height: 12
                         imgSourseNormal: "qrc:/images/mouthnext.png"
                         imgSoursePress:"qrc:/images/mouthnext_p.png"
                         imgSourseHover:imgSoursePress
@@ -151,13 +148,12 @@ Popup {
                             id: labelMonth
                             anchors.verticalCenter: parent.verticalCenter
                             anchors.left: labelYear.right
-                            anchors.leftMargin: 10
+                            anchors.leftMargin: 1
                             //注意Date原本的月份是0开始
-                            text: (control.visibleMonth+1)+qsTr('月')
+                            text: (control.visibleMonth+1)+qsTr('月');
                             //elide: Text.ElideRight
                             horizontalAlignment: Text.AlignRight
                             font.pixelSize: 14
-
                             color:fontColor
                         }
                     }
@@ -177,7 +173,7 @@ Popup {
                     Label {
                         text: control.__locale.dayName(styleData.dayOfWeek, control.dayOfWeekFormat)
                         anchors.centerIn: parent
-                        color: fontColor
+                        color:Qt.rgba(0,0,0,0.65)
                         font.pixelSize: 14
 
                     }
@@ -191,9 +187,8 @@ Popup {
                     //                          ?Qt.rgba(6/255,45/255,51/255,1)
                     //                          : Qt.rgba(3/255,28/255,35/255,1));
                     //color: styleData.selected?"#409EFF":((styleData.visibleMonth && styleData.valid)?(calendarEventModel.getDateEvent(styleData.date)):"#191919")
-                    color: bgColor//(styleData.visibleMonth && styleData.valid)?(calendarEventModel.getDateEvent(styleData.date)):bgColor
-                    border.width: 2
-                    border.color: styleData.selected?"#21e9cc":"transparent"
+                    color: styleData.selected?"#3B84F6":bgColor//(styleData.visibleMonth && styleData.valid)?(calendarEventModel.getDateEvent(styleData.date)):bgColor
+
                     Label {
                         text: styleData.date.getDate()
                         anchors.centerIn: parent
@@ -202,7 +197,7 @@ Popup {
                         //                    color: styleData.valid
                         //                           ?Qt.rgba(197/255,1,1,1)
                         //                           : Qt.rgba(16/255,100/255,100/255,1)
-                        color: styleData.today?"red":((styleData.visibleMonth && styleData.valid)?fontColor:Qt.rgba(0,0,0,0.25))
+                        color: styleData.today?"#3B84F6":(((styleData.visibleMonth && styleData.valid)?fontColor:Qt.rgba(0,0,0,0.25)))
                         //color:styleData.visibleDay?"red":"white"
                     }
                 }
@@ -210,46 +205,81 @@ Popup {
             }
         }
 
+        Rectangle{
+            id:line1
+            anchors.top:parent.top
+            anchors.topMargin: 39
+            width: parent.width
+            height: 1
+            color: Qt.rgba(0,0,0,0.09)
+        }
 
         Rectangle{
-            id:bottomRect
+            id:line2
+            anchors.bottom:parent.bottom
+            anchors.bottomMargin: 39
             width: parent.width
-            height: 40
-            color: bgColor
-            anchors.bottom: parent.bottom
-            Text {
-                id: txtToday
-                anchors.left: parent.left
-                anchors.leftMargin: 16
-                anchors.verticalCenter: parent.verticalCenter
-                font.pixelSize: 10
-                color: fontColor
-                text: Qt.formatDate(the_calendar.selectedDate,"yyyy-MM-dd")
-            }
-
-            QmlButton{
-                width: 44
-                height: 22
-
-                anchors.verticalCenter: parent.verticalCenter
-                anchors.right: parent.right
-                anchors.rightMargin: 16
-                colorNor:"#ffffff"
-                colorPressed: "#ffffff"
-                borderColor: "#D9D9D9"
-                fontColor: "#3B84F6"
-                borderW: 0
-                fontsize: 14
-
-                text: qsTr("确定")
-                onClicked: {
-                    s_dayChange(Qt.formatDate(the_calendar.selectedDate,"yyyyMMdd000000"))
-                    root.close()
-                }
-
-            }
-
+            height: 1
+            color: Qt.rgba(0,0,0,0.09)
         }
+
+
+        Text {
+            id: txtToday
+            anchors.left: parent.left
+            anchors.leftMargin: 8
+            anchors.top: line2.bottom
+            anchors.topMargin: 8
+            font.pixelSize: 14
+            color: fontColor
+            text: Qt.formatDate(the_calendar.selectedDate,"yyyy-MM-dd")
+        }
+
+        QmlButton{
+            id:btnEnsure
+            width: 44
+            height: 22
+
+            anchors.verticalCenter: txtToday.verticalCenter
+            anchors.right: parent.right
+            anchors.rightMargin: 16
+            colorNor:"#ffffff"
+            colorPressed: "#ffffff"
+            borderColor: "#D9D9D9"
+            fontColor: "#3B84F6"
+            borderW: 0
+            fontsize: 14
+
+            text: qsTr("确定")
+            onClicked: {
+                s_dayChange(Qt.formatDate(the_calendar.selectedDate,"yyyyMMdd"))
+                s_dayChange1(Qt.formatDate(the_calendar.selectedDate,"yyyy-MM-dd"))
+                root.close()
+            }
+        }
+
+        QmlButton{
+            id:btnCancel
+            width: 44
+            height: 22
+
+            anchors.verticalCenter: txtToday.verticalCenter
+            anchors.right: btnEnsure.left
+            anchors.rightMargin: 10
+            colorNor:"#ffffff"
+            colorPressed: "#ffffff"
+            borderColor: "#D9D9D9"
+            fontColor: "#3B84F6"
+            borderW: 0
+            fontsize: 14
+
+            text: qsTr("取消")
+            onClicked: {
+
+                root.close()
+            }
+        }
+
     }
 
     function getCurrentData(){
