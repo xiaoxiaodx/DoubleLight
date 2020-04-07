@@ -27,10 +27,10 @@ public:
 
     Q_INVOKABLE void startTemperatureVideo(float warnTemp);
 
-    Q_INVOKABLE void    fun_timeSwitch(bool isChecked);
-
-    Q_INVOKABLE void    fun_temSet(QVariant mvalue);
-    Q_INVOKABLE void    fun_temDrift(QVariant mvalue);
+    Q_INVOKABLE void fun_timeSwitch(bool isChecked);
+    Q_INVOKABLE void fun_updateDate();
+    Q_INVOKABLE void fun_temSet(QVariant mvalue);
+    Q_INVOKABLE void fun_temDrift(QVariant mvalue);
 
     Q_INVOKABLE void fun_getInitPar();
 
@@ -46,7 +46,7 @@ public:
     static ImageInfo *pBufferImginfo;//缓存的图片指针
 signals:
     //qml
-    void signal_loginStatus(QString str);
+    void signal_loginStatus(QString msg);
     //yousee的信号
     void signal_startinit();
     void signal_stop();
@@ -60,7 +60,7 @@ signals:
 
 public slots:
     void slot_timeout();
-    void slot_setDateTimeout();
+
     //void ready();
 
     void finishYouPull();

@@ -19,6 +19,7 @@ Rectangle {
         width: parent.width
         height: parent.height - mhomeStateBar.height
         spacing: 0
+
         VideoNormal{
             id:videoNormal
             color: "#252525"
@@ -81,7 +82,7 @@ Rectangle {
         id:updateTimer
         repeat:true
         interval: 1800000;
-
+        Component.onCompleted: updateTimer.start();
         onTriggered: {
             videoTemp.updateDate();
             videoNormal.updateDate();

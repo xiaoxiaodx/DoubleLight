@@ -175,7 +175,7 @@ Rectangle {
                     anchors.leftMargin: 10
                     font.pixelSize: 12
                     color: "#ffffff"
-                    text: qsTr("text")
+                    text: qsTr("")
                 }
                 Image {
                     id: imgdate

@@ -25,6 +25,7 @@ Window {
     property int mouseAdjustWidth: 10
     property int minW: 960
     property int minH: 600
+
     property string toastStr: ""
     signal lockerCHange(bool lockchange);
     onIsLockerChanged: lockerCHange(isLocker)
@@ -79,6 +80,7 @@ Window {
             askDialog.width = 427
             askDialog.height = 176
             askDialog.askStr = qsTr("确认退出系统吗？")
+            askDialog.imgSrc = "qrc:/images/icon_question.png"
             askDialog.curType = askDialog.exeClose
             askDialog.open();
           //  Qt.quit();

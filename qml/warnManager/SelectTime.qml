@@ -1,15 +1,9 @@
 import QtQuick 2.12
 import QtQuick.Controls 2.5
 
-Popup {
+Rectangle {
     id: root
-    modal: true
-    focus: true
-    //设置窗口关闭方式为按“Esc”键关闭
-    closePolicy: Popup.CloseOnEscape|Popup.CloseOnPressOutside
-    //设置窗口的背景控件，不设置的话Popup的边框会显示出来
-    background: rect
-
+    visible: false;
     signal s_ensure(var timeh,var timem,var times);
     ListModel{
         id:hourModel
@@ -150,7 +144,7 @@ Popup {
                 text: qsTr("取消")
                 MouseArea{
                     anchors.fill: parent
-                    onClicked: root.close()
+                    onClicked: root.visible =false
                 }
             }
 
@@ -170,7 +164,7 @@ Popup {
                         var minstr = ""+minModel.get(listmin.currentIndex).time
                         var secstr = ""+secModel.get(listsec.currentIndex).time
                         s_ensure(hourstr,minstr,secstr);
-                        root.close();
+                        root.visible = false;
                     }
                 }
             }

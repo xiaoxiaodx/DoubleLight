@@ -6,12 +6,16 @@
 
 XVideo::XVideo()
 {
+    qDebug()<<"XVideo "<<"  "<<QThread::currentThreadId() ;
 
+    pRenderImginfo = new ImageInfo;
+    pRenderImginfo->pImg = nullptr;
 }
 
-void XVideo::startNormalVideo()
+void XVideo::startNormalVideo(float tp)
 {
     DebugLog::getInstance()->writeLog("startNormalVideo ");
+    warnTemp = tp;
     createSearchIp();
 
 }
@@ -117,26 +121,22 @@ void XVideo::recSearchIp(QString ip)
 
 void XVideo::updateUi()
 {
-    buffMutex.lock();
+
     //buff没有数据则返回
-    if( pBuffImginfo ==  nullptr || pBuffImginfo->pImg == nullptr){
+    buffMutex.lock();
+    if( pBuffImg ==  nullptr){
         buffMutex.unlock();
         return;
     }
     //buff指针有数据而渲染指针没有数据则删除老数据，在更新
-    if(pRenderImginfo != nullptr){
-        if(pRenderImginfo->pImg != nullptr){
-            delete  pRenderImginfo->pImg;
-            pRenderImginfo->pImg = nullptr;
-        }
-        delete pRenderImginfo;
-        pRenderImginfo = nullptr;
+    if(pRenderImginfo->pImg != nullptr){
+
+        delete  pRenderImginfo->pImg;
+        pRenderImginfo->pImg = nullptr;
     }
-    pRenderImginfo = pBuffImginfo;
-    pBuffImginfo = nullptr;
+    pRenderImginfo->pImg = pBuffImg;
+    pBuffImg = nullptr;
     buffMutex.unlock();
-
-
     //如果不增加这句代码 ，则会出现视频不会第一时间显示，而是显示灰色图像
     if(!isFirstData){
         emit signal_loginStatus("Get the stream successfully");
@@ -149,13 +149,14 @@ void XVideo::fun_updateDate()
 {
     QMap<QString,QVariant> map;
     map.insert("cmd","setcurrenttime");
-    signal_httpParSet(map);
+    emit signal_httpParSet(map);
 
 }
 
 void XVideo::paint(QPainter *painter)
 {
 
+    //qDebug()<<"XVideo paint";
 
     if(pRenderImginfo == nullptr || pRenderImginfo->pImg == nullptr)
         return;
@@ -191,11 +192,13 @@ void XVideo::paint(QPainter *painter)
         QRectF oriRect = vmap.value("rect").toRectF();
 
         QRectF desRect(rectF.x()+oriRect.x()*kX*kshowX,rectF.y()+oriRect.y()*kshowY*kY,oriRect.width()*kX*kshowX,oriRect.height()*kY*kshowY);
-        QString strText = vmap.value("temp").toString();
+
+
+        float temp = vmap.value("temp").toFloat();
+        QString strText = QString::number(temp, 'f', 1);
 
         //高温标记矩形
         if(strText.toFloat()>warnTemp){
-            qDebug()<<" "<<strText.toFloat();
             painter->save();
             painter->setPen(QPen(QBrush(QColor(255,0,0)),2));
             painter->drawRect(desRect);
@@ -225,7 +228,7 @@ void XVideo::fun_setRectPar(int sx,int sy,int sw,int sh,int pw,int ph){
 void XVideo::slot_recH264(char* h264Arr,int arrlen,quint64 time)
 {
 
-    // qDebug()<<QString(__FUNCTION__) + "    "+QString::number(__LINE__) ;
+   // qDebug()<<QString(__FUNCTION__) + " "+QString::number(__LINE__)<<"  "<<QThread::currentThreadId() ;
     createFFmpegDecodec();
 
     if(pffmpegCodec != nullptr){
@@ -234,20 +237,15 @@ void XVideo::slot_recH264(char* h264Arr,int arrlen,quint64 time)
         if(pffmpegCodec != nullptr){
             Img = pffmpegCodec->decodeVFrame((unsigned char*)h264Arr,arrlen);
 
-            // qDebug()<<QString(__FUNCTION__) + "    "+QString::number(__LINE__) ;
+
             //qDebug()<<"h264:"<<listImgInfo.size();
             if (Img != nullptr && (!Img->isNull()))
             {
 
-
-
                 buffMutex.lock();
+                if(pBuffImg == nullptr){
+                    pBuffImg = Img;
 
-                if(pBuffImginfo == nullptr){
-                    ImageInfo *imgInfo = new ImageInfo;
-                    imgInfo->pImg = Img;
-                    imgInfo->time = time;
-                    pBuffImginfo = imgInfo;
                 }else{
                     delete Img;
 
@@ -258,24 +256,24 @@ void XVideo::slot_recH264(char* h264Arr,int arrlen,quint64 time)
 
     }
 }
-//更新矩形的时候更新ui
+//由红外控制ui更新
 void XVideo::fun_setListRect(QVariant var){
-    qDebug()<<"tcp 流线程 fun_setListRect:"<<QThread::currentThreadId()<<"    "<<var;
+    //qDebug()<<"tcp 流线程 fun_setListRect:"<<QThread::currentThreadId()<<"    "<<var.toList();
 
     if(pRenderImginfo != nullptr){
-        QMap<QString,QVariant> map = var.toMap();
 
         if(var.toList().size() > 0){
             pRenderImginfo->listRect.clear();
-
             QVariantList listv = var.toList();
             for(int i=0;i<listv.size();i++){
-
                 QVariantMap map = listv.at(i).toMap();
                 pRenderImginfo->listRect.append(map);
             }
-            updateUi();
         }
+        updateUi();
+    }else{
+        // qDebug()<<"渲染图片为空";
+
     }
 }
 

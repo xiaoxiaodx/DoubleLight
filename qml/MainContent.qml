@@ -247,11 +247,36 @@ Rectangle {
 
     ScreenVideo{
         id:screenv
+        Component.onCompleted: {
+            screenv.funCreateScreenThread(deviceconfig.getScrennShotPath(),deviceconfig.getRecordPath(),captureScrennTimer.interval);
+        }
     }
+
 
     MediaPlayer {
         id: playWarn
         source: "qrc:/alarm.wav"
+    }
+
+    Timer{
+        id:captureScrennTimer
+        property int tCount: 0
+        property bool isRecord: false
+        triggeredOnStart:true
+
+        repeat:true
+
+        interval: 40;
+
+        onTriggered: {
+
+            if(!isRecord){
+                screenv.funForfinishRecord();
+                captureScrennTimer.stop();
+                return;
+            }
+            screenv.funScreenRecrod(main,0 ,68,main.width,main.height-68);
+        }
     }
 
     Timer{
@@ -273,7 +298,7 @@ Rectangle {
 
             //开启动画
             imgWar.startAnimation();
-            //开启录屏
+            //开启截图
             if(deviceconfig.getSwitchScreenShot())
                 screenv.funScreenShoot(deviceconfig.getScrennShotPath(),main,0 ,68,main.width,main.height-68,deviceconfig.getWarnTem());
             //开启声音

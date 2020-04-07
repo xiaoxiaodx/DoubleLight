@@ -100,8 +100,27 @@ void WriteH264::slot_screenShot(QImage img,int capx,int capy,int capw,int caph,f
     QDateTime curDateTime =  QDateTime::currentDateTime();
     QString  curDatetimeStr = curDateTime.toString("yyMMdd_hhmmss");
 
-    QString imgAbsolutePath = mCaptureScreenPath+"image/"+curDatetimeStr+".png";
-    if(!img.save(imgAbsolutePath,"PNG")){
+    QString desFileDir = mCaptureScreenPath+"/image";
+
+    QString imgAbsolutePath = mCaptureScreenPath+"/image/"+curDatetimeStr+".png";
+
+    QDir dir;
+    if (!dir.exists(desFileDir)){
+        bool res = dir.mkpath(desFileDir);
+        if(res)
+            DebugLog::getInstance()->writeLog("slot_screenShot create new dir is succ");
+        else
+            DebugLog::getInstance()->writeLog("slot_screenShot create new dir is fail");
+    }
+
+    //创建相对路径
+    if(!QDir::setCurrent(desFileDir)){
+        DebugLog::getInstance()->writeLog("slot_screenShot set relative dir is false");
+        return;
+    }
+
+
+    if(!img2.save(curDatetimeStr+".png","PNG")){
         DebugLog::getInstance()->writeLog("scrennshot save fail");
     }else{
         //存报警图片信息
@@ -109,14 +128,26 @@ void WriteH264::slot_screenShot(QImage img,int capx,int capy,int capw,int caph,f
             日志文件夹下放30个日志文件，一个日志文件代表一天，
             图片文件夹下放入告警抓拍图片
         */
-        QString warnLogAbsolutePath = mCaptureScreenPath + "log/"+curDateTime.date().toString("yyyyMMdd")+".log";
-//        QFile imgInfofile(absolutePath);
-//        if(imgInfofile.open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Append)){
-//            QString imgInfoStr = absolutePath+" "+QString::number(warnTemp)+" "+imgInfofile.fileName();
-//            QTextStream out(&file);
-//            out <<imgInfoStr << "\n";
-//            imgInfofile.close();
-//        }
+        QString warnLogAbsolutePath = mCaptureScreenPath + "/log";
+        QString warnLogAbsoluteFileName = warnLogAbsolutePath + "/"+curDateTime.date().toString("yyyyMMdd")+".log";
+        if(!dir.exists(warnLogAbsolutePath)){
+            bool res = dir.mkpath(warnLogAbsolutePath);
+            if(res)
+                DebugLog::getInstance()->writeLog("slot_screenShot create new log dir is succ");
+            else
+                DebugLog::getInstance()->writeLog("slot_screenShot create new log dir is fail");
+        }
+
+        //DebugLog::getInstance()->writeLog("warnLogAbsoluteFileName:"+warnLogAbsoluteFileName);
+        QFile imgInfofile(warnLogAbsoluteFileName);
+        if(imgInfofile.open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Append)){
+            QString imgInfoStr = imgAbsolutePath+" "+QString::number(warnTemp)+" "+curDatetimeStr+".png";
+            QTextStream out(&imgInfofile);
+            out <<imgInfoStr << "\n";
+            imgInfofile.close();
+        }else {
+            DebugLog::getInstance()->writeLog("slot_screenShot open log file is fail");
+        }
 
     }
 }

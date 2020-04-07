@@ -99,6 +99,7 @@ void XVideoTemp::slot_timeout()
         pRenderImginfo = nullptr;
     }
     pRenderImginfo = pBufferImginfo;
+    pBufferImginfo = nullptr;
 
     //如果不增加这句代码 ，则会出现视频不会第一时间显示，而是显示灰色图像
     if(!isFirstData){
@@ -111,24 +112,11 @@ void XVideoTemp::slot_timeout()
 
 
 #include <QFontMetrics>
-void XVideoTemp::slot_setDateTimeout()
-{
-    QMap<QString,QVariant> map;
-
-    if(mYouSeeParse != nullptr){
-        map.insert("cmd","setDate");
-        emit signal_parSet(map);
-    }
-
-
-}
 
 void XVideoTemp::paint(QPainter *painter)
 {
 
-
-
-
+   // qDebug()<<"paint";
     if(pRenderImginfo == nullptr || pRenderImginfo->pImg == nullptr)
         return;
     QFont font("Microsoft Yahei", 20);
@@ -144,7 +132,17 @@ void XVideoTemp::paint(QPainter *painter)
 
 
     //将矩形链表发送给可见光
-    emit signal_sendListRect(QVariant::fromValue(pRenderImginfo->listRect));
+    if(pRenderImginfo->listRect.size()>0){
+        //qDebug()<<"发送矩形:"<<QVariant::fromValue(pRenderImginfo->listRect);
+        QVariantList list ;
+        for(int i=0;i<pRenderImginfo->listRect.size();i++){
+            QVariant map = pRenderImginfo->listRect.at(i);
+            list.append(map);
+        }
+        emit signal_sendListRect(QVariant::fromValue(list));
+    }else{
+        emit signal_sendListRect(QVariantList());
+    }
 
     for(int i=0;i<pRenderImginfo->listRect.size();i++){
         QMap<QString,QVariant> oriRectinfo = pRenderImginfo->listRect.at(i);
@@ -179,7 +177,14 @@ void XVideoTemp::paint(QPainter *painter)
     // DebugLog::getInstance()->writeLog("painter hongwai end***");
 }
 
+void XVideoTemp::fun_updateDate(){
 
+    if(mYouSeeParse != nullptr){
+        QMap<QString,QVariant> map;
+        map.insert("cmd","setDate");
+        emit signal_parSet(map);
+    }
+}
 
 void XVideoTemp::fun_timeSwitch(bool isChecked){
 

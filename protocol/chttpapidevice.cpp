@@ -29,14 +29,7 @@ CHttpApiDevice::CHttpApiDevice(QString devid, QString ip, unsigned short port, Q
     timeoutCnt = new QTimer;
 
 
-    connect(this,&CHttpApiDevice::signal_MsgReply,[&](QString cmd){
 
-
-        qDebug()<<"signal_MsgReply "<<loop.isRunning()<<"   cmd:"<<cmd;
-        if(loop.isRunning())
-            loop.exit();
-
-    });
 }
 
 CHttpApiDevice::~CHttpApiDevice()
@@ -156,7 +149,7 @@ int CHttpApiDevice::HttpMsgCallBack(char * pData) {
                     }
                 } else {
                     qDebug()<<"not find data ";
-                   // return -1;
+                    // return -1;
                 }
             } else if ("loginout" == cmd) {
                 memset(this->sessionId, 0, sizeof(this->sessionId));
@@ -262,7 +255,7 @@ void CHttpApiDevice::slot_ReadMsg() {
             continue;
         }
     }
-      qDebug()<<" slot_ReadMsg    ***1";
+    qDebug()<<" slot_ReadMsg    ***1";
 }
 void CHttpApiDevice::slot_Connected() {
     this->g_httpTcpConnectState = true;
@@ -328,7 +321,7 @@ bool CHttpApiDevice::send_httpParSet(QMap<QString,QVariant> map)
 {
 
 
-    QMutexLocker locker(&mMutex);
+    // QMutexLocker locker(&mMutex);
     QString cmd = map.value("cmd").toString();
 
     //QTimer timer;
@@ -338,6 +331,22 @@ bool CHttpApiDevice::send_httpParSet(QMap<QString,QVariant> map)
 
     qDebug()<<" send_httpParSet "<<map;
 
+
+    QEventLoop loop ;
+    QMetaObject::Connection connet = connect(this,&CHttpApiDevice::signal_MsgReply,[&](QString cmd){
+            qDebug()<<"signal_MsgReply "<<cmd;
+
+            if(loop.isRunning())
+                loop.exit();
+            disconnect(connet);});
+
+    QTimer timer;
+    QMetaObject::Connection timeconnet = connect(&timer,&QTimer::timeout,[&](){
+         qDebug()<<"************* ";
+            if(loop.isRunning())
+                loop.exit();
+            });
+    timer.start(2000);
 
     if(cmd.compare("setosdparam")==0){
         bool enable = map.value("enable").toBool();
@@ -364,13 +373,13 @@ bool CHttpApiDevice::send_httpParSet(QMap<QString,QVariant> map)
     loop.exec();
     qDebug()<<"结束循环***";
 
-
+    disconnect(timeconnet);
+    timer.stop();
 
     QString sendCmd = curCmdState.value("cmd").toString();
     if(cmd.compare(sendCmd) == 0 && curCmdState.value("state").toBool()){
         return true;
     }else{
-
         return false;
     }
 
@@ -398,8 +407,7 @@ void CHttpApiDevice::slot_httpParSet(QMap<QString,QVariant> map)
 
     qDebug()<<"+**slot_httpParSet**1";
     if(sendSucc){
-
-        qDebug()<<"一次数据请求成功"<<map.value("cmd").toString();;
+        qDebug()<<"一次数据请求成功"<<map.value("cmd").toString();
 
     }else{
         qDebug()<<"数据发送失败："<<map.value("cmd").toString();

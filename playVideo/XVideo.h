@@ -21,7 +21,7 @@ class XVideo : public QQuickPaintedItem
     Q_OBJECT
 public:
 
-    Q_INVOKABLE void startNormalVideo();
+    Q_INVOKABLE void startNormalVideo(float tp);
     Q_INVOKABLE void fun_timeSwitch(bool isChecked);
     Q_INVOKABLE void fun_temSet(QVariant mvalue);
     Q_INVOKABLE void fun_getInitPar();
@@ -78,7 +78,7 @@ private:
 
     QMutex buffMutex;
     ImageInfo *pRenderImginfo = nullptr;
-    ImageInfo *pBuffImginfo = nullptr;
+    QImage *pBuffImg = nullptr;
 
     bool isFirstData = false;
 

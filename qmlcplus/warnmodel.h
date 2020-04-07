@@ -11,14 +11,17 @@ public:
     WarnModel(QObject *parent = nullptr);
 
     enum datasourceRoles {
-            IsSelect = Qt::UserRole ,
-            WarnTime,
-            WarnTemp,
-            ImgName
-        };
+        IsSelect = Qt::UserRole ,
+        WarnTime,
+        WarnTemp,
+        ImgName,
+        AbsolutePath
+    };
     Q_INVOKABLE void funFlushWarnInfo(QString capturePaht,QString logFileName);
     Q_INVOKABLE void funDeleteIndex(int index);
     Q_INVOKABLE int funFindIndex(QString h,QString m,QString s);
+    Q_INVOKABLE void funSetAllSelect(bool isSelect);
+    Q_INVOKABLE void funDeleteSelect();
 
     int rowCount(const QModelIndex &parent = QModelIndex()) const override;
 

@@ -95,7 +95,7 @@ private:
     QMutex mMutex;
 
     QTimer *timerReSendCmd = nullptr;
-    QEventLoop loop ;
+
 
 };
 

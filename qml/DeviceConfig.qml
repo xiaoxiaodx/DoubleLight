@@ -43,6 +43,9 @@ Rectangle {
     Rectangle{
         width: parent.width
         height: parent.height - mDeviceStateBar.height
+        MouseArea{
+            anchors.fill: parent
+        }
         Rectangle {
             id: rect
             anchors.verticalCenter: parent.verticalCenter
@@ -677,7 +680,6 @@ Rectangle {
                         }
                     }
                 }
-
             }
         }
     }

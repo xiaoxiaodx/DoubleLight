@@ -303,8 +303,7 @@ static void __stdcall _previewCallback(s32 errorCode, DataFrame* frame, void* cu
             }
         }
 
-
-
+       // qDebug()<<"dsadsa********:";
         try {
             info->pImg =  new QImage((uchar*)pFrameSrc->imageData, tempHead->Width, tempHead->Height, QImage::Format_RGB32);
             // 其它代码
@@ -381,7 +380,7 @@ bool YouSeeParse::slot_parSet(QMap<QString,QVariant> map)
         QDate date = dateT.date();
         QTime time = dateT.time();
         ctlx.Type = CtlXType_SetTime;
-        ctlx.Data.Time.year = 2004;//date.day()
+        ctlx.Data.Time.year = date.year();//date.day()
         ctlx.Data.Time.mon = date.month();
         ctlx.Data.Time.day = date.day();
         ctlx.Data.Time.hour = time.hour();

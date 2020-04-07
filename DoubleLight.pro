@@ -47,7 +47,8 @@ SOURCES += \
     playVideo/xvideotemp.cpp \
     recordVideo/captureScreen/writeh264.cpp \
     qmlcplus/warnmodeldata.cpp \
-    qmlcplus/warnmodel.cpp
+    qmlcplus/warnmodel.cpp \
+    application.cpp
 
 
 HEADERS += \
@@ -71,7 +72,8 @@ HEADERS += \
     playVideo/xvideotemp.h \
     recordVideo/captureScreen/writeh264.h \
     qmlcplus/warnmodeldata.h \
-    qmlcplus/warnmodel.h
+    qmlcplus/warnmodel.h \
+    application.h
 
 RESOURCES += qml.qrc
 

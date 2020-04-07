@@ -7,14 +7,20 @@
 #include "xvideotemp.h"
 #include <qqmlcontext.h>
 #include "warnmodel.h"
+#include "application.h"
 int main(int argc, char *argv[])
 {
+
+
+
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
 
-    QGuiApplication app(argc, argv);
+    Application app(argc, argv);
+    if(!app.lock())
+            return -42;
+
     QFont font("Microsoft Yahei");
     app.setFont(font);
-
     app.setOrganizationName("GaoZhi"); //1
     app.setOrganizationDomain("gaozhi.com"); //2
     app.setApplicationName("DoubleLight"); //3

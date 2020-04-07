@@ -78,5 +78,9 @@
         <file>images/imgDelete.png</file>
         <file>images/data1.png</file>
         <file>qml/warnManager/SelectTime.qml</file>
+        <file>images/capture.png</file>
+        <file>images/capture_p.png</file>
+        <file>images/img_close.png</file>
+        <file>images/ico_warn.png</file>
     </qresource>
 </RCC>

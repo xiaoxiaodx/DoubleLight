@@ -23,7 +23,7 @@ Rectangle {
         propagateComposedEvents:true
         onClicked: {
             click()
-            mouse.accepted = false
+           // mouse.accepted = false
         }
         onDoubleClicked:doubleClick(true);
 
@@ -42,7 +42,8 @@ Rectangle {
 
         onSignal_loginStatus: main.showToast(msg);
         onSignal_areaMaxtemp:tempParCallback(map);
-        onSignal_sendListRect:s_sendList(map)
+        onSignal_sendListRect:videoNormal.funsetlistRect(map)
+
 
     }
 

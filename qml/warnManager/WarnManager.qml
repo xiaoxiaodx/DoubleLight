@@ -1,7 +1,8 @@
-
+import QtQuick.Controls 2.5
 import QtQuick 2.0
 import WarnModel 1.0
 import "../playbackVideo"
+import "../dialog"
 Rectangle {
     id: root
     property int checkedHeaderLeftMargin: 20
@@ -11,13 +12,16 @@ Rectangle {
     property int deleteHeaderLeftMargin: 771
     property int fontSize: 14
 
+    property int listviewClickIndex: -1
+    property bool isAllSelect: false
 
-
+    signal s_allselect(bool isSelect);
 
     WarnModel{
         id:warnmodel
         // Component.objectName: warnmodel.flushWarnInfo(deviceconfig.getScrennShotPath());
     }
+
 
     Rectangle{
         id:rectWarnArea
@@ -43,7 +47,7 @@ Rectangle {
             id:rectBatch
             width: 96
             height: 36
-            color: "#3B84F6"
+            color: "#66B5FF"
             radius: 4
             anchors.left: textitle.right
             anchors.leftMargin: 39
@@ -57,6 +61,7 @@ Rectangle {
                 anchors.leftMargin: 9
                 anchors.verticalCenter: parent.verticalCenter
                 source: "qrc:/images/imgDelete.png"
+
             }
 
             Text {
@@ -70,9 +75,19 @@ Rectangle {
             }
             MouseArea{
                 anchors.fill: parent
+
                 onClicked: {
-                    console.debug("shacnhu")
-                    warnList.currentIndex = 3;}
+
+                    askDialog.width = 427
+                    askDialog.height = 176
+                    askDialog.askStr = qsTr("确认要删除所选信息吗？")
+                    askDialog.imgSrc = "qrc:/images/ico_warn.png"
+                    askDialog.curType = askDialog.warnInfoMutipleDelete
+                    askDialog.open();
+
+                }
+                onPressed: rectBatch.color = "#3B84F6"
+                onReleased: rectBatch.color = "#66B5FF"
             }
         }
 
@@ -134,14 +149,15 @@ Rectangle {
             radius: 4
             width: 120
             height: 34
+            z:2
             anchors.left: dateRect.right
             anchors.verticalCenter: rectBatch.verticalCenter
             anchors.leftMargin: 10
 
             Image {
                 id: imgtime
-                width: 12
-                height: 12
+                width: 14
+                height: 14
                 source: "qrc:/images/time.png"
                 anchors.left: parent.left
                 anchors.verticalCenter: parent.verticalCenter
@@ -161,7 +177,7 @@ Rectangle {
                 anchors.fill: parent
                 hoverEnabled: true
                 onPressed: {
-                    selecttime.open();
+                    selecttime.visible = true
                 }
                 onEntered: imgtime.source = "qrc:/images/time.png"
                 onReleased: imgtime.source = "qrc:/images/time.png"
@@ -177,6 +193,7 @@ Rectangle {
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.top: parent.top
             anchors.topMargin: 84
+            z:1
             color: "#EEF3FA"
             Image{
                 id:imgSelect
@@ -186,6 +203,20 @@ Rectangle {
                 anchors.left: parent.left
                 anchors.leftMargin: checkedHeaderLeftMargin
                 source: "qrc:/images/btnSelect.png"
+
+                MouseArea{
+                    anchors.fill: parent
+                    onClicked: {
+                        if(isAllSelect){
+                            imgSelect.source ="qrc:/images/btnSelect.png"
+                            isAllSelect = false;
+                        }else{
+                            imgSelect.source ="qrc:/images/btnSelect_s.png"
+                            isAllSelect = true;
+                        }
+                        warnmodel.funSetAllSelect(isAllSelect);
+                    }
+                }
             }
             Text {
                 id: txtWarnTime
@@ -227,11 +258,13 @@ Rectangle {
             anchors.top: warnHeader.bottom
             anchors.left: warnHeader.left
             model: warnmodel
+            z:0
+            ScrollBar.vertical: ScrollBar {size:10}
             delegate: Rectangle{
                 property bool enter: false
                 width: parent.width
                 height: 59
-                color:warnList.currentIndex === index?"#8AB8FF":(enter?"#EEF3FA":"#F8FAFD")
+                color:listviewClickIndex === index?"#EEF3FA":(enter?"#EEF3FA":"#F8FAFD")
                 Image{
                     id:select
                     width: 14
@@ -239,7 +272,13 @@ Rectangle {
                     anchors.verticalCenter: parent.verticalCenter
                     anchors.left: parent.left
                     anchors.leftMargin: checkedHeaderLeftMargin
-                    source: "qrc:/images/btnSelect.png"
+                    source:model.isSelect>0?"qrc:/images/btnSelect_s.png": "qrc:/images/btnSelect.png"
+                    MouseArea{
+                        anchors.fill: parent
+                        onClicked: {
+                            model.isSelect = !model.isSelect;
+                        }
+                    }
                 }
                 Text {
                     id: warnTime
@@ -265,16 +304,24 @@ Rectangle {
                     anchors.left: parent.left
                     anchors.leftMargin: warnImgHeaderLeftMargin
                     anchors.verticalCenter: parent.verticalCenter
-                    source: "qrc:/images/btnSelect.png"
+                    source: index === listviewClickIndex?"qrc:/images/capture_p.png":"qrc:/images/capture.png"
                 }
                 Text {
                     id: captureTxt
-
                     anchors.left: captureImg.right
                     anchors.leftMargin: 7
                     anchors.verticalCenter: parent.verticalCenter
                     font.pixelSize: fontSize
+                    color: index === listviewClickIndex?"#3B84F6":"#333333"
                     text: model.imgName;
+                    MouseArea{
+                        anchors.fill: parent
+                        onClicked:{
+                            console.debug("absolutePath:"+model.absolutePath)
+                            imgshow.source ="file:///"+ model.absolutePath
+                            imgpop.open();
+                        }
+                    }
                 }
 
 
@@ -289,7 +336,13 @@ Rectangle {
                     MouseArea{
                         anchors.fill: parent
                         onClicked: {
-                            warnmodel.funDeleteIndex(index);
+                            askDialog.width = 427
+                            askDialog.height = 176
+                            askDialog.askStr = qsTr("确认删除信息吗？")
+                            askDialog.imgSrc = "qrc:/images/ico_warn.png"
+                            askDialog.curType = askDialog.warnInfoSingleDelete
+                            askDialog.open();
+                           // warnmodel.funDeleteIndex(index);
                         }
                     }
                 }
@@ -302,8 +355,8 @@ Rectangle {
                     onExited: enter = false;
                     onClicked: {
 
-                        warnList.currentIndex = index;
-                         mouse.accepted = false
+                        listviewClickIndex = index;
+                        mouse.accepted = false
                     }
                 }
             }
@@ -329,18 +382,78 @@ Rectangle {
 
         SelectTime{
             id:selecttime
-            x: timeRect.x
-            y:timeRect.y + timeRect.height + 4
-            dim:false
+            anchors.left: timeRect.left
+            anchors.top: timeRect.bottom
+            z:1
             width: 120
             height: 245
             onS_ensure: {
                 var timeStr = timeh+":"+timem+":"+times
                 txttime.text = timeStr
                 var curIndex = warnmodel.funFindIndex(timeh,timem,times)
-                warnList.currentIndex = curIndex
+                console.debug("curIndex "+curIndex)
+
+                warnList.positionViewAtIndex(curIndex,ListView.Beginning)
+                //warnList.currentIndex = curIndex
             }
 
+        }
+    }
+
+
+
+    Popup {
+        id: imgpop
+        x:(parent.width-720)/2
+        y:(parent.height-520)/2
+        width: 720
+        height: 520
+        modal: true
+        focus: true
+        //设置窗口关闭方式为按“Esc”键关闭
+        closePolicy: Popup.CloseOnEscape|Popup.CloseOnPressOutside
+        //设置窗口的背景控件，不设置的话Popup的边框会显示出来
+        background: rect
+
+        Rectangle{
+            id:rect
+            color: "#00000000"
+            anchors.fill: parent
+            Image {
+                id: imgshow
+                width: 600
+                height: 400
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.verticalCenter: parent.verticalCenter
+                source: ""
+            }
+
+            Image {
+                id: imgclose
+                width: 40
+                height: 40
+                anchors.left: imgshow.right
+                anchors.bottom: imgshow.top
+                anchors.leftMargin: 20
+                anchors.bottomMargin: 20
+                source: "qrc:/images/img_close.png"
+                MouseArea{
+                    anchors.fill: parent
+                    onClicked: imgpop.close();
+                }
+            }
+
+        }
+    }
+
+
+    Connections{
+        target: askDialog
+        onS_CurTypeMsg:{
+            if(askDialog.warnInfoMutipleDelete === type)
+                warnmodel.funDeleteSelect();
+            else if(askDialog.warnInfoSingleDelete === type)
+                warnmodel.funDeleteIndex(listviewClickIndex)
         }
     }
 

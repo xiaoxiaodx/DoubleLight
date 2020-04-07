@@ -41,7 +41,7 @@ Rectangle {
         onClicked: {
 
             click()
-            mouse.accepted = false
+           // mouse.accepted = false
         }
         onDoubleClicked:doubleClick(true);
 
@@ -58,7 +58,7 @@ Rectangle {
         anchors.verticalCenter: mPlayRect.verticalCenter
 
 
-        Component.onCompleted:video.startNormalVideo()
+        Component.onCompleted:video.startNormalVideo(deviceconfig.getWarnTem())
 
 
 
@@ -280,12 +280,16 @@ Rectangle {
     Connections{
         target: deviceconfig
         onS_timeSwith:video.fun_timeSwitch(mchecked);//时间使能
-        onS_temSet:video.fun_temSet( mvalue);//警报温度设置
+        onS_temSet:video.fun_temSet(mvalue);//警报温度设置
     }
-    Connections{
-        target: videoTemp
-        onS_sendList:video.fun_setListRect(vmap)
+//    Connections{
+//        target: videoTemp
+//        onS_sendList:video.fun_setListRect(vmap)
 
+//    }
+
+    function funsetlistRect(map){
+        video.fun_setListRect(map)
     }
 
     function httpParCallback(smap){
@@ -296,7 +300,7 @@ Rectangle {
 
         console.debug(" " + strcmd);
         if(strcmd === "getosdparam"){
-            var enable = map.enable;
+            var enable = smap.enable;
 
         }else if(strcmd === "getrecordparam"){
 

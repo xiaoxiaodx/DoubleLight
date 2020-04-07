@@ -24,7 +24,10 @@ Popup {
     signal s_showToast(var str1)
     signal s_CurTypeMsg(var type);
 
+    property string imgSrc:""
     property int exeClose: 0
+    property int warnInfoSingleDelete: 1
+    property int warnInfoMutipleDelete: 2
 
     Rectangle {
         id: rect
@@ -43,7 +46,7 @@ Popup {
             anchors.leftMargin: 40
             anchors.top: parent.top
             anchors.topMargin: 40
-            source: "qrc:/images/icon_question.png"
+            source: imgSrc//"qrc:/images/icon_question.png"
         }
 
         Text {

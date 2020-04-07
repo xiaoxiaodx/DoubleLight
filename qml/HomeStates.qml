@@ -92,24 +92,5 @@ Rectangle{
         }
     }
 
-    Timer{
-        id:captureScrennTimer
-        property int tCount: 0
-        property bool isRecord: false
-        triggeredOnStart:true
 
-        repeat:true
-
-        interval: 40;
-
-        onTriggered: {
-
-            if(!isRecord){
-                screenv.funForfinishRecord();
-                captureScrennTimer.stop();
-                return;
-            }
-            screenv.funScreenRecrod(main,0 ,68,main.width,main.height-68);
-        }
-    }
 }
