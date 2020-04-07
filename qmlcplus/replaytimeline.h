@@ -5,24 +5,9 @@
 #include <QMap>
 #include <QList>
 #include <QQuickPaintedItem>
-namespace Ui {
-class ReplayTimeline;
-}
-enum IntervalType{
-    VIDEOLOSS = 0,
-    VIDEONORMAL,
-    VIDEOALARM,
-    TIMELINE24H=10,
-    TIMELINE2H,
-    TIMELINE1H,
-    TIMELINE30M,
-};
-class TimeInterval{
-public:
-    IntervalType type;
-    QTime startTime;
-    QTime endTime;
-};
+#include "replaydatesearch.h"
+
+
 
 
 class ReplayTimeline : public QQuickPaintedItem
@@ -37,6 +22,7 @@ public:
     Q_INVOKABLE void setSizeType(int type);
 
     Q_INVOKABLE int getIndicatorTime();
+    Q_INVOKABLE void updateDate(QString date);
     void init();
     void setDate(QDate date);
 
@@ -51,10 +37,9 @@ protected:
     void mousePressEvent(QMouseEvent* event);
     void mouseMoveEvent(QMouseEvent *event);
     void mouseReleaseEvent(QMouseEvent *event);
-    void hoverMoveEvent(QMouseEvent *event);
+
 
 private:
-    Ui::ReplayTimeline *ui;
     void initTimeLineInterval();
     //在指定区间链表中寻找包含指定时间的区间
     TimeInterval *findInterval(QList<TimeInterval*> &list,QTime &time);
@@ -71,16 +56,17 @@ private:
     QList<TimeInterval*> listTimeInterval1H;
     QList<TimeInterval*> listTimeInterval30M;
 
-    //4个回放窗口的不同类型区间链表
+    //4个不同类型区间链表
     QList<TimeInterval*> listVideoInterval1;
     QList<TimeInterval*> listVideoInterval2;
     QList<TimeInterval*> listVideoInterval3;
     QList<TimeInterval*> listVideoInterval4;
 
+
+    QList<TimeInterval*> drawListInterval;
     QRectF rectFIndicator;
     bool isIndicatorPress = false;
     QPoint pressPt;
-
 };
 
 #endif // REPLAYTIMELINE_H

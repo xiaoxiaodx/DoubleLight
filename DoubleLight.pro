@@ -48,7 +48,8 @@ SOURCES += \
     recordVideo/captureScreen/writeh264.cpp \
     qmlcplus/warnmodeldata.cpp \
     qmlcplus/warnmodel.cpp \
-    application.cpp
+    application.cpp \
+    qmlcplus/replaydatesearch.cpp
 
 
 HEADERS += \
@@ -73,7 +74,8 @@ HEADERS += \
     recordVideo/captureScreen/writeh264.h \
     qmlcplus/warnmodeldata.h \
     qmlcplus/warnmodel.h \
-    application.h
+    application.h \
+    qmlcplus/replaydatesearch.h
 
 RESOURCES += qml.qrc
 

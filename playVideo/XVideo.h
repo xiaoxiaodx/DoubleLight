@@ -86,7 +86,7 @@ private:
     MySearch1 *psearch = nullptr;
     QThread *searchThread = nullptr;
 
-    QString m_ip = "";
+    const QString m_ip = "192.168.1.188";
 
     QThread *httpThread = nullptr;
     CHttpApiDevice *httpDevice = nullptr;

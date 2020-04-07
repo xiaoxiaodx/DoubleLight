@@ -6,7 +6,7 @@
 ReplayTimeline::ReplayTimeline()
 {
 
-    replayCurrentTime.setHMS(14,0,1);
+    replayCurrentTime.setHMS(0,0,0);
 
     setAcceptHoverEvents(true);
     setAcceptedMouseButtons(Qt::AllButtons);
@@ -93,7 +93,6 @@ void ReplayTimeline::initTimeLineInterval()
 
 TimeInterval* ReplayTimeline::findInterval(QList<TimeInterval*> &list,QTime &time)
 {
-
     // qDebug()<<"当前值："<<time.toString("hh:mm:ss");
     for (int i=0;i<list.size();i++) {
         TimeInterval *timeI = list.at(i);
@@ -194,6 +193,8 @@ void ReplayTimeline::drawScale(QPainter *painter,IntervalType type)
         return;
     }
 
+
+    //绘制背景刻度
     QTime startT = timeInterval->startTime;
     for (int num = 0;num<25;num++) {
         qreal linex = rectTimeLine.x() + (contentWidth+1)*num;
@@ -222,14 +223,31 @@ void ReplayTimeline::drawScale(QPainter *painter,IntervalType type)
         painter->restore();
     }
 
-
-
-    int timeFromStart = startT.secsTo(replayCurrentTime);
-
     qreal secsPerPix = getsecsPerPix();
 
-    int dpix = (qreal)timeFromStart/secsPerPix;
 
+    //绘制平铺图
+//    painter->save();
+//    for(int i=0;i<drawListInterval.size();i++){
+
+//        TimeInterval *timeInterval = drawListInterval.at(i);
+//        QTime tileTimeStart = timeInterval->startTime;
+//        QTime tileEndStart = timeInterval->endTime;
+//        qreal leftX = startT.secsTo(tileTimeStart)/secsPerPix;
+//        qreal rightX = startT.secsTo(tileEndStart)/secsPerPix;
+//        QRectF tmpRectF;
+//        tmpRectF.setX(leftX);
+//        tmpRectF.setY(rectFIndicator.y());
+//        tmpRectF.setWidth(rightX - leftX);
+//        tmpRectF.setHeight(rightX - leftX);
+
+//        painter->fillRect(rectFIndicator,QBrush(QColor(255,0,0)));
+//    }
+
+    //绘制指示器
+    int timeFromStart = startT.secsTo(replayCurrentTime);
+
+    int dpix = (qreal)timeFromStart/secsPerPix;
     //  qDebug()<<"replayCurrentTime:"<<replayCurrentTime.fromMSecsSinceStartOfDay(<<"    startT:"<<startT;
     qDebug()<<"replayCurrentTime:"<<replayCurrentTime<<"    startT:"<<startT;
     qDebug()<<"timeFromStart:"<<timeFromStart<<"    secsPerPix:"<<secsPerPix;
@@ -312,8 +330,7 @@ void ReplayTimeline::mouseReleaseEvent(QMouseEvent *event){
     }
 }
 
-
-void ReplayTimeline::hoverMoveEvent(QMouseEvent *event){
+void ReplayTimeline::updateDate(QString date)
+{
 
 }
-

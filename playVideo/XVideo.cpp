@@ -16,7 +16,8 @@ void XVideo::startNormalVideo(float tp)
 {
     DebugLog::getInstance()->writeLog("startNormalVideo ");
     warnTemp = tp;
-    createSearchIp();
+    createTcpThread();
+    //createSearchIp();
 
 }
 
@@ -91,19 +92,19 @@ void XVideo::slog_HttpmsgCb(QMap<QString,QVariant> map) {
 
 void XVideo::createSearchIp()
 {
-    if(psearch == nullptr){
-        psearch = new MySearch1;
-        searchThread = new QThread;
-        connect(psearch,&MySearch1::signal_sendIp,this,&XVideo::recSearchIp);
-        connect(this,&XVideo::signal_resetSearch,psearch,&MySearch1::resetSearch);
-        connect(this,&XVideo::signal_finishSearch,psearch,&MySearch1::forceFinishSearch);
-        connect(searchThread,&QThread::finished,searchThread,&MySearch1::deleteLater);
-        connect(searchThread,&QThread::finished,psearch,&MySearch1::deleteLater);
-        psearch->moveToThread(searchThread);
-        searchThread->start();
-    }
+//    if(psearch == nullptr){
+//        psearch = new MySearch1;
+//        searchThread = new QThread;
+//        connect(psearch,&MySearch1::signal_sendIp,this,&XVideo::recSearchIp);
+//        connect(this,&XVideo::signal_resetSearch,psearch,&MySearch1::resetSearch);
+//        connect(this,&XVideo::signal_finishSearch,psearch,&MySearch1::forceFinishSearch);
+//        connect(searchThread,&QThread::finished,searchThread,&MySearch1::deleteLater);
+//        connect(searchThread,&QThread::finished,psearch,&MySearch1::deleteLater);
+//        psearch->moveToThread(searchThread);
+//        searchThread->start();
+//    }
 
-    emit signal_resetSearch();
+//    emit signal_resetSearch();
 
 }
 
@@ -113,8 +114,8 @@ void XVideo::recSearchIp(QString ip)
     DebugLog::getInstance()->writeLog("my recSearchIp:"+ip);
     //qDebug()<<"my recSearchIp:"<<ip;
 
-    m_ip = "10.67.1.146";//ip;//"192.168.1.101";
-    createTcpThread();
+    //m_ip = "10.67.1.146";//ip;//"192.168.1.101";
+    //createTcpThread();
 
 }
 
