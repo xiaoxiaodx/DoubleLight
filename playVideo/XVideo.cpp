@@ -8,8 +8,8 @@ XVideo::XVideo()
 {
     qDebug()<<"XVideo "<<"  "<<QThread::currentThreadId() ;
 
-    pRenderImginfo = new ImageInfo;
-    pRenderImginfo->pImg = nullptr;
+
+    pRenderImginfo.pImg = nullptr;
 }
 
 void XVideo::startNormalVideo(float tp)
@@ -18,7 +18,6 @@ void XVideo::startNormalVideo(float tp)
     warnTemp = tp;
     createTcpThread();
     //createSearchIp();
-
 }
 
 
@@ -43,7 +42,16 @@ void XVideo::createFFmpegDecodec()
 void XVideo::fun_getInitPar()
 {
     qDebug()<<"fun_getInitPar";
-    // emit signal_getInitPar();
+   //  emit signal_getInitPar();
+
+    QThread::msleep(100);
+    QMap<QString,QVariant> map;
+    map.insert("cmd","getosdparam");
+    emit signal_httpParSet(map);
+    QThread::msleep(100);
+    map.insert("cmd","setcurrenttime");
+    emit signal_httpParSet(map);
+
 
 }
 
@@ -79,32 +87,33 @@ void XVideo::createHttpApi(){
         httpDevice->moveToThread(httpThread);
         httpThread->start();
 
-        emit signal_getInitPar();
+       // emit signal_getInitPar();
+        fun_getInitPar();
     }
 }
 
 void XVideo::slog_HttpmsgCb(QMap<QString,QVariant> map) {
 
-    qDebug()<<" slog_HttpmsgCb ";
+    qDebug()<<" slog_HttpmsgCb "<<map;
     emit signal_httpUiParSet(QVariant::fromValue(map));
 
 }
 
 void XVideo::createSearchIp()
 {
-//    if(psearch == nullptr){
-//        psearch = new MySearch1;
-//        searchThread = new QThread;
-//        connect(psearch,&MySearch1::signal_sendIp,this,&XVideo::recSearchIp);
-//        connect(this,&XVideo::signal_resetSearch,psearch,&MySearch1::resetSearch);
-//        connect(this,&XVideo::signal_finishSearch,psearch,&MySearch1::forceFinishSearch);
-//        connect(searchThread,&QThread::finished,searchThread,&MySearch1::deleteLater);
-//        connect(searchThread,&QThread::finished,psearch,&MySearch1::deleteLater);
-//        psearch->moveToThread(searchThread);
-//        searchThread->start();
-//    }
+    //    if(psearch == nullptr){
+    //        psearch = new MySearch1;
+    //        searchThread = new QThread;
+    //        connect(psearch,&MySearch1::signal_sendIp,this,&XVideo::recSearchIp);
+    //        connect(this,&XVideo::signal_resetSearch,psearch,&MySearch1::resetSearch);
+    //        connect(this,&XVideo::signal_finishSearch,psearch,&MySearch1::forceFinishSearch);
+    //        connect(searchThread,&QThread::finished,searchThread,&MySearch1::deleteLater);
+    //        connect(searchThread,&QThread::finished,psearch,&MySearch1::deleteLater);
+    //        psearch->moveToThread(searchThread);
+    //        searchThread->start();
+    //    }
 
-//    emit signal_resetSearch();
+    //    emit signal_resetSearch();
 
 }
 
@@ -130,12 +139,11 @@ void XVideo::updateUi()
         return;
     }
     //buff指针有数据而渲染指针没有数据则删除老数据，在更新
-    if(pRenderImginfo->pImg != nullptr){
-
-        delete  pRenderImginfo->pImg;
-        pRenderImginfo->pImg = nullptr;
+    if(pRenderImginfo.pImg != nullptr){
+        delete  pRenderImginfo.pImg;
+        pRenderImginfo.pImg = nullptr;
     }
-    pRenderImginfo->pImg = pBuffImg;
+    pRenderImginfo.pImg = pBuffImg;
     pBuffImg = nullptr;
     buffMutex.unlock();
     //如果不增加这句代码 ，则会出现视频不会第一时间显示，而是显示灰色图像
@@ -159,7 +167,7 @@ void XVideo::paint(QPainter *painter)
 
     //qDebug()<<"XVideo paint";
 
-    if(pRenderImginfo == nullptr || pRenderImginfo->pImg == nullptr)
+    if(pRenderImginfo.pImg == nullptr)
         return;
     QFont font("Microsoft Yahei", 20);
     QPen pen(QBrush(QColor(0,255,0)),1);
@@ -174,7 +182,7 @@ void XVideo::paint(QPainter *painter)
     qreal kshowRectX = (qreal)this->width()/showParentW;
     qreal kshowRectY = (qreal)this->height()/showParentH;
 
-    painter->drawImage(QRect(0,0,width(),height()), *pRenderImginfo->pImg);
+    painter->drawImage(QRect(0,0,width(),height()), *pRenderImginfo.pImg);
 
     //画限制区域矩形
     painter->save();
@@ -188,8 +196,8 @@ void XVideo::paint(QPainter *painter)
 
 
     //画温度矩形
-    for (int i=0;i<pRenderImginfo->listRect.size();i++) {
-        QVariantMap vmap = pRenderImginfo->listRect.at(i);
+    for (int i=0;i<pRenderImginfo.listRect.size();i++) {
+        QVariantMap vmap = pRenderImginfo.listRect.at(i);
         QRectF oriRect = vmap.value("rect").toRectF();
 
         QRectF desRect(rectF.x()+oriRect.x()*kX*kshowX,rectF.y()+oriRect.y()*kshowY*kY,oriRect.width()*kX*kshowX,oriRect.height()*kY*kshowY);
@@ -229,7 +237,7 @@ void XVideo::fun_setRectPar(int sx,int sy,int sw,int sh,int pw,int ph){
 void XVideo::slot_recH264(char* h264Arr,int arrlen,quint64 time)
 {
 
-   // qDebug()<<QString(__FUNCTION__) + " "+QString::number(__LINE__)<<"  "<<QThread::currentThreadId() ;
+    // qDebug()<<QString(__FUNCTION__) + " "+QString::number(__LINE__)<<"  "<<QThread::currentThreadId() ;
     createFFmpegDecodec();
 
     if(pffmpegCodec != nullptr){
@@ -261,21 +269,17 @@ void XVideo::slot_recH264(char* h264Arr,int arrlen,quint64 time)
 void XVideo::fun_setListRect(QVariant var){
     //qDebug()<<"tcp 流线程 fun_setListRect:"<<QThread::currentThreadId()<<"    "<<var.toList();
 
-    if(pRenderImginfo != nullptr){
 
-        if(var.toList().size() > 0){
-            pRenderImginfo->listRect.clear();
-            QVariantList listv = var.toList();
-            for(int i=0;i<listv.size();i++){
-                QVariantMap map = listv.at(i).toMap();
-                pRenderImginfo->listRect.append(map);
-            }
+    pRenderImginfo.listRect.clear();
+    if(var.toList().size() > 0){
+        pRenderImginfo.listRect.clear();
+        QVariantList listv = var.toList();
+        for(int i=0;i<listv.size();i++){
+            QVariantMap map = listv.at(i).toMap();
+            pRenderImginfo.listRect.append(map);
         }
-        updateUi();
-    }else{
-        // qDebug()<<"渲染图片为空";
-
     }
+    updateUi();
 }
 
 

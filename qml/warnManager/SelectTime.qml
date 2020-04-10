@@ -42,6 +42,10 @@ Rectangle {
         color: "#DFE1E6"
         radius: 4
 
+        MouseArea{
+            anchors.fill: parent
+            hoverEnabled: true
+        }
         ListView{
             id:listhour
             anchors.left: parent.left

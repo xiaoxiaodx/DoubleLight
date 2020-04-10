@@ -75,10 +75,10 @@ void WriteH264::slot_writeH264(QImage img,int capx,int capy,int capw,int caph){
 void WriteH264::closeAndSaveFile()
 {
     QString curFileName = file.fileName();
-    int index = curFileName.indexOf(".h264");
-    int timelong = mPeriodIndex*mPeriod;
+    int index = curFileName.indexOf(".yuv");
+    int timelong = mPeriodIndex*mPeriod /1000;
 
-    QString newName = curFileName.insert(index,QString::number(timelong));
+    QString newName = curFileName.insert(index,"_"+QString::number(timelong));
     DebugLog::getInstance()->writeLog("****:"+QString::number(timelong));
     file.rename(newName);
     mPeriodIndex = 0;

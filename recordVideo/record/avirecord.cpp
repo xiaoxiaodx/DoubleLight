@@ -9,25 +9,52 @@ AviRecord::AviRecord(QString did)
 
 
 }
-
-void AviRecord::slot_writeImage(QImage img,int capx,int capy,int capw,int caph)
+#include <QThread>
+void AviRecord::slot_writeImage(QString path,QImage img,int capx,int capy,int capw,int caph)
 {
 
-    if(!isStart)
-        return;
-    QImage img1 = img.copy(QRect(capx,capy,capw,caph));
-    QImage img2 = img1.scaled(QSize(960,600),Qt::IgnoreAspectRatio);
+    int needW = capw - capw%2;
+    int needH = caph - caph%2;
+    //qDebug()<<mRecordingFilePath <<"    "<<path;
+    if(mRecordingFilePath.compare(path)!=0){
+        mRecordingFilePath = path;
+        slot_endRecord();
+    }
+    if(curResW != needW || curResH != needH){
+
+        qDebug()<<"size is change "<<capw<<"    "<<caph<<"  "<<curResW<<"   "<<curResH;
+        curResW = needW;
+        curResH = needH;
+        slot_endRecord();
+    }
 
 
-    QByteArray arr;
-    arr.clear();
-    bool isGotPic = false;
-    ffmpegConvert.rgb32ToH264(img2,arr,isGotPic);
+    QImage img1 = img.copy(QRect(capx,capy,curResW,curResH));
+
+    slot_startRecord("",0,img1.width(),img1.height());
 
 
-    //qDebug()<<"h264 录像数据:"<<arr.length();
-    if(isGotPic)
-        slot_writeVedio(arr.data(),arr.length(),1000);
+
+
+    if(ffmpegConvert == nullptr){
+        QThread::msleep(5);
+        ffmpegConvert = new FfmpegConvert;
+        if(!ffmpegConvert->initConvert(curResW,curResH)){
+            delete  ffmpegConvert;
+           ffmpegConvert = nullptr;
+        }
+    }else {
+        QByteArray arr;
+        arr.clear();
+        bool isGotPic = false;
+        ffmpegConvert->rgb32ToH264(img1,arr,isGotPic);
+
+
+        if(isGotPic)
+            slot_writeVedio(arr.data(),arr.length(),1000);
+    }
+
+
 
 }
 
@@ -36,10 +63,9 @@ void AviRecord::slot_readyRecord(QString path){
     if(mRecordingFilePath.compare(path) != 0)
         mRecordingFilePath = path;
 
+    slot_startRecord(path,1000,960,600);
 
-    slot_startRecord(path,1000);
-
-    emit signal_startSucc(isStart);
+    // emit signal_startSucc(isStart);
 
 }
 
@@ -58,7 +84,7 @@ void AviRecord::slot_writeAudio(char* buff,int len,long long tempTime)
 
     if(s32Ret != KEY_TRUE)
     {
-        DF_DEBUG("writer_writeframe audio failed %s \n");
+        qDebug()<<("writer_writeframe audio failed %s \n");
 
     }
 }
@@ -74,18 +100,30 @@ void AviRecord::slot_writeVedio(char* buff,int len,long long tempTime)
     qint64  u64Pts = (tmpPts  - startTime)/1000;
 
     // qDebug()<<"writer_writeframe vedio";
-    int s32Ret = writer_writeframe(pwriteHandle, 0, u64Pts,(unsigned char*)buff, len, 1);
+    int s32Ret = writer_writeframe(pwriteHandle, 0, mPeriod,(unsigned char*)buff, len, 1);
 
-    if(isStart && s32Ret == 0){
+    if(s32Ret == 0){
         isWriteSucc = true;
+
+
+        if(mPeriodIndex*mPeriod < 1800000){
+
+            mPeriodIndex++;
+        }else {
+            //超过30分钟，关闭文件，这样在继续录文件时会重新打开一个文件
+            slot_endRecord();
+            mRecordingFilePath = "";
+        }
+
     }
     if(s32Ret != KEY_TRUE)
     {
-        DF_DEBUG("writer_writeframe vedio failed %s \n");
+        qDebug()<<("writer_writeframe vedio failed %s \n");
     }
 }
 
-void AviRecord::slot_startRecord(QString did,long long pts)
+
+void AviRecord::slot_startRecord(QString did,long long pts,int w,int h)
 {
 
 
@@ -110,6 +148,7 @@ void AviRecord::slot_startRecord(QString did,long long pts)
     QTime time = QDateTime::currentDateTime().time();
     QString filename = desFileDir+ "/"+time.toString("hhmmss")+".avi";
 
+    curFileAbsolutePath = filename;
 
     QByteArray tmpArr = filename.toLatin1();
 
@@ -132,10 +171,10 @@ void AviRecord::slot_startRecord(QString did,long long pts)
     VIDEO_PARAM_S  bitMapInfo = {0};
 
     bitMapInfo.eCodeid = CODEC_TYPE_H264;//编码格式
-    bitMapInfo.u32BiWidth = 960;
-    bitMapInfo.u32BiHeight = 600;
+    bitMapInfo.u32BiWidth = w;
+    bitMapInfo.u32BiHeight = h;
     bitMapInfo.u32BitCount = 16;
-    bitMapInfo.u32samplePerSec = 15;
+    bitMapInfo.u32samplePerSec = 25;
     bitMapInfo.u32avgBitRate = 1024;
     bitMapInfo.u32IsVBR = 1;
     bitMapInfo.u32NTSC  = 0;
@@ -167,8 +206,9 @@ void AviRecord::slot_startRecord(QString did,long long pts)
         return;
     }
 
-    isStart = true;
-    ffmpegConvert.initConvert();
+
+
+    isWriteSucc = false;
 }
 
 void AviRecord::slot_setAviSavePath(QString str){
@@ -182,18 +222,13 @@ void AviRecord::slot_endRecord()
 
     qDebug()<<"slot_endRecord";
 
-    if(!isWriteSucc){
-        emit signal_endSucc(false);
-        qDebug()<<" 数据未写入成功  不写文件尾";
-        return;
-    }
     int s32Ret;
     if(pwriteHandle)
     {
         s32Ret = writer_end(pwriteHandle);
         if(0 != s32Ret)
         {
-            DF_DEBUG("writer_end return error, the s32Ret is %d\n", s32Ret);
+            qDebug()<<("writer_end return error, the s32Ret is %d\n"+ s32Ret);
         }
     }
 
@@ -202,14 +237,20 @@ void AviRecord::slot_endRecord()
         s32Ret = writer_destroy(pwriteHandle);
         if(0 != s32Ret)
         {
-            DF_DEBUG("writer_destroy return error, the s32Ret is %d\n", s32Ret);
+            qDebug()<<("writer_destroy return error, the s32Ret is %d\n"+s32Ret);
         }
     }
 
     pwriteHandle = nullptr;
+    if(ffmpegConvert != nullptr){
+        ffmpegConvert->unInitConvert();
+        delete ffmpegConvert;
+        ffmpegConvert = nullptr;
+    }
 
-    emit signal_endSucc(true);
-    ffmpegConvert.unInitConvert();
+    if(!isWriteSucc)
+        QFile::remove(curFileAbsolutePath);
+
 
 }
 //罗勇:

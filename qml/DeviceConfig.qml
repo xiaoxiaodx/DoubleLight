@@ -552,6 +552,7 @@ Rectangle {
                             imgScreenShotPath.source = "qrc:/images/file.png"
                         }
                         onClicked: {
+                            fileDialog.folder = "file:///"+inputScreenShotPath.text
                             fileDialog.pathname = "screenShotPath";
 
                             fileDialog.open()
@@ -674,6 +675,7 @@ Rectangle {
                             imgRecordPath.source = "qrc:/images/file.png"
                         }
                         onClicked: {
+                            fileDialog.folder = "file:///"+inputRecordPath.text
                             fileDialog.pathname = "recordPath";
 
                             fileDialog.open()

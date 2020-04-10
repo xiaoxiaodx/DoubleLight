@@ -8,6 +8,7 @@
 #include <QQuickWindow>
 #include "ffmpegreplay.h"
 #include <QFile>
+#include <QTime>
 class XVideoReplay : public QQuickItem
 {
     Q_OBJECT
@@ -17,7 +18,8 @@ public:
 
 //    Q_INVOKABLE void funPlay(QString str);
 //    Q_INVOKABLE void funPause();
-//    Q_INVOKABLE void funPlayVideoTimeChange(int pix);
+
+    Q_INVOKABLE void funPlayTimeChange(QString path,QString date,QTime time);
 
 
 signals:
@@ -44,6 +46,15 @@ private:
     QFile *yuvfile;
 
     QTimer timer;
+
+
+    QString findPlayFile(QString file,QString date,QTime time);
+    QString curFilePath = "";//当前播放文件属于哪一天
+    QTime playStartT;
+    int playTotalTime;
+
+    int timeoutIndex = 0;
+
 };
 
 #endif // XVIDEOREPLAY_H

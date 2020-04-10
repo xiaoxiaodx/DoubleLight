@@ -4,6 +4,7 @@ import QtQuick.Window 2.12
 import QtQml 2.12
 import ScreenVideo 1.0
 import QtMultimedia 5.8
+import QtQuick.Controls 2.5
 import "../qml/liveVedio"
 import "../qml/playbackVideo"
 import "../qml/warnManager"
@@ -39,7 +40,7 @@ Rectangle {
     property int curVindex: -1
 
 
- //   property int modelDataCurrentIndex: -1
+    //   property int modelDataCurrentIndex: -1
 
 
 
@@ -50,14 +51,16 @@ Rectangle {
     signal winClose();
     signal dragPosChange(var mx,var my);
     color: "#252525"
+
     HomeMenu{
         id:homeMenu
         property bool isDoubleClick: false
         anchors.top: parent.top
         anchors.left: parent.left
         width: parent.width
-        height: isLocker?0:68
-
+        height: 68
+        visible:!isLocker
+        z:2
         gradient: Gradient {
             GradientStop { position: 0.0; color: "#5D9CFF"}
             GradientStop { position: 1.0; color: "#2D76E7"}
@@ -80,11 +83,8 @@ Rectangle {
             }
 
             onDoubleClicked: {
-
                 homeMenu.isDoubleClick = true
                 winMax();
-
-
             }
             onPositionChanged: {
 
@@ -93,162 +93,41 @@ Rectangle {
 
                     dragPosChange(offset.x, offset.y)
                 }
-
-
             }
-        }
-
-
-
-    }
-
-
-    ListModel{
-        id:listDeviceDataModel
-        Component.onCompleted: {
-
-            listDeviceDataModel.append({videoType:1,isMax:0,deviceName:""});
-            listDeviceDataModel.append({videoType:1,isMax:0,deviceName:""});
         }
     }
+    SwipeView {
+          id:vedioContent
+          anchors.left: parent.left
+          anchors.top: homeMenu.bottom
+          width: parent.width
+          height: parent.height - homeMenu.height
+          currentIndex:homeMenu.mCurIndex
+          interactive:false
+          Component.onCompleted:{
+                  contentItem.highlightMoveDuration = 0      //将移动时间设为0
+              }
+          z:1
+          VedioLayout{
+              id: vedioLayout
+              isShowScreen:!isLocker
+          }
 
-    Rectangle{
-        id:vedioContent
-        anchors.left: parent.left
-        anchors.top: homeMenu.bottom
-        width: parent.width
-        height: parent.height - homeMenu.height
-        color: "#252525"
-        VedioLayout{
-            id: vedioLayout
-            height: parent.height
-            width: parent.width;
-            isShowScreen:!isLocker
-            property bool isWarn: false
+          DeviceConfig{
+              id:deviceconfig
+              color: "#DFE1E6"
+          }
 
-          //  onS_click: modelDataCurrentIndex=clickIndex
-            z:homeMenu.mCurIndex == 0?1:0
-//            onS_doubleClick: {
-
-
-
-//            }
-
-
-            Image{
-                id:imgWar
-                width: 58
-                height: 58
-                anchors.right: parent.right
-                anchors.rightMargin: 13
-                anchors.top: parent.top
-                anchors.topMargin: 68
-                source: "qrc:/images/warn_ico.png"
-                z:2
-                opacity: 0
-                SequentialAnimation {
-                    id:animationWarnOpacity
-                    //loops: Animation.Infinite
-                    alwaysRunToEnd: true
-                    NumberAnimation { target: imgWar; property: "opacity"; to: 1; duration: 200 }
-                    NumberAnimation { target: imgWar; property: "opacity"; to: 1; duration: 300 }
-                    NumberAnimation { target: imgWar; property: "opacity"; to: 0; duration: 200 }
-                }
-                function startAnimation(){
-
-                    animationWarnOpacity.start();
-                }
-                function stopAnimation(){
-
-                    animationWarnOpacity.stop();
-                    imgWar.opacity = 0;
-                }
-            }
-
-
-            Image{
-                id:imgRecord
-                width: 57
-                height: 24
-                anchors.left: parent.left
-                anchors.leftMargin: 20
-                anchors.top: parent.top
-                anchors.topMargin: 20
-                source: "qrc:/images/lablerecord.png"
-                z:2
-                opacity: 0
-                SequentialAnimation {
-                    id:animationRecordOpacity
-                    loops: Animation.Infinite
-                    // alwaysRunToEnd: true
-                    NumberAnimation { target: imgRecord; property: "opacity"; to: 1; duration: 300 }
-                    NumberAnimation { target: imgRecord; property: "opacity"; to: 1; duration: 300 }
-                    NumberAnimation { target: imgRecord; property: "opacity"; to: 0; duration: 300 }
-                }
-                function startAnimation(){
-
-                    animationRecordOpacity.start();
-                }
-                function stopAnimation(){
-
-                    animationRecordOpacity.stop();
-                    imgRecord.opacity = 0;
-                }
-            }
-
-
-            function startWarn(){
-
-                if(!deviceconfig.getSwitchWarn())
-                    return;
-                if(!warnTimer.running){
-                    warnTimer.start();
-                }
-                warnTimer.haveWarnMsg = true;
-            }
-
-
-            function startRecordLable(){
-                imgRecord.startAnimation();
-            }
-            function stopRecordLable(){
-                imgRecord.stopAnimation();
-            }
-
-
-        }
-
-        PlaybackVideo{
-            id:rectRepaly
-            width: parent.width
-            height: parent.height
-            color: "#ffffff"
-            z:homeMenu.mCurIndex == 1?1:0
-        }
-
-        DeviceConfig{
-            id:deviceconfig
-            height: parent.height
-            width: parent.width;
-            color: "#DFE1E6"
-            z:homeMenu.mCurIndex == 2?1:0
-        }
-
-        WarnManager{
-            id:warnmanger
-            height: parent.height
-            width: parent.width;
-            color: "#DFE1E6"
-             z:homeMenu.mCurIndex == 3?1:0
-        }
-    }
-
-
+          WarnManager{
+              id:warnmanger
+              color: "#DFE1E6"
+          }
+      }
 
     ScreenVideo{
         id:screenv
         Component.onCompleted: {
-            screenv.funCreateScreenThread(deviceconfig.getScrennShotPath(),deviceconfig.getRecordPath(),captureScrennTimer.interval);
+            screenv.funCreateAviRecordThread(deviceconfig.getScrennShotPath(),deviceconfig.getRecordPath(),captureScrennTimer.interval);
         }
     }
 
@@ -275,39 +154,22 @@ Rectangle {
                 captureScrennTimer.stop();
                 return;
             }
-            screenv.funScreenRecrod(main,0 ,68,main.width,main.height-68);
+
+            screenv.funScreenRecrod(deviceconfig.getRecordPath(),main,0 ,68,main.width,main.height-68);
         }
     }
 
+
+
     Timer{
         id:warnTimer
-        property bool haveWarnMsg: false
-        repeat: true
+        property bool isDelay1000: true
+        repeat: false
         interval: 1000
-        triggeredOnStart:true
+        triggeredOnStart:false
         onTriggered: {
 
-            console.debug("dingshiqi:")
-            //如果此时没有报警,则关闭定时器
-            if(!haveWarnMsg){
-                warnTimer.stop();
-                return;
-            }
-
-            //播放过程都会自动停止
-
-            //开启动画
-            imgWar.startAnimation();
-            //开启截图
-            if(deviceconfig.getSwitchScreenShot())
-                screenv.funScreenShoot(deviceconfig.getScrennShotPath(),main,0 ,68,main.width,main.height-68,deviceconfig.getWarnTem());
-            //开启声音
-            if(deviceconfig.getSwitchBeer())
-                playWarn.play()
-
-
-            haveWarnMsg = false;
-
+            warnTimer.isDelay1000 = true;
         }
     }
 }

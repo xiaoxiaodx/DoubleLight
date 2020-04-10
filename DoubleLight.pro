@@ -1,13 +1,13 @@
 QT += quick
 CONFIG += c++11
- 
+
 # The following define makes your compiler emit warnings if you use
 # any Qt feature that has been marked deprecated (the exact warnings
 # depend on your compiler). Refer to the documentation for the
 # deprecated API to know how to port your code away from it.
 DEFINES += QT_DEPRECATED_WARNINGS
 # �汾��Ϣ
-VERSION = 1.0
+VERSION = 1.0.0.5
 # ͼ��
 RC_ICONS = myico.ico
 TARGET=GAOZHI_TCS
@@ -49,7 +49,13 @@ SOURCES += \
     qmlcplus/warnmodeldata.cpp \
     qmlcplus/warnmodel.cpp \
     application.cpp \
-    qmlcplus/replaydatesearch.cpp
+    qmlcplus/replaydatesearch.cpp \
+    thirdSrc/avi/avformat.cpp \
+    thirdSrc/avi/avformat_input.cpp \
+    thirdSrc/avi/avi_adapt.cpp \
+    thirdSrc/avi/avienc_adapt.cpp \
+    thirdSrc/avi/hi_avi.cpp \
+    recordVideo/record/avirecord.cpp
 
 
 HEADERS += \
@@ -75,7 +81,17 @@ HEADERS += \
     qmlcplus/warnmodeldata.h \
     qmlcplus/warnmodel.h \
     application.h \
-    qmlcplus/replaydatesearch.h
+    qmlcplus/replaydatesearch.h \
+    thirdSrc/avi/adapt.h \
+    thirdSrc/avi/avformat.h \
+    thirdSrc/avi/avi_adapt.h \
+    thirdSrc/avi/avienc_adapt.h \
+    thirdSrc/avi/common.h \
+    thirdSrc/avi/debug.h \
+    thirdSrc/avi/defs.h \
+    thirdSrc/avi/hi_avi.h \
+    thirdSrc/avi/hi_type.h \
+    recordVideo/record/avirecord.h
 
 RESOURCES += qml.qrc
 
@@ -97,9 +113,11 @@ INCLUDEPATH += $$PWD/render
 INCLUDEPATH += $$PWD/thirdSrc
 INCLUDEPATH += $$PWD/thirdSrc/ffmpeg
 INCLUDEPATH += $$PWD/thirdSrc/yousee
+INCLUDEPATH += $$PWD/thirdSrc/avi
 INCLUDEPATH += $$PWD/recordVideo/captureScreen
 INCLUDEPATH += $$PWD/util
 INCLUDEPATH += $$PWD/qmlcplus
+
 
 INCLUDEPATH += $$PWD/thirdLib/ffmpeg64/include
 LIBS += $$PWD/thirdLib/ffmpeg64/lib/avcodec.lib \

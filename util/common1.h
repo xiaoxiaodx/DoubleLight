@@ -1,5 +1,15 @@
 #ifndef COMMON_H
 #define COMMON_H
+
+//一般错误
+#ifndef KEY_FALSE
+#define KEY_FALSE				-1
+#endif
+
+#ifndef KEY_TRUE
+#define KEY_TRUE				0
+#endif
+
 typedef struct _VideoReslution_T
 {
     int width;
@@ -54,8 +64,18 @@ typedef enum _Enum_MsgCmd
     Msg_SendStreamPlayRes = 0x22,
 }Enum_MsgCmd;
 
+typedef struct _MeidaHead_T{
+    unsigned char sysncHead0;
+    unsigned char sysncHead1;
+    unsigned char streamType;//码流类型
+    unsigned char mediaType;//视音频区分
+}MeidaHead_T;
 
-
+typedef struct _MeidaVideo_T{
+    MeidaHead_T head;
+    QueueVideoInputInfo_T info;
+    int datalen;  //片长度
+}MeidaVideo_T;
 
 
 

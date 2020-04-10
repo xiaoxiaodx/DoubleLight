@@ -8,29 +8,28 @@ XVideoReplay::XVideoReplay()
     size.setHeight(360);
     m_renderThread = new RenderThread(size,&listYuv,&yuvData,nullptr);
 
-    //  freplay.slot_openFile();
-    //ready();
+    playStartT.setHMS(0,0,0);
+    playTotalTime = 0;
 
     yuvData.data = new uchar[960*600 * 3 /2];
-
-    yuvfile = new QFile("171601.yuv");
-
-    if(yuvfile->open(QIODevice::ReadOnly)){
-
-        qDebug()<<"yuv 文件打开成功";
-        yuvArr = yuvfile->readAll();
-
-    }else{
-
-        qDebug()<<"yuv 文件打失败";
-    }
-
-
+//    yuvfile = new QFile("F:/work/doubleLight/avi/shot/20200407/212226_43.yuv");
+//    if(yuvfile->open(QIODevice::ReadOnly))
+//        yuvArr = yuvfile->readAll();
 
     connect(&timer,&QTimer::timeout,[&]{
 
+//        if(yuvfile->open(QIODevice::ReadOnly)){
+//           //yuvfile->seek(timeoutIndex*960*600*3/2);
 
-        // qDebug()<<"dsadsa1";
+//           QByteArray arr = yuvfile->read(960*600*3/2);
+
+//            memcpy(yuvData.data,arr.data(),960*600*3/2);
+
+//            timeoutIndex++;
+//            yuvfile->close();
+//        }else{
+//            qDebug()<<"yuv 文件打开失败";
+//        }
 
         if(yuvArr.size() > 0){
             yuvData.resolutionH = 600;
@@ -39,9 +38,10 @@ XVideoReplay::XVideoReplay()
 
             yuvArr.remove(0,960*600*3/2);
         }
-        // qDebug()<<"dsadsa2";
+
     });
-    timer.start(40);
+    //timer.start(40);
+
 }
 
 
@@ -102,4 +102,76 @@ QSGNode* XVideoReplay::updatePaintNode(QSGNode *oldNode, UpdatePaintNodeData *)
     qDebug()<<"*************1";
     node->setRect(boundingRect());//设置显示区域，为qml分配的整个区域
     return node;
+}
+#include <QDir>
+void XVideoReplay::funPlayTimeChange(QString relativePath,QString date,QTime playTime){
+
+    QString tmpFilePath = findPlayFile(relativePath,date,playTime);
+
+    if(tmpFilePath == "")
+        return;
+
+    if(curFilePath.compare(tmpFilePath)==0){
+
+
+    }else{
+
+
+        if(yuvfile != nullptr)
+            delete  yuvfile;
+
+        curFilePath = tmpFilePath;
+        qDebug()<<" curFilePath "<<curFilePath;
+        yuvfile = new QFile(curFilePath+".yuv");
+
+
+            if(yuvfile->open(QIODevice::ReadOnly))
+                yuvArr = yuvfile->readAll();
+        timer.start(40);
+    }
+
+
+
+}
+
+QString XVideoReplay::findPlayFile(QString relativePath,QString date,QTime time){
+
+    QDir dir(relativePath+"/"+date);
+
+    if(!dir.exists()){
+        qDebug()<<"文件路径不存在";
+    }
+    //设置文件过滤器
+    QStringList nameFilters;
+    //设置文件过滤格式
+    nameFilters << "*.yuv";
+    QStringList files = dir.entryList(nameFilters, QDir::Files|QDir::Readable, QDir::Name);
+    for (int i=0;i<files.size();i++) {
+        QString tmpName = files.at(i);
+        QString fileName = tmpName.remove(".yuv");
+        qDebug()<<"files name:"<<fileName;
+
+        QStringList fileNames = fileName.split("_");
+        if(fileNames.size() != 2)
+            continue;
+
+        QString timeStart = fileNames[0];
+        QString longt = fileNames[1];
+
+        //        int h = timeStart.mid(0,2).toInt();
+        //        int m = timeStart.mid(2,2).toInt();
+        //        int s = timeStart.mid(4,2).toInt();
+        int t = longt.toInt();
+
+        QTime startT = QTime::fromString(timeStart,"hhmmss");
+        QTime endT = startT.addSecs(t);
+
+        int secTime = time.msecsSinceStartOfDay();
+        int secStartT = startT.msecsSinceStartOfDay();
+        int secEndT = endT.msecsSinceStartOfDay();
+        if(secTime>= secStartT && secTime<=secEndT){
+            return (relativePath+"/"+date+"/"+tmpName);
+        }
+    }
+    return "";
 }

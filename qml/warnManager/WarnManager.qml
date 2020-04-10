@@ -17,12 +17,28 @@ Rectangle {
 
     signal s_allselect(bool isSelect);
 
+
+    onIsAllSelectChanged: {
+        warnmodel.set
+    }
+    property string curDateStr: ""
     WarnModel{
         id:warnmodel
-        // Component.objectName: warnmodel.flushWarnInfo(deviceconfig.getScrennShotPath());
+        // Component.objectName: warnmodel.funFlushWarnInfo(deviceconfig.getScrennShotPath(),curDateStr);
     }
 
-
+    function screenShot(path,object,mx,my,mw,mh,temp){
+        warnmodel.funScreenShoot(path,object,mx ,my,mw,mh,temp);
+    }
+    //加个矩形是为了解决listview显示越界的问题
+    Rectangle{
+        id:rectTop
+        width: parent.warnImgHeaderLeftMargin
+        height: 20
+        color: "#DFE1E6"
+        anchors.top: parent.top
+        z:2
+    }
     Rectangle{
         id:rectWarnArea
         width: parent.width-40
@@ -31,7 +47,14 @@ Rectangle {
         anchors.horizontalCenter: parent.horizontalCenter
         color: "#F8FAFD"
 
-
+        //加个矩形是为了解决listview显示越界的问题
+        Rectangle{
+            anchors.top: rectWarnArea.top
+            width: parent.width
+            height: 84
+            color: "#F8FAFD"
+            z:1
+        }
         //第一排控件
         Text {
             id: textitle
@@ -40,6 +63,7 @@ Rectangle {
             anchors.leftMargin: 60
             anchors.topMargin: 35
             font.pixelSize: 18
+            z:2
             text: qsTr("日志列表")
         }
 
@@ -47,12 +71,12 @@ Rectangle {
             id:rectBatch
             width: 96
             height: 36
-            color: "#66B5FF"
+            color: "#3B84F6"
             radius: 4
             anchors.left: textitle.right
             anchors.leftMargin: 39
             anchors.verticalCenter: textitle.verticalCenter
-
+            z:2
             Image {
                 id: imgBatchDelete
                 width: 14
@@ -84,10 +108,9 @@ Rectangle {
                     askDialog.imgSrc = "qrc:/images/ico_warn.png"
                     askDialog.curType = askDialog.warnInfoMutipleDelete
                     askDialog.open();
-
                 }
-                onPressed: rectBatch.color = "#3B84F6"
-                onReleased: rectBatch.color = "#66B5FF"
+                onReleased: rectBatch.color = "#3B84F6"
+                onPressed: rectBatch.color = "#66B5FF"
             }
         }
 
@@ -104,7 +127,7 @@ Rectangle {
             anchors.verticalCenter: rectBatch.verticalCenter
             anchors.right: parent.right
             anchors.rightMargin: 190
-
+            z:2
             Image {
                 id: imgdate
                 width: 14
@@ -122,7 +145,7 @@ Rectangle {
                 anchors.verticalCenter: parent.verticalCenter
                 font.pixelSize: fontSize
                 color: "#909399"
-                text:""
+                text:Qt.formatDate(calendar.getCurrentData(),"yyyy-MM-dd")
             }
             MouseArea{
                 anchors.fill: parent
@@ -171,7 +194,7 @@ Rectangle {
                 anchors.verticalCenter: parent.verticalCenter
                 font.pixelSize: fontSize
                 color: "#909399"
-                text: qsTr("")
+                text: qsTr("00:00:00")
             }
             MouseArea{
                 anchors.fill: parent
@@ -202,16 +225,16 @@ Rectangle {
                 anchors.verticalCenter: parent.verticalCenter
                 anchors.left: parent.left
                 anchors.leftMargin: checkedHeaderLeftMargin
-                source: "qrc:/images/btnSelect.png"
+                source: isAllSelect?"qrc:/images/btnSelect_s.png":"qrc:/images/btnSelect.png"
 
                 MouseArea{
                     anchors.fill: parent
                     onClicked: {
                         if(isAllSelect){
-                            imgSelect.source ="qrc:/images/btnSelect.png"
+                           // imgSelect.source ="qrc:/images/btnSelect.png"
                             isAllSelect = false;
                         }else{
-                            imgSelect.source ="qrc:/images/btnSelect_s.png"
+                            //imgSelect.source ="qrc:/images/btnSelect_s.png"
                             isAllSelect = true;
                         }
                         warnmodel.funSetAllSelect(isAllSelect);
@@ -264,7 +287,8 @@ Rectangle {
                 property bool enter: false
                 width: parent.width
                 height: 59
-                color:listviewClickIndex === index?"#EEF3FA":(enter?"#EEF3FA":"#F8FAFD")
+               // color:warnList.currentIndex === index?"#DFEAF8":(listviewClickIndex === index?"#DFEAF8":(enter?"#EEF3FA":"#F8FAFD"))
+                color:(warnList.currentIndex === index?"#DFEAF8":(enter?"#EEF3FA":"#F8FAFD"))
                 Image{
                     id:select
                     width: 14
@@ -272,11 +296,16 @@ Rectangle {
                     anchors.verticalCenter: parent.verticalCenter
                     anchors.left: parent.left
                     anchors.leftMargin: checkedHeaderLeftMargin
-                    source:model.isSelect>0?"qrc:/images/btnSelect_s.png": "qrc:/images/btnSelect.png"
+                    source:model.isSelect?"qrc:/images/btnSelect_s.png": "qrc:/images/btnSelect.png"
                     MouseArea{
                         anchors.fill: parent
                         onClicked: {
                             model.isSelect = !model.isSelect;
+
+                            if(!model.isSelect){
+                                isAllSelect = false;
+                                warnmodel.funSetInitSelectFalse();
+                            }
                         }
                     }
                 }
@@ -304,7 +333,7 @@ Rectangle {
                     anchors.left: parent.left
                     anchors.leftMargin: warnImgHeaderLeftMargin
                     anchors.verticalCenter: parent.verticalCenter
-                    source: index === listviewClickIndex?"qrc:/images/capture_p.png":"qrc:/images/capture.png"
+                    source: index === warnList.currentIndex?"qrc:/images/capture_p.png":"qrc:/images/capture.png"
                 }
                 Text {
                     id: captureTxt
@@ -312,7 +341,7 @@ Rectangle {
                     anchors.leftMargin: 7
                     anchors.verticalCenter: parent.verticalCenter
                     font.pixelSize: fontSize
-                    color: index === listviewClickIndex?"#3B84F6":"#333333"
+                    color: index === warnList.currentIndex?"#3B84F6":"#333333"
                     text: model.imgName;
                     MouseArea{
                         anchors.fill: parent
@@ -355,7 +384,7 @@ Rectangle {
                     onExited: enter = false;
                     onClicked: {
 
-                        listviewClickIndex = index;
+                        warnList.currentIndex = index;
                         mouse.accepted = false
                     }
                 }
@@ -368,7 +397,15 @@ Rectangle {
             dim:false
             x:dateRect.x
             y:67
-            onS_dayChange:warnmodel.funFlushWarnInfo(deviceconfig.getScrennShotPath(),value);
+            Component.onCompleted: {
+
+                curDateStr = Qt.formatDate(calendar.getCurrentData(),"yyyyMMdd");
+                warnmodel.funFlushWarnInfo(deviceconfig.getScrennShotPath(),curDateStr);
+            }
+            onS_dayChange:{
+                curDateStr = value;
+                warnmodel.funFlushWarnInfo(deviceconfig.getScrennShotPath(),curDateStr);
+            }
 
             onS_dayChange1: txtDate.text = value
 
@@ -394,6 +431,7 @@ Rectangle {
                 console.debug("curIndex "+curIndex)
 
                 warnList.positionViewAtIndex(curIndex,ListView.Beginning)
+                warnList.currentIndex = curIndex;
                 //warnList.currentIndex = curIndex
             }
 
@@ -450,10 +488,11 @@ Rectangle {
     Connections{
         target: askDialog
         onS_CurTypeMsg:{
-            if(askDialog.warnInfoMutipleDelete === type)
+            if(askDialog.warnInfoMutipleDelete === type){
                 warnmodel.funDeleteSelect();
-            else if(askDialog.warnInfoSingleDelete === type)
-                warnmodel.funDeleteIndex(listviewClickIndex)
+                isAllSelect = false;
+            }else if(askDialog.warnInfoSingleDelete === type)
+                warnmodel.funDeleteIndex(warnList.currentIndex)
         }
     }
 

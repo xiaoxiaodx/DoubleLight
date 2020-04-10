@@ -2,7 +2,9 @@
 #define WARNMODEL_H
 #include "warnmodeldata.h"
 #include <QAbstractListModel>
-
+#include <QQuickWindow>
+#include <QDateTime>
+#include <QDir>
 class WarnModel : public QAbstractListModel
 {
     Q_OBJECT
@@ -20,8 +22,12 @@ public:
     Q_INVOKABLE void funFlushWarnInfo(QString capturePaht,QString logFileName);
     Q_INVOKABLE void funDeleteIndex(int index);
     Q_INVOKABLE int funFindIndex(QString h,QString m,QString s);
-    Q_INVOKABLE void funSetAllSelect(bool isSelect);
+    Q_INVOKABLE void funSetAllSelect(bool isSelect);//选中所有数据
+    Q_INVOKABLE void funSetInitSelectFalse();//将数据初始化选中属性修改为false
     Q_INVOKABLE void funDeleteSelect();
+
+    //截屏
+    Q_INVOKABLE bool funScreenShoot(QString path,QQuickWindow *quic,int capx,int capy,int capw,int caph,float warnTemp);
 
     int rowCount(const QModelIndex &parent = QModelIndex()) const override;
 
@@ -36,6 +42,9 @@ private:
     void removeAll();
 
     QList<WarnModelData*> m_listWarn;
+    QString curDate = "";
+    QString curPath = "";
+    bool curSelect = false;
 };
 
 #endif // WARNMODEL_H

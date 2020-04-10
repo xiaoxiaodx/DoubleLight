@@ -82,5 +82,6 @@
         <file>images/capture_p.png</file>
         <file>images/img_close.png</file>
         <file>images/ico_warn.png</file>
+        <file>images/fullscreen.png</file>
     </qresource>
 </RCC>

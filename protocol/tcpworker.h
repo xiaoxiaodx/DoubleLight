@@ -12,7 +12,7 @@
 #include <QHostAddress>
 #include <QTimer>
 #include <QImage>
-#include "common.h"
+#include "common1.h"
 #include <QFile>
 #include <QMutex>
 

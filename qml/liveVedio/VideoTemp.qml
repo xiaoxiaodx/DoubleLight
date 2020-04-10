@@ -81,7 +81,7 @@ Rectangle {
             var num = parseFloat(deviceconfig.getWarnTem()).toFixed(2)
             var tempV = smap.tempValue;
             if( Number(tempV) >= Number(num)){
-                vedioLayout.startWarn();
+                vedioLayout.startWarn(tempV);
             }else{
                 //  vedioLayout.endWarn();
             }

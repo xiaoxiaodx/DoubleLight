@@ -89,10 +89,10 @@ private:
     void HttpSetDate();
     QMap<QString,QVariant> curCmdState;
 
-    QList<QMap<QString,QVariant>> listResendCmd;
+
     const bool cmdSend = false;
     const bool cmdSendSucc = true;
-    QMutex mMutex;
+
 
     QTimer *timerReSendCmd = nullptr;
 

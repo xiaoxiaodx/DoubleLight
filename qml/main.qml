@@ -12,8 +12,6 @@ Window {
     flags:Qt.FramelessWindowHint |
           Qt.WindowMinimizeButtonHint |
           Qt.Window
-    property bool isMainContent: true
-    property bool isSpecilState: false      //窗口在最大化的时候调用最小化 会出现特例（窗口还原后大小不再是最大化了）
     visible: true
 
     width:1000
@@ -24,39 +22,21 @@ Window {
 
     property int mouseAdjustWidth: 10
     property int minW: 960
-    property int minH: 600
+    property int minH: 540
 
     property string toastStr: ""
     signal lockerCHange(bool lockchange);
     onIsLockerChanged: lockerCHange(isLocker)
-//    ListModel{
-//        id:listdeviceInfo
-//        /*
-//            devicename:
-//            devicedid:
-//            devicetype:
-//            onlinestate:
-//        */
-//        function findDeviceByName( name){
-//            for(var i=0;i<listdeviceInfo.count;i++){
-//                var map = listdeviceInfo.get(i);
-//                if(name === map.devicename){
-//                    return map
-//                }
-//            }
-//            return null;
-//        }
-//    }
+
+    property int restoreX: 0
+    property int restoreY: 0
+    property int restoreW: 0
+    property int restoreH: 0
+
+    property int windowSizeState: 1 //1：正常，0最小化，2最大化
 
 
-    onVisibilityChanged: {
-        if(isSpecilState){
-            if(main.visibility === 2){
-                main.visibility = "Maximized"
-                isSpecilState = false;
-            }
-        }
-    }
+
     MainContent{
         id:maincontent
         width: parent.width
@@ -70,11 +50,10 @@ Window {
             main.visibility = "Minimized"
         }
         onWinMax: {
-            if(main.visibility === 2)
-                main.visibility = "Maximized"
-
-            else if(main.visibility === 4)
-                main.visibility = "Windowed"
+            if(windowSizeState === 1)
+                maxWindow()
+            else if(windowSizeState === 2)
+                restoreWindow();
         }
         onWinClose:{
             askDialog.width = 427
@@ -102,11 +81,15 @@ Window {
         visible: isLocker
         MouseArea{
             anchors.fill: parent
+            propagateComposedEvents: true
             onClicked: {
+                if(!isLocker)
+                    mouse.accepted = false;
                 isLocker = false;
+
+
             }
         }
-
     }
     property point mousePressPt: "0,0"
     MouseArea{
@@ -193,8 +176,6 @@ Window {
                 var offsetY = mouse.y - mousePressPt.y
                 adjustWindow(MainContent.ADJUSTW.WRIGHTBOTTOM,offsetX,offsetY);
             }
-            //setDlgPoint(offset.x, 0)
-
         }
     }
 
@@ -258,23 +239,6 @@ Window {
         loaderToast.sourceComponent = toast
     }
 
-    //    function saveWindowState(tChange)
-    //    {
-    //        mWindowChange = tChange
-    //        preX = main.x;
-    //        preY = main.y
-    //        preWidth = main.width
-    //        preHeight = main.height
-    //    }
-
-    //    function recoveryWindowState()
-    //    {
-    //        main.x = preX;
-    //        main.y = preY;
-    //        main.width = preWidth
-    //        main.height = preHeight
-    //        mWindowChange = 0;
-    //    }
     function setDlgPoint(dlgX ,dlgY)
     {
         //console.debug("dx dy    "+dlgX+"    "+dlgY)
@@ -305,6 +269,26 @@ Window {
         }
     }
 
+    function maxWindow(){
+        restoreX = main.x
+        restoreY = main.y
+        restoreW = main.width
+        restoreH = main.height
+
+        main.x = 0;
+        main.y = 0;
+        main.width = Screen.desktopAvailableWidth
+        main.height = Screen.desktopAvailableHeight
+        windowSizeState = 2;
+    }
+
+    function restoreWindow(){
+        main.x = restoreX;
+        main.y = restoreY;
+        main.width = restoreW
+        main.height = restoreH
+        windowSizeState = 1
+    }
 
     function adjustWindow(adjustw,dX,dY)
     {
@@ -379,16 +363,5 @@ Window {
             main.height = main.height + dh;
             main.y = main.y + dy;
         }
-
-
-
-
-
-
-
-
-
     }
-
-
 }

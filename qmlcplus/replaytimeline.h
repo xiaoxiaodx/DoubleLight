@@ -7,9 +7,6 @@
 #include <QQuickPaintedItem>
 #include "replaydatesearch.h"
 
-
-
-
 class ReplayTimeline : public QQuickPaintedItem
 {
     Q_OBJECT
@@ -22,10 +19,12 @@ public:
     Q_INVOKABLE void setSizeType(int type);
 
     Q_INVOKABLE int getIndicatorTime();
-    Q_INVOKABLE void updateDate(QString date);
+    Q_INVOKABLE void updateDate(QString relativePath,QString date);
     void init();
     void setDate(QDate date);
 
+signals:
+    void indicatorTimeChange(QTime curTime);
 public slots:
     void slot_24hSelect();
     void slot_2hSelect();
@@ -56,7 +55,7 @@ private:
     QList<TimeInterval*> listTimeInterval1H;
     QList<TimeInterval*> listTimeInterval30M;
 
-    //4个不同类型区间链表
+    //4个不同类型的录像区间链表
     QList<TimeInterval*> listVideoInterval1;
     QList<TimeInterval*> listVideoInterval2;
     QList<TimeInterval*> listVideoInterval3;
@@ -64,6 +63,9 @@ private:
 
 
     QList<TimeInterval*> drawListInterval;
+
+    void appendTime(QString startT,QString longt);
+    void removeTime();
     QRectF rectFIndicator;
     bool isIndicatorPress = false;
     QPoint pressPt;

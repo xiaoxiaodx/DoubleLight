@@ -19,9 +19,10 @@ class FfmpegConvert : public QObject
     Q_OBJECT
 public:
     explicit FfmpegConvert(QObject *parent = nullptr);
-  void rgb32ToH264(QImage img,QByteArray &arr,bool &gotpic);
+  void rgb32ToH264(QImage img,int w,int h,QFile &file);
+  void rgb32ToH264(QImage img,QByteArray &arr,bool &gotPic);
   void rgbToYuv(QImage img,int resW,int resH,QFile &yuvFlie);
-  void initConvert();
+  bool initConvert(int resW,int resH);
   void unInitConvert();
 signals:
 
@@ -39,6 +40,8 @@ private:
     QImage testImg;
     QFile *fileSaveYuv;
     QMutex mutex;
+
+
 };
 
 #endif // FFMPEGCONVERT_H

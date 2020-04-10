@@ -2,7 +2,8 @@
 #include <QPainter>
 #include <QDateTime>
 #include <QDebug>
-
+#include <QDir>
+#include <QString>
 ReplayTimeline::ReplayTimeline()
 {
 
@@ -205,17 +206,11 @@ void ReplayTimeline::drawScale(QPainter *painter,IntervalType type)
         painter->save();
         painter->setPen(QPen(QColor("#ffffff"),1));
         //每刻度1.25分钟
-        int min = num*valuePerScale;
-        QTime time;
-        if(min<60){
-            time.setHMS(startT.hour(),min,0);
-        }else {
-            int divisorH = min/60;  //除数
-            int remainderH = min%60;//余数
-            time.setHMS(startT.hour()+divisorH,remainderH,0);
-        }
 
-        QString showtimeStr = time.toString("hh:mm");
+        int min = num*valuePerScale;
+        QTime desTime = startT.addSecs(min*60);
+
+        QString showtimeStr = desTime.toString("hh:mm");
         if(min == 24*60)
             showtimeStr = "24:00";
         QRect rect = fontMetrics.boundingRect(showtimeStr);
@@ -225,28 +220,30 @@ void ReplayTimeline::drawScale(QPainter *painter,IntervalType type)
 
     qreal secsPerPix = getsecsPerPix();
 
-
     //绘制平铺图
-//    painter->save();
-//    for(int i=0;i<drawListInterval.size();i++){
+    QTime endT = timeInterval->endTime;
+    painter->save();
+    for(int i=0;i<drawListInterval.size();i++){
 
-//        TimeInterval *timeInterval = drawListInterval.at(i);
-//        QTime tileTimeStart = timeInterval->startTime;
-//        QTime tileEndStart = timeInterval->endTime;
-//        qreal leftX = startT.secsTo(tileTimeStart)/secsPerPix;
-//        qreal rightX = startT.secsTo(tileEndStart)/secsPerPix;
-//        QRectF tmpRectF;
-//        tmpRectF.setX(leftX);
-//        tmpRectF.setY(rectFIndicator.y());
-//        tmpRectF.setWidth(rightX - leftX);
-//        tmpRectF.setHeight(rightX - leftX);
+        TimeInterval *timeInterval = drawListInterval.at(i);
+        QTime tileTimeStart = timeInterval->startTime;
+        QTime tileEndStart = timeInterval->endTime;
+        qDebug()<<" time ***:"<<tileTimeStart<<"    "<<  tileEndStart;
+        if(tileTimeStart>=startT && tileEndStart<=endT){
+            qreal leftX = startT.secsTo(tileTimeStart)/secsPerPix;
+            qreal rightX = startT.secsTo(tileEndStart)/secsPerPix;
+            QRectF tmpRectF;
+            tmpRectF.setX(leftX+30);
+            tmpRectF.setY(35);
+            tmpRectF.setWidth(rightX - leftX);
+            tmpRectF.setHeight(18);
+            painter->fillRect(tmpRectF,QBrush(QColor(59,132,246,128)));
+        }
 
-//        painter->fillRect(rectFIndicator,QBrush(QColor(255,0,0)));
-//    }
-
+    }
+    painter->restore();
     //绘制指示器
     int timeFromStart = startT.secsTo(replayCurrentTime);
-
     int dpix = (qreal)timeFromStart/secsPerPix;
     //  qDebug()<<"replayCurrentTime:"<<replayCurrentTime.fromMSecsSinceStartOfDay(<<"    startT:"<<startT;
     qDebug()<<"replayCurrentTime:"<<replayCurrentTime<<"    startT:"<<startT;
@@ -325,12 +322,66 @@ void ReplayTimeline::mouseReleaseEvent(QMouseEvent *event){
         qDebug()<<"mouseReleaseEvent replayCurrentTime:"<<replayCurrentTime;
         replayCurrentTime = replayCurrentTime.addSecs(dSecs);
         qDebug()<<"mouseReleaseEvent replayCurrentTime1:"<<replayCurrentTime;
-        getIndicatorTime();
+        //getIndicatorTime();
+        emit indicatorTimeChange(replayCurrentTime);
         update();
     }
 }
 
-void ReplayTimeline::updateDate(QString date)
+void ReplayTimeline::updateDate(QString relativePath,QString date)
 {
+    qDebug()<<"updateDate:"<<relativePath<<"    "<<date;
 
+     QDir dir(relativePath+"/"+date);
+
+     if(!dir.exists()){
+
+         qDebug()<<"文件路径不存在";
+     }
+     //设置文件过滤器
+     QStringList nameFilters;
+     //设置文件过滤格式
+     nameFilters << "*.yuv";
+
+     QStringList files = dir.entryList(nameFilters, QDir::Files|QDir::Readable, QDir::Name);
+
+     removeTime();
+     for (int i=0;i<files.size();i++) {
+         QString tmpName = files.at(i);
+         QString fileName = tmpName.remove(".yuv");
+         qDebug()<<"files name:"<<fileName;
+
+         QStringList fileNames = fileName.split("_");
+         if(fileNames.size() != 2)
+             continue;
+
+         QString timeStart = fileNames[0];
+         QString longt = fileNames[1];
+         appendTime(timeStart,longt);
+     }
+     update();
+}
+void ReplayTimeline::appendTime(QString startT,QString longt){
+
+    int h = startT.mid(0,2).toInt();
+    int m = startT.mid(2,2).toInt();
+    int s = startT.mid(4,2).toInt();
+    int t = longt.toInt();
+
+
+    QTime time(h,m,s);
+    TimeInterval *timeInterval = new TimeInterval;
+    timeInterval->startTime = time;
+    timeInterval->endTime = time.addSecs(t);
+    timeInterval->sec = t;
+
+    drawListInterval.append(timeInterval);
+}
+
+void ReplayTimeline::removeTime(){
+
+    while(drawListInterval.size() >0){
+
+        delete drawListInterval.takeFirst();
+    }
 }

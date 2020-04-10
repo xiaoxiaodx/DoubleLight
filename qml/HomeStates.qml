@@ -21,24 +21,11 @@ Rectangle{
             id:img1
             width: 34
             height: 34
-            source:isLocker? "qrc:/images/lock_p.png":"qrc:/images/lock.png"
+            source:"qrc:/images/fullscreen.png"
             property bool isLock: false
             MouseArea{
                 anchors.fill:parent
-                onClicked: {
-
-//                    if(img1.isLock){
- //                       img1.source = "qrc:/images/lock.png"
-
-                        isLocker = true;
-//                    }else{
-//                        img1.source = "qrc:/images/lock_p.png"
-
-//                    }
-//                    img1.isLock = !img1.isLock;
-
-                }
-
+                onClicked: isLocker = true;
             }
         }
         Image{
@@ -61,12 +48,12 @@ Rectangle{
                            captureScrennTimer.isRecord = true
                            vedioLayout.startRecordLable();
                            if(!captureScrennTimer.running){
-                               screenv.funCreateScreenThread(deviceconfig.getScrennShotPath(),deviceconfig.getRecordPath(),captureScrennTimer.interval);
+                               screenv.funCreateAviRecordThread(deviceconfig.getScrennShotPath(),deviceconfig.getRecordPath(),captureScrennTimer.interval);
                                captureScrennTimer.start()
                            }
                        } else{
                             img2.isChecked = false;
-                          img2.source = "qrc:/images/recordv.png"
+                            img2.source = "qrc:/images/recordv.png"
                            captureScrennTimer.isRecord = false
                            vedioLayout.stopRecordLable();
                        }
@@ -76,20 +63,20 @@ Rectangle{
             }
         }
 
-        Image{
-            id:img3
-            width: 34
-            height: 34
-            source: "qrc:/images/replay.png"
-            MouseArea{
-                anchors.fill:parent
-                onPressed: {
-                    img3.source = "qrc:/images/replay_p.png"
+//        Image{
+//            id:img3
+//            width: 34
+//            height: 34
+//            source: "qrc:/images/replay.png"
+//            MouseArea{
+//                anchors.fill:parent
+//                onPressed: {
+//                    img3.source = "qrc:/images/replay_p.png"
 
-                }
-                onReleased:img3.source = "qrc:/images/replay.png"
-            }
-        }
+//                }
+//                onReleased:img3.source = "qrc:/images/replay.png"
+//            }
+//        }
     }
 
 

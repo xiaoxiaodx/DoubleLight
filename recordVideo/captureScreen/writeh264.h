@@ -29,6 +29,8 @@ private:
     int mPeriod = 0;
     bool isReadyRecord = true;
 
+    int curResW = 0;
+    int curResH = 0;
 };
 
 #endif // WRITEH264_H

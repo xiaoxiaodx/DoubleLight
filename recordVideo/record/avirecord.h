@@ -5,7 +5,7 @@
 #include "avformat.h"
 #include <QDebug>
 #include <QDateTime>
-#include "common.h"
+#include "common1.h"
 #include "ffmpegconvert.h"
 
 class AviRecord : public QObject
@@ -13,8 +13,7 @@ class AviRecord : public QObject
     Q_OBJECT
 public:
     explicit AviRecord(QString did);
-    bool isStart = false;
-    bool isWriteSucc = false;
+
    ~AviRecord();
 signals:
 
@@ -24,11 +23,11 @@ public slots:
     void slot_writeAudio(char *buff,int len,long long tempTime);
     void slot_writeVedio(char *buff,int len,long long tempTime);
     void slot_endRecord();
-    void slot_startRecord(QString did,long long pts);
+    void slot_startRecord(QString did,long long pts,int w,int h);
     void slot_setAviSavePath(QString str);
 
     void slot_readyRecord(QString path);
-    void slot_writeImage(QImage img,int capx,int capy,int capw,int caph);
+    void slot_writeImage(QString path,QImage img,int capx,int capy,int capw,int caph);
 private:
     int RecSetAVParam(MeidaVideo_T mediaInfo,void* pWriterHandle);
     int InitWriterHanle(void** pWriterHandle,MeidaVideo_T mediaInfo,char* fileName, char *idxName);
@@ -40,7 +39,17 @@ private:
     QString mDid;
     qint64 startTime;
     QString mRecordingFilePath;
-    FfmpegConvert ffmpegConvert;
+    FfmpegConvert *ffmpegConvert = nullptr;
+
+
+    bool isWriteSucc = false;
+
+    QString curFileAbsolutePath = "";
+    int mPeriodIndex = 0;
+    int mPeriod = 40;
+
+    int curResW = 0;
+    int curResH = 0;
 
 };
 

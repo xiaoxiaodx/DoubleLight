@@ -4,13 +4,20 @@
 #include <QFile>
 #include <QTextStream>
 #include "debuglog.h"
+
+/*
+    在报警时会往文件末尾写入一行警报信息，所以就意味着时间大的在文件的后面
+    但是列表显示要将离当前时间近的排前面，也就是时间大的排前面
+    所以每次将文件读取到的一行（小的时间点）都是插入在0行，已保证大的时间点在列表前面
+    从list写入文件时都是倒着写入文件的
+*/
 WarnModel::WarnModel(QObject *parent ):QAbstractListModel(parent)
 {
 
-//    m_listWarn.append(new WarnModelData(true,"19911103","1111111","sasads","aaaaa"));
-//    m_listWarn.append(new WarnModelData(true,"19911103","1111111","sasads","aaaaa"));
-//    m_listWarn.append(new WarnModelData(true,"19911103","1111111","sasads","aaaaa"));
-//    m_listWarn.append(new WarnModelData(true,"19911103","1111111","sasads","aaaaa"));
+    //    m_listWarn.append(new WarnModelData(true,"19911103","1111111","sasads","aaaaa"));
+    //    m_listWarn.append(new WarnModelData(true,"19911103","1111111","sasads","aaaaa"));
+    //    m_listWarn.append(new WarnModelData(true,"19911103","1111111","sasads","aaaaa"));
+    //    m_listWarn.append(new WarnModelData(true,"19911103","1111111","sasads","aaaaa"));
 }
 
 
@@ -94,6 +101,8 @@ void WarnModel::removeAll()
     while(m_listWarn.size()>0){
 
         WarnModelData *date = m_listWarn.takeFirst();
+
+//        QFile::remove(date->absolutePath());
         if(date != nullptr || date != NULL || date)
             delete  date;
 
@@ -111,21 +120,49 @@ void WarnModel::funDeleteIndex(int index)
 
     beginRemoveRows(QModelIndex(),index,index);
     WarnModelData *date = m_listWarn.takeAt(index);
+    QString fileAbsolutePath = date->absolutePath();
+    QFile::remove(fileAbsolutePath);
     delete date;
     endRemoveRows();
+
+    if(curPath == ""||curDate=="")
+        return;
+
+    //日志文件的绝对路径，重写文件,倒序写入文件
+    QString logAbsolutePath = curPath+"/log/"+curDate+".log";
+    QFile file(logAbsolutePath);
+    if(file.open(QIODevice::WriteOnly)){
+        for (int i=m_listWarn.size()-1;i>=0;i--) {
+            WarnModelData *modelData = m_listWarn.at(i);
+            QString imgInfoStr = modelData->absolutePath()+" "+modelData->warnTemp()+" "+modelData->imgName()+".png";
+            QTextStream out(&file);
+            out <<imgInfoStr << "\n";
+        }
+        file.close();
+    }
+
 }
-void WarnModel::funFlushWarnInfo(QString capturePath,QString logFileName)
+void WarnModel::funFlushWarnInfo(QString capturePath,QString logFileName)//这里文件名就是日期"yyMMdd"
 {
     qDebug()<<"logPath:"<<capturePath<<"    logFileName"<<logFileName;
 
+
+    //同一天的数据则不进行刷新，会在列表中添加完后在进行写文件
+    if(curDate.compare(logFileName)==0)
+        return;
+
+
+    curDate = logFileName;
+    curPath = capturePath;
+
+    //不是同一天则移除原有数据
+    removeAll();
     QString logAbsolutePath = capturePath+"/log/"+logFileName+".log";
     QFile file(logAbsolutePath);
+    //每次读取都是往0位置插入值
     if(file.open(QIODevice::ReadOnly)){
-
-        removeAll();
         QTextStream in(&file);
         QString warnStr = in.readLine();
-
 
         while (!warnStr.isNull()) {
             QStringList strlist = warnStr.split(" ");
@@ -146,7 +183,7 @@ void WarnModel::funFlushWarnInfo(QString capturePath,QString logFileName)
             QString date = datetStr[0].mid(0,2)+"-"+datetStr[0].mid(2,2)+"-"+datetStr[0].mid(4,2);
             QString time = datetStr[1].mid(0,2)+":"+datetStr[1].mid(2,2)+":"+datetStr[1].mid(4,2);
 
-            m_listWarn.append(new WarnModelData(false,date+" "+time,temp,fileName,absolutepath));
+            m_listWarn.insert(0,new WarnModelData(false,date+" "+time,temp,fileName,absolutepath));
             warnStr = in.readLine();
         }
         if(m_listWarn.size() >0){
@@ -162,8 +199,12 @@ int WarnModel::funFindIndex(QString h,QString m,QString s){
 
     qDebug()<<" funFindIndex："<<h<<"    "<<m<<" "<<s<<" "<<m_listWarn.size();
     //返回第一个大于等于 当前时分秒的时间点
+
+    QTime needfindTime(h.toInt(),m.toInt(),s.toInt());
+    int findIndex = -1;
+    int minDeT = 3600*24;
     if(m_listWarn.size() > 0){
-        for (int i=0;i<m_listWarn.size();i++) {
+        for (int i=m_listWarn.size()-1;i>=0;i--) {
             WarnModelData *date = m_listWarn.at(i);
             QString datetime = date->warnTime();
             //qDebug()<<" datetime:"<<datetime;
@@ -182,48 +223,157 @@ int WarnModel::funFindIndex(QString h,QString m,QString s){
             int timeH = time[0].toInt();
             int timeM = time[1].toInt();
             int timeS = time[2].toInt();
+            QTime curtime(timeH,timeM,timeS);
 
-            int curH = h.toInt();
-            int curM = m.toInt();
-            int curS = s.toInt();
-
-
-            //找出大于当前时间的点（先比较时在比较分在比较秒）
-            if(timeH > curH){
+            int tmpDt = curtime.secsTo(needfindTime);
+            int absTmpDt = abs(tmpDt);
+            if(absTmpDt==0){
                 return i;
-            }else if (timeH == curH) {
-                if(timeM > curM)
-                    return i;
-                else if (timeM == curM) {
-                    if(timeS > curS)
-                        return i;
-                    else if (timeS == curS) {
-                        return i;
-                    }
-                }
+            }
+
+            if(absTmpDt < minDeT){
+                minDeT = absTmpDt;
+                findIndex = i;
             }
 
         }
     }
-    return -1;
+
+    qDebug()<<" findIndex:"<<findIndex;
+    return findIndex;
 }
 
-
+void WarnModel::funSetInitSelectFalse()
+{
+    curSelect = false;
+}
 void WarnModel::funSetAllSelect(bool isSelect)
 {
+    curSelect = isSelect;
+    beginResetModel();
     for (int i=0;i<m_listWarn.size();i++) {
         m_listWarn.at(i)->setIsSelect(isSelect);
     }
     endResetModel();
 }
+
 void WarnModel::funDeleteSelect(){
     beginResetModel();
-
     for (int i=m_listWarn.size()-1;i>=0;i--) {
         if(m_listWarn.at(i)->isSelect()){
-            delete m_listWarn.takeAt(i);
+            WarnModelData* modeldate = m_listWarn.takeAt(i);
+            QString fileAbsolutePath = modeldate->absolutePath();
+            QFile::remove(fileAbsolutePath);
+            delete modeldate;
+
         }
     }
-
+    curSelect = false;
     endResetModel();
+
+
+
+    //日志文件的绝对路径，重写文件,倒序写入文件
+    QString logAbsolutePath = curPath+"/log/"+curDate+".log";
+    QFile file(logAbsolutePath);
+    if(file.open(QIODevice::WriteOnly)){
+        for (int i=m_listWarn.size()-1;i>=0;i--) {
+            WarnModelData *modelData = m_listWarn.at(i);
+            QString imgInfoStr = modelData->absolutePath()+" "+modelData->warnTemp()+" "+modelData->imgName()+".png";
+            QTextStream out(&file);
+            out <<imgInfoStr << "\n";
+        }
+        file.close();
+    }
+}
+
+
+bool WarnModel::funScreenShoot(QString path,QQuickWindow *quic,int capx,int capy,int capw,int caph,float warnTemp)
+{
+
+    QString datestr = QDate::currentDate().toString("yyyyMMdd");
+    qDebug()<<"*********:"<<path<<" "<<datestr<<"   "<<curDate;
+
+    QImage img= quic->grabWindow();
+
+    if(path == ""){
+        DebugLog::getInstance()->writeLog("scrennshot file path is null");
+        return false;
+    }
+
+
+
+    QImage img1 = img.copy( capx, capy, capw, caph);
+    //QImage img2 = img1.scaled(QSize(960,600),Qt::IgnoreAspectRatio);
+
+    QDateTime curDateTime =  QDateTime::currentDateTime();
+    QString  curDatetimeStr = curDateTime.toString("yyMMdd_hhmmss");
+
+    QString desFileDir = path+"/image";
+
+    QString imgAbsolutePath = path+"/image/"+curDatetimeStr+".png";
+
+    QDir dir;
+    if (!dir.exists(desFileDir)){
+        bool res = dir.mkpath(desFileDir);
+        if(res)
+            DebugLog::getInstance()->writeLog("slot_screenShot create new dir is succ");
+        else
+            DebugLog::getInstance()->writeLog("slot_screenShot create new dir is fail");
+    }
+
+    //创建相对路径
+    if(!QDir::setCurrent(desFileDir)){
+        DebugLog::getInstance()->writeLog("slot_screenShot set relative dir is false");
+        return false;
+    }
+
+
+    if(!img1.save(curDatetimeStr+".png","PNG")){
+        DebugLog::getInstance()->writeLog("scrennshot save fail");
+        return false;
+    }else{
+        //存报警图片信息
+        /*  告警名录下 建立一个日志文件夹 一个图片文件夹，
+                    日志文件夹下放30个日志文件，一个日志文件代表一天，
+                    图片文件夹下放入告警抓拍图片
+                */
+        QString warnLogAbsolutePath = path + "/log";
+        QString warnLogAbsoluteFileName = warnLogAbsolutePath + "/"+curDateTime.date().toString("yyyyMMdd")+".log";
+        if(!dir.exists(warnLogAbsolutePath)){
+            bool res = dir.mkpath(warnLogAbsolutePath);
+            if(res)
+                DebugLog::getInstance()->writeLog("slot_screenShot create new log dir is succ");
+            else
+                DebugLog::getInstance()->writeLog("slot_screenShot create new log dir is fail");
+        }
+
+        /*  抓拍是一种频繁的操作 ，为了优化性能，
+            在抓拍时往文件尾写数据，因为抓拍时间都是顺序后延的
+            同时往数据模型前添加数据
+        */
+        QFile imgInfofile(warnLogAbsoluteFileName);
+        if(imgInfofile.open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Append)){
+            QString tempStr = QString::number(warnTemp,'f',2);
+            QString imgInfoStr = imgAbsolutePath+" "+tempStr+" "+curDatetimeStr+".png";
+            QTextStream out(&imgInfofile);
+            out <<imgInfoStr << "\n";
+            imgInfofile.close();
+
+            QString date = curDateTime.toString("yy-MM-dd");
+            QString time = curDateTime.toString("hh:mm:ss");
+
+            //是当前日期才加入列表日志
+            if(curDate.compare(datestr)==0){
+                beginInsertRows(QModelIndex(),0,0);
+                m_listWarn.insert(0,new WarnModelData(curSelect,date+" "+time,tempStr,curDatetimeStr,imgAbsolutePath));
+                endInsertRows();
+            }
+
+        }else {
+            DebugLog::getInstance()->writeLog("slot_screenShot open log file is fail");
+            return false;
+        }
+    }
+    return true;
 }

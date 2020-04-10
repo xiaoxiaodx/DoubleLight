@@ -77,7 +77,7 @@ private:
     FfmpegCodec *pffmpegCodec = nullptr;
 
     QMutex buffMutex;
-    ImageInfo *pRenderImginfo = nullptr;
+    ImageInfo pRenderImginfo ;
     QImage *pBuffImg = nullptr;
 
     bool isFirstData = false;
@@ -86,7 +86,9 @@ private:
     MySearch1 *psearch = nullptr;
     QThread *searchThread = nullptr;
 
-    const QString m_ip = "192.168.1.188";
+    const QString m_ip ="10.67.1.146";
+   // const QString m_ip ="192.168.1.188" ;
+
 
     QThread *httpThread = nullptr;
     CHttpApiDevice *httpDevice = nullptr;

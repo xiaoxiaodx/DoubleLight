@@ -91,7 +91,7 @@ Rectangle {
                         onPressed: {
 
                             imgplay.source = "qrc:/images/play_h.png"
-                            player.play();
+                            //player.play();
                         }
                         onReleased: imgplay.source = "qrc:/images/play.png"
                     }
@@ -207,6 +207,10 @@ Rectangle {
             height:74
             anchors.bottom:parent.bottom
             property point mousePressPt: "0,0"
+
+            onIndicatorTimeChange:{
+                screen.funPlayTimeChange(deviceconfig.getRecordPath(),Qt.formatDate(calendar.getCurrentData(),"yyyyMMdd"),curTime)
+            }
         }
     }
 
@@ -219,7 +223,7 @@ Rectangle {
         x:228
         y:parent.height -115-314-2
         onS_dayChange:{
-            timeline.up
+            timeline.updateDate(deviceconfig.getRecordPath(),value)
         }
         onS_dayChange1:{
 
