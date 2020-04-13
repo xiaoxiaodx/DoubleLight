@@ -77,7 +77,9 @@ public:
     static float check_min_temp ;
 
     static float getTempAavl(s16* IrdaDataFloat, int height, int width, u16 slop ,s16 offset , CvRect * rec);
+    static float getTempAavl(float* IrdaDataFloat, int height, int width, u16 slop ,s16 offset , CvRect * rec);
     static int HotnessResetData(s16* IrdaDataFloat, int height, int width,char *p,u16 slop,s16 offset);
+    static int HotnessResetData(float* IrdaDataFloat, int height, int width,char *p,u16 slop,s16 offset);
     static CvSeq* cvSegmentFGMask( CvArr* _mask, bool poly1Hull0,float perimScale,
                                   CvMemStorage* storage, CvPoint offset);
     static IplImage* pFrame;

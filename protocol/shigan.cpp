@@ -118,7 +118,7 @@ void ShiGan::readOneFrame(){
         ImageInfo info;
 
         framelen = (pNetMsg[4]<< 24)|(pNetMsg[3]<<16)|(pNetMsg[2] << 8)|(pNetMsg[1]);
-        qDebug()<<"Recv over .. bufpos:%d,framelen:%d\n"<<bufpos<<" "<<framelen;
+        //qDebug()<<"Recv over .. bufpos:%d,framelen:%d\n"<<bufpos<<" "<<framelen;
 
         bufpos -= framelen + 3;  // head[1 byte]  crc[2 byte]
 
@@ -161,21 +161,10 @@ void ShiGan::readOneFrame(){
                 qDebug()<<" 图片分配内存失败";
                 info.pImg = nullptr;
             }
-
-           // fpos += w*h*3;
-//            for(y=0; y < h; y++)
-//            {
-//                for(x=0; x < w; x++)
-//                {
-//                    // R G B
-//                    pNetMsg[fpos++];
-//                    pNetMsg[fpos++];
-//                    pNetMsg[fpos++];
-//                }
-//            }
+            fpos+=w*h*3;
         }
 
-        fpos+=w*h*3;
+
 
         if( stMtHd.TemperFlag )
         {
@@ -196,6 +185,7 @@ void ShiGan::readOneFrame(){
                     // R G B
                     pfDivs[i].f2 = *(pucfts++);
                     pfDivs[i].f1 = 0;
+
                     i++;
                 }
             }
@@ -206,8 +196,56 @@ void ShiGan::readOneFrame(){
             i = y * w + w;
 
             info.areaMaxtemp = pftpufs[i];
-            //printf("pftpufs[0]:%f\n",pftpufs[i]);
+
+           //qDebug()<<"pftpufs[0]:%f"<<pftpufs[i];
+
+
+
+           static char *p = (char *)malloc(w*h);
+
+           YouSeeParse::HotnessResetData(pftpufs,w,h,p,1,0);
+
+           if(YouSeeParse::pFrame == NULL)
+               YouSeeParse::pFrame=cvCreateImageHeader(cvSize(w,h),IPL_DEPTH_8U,1);
+           cvSetData(YouSeeParse::pFrame,p,w);
+
+           CvMemStorage*stor = NULL;
+           CvSeq* cont = NULL;
+           CvRect mdrects;
+
+           stor = cvCreateMemStorage(0);
+           cont=YouSeeParse::cvSegmentFGMask(YouSeeParse::pFrame,true,10.0,stor,cvPoint(0,0));
+
+           float maxAvgT = -1;
+           for(int i=0;cont!=0;cont=cont->h_next,i++)
+           {
+               mdrects=((CvContour*)cont)->rect;
+               float avgT = YouSeeParse::getTempAavl(pftpufs, h, w, 1, 0, &mdrects) ;
+               if(mdrects.width < TEMP_MIN_INTERVAL && mdrects.height < TEMP_MIN_INTERVAL)
+               {
+                   continue;
+               }
+
+               QMap<QString,QVariant> map;
+               QRect rect(mdrects.x,mdrects.y,mdrects.width,mdrects.height);
+               map.insert("rect",rect);
+               map.insert("temp",avgT);
+               //qDebug()<<  "avgT   "<<avgT;
+               info.listRect.append(map);
+               if(maxAvgT == -1){
+                   maxAvgT = avgT;
+               }else{
+                   if(avgT > maxAvgT){
+                       maxAvgT = avgT;
+                   }
+               }
+           }
+           //qDebug()<<" curImgInfo.listRect "<<curImgInfo.listRect.size();
+           info.areaMaxtemp = maxAvgT;
+           info.isDrawLine = true;
         }
+
+
 
         if(XVideoTemp::listBufferImginfo.size()<XVideoTemp::maxBuffLen){
             XVideoTemp::listBufferImginfo.append(info);

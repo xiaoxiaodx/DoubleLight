@@ -31,15 +31,13 @@ short temp_data[384 * 288] = { 0 };
 ImageInfo curImgInfo;
 void RawCallBackFunc(char * data, int width, int height, void * context){
 
-    qDebug()<<" width :"<<width<<"  height:"<<height;
+    //qDebug()<<" width :"<<width<<"  height:"<<height;
 
     int ifMax = 0;
     qreal fTempValue = 0;
     memcpy(&temp_data[0], data, 2 * width*height);
 
-
-
-    qDebug()<<" width :"<<width<<"  height:"<<height<<" temp_data[0]:"<<temp_data[0]<<" "<<temp_data[1];
+   // qDebug()<<" width :"<<width<<"  height:"<<height<<" temp_data[0]:"<<temp_data[0]<<" "<<temp_data[1];
     if(temp_data[0]>7300){
         ifMax = 1;
     }else{
@@ -52,17 +50,18 @@ void RawCallBackFunc(char * data, int width, int height, void * context){
 
             if(ifMax==1){
                 fTempValue = 15.0;
-                temp_data[j*width+i] = (temp_data[j*width+i]-3300)/fTempValue - 273.2;
+                temp_data[j*width+i] = (temp_data[j*width+i]+25000)/100 - 273.15;
             }else{
                 fTempValue = 30;
-                temp_data[j*width+i] = (temp_data[j*width+i]+7000)/fTempValue - 273.2;
+                //temp_data[j*width+i] = (temp_data[j*width+i]+7000)/fTempValue - 273.2;
+
+                temp_data[j*width+i] = (temp_data[j*width+i]+25000)/100 - 273.15;
             }
         }
     }
 
     static char *p = (char *)malloc(height*width);
     YouSeeParse::HotnessResetData(temp_data,height,width,p,1,0);
-
 
     if(YouSeeParse::pFrame == NULL)
         YouSeeParse::pFrame=cvCreateImageHeader(cvSize(width,height),IPL_DEPTH_8U,1);
@@ -75,9 +74,8 @@ void RawCallBackFunc(char * data, int width, int height, void * context){
     stor = cvCreateMemStorage(0);
     cont=YouSeeParse::cvSegmentFGMask(YouSeeParse::pFrame,true,10.0,stor,cvPoint(0,0));
 
-
-    //cvSetData(YouSeeParse::pFrameSrc,(uchar*)frame->Bmp,width*4);
     float maxAvgT = -1;
+    curImgInfo.listRect.clear();
     for(int i=0;cont!=0;cont=cont->h_next,i++)
     {
         mdrects=((CvContour*)cont)->rect;
@@ -91,6 +89,7 @@ void RawCallBackFunc(char * data, int width, int height, void * context){
         QRect rect(mdrects.x,mdrects.y,mdrects.width,mdrects.height);
         map.insert("rect",rect);
         map.insert("temp",avgT);
+        //qDebug()<<  "avgT   "<<avgT;
         curImgInfo.listRect.append(map);
         if(maxAvgT == -1){
             maxAvgT = avgT;
@@ -100,10 +99,9 @@ void RawCallBackFunc(char * data, int width, int height, void * context){
             }
         }
     }
-    qDebug()<<" curImgInfo.listRect "<<curImgInfo.listRect.size();
+    //qDebug()<<" curImgInfo.listRect "<<curImgInfo.listRect.size();
     curImgInfo.areaMaxtemp = maxAvgT;
     curImgInfo.isDrawLine = true;
-
 }
 
 

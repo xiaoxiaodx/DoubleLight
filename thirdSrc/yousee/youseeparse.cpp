@@ -81,6 +81,24 @@ void YouSeeParse::slot_login() {
     }
 }
 
+
+int YouSeeParse::HotnessResetData(float* IrdaDataFloat, int height, int width,char *p,u16 slop,s16 offset)
+{
+    int x = 0, y = 0, pI = 0;
+    for (y = 0; y < height; y++) {
+        for(x = 0 ; x < width; x++) {
+            float value = IrdaDataFloat[y * width + x]/slop + offset;
+            if ((value > YouSeeParse::check_min_temp) && (value < YouSeeParse::check_max_temp)) {
+                p[pI] = 1;
+            } else {
+                p[pI] = 0;
+            }
+            pI++;
+        }
+    }
+    return 0;
+}
+
 int YouSeeParse::HotnessResetData(s16* IrdaDataFloat, int height, int width,char *p,u16 slop,s16 offset)
 {
     int x = 0, y = 0, pI = 0;
@@ -147,6 +165,90 @@ CvSeq* YouSeeParse::cvSegmentFGMask( CvArr* _mask, bool poly1Hull0,float perimSc
     return contours;
 }
 
+float YouSeeParse::getTempAavl(float* IrdaDataFloat, int height, int width, u16 slop ,s16 offset , CvRect * rec) {
+    float temp = 0.0;
+    float value =0.0;
+    int tempCnt = 0;
+    float avl = 0.0;
+    float max = 0.0,min = 41.0;
+    static float *tempData = (float *)malloc(height*width * sizeof (float));
+    int i = rec->x,j = rec->y;
+    int x = rec->x, y = rec->y, w = rec->width, h = rec->height;
+    float *innerData = IrdaDataFloat;
+
+    for(j = y;j < (y + h);j ++)
+    {
+        for(i = x;i < (x+w);i++)
+        {
+            value = (((float)innerData[j * width + i])/slop + offset);
+            if(value >= YouSeeParse::check_min_temp && value <= YouSeeParse::check_max_temp) {
+                if(value > max)
+                {
+                    max = value;
+                }
+
+                if(value < min)
+                {
+                    min = value;
+                }
+                tempData[tempCnt] = value;
+                temp += value;
+                tempCnt++;
+            }
+        }
+    }
+    //qDebug()<<"tempCnt:"<<tempCnt<<" temp:"<<temp;
+    if(tempCnt == 0)
+        return 0;
+    avl = temp/tempCnt;
+    temp = 0;
+    value =0;
+    float tempCnt2 = 0;
+
+    i = 0;
+    for(i = 0;i < tempCnt;i++)
+    {
+        if(tempData[i] >= max || tempData[i] <= min)
+        {
+            continue;
+        }
+        temp += tempData[i];
+        tempCnt2++;
+    }
+    if(tempCnt2 > 0)
+        avl = temp/tempCnt2;
+
+    float coe = 0.2;
+    if(YouSeeParse::check_min_temp >= 20 && YouSeeParse::check_min_temp < 25 )
+    {
+        coe = 0.2;
+    }
+    else if(YouSeeParse::check_min_temp >= 25 && YouSeeParse::check_min_temp < 35 )
+    {
+        coe = 0.3;
+    }
+
+    // qDebug()<<"1111avl: "<<avl;
+    if(avl < (YouSeeParse::check_min_temp + TEMP_LEVEL) && avl >= YouSeeParse::check_min_temp)
+    {
+        avl = (avl - YouSeeParse::check_min_temp)*coe + 35.5;
+    }
+    else if(avl >= (YouSeeParse::check_min_temp + TEMP_LEVEL) && avl < (YouSeeParse::check_min_temp + TEMP_LEVEL + 1))
+    {
+        avl = (avl - (YouSeeParse::check_min_temp + TEMP_LEVEL)) + 36.5 + YouSeeParse::temp_offset;
+    }
+    else if(avl >= (YouSeeParse::check_min_temp + TEMP_LEVEL + 1))
+    {
+        avl = avl + TEMP_LEVEL + YouSeeParse::temp_offset;
+    }
+    else if(avl < YouSeeParse::check_min_temp)
+    {
+        qDebug()<<"avl ERROR: "<<avl;
+    }
+    //qDebug()<<"2222avl: "<<avl;
+    return (avl);// + YouSeeParse::temp_offset
+}
+
 float YouSeeParse::getTempAavl(s16* IrdaDataFloat, int height, int width, u16 slop ,s16 offset , CvRect * rec) {
     float temp = 0.0;
     float value =0.0;
@@ -179,6 +281,9 @@ float YouSeeParse::getTempAavl(s16* IrdaDataFloat, int height, int width, u16 sl
             }
         }
     }
+    //qDebug()<<"tempCnt:"<<tempCnt<<" temp:"<<temp;
+    if(tempCnt == 0)
+        return 0;
     avl = temp/tempCnt;
     temp = 0;
     value =0;
@@ -194,8 +299,9 @@ float YouSeeParse::getTempAavl(s16* IrdaDataFloat, int height, int width, u16 sl
         temp += tempData[i];
         tempCnt2++;
     }
+    if(tempCnt2 > 0)
+        avl = temp/tempCnt2;
 
-    avl = temp/tempCnt2;
     float coe = 0.2;
     if(YouSeeParse::check_min_temp >= 20 && YouSeeParse::check_min_temp < 25 )
     {
@@ -312,8 +418,6 @@ static void __stdcall _previewCallback(s32 errorCode, DataFrame* frame, void* cu
         }
         info.areaMaxtemp = maxAvgT;
         info.isDrawLine = true;
-
-
 
         XVideoTemp::mutex.lock();
         if(XVideoTemp::listBufferImginfo.size() < XVideoTemp::maxBuffLen)
