@@ -104,6 +104,7 @@ void RawCallBackFunc(char * data, int width, int height, void * context){
     curImgInfo.areaMaxtemp = maxAvgT;
     curImgInfo.isDrawLine = true;
 
+
 }
 
 
