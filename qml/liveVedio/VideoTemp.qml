@@ -43,7 +43,7 @@ Rectangle {
         onSignal_loginStatus: main.showToast(msg);
         onSignal_areaMaxtemp:tempParCallback(map);
         onSignal_sendListRect:videoNormal.funsetlistRect(map)
-
+        onSignal_initRedFrame:videoNormal.funinitRedFrame(mw,mh)
 
     }
 

@@ -5,17 +5,15 @@
 #include <render/texturenode.h>
 #include <QPainter>
 
-QMutex XVideoTemp::buffMutex;
-ImageInfo* XVideoTemp::pBufferImginfo = nullptr;//缓存的图片指针
 
+QList<ImageInfo> XVideoTemp::listBufferImginfo;//缓存的图片指针
+QMutex XVideoTemp::mutex;
 XVideoTemp::XVideoTemp()
 {
     // setFlag(QQuickItem::ItemHasContents);
     // setRenderTarget(QQuickPaintedItem::FramebufferObject);
 
-    pRenderImginfo = new ImageInfo;
-    pRenderImginfo->pImg = nullptr;
-
+    mRenderImginfo.pImg = nullptr;
 }
 
 
@@ -24,8 +22,10 @@ void XVideoTemp::startTemperatureVideo(float tp)
 {
     DebugLog::getInstance()->writeLog("startTemperatureVideo ");
 
-    createYouseePull();
+    //createYouseePull();
 
+    createShiGan();
+   // createIRCNet();
     warnTemp = tp;
 
     connect(&timerUpdate,&QTimer::timeout,this,&XVideoTemp::slot_timeout);
@@ -49,6 +49,13 @@ void XVideoTemp::createYouseePull()
     emit signal_startinit();
 }
 
+
+
+void XVideoTemp::createIRCNet()
+{
+    mircNet.ircInit();
+}
+
 void XVideoTemp::finishYouPull()
 {
     if(mYouSeeParse != nullptr){
@@ -59,6 +66,24 @@ void XVideoTemp::finishYouPull()
         youseeThread = nullptr;
     }
 
+}
+
+void XVideoTemp::createShiGan(){
+
+    if(pShiGanObject == nullptr){
+        shiganThread = new QThread;
+        pShiGanObject = new ShiGanObject;
+        pShiGanObject->moveToThread(shiganThread);
+        connect(this,&XVideoTemp::signal_readOneFrame,pShiGanObject,&ShiGanObject::slot_loopRec);
+        shiganThread->start();
+    }
+
+    if(pShiGanObject->startRec()){
+        qDebug()<<"开始接收shigan数据";
+        emit signal_readOneFrame();
+    }else{
+        qDebug()<<"启动shigan失败";
+    }
 }
 
 
@@ -84,29 +109,34 @@ void XVideoTemp::fun_temOffset(QVariant mvalue){
 void XVideoTemp::slot_timeout()
 {
 
-    QMutexLocker locker(&buffMutex);
-    //buff没有数据则返回
-    if( pBufferImginfo==  nullptr || pBufferImginfo->pImg == nullptr)
-        return;
 
-    if(pRenderImginfo != nullptr){
 
-        if(pRenderImginfo->pImg != nullptr){
-            delete  pRenderImginfo->pImg;
-            pRenderImginfo->pImg = nullptr;
+
+    if(mutex.tryLock()){
+
+        if( listBufferImginfo.size() >0){
+
+            if(mRenderImginfo.pImg != nullptr){
+                delete mRenderImginfo.pImg;
+                mRenderImginfo.pImg = nullptr;
+            }
+             mRenderImginfo = listBufferImginfo.takeFirst();
         }
-        delete pRenderImginfo;
-        pRenderImginfo = nullptr;
+        mutex.unlock();
+    }else {
+        qDebug()<<"MEI YOU HUO QU SUO";
+        return;
     }
-    pRenderImginfo = pBufferImginfo;
-    pBufferImginfo = nullptr;
 
+    if(mRenderImginfo.pImg == nullptr)
+        return;
     //如果不增加这句代码 ，则会出现视频不会第一时间显示，而是显示灰色图像
     if(!isFirstData){
         emit signal_loginStatus("Get the stream successfully");
+        emit signal_initRedFrame(mRenderImginfo.pImg->width(),mRenderImginfo.pImg->height());
+
         isFirstData = true;
     }
-
     update();
 }
 
@@ -116,27 +146,27 @@ void XVideoTemp::slot_timeout()
 void XVideoTemp::paint(QPainter *painter)
 {
 
-   // qDebug()<<"paint";
-    if(pRenderImginfo == nullptr || pRenderImginfo->pImg == nullptr)
+
+    if(mRenderImginfo.pImg == nullptr)
         return;
     QFont font("Microsoft Yahei", 20);
     QPen pen(QBrush(QColor(0,255,0)),1);
     painter->setPen(pen);
     painter->setFont(font);
     //DebugLog::getInstance()->writeLog("painter hongwai start***");
-    qreal kX = (qreal)this->width()/(qreal)384;
-    qreal kY = (qreal)this->height()/(qreal)288;
+    qreal kX = (qreal)this->width()/(qreal)mRenderImginfo.pImg->width();
+    qreal kY = (qreal)this->height()/(qreal)mRenderImginfo.pImg->height();
 
 
-    painter->drawImage(QRect(0,0,this->width(),this->height()), *(pRenderImginfo->pImg));
+    painter->drawImage(QRect(0,0,this->width(),this->height()), *(mRenderImginfo.pImg));
 
 
     //将矩形链表发送给可见光
-    if(pRenderImginfo->listRect.size()>0){
-        //qDebug()<<"发送矩形:"<<QVariant::fromValue(pRenderImginfo->listRect);
+    if(mRenderImginfo.listRect.size()>0){
+        //qDebug()<<"发送矩形:"<<QVariant::fromValue(mRenderImginfo->listRect);
         QVariantList list ;
-        for(int i=0;i<pRenderImginfo->listRect.size();i++){
-            QVariant map = pRenderImginfo->listRect.at(i);
+        for(int i=0;i<mRenderImginfo.listRect.size();i++){
+            QVariant map = mRenderImginfo.listRect.at(i);
             list.append(map);
         }
         emit signal_sendListRect(QVariant::fromValue(list));
@@ -144,8 +174,8 @@ void XVideoTemp::paint(QPainter *painter)
         emit signal_sendListRect(QVariantList());
     }
 
-    for(int i=0;i<pRenderImginfo->listRect.size();i++){
-        QMap<QString,QVariant> oriRectinfo = pRenderImginfo->listRect.at(i);
+    for(int i=0;i<mRenderImginfo.listRect.size();i++){
+        QMap<QString,QVariant> oriRectinfo = mRenderImginfo.listRect.at(i);
         QRect oriRect = oriRectinfo.value("rect").toRect();
         QRectF desRect(oriRect.x()*kX,oriRect.y()*kY,oriRect.width()*kX,oriRect.height()*kY);
         float temp = oriRectinfo.value("temp").toFloat();
@@ -171,7 +201,7 @@ void XVideoTemp::paint(QPainter *painter)
     if(mYouSeeParse != nullptr){
         QMap<QString,QVariant> map;
         map.insert("parType","temp");
-        map.insert("tempValue",pRenderImginfo->areaMaxtemp);
+        map.insert("tempValue",mRenderImginfo.areaMaxtemp);
         emit signal_areaMaxtemp(map);
     }
     // DebugLog::getInstance()->writeLog("painter hongwai end***");
@@ -206,15 +236,9 @@ XVideoTemp::~XVideoTemp()
 {
     qDebug()<< " 析构   XVideoTemp";
     finishYouPull();
-    if(pBufferImginfo != nullptr){
-        buffMutex.lock();
-        delete pBufferImginfo;
-        pBufferImginfo = nullptr;
-        buffMutex.unlock();
+    if(mRenderImginfo.pImg != nullptr){
+        delete mRenderImginfo.pImg;
     }
-
-
-
 
 }
 

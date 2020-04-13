@@ -8,6 +8,7 @@
 #include <qqmlcontext.h>
 #include "warnmodel.h"
 #include "application.h"
+#include "qmllanguage.h"
 int main(int argc, char *argv[])
 {
 
@@ -15,9 +16,12 @@ int main(int argc, char *argv[])
 
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
 
-    Application app(argc, argv);
-    if(!app.lock())
-            return -42;
+    QGuiApplication app(argc, argv);
+
+//    if(!app.lock())
+//         return -42;
+
+
 
     QFont font("Microsoft Yahei");
     app.setFont(font);
@@ -26,6 +30,15 @@ int main(int argc, char *argv[])
     app.setApplicationName("DoubleLight"); //3
 
     QQmlApplicationEngine engine;
+//    QmlLanguage qmlLanguage(app, engine);
+//    engine.rootContext()->setContextProperty("qmlLanguage", &qmlLanguage);
+
+
+//    QTranslator translator;
+//    translator.load("en_US.qm");
+//    app.installTranslator(&translator);
+
+
     qmlRegisterType<XVideo>("XVideo", 1, 0, "XVideo");
     qmlRegisterType<XVideoTemp>("XVideoTemp", 1, 0, "XVideoTemp");
     qmlRegisterType<ScreenVideo>("ScreenVideo", 1, 0, "ScreenVideo");
@@ -35,26 +48,7 @@ int main(int argc, char *argv[])
 
     engine.load(QUrl(QStringLiteral("qrc:/qml/main.qml")));
 
-
-
     if (engine.rootObjects().isEmpty())
         return -1;
-
-
-
-
-
-    //    app.setOrganizationName("Gaozhi1"); //1
-    //    app.setOrganizationDomain("gaozhi.com"); //2
-    //    app.setApplicationName("VMS_V1.2"); //3
-    //    QFont font("Microsoft Yahei");
-    //    app.setFont(font);
-
-    // XVideo 为QPaint显示视频(光栅绘图)
-
-    //qmlRegisterType<DeviceManagerment>("DeviceManagerment", 1, 0, "DeviceManagerment");
-
-
-
     return app.exec();
 }

@@ -79,6 +79,7 @@ void ScreenVideo::funScreenRecrod(QString path,QQuickWindow *quic,int capx,int c
         DebugLog::getInstance()->writeLog("录屏线程还未初始化");
     else{
         QImage img= quic->grabWindow();
+
         emit signal_writeH264(path,img,capx,capy,capw,caph);
     }
 }

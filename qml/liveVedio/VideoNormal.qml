@@ -292,6 +292,10 @@ Rectangle {
         video.fun_setListRect(map)
     }
 
+    function funinitRedFrame(w,h){
+        video.fun_initRedFrame(w,h)
+    }
+
     function httpParCallback(smap){
         console.debug("sss");
         console.debug("smap:"+smap)

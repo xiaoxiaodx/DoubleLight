@@ -63,12 +63,16 @@ Rectangle {
         }
 
 
+
+
         Row{
             id:windowAdjust
             anchors.right: parent.right
             anchors.rightMargin: 10
             anchors.verticalCenter: parent.verticalCenter
             spacing:20
+
+
             QmlImageButton{
                 width: 20
                 height: 20
@@ -93,11 +97,10 @@ Rectangle {
                 imgSourseNormal: "qrc:/images/win_close.png"
                 imgSoursePress: "qrc:/images/win_close_p.png"
                 onClick:winClose()
-
-
             }
-
         }
+
+
 
     }
 

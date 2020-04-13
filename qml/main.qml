@@ -35,6 +35,13 @@ Window {
 
     property int windowSizeState: 1 //1：正常，0最小化，2最大化
 
+    property int curLanguage: 0
+    property int lChinese: 0
+    property int lEnglish: 1
+    property int lItaly: 2
+    property int lKorean: 3
+
+    signal s_setLanguage(var typeL);
 
 
     MainContent{
@@ -233,6 +240,7 @@ Window {
         }
     }
 
+
     function showToast(stri){
         toastStr = stri;
         loaderToast.sourceComponent = null;
@@ -347,8 +355,6 @@ Window {
             dw = dX;
             dh = dY;
         }
-
-
 
         if(main.width + dw <= minW)
             main.width = minW;

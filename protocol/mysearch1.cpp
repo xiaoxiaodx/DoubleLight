@@ -47,8 +47,6 @@ void MySearch1::startSearch()
             connect(s_searchsocket,SIGNAL(readyRead()),this,SLOT(readResultMsg()));
             sendSearch();
         } else {
-
-
             qDebug()<<s_searchsocket->error();
             qDebug()<<"join multicast Group failed , UDP search initialization errro !"<<endl;
         }

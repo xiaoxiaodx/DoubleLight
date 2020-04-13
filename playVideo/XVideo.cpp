@@ -42,7 +42,7 @@ void XVideo::createFFmpegDecodec()
 void XVideo::fun_getInitPar()
 {
     qDebug()<<"fun_getInitPar";
-   //  emit signal_getInitPar();
+    //  emit signal_getInitPar();
 
     QThread::msleep(100);
     QMap<QString,QVariant> map;
@@ -87,7 +87,7 @@ void XVideo::createHttpApi(){
         httpDevice->moveToThread(httpThread);
         httpThread->start();
 
-       // emit signal_getInitPar();
+        // emit signal_getInitPar();
         fun_getInitPar();
     }
 }
@@ -132,26 +132,8 @@ void XVideo::recSearchIp(QString ip)
 void XVideo::updateUi()
 {
 
-    //buff没有数据则返回
-    buffMutex.lock();
-    if( pBuffImg ==  nullptr){
-        buffMutex.unlock();
-        return;
-    }
-    //buff指针有数据而渲染指针没有数据则删除老数据，在更新
-    if(pRenderImginfo.pImg != nullptr){
-        delete  pRenderImginfo.pImg;
-        pRenderImginfo.pImg = nullptr;
-    }
-    pRenderImginfo.pImg = pBuffImg;
-    pBuffImg = nullptr;
-    buffMutex.unlock();
-    //如果不增加这句代码 ，则会出现视频不会第一时间显示，而是显示灰色图像
-    if(!isFirstData){
-        emit signal_loginStatus("Get the stream successfully");
-        isFirstData = true;
-    }
-    update();
+
+
 }
 
 void XVideo::fun_updateDate()
@@ -166,23 +148,26 @@ void XVideo::paint(QPainter *painter)
 {
 
     //qDebug()<<"XVideo paint";
-
     if(pRenderImginfo.pImg == nullptr)
         return;
+
     QFont font("Microsoft Yahei", 20);
     QPen pen(QBrush(QColor(0,255,0)),1);
     painter->setPen(pen);
     painter->setFont(font);
 
 
+    if(tempImgResW == 0)
+        return;
     // DebugLog::getInstance()->writeLog("painter kejianguang start***");
-    qreal kX = (qreal)this->width()/(qreal)384;
-    qreal kY = (qreal)this->height()/(qreal)288;
+    qreal kX = (qreal)this->width()/(qreal)tempImgResW;
+    qreal kY = (qreal)this->height()/(qreal)tempImgResH;
 
     qreal kshowRectX = (qreal)this->width()/showParentW;
     qreal kshowRectY = (qreal)this->height()/showParentH;
 
     painter->drawImage(QRect(0,0,width(),height()), *pRenderImginfo.pImg);
+
 
     //画限制区域矩形
     painter->save();
@@ -245,21 +230,14 @@ void XVideo::slot_recH264(char* h264Arr,int arrlen,quint64 time)
         QImage *Img = nullptr;
         if(pffmpegCodec != nullptr){
             Img = pffmpegCodec->decodeVFrame((unsigned char*)h264Arr,arrlen);
-
-
-            //qDebug()<<"h264:"<<listImgInfo.size();
-            if (Img != nullptr && (!Img->isNull()))
+            if (Img != nullptr )
             {
-
-                buffMutex.lock();
-                if(pBuffImg == nullptr){
-                    pBuffImg = Img;
-
-                }else{
+                mMutex.lock();
+                if(listBuffImg.size() < maxBuffLen)
+                    listBuffImg.append(Img);
+                else
                     delete Img;
-
-                }
-                buffMutex.unlock();
+                mMutex.unlock();
             }
         }
 
@@ -270,16 +248,69 @@ void XVideo::fun_setListRect(QVariant var){
     //qDebug()<<"tcp 流线程 fun_setListRect:"<<QThread::currentThreadId()<<"    "<<var.toList();
 
 
+
+    if(mMutex.tryLock()){
+
+        if(listBuffImg.size()>0){
+            if(pRenderImginfo.pImg != nullptr){
+                delete pRenderImginfo.pImg;
+                pRenderImginfo.pImg = nullptr;
+            }
+            QImage *img = listBuffImg.takeFirst();
+            pRenderImginfo.pImg = img;
+        }
+        mMutex.unlock();
+    }
+
+    if(pRenderImginfo.pImg == nullptr)
+        return;
+
+    //如果不增加这句代码 ，则会出现视频不会第一时间显示，而是显示灰色图像
+    if(!isFirstData){
+        emit signal_loginStatus("Get the stream successfully");
+        isFirstData = true;
+    }
+
+
     pRenderImginfo.listRect.clear();
     if(var.toList().size() > 0){
-        pRenderImginfo.listRect.clear();
         QVariantList listv = var.toList();
         for(int i=0;i<listv.size();i++){
             QVariantMap map = listv.at(i).toMap();
             pRenderImginfo.listRect.append(map);
         }
     }
-    updateUi();
+
+    update();
+
+
+
+}
+
+void XVideo::fun_initRedFrame(int w,int h){
+
+
+    tempImgResW = w;
+    tempImgResH = h;
+    if(w == 384 && h==288){
+
+        showRectX = 65;
+        showRectY = 41;
+        showRectW = 349;
+        showRectH = 327;
+        showParentW = 494;
+        showParentH = 369;
+
+
+    }else if(w == 160 && h==120){
+        showRectX = 192;
+        showRectY = 107;
+        showRectW = 720;
+        showRectH = 605;
+        showParentW = 954;
+        showParentH = 714;
+
+    }
 }
 
 

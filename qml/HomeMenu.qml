@@ -52,6 +52,27 @@ Rectangle {
         anchors.rightMargin: 10
         anchors.verticalCenter: parent.verticalCenter
         spacing:20
+
+        MyComBox{
+            id:cmb
+            width:100
+            height: 20
+            colorNor: "black"
+            ListModel{
+
+            }
+            model: ListModel{
+                ListElement{showStr:"简体中文"}
+                ListElement{showStr:"English"}
+                ListElement{showStr:"Italian"}
+                ListElement{showStr:"Korean"}
+            }
+            //{["showStr":"简体中文" "showStr":"English","Italian","Korean"]}
+            onCurrentIndexChanged: {
+                curLanguage = currentIndex
+                main.s_setLanguage(currentIndex);
+            }
+        }
         QmlImageButton{
             width: 20
             height: 20
@@ -80,6 +101,42 @@ Rectangle {
 
         }
 
+    }
+
+
+    Connections{
+        target: main
+        onS_setLanguage:setLanguage(typeL);
+    }
+
+    function setLanguage(type){
+
+        var index = 0;
+        switch(type){
+        case lEnglish:
+            tabbarBtn.barModel.get(index++).txtStr =  "Main Preview"
+            tabbarBtn.barModel.get(index++).txtStr =  "Device Settings"
+            tabbarBtn.barModel.get(index++).txtStr =  "Alarm Management"
+            break;
+            break;
+        case lKorean:
+            tabbarBtn.barModel.get(index++).txtStr =  "미리보기"
+            tabbarBtn.barModel.get(index++).txtStr =  "장비설정"
+            tabbarBtn.barModel.get(index++).txtStr =  "알람관리"
+            break;
+            break;
+        case lItaly:
+            tabbarBtn.barModel.get(index++).txtStr =  "Vista Principale"
+            tabbarBtn.barModel.get(index++).txtStr =  "Settaggio"
+            tabbarBtn.barModel.get(index++).txtStr =  "Gestione Allarmi"
+            break;
+            break;
+        case lChinese:
+            tabbarBtn.barModel.get(index++).txtStr =  "主预览"
+            tabbarBtn.barModel.get(index++).txtStr =  "设备配置"
+            tabbarBtn.barModel.get(index++).txtStr =  "告警管理"
+            break;
+        }
     }
 
 

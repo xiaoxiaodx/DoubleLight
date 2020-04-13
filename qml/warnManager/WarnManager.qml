@@ -231,7 +231,7 @@ Rectangle {
                     anchors.fill: parent
                     onClicked: {
                         if(isAllSelect){
-                           // imgSelect.source ="qrc:/images/btnSelect.png"
+                            // imgSelect.source ="qrc:/images/btnSelect.png"
                             isAllSelect = false;
                         }else{
                             //imgSelect.source ="qrc:/images/btnSelect_s.png"
@@ -266,7 +266,7 @@ Rectangle {
                 text: qsTr("抓拍图片")
             }
             Text {
-                id: txtDelete
+                id: txtDo
                 anchors.verticalCenter: parent.verticalCenter
                 anchors.left: parent.left
                 anchors.leftMargin: deleteHeaderLeftMargin
@@ -287,7 +287,7 @@ Rectangle {
                 property bool enter: false
                 width: parent.width
                 height: 59
-               // color:warnList.currentIndex === index?"#DFEAF8":(listviewClickIndex === index?"#DFEAF8":(enter?"#EEF3FA":"#F8FAFD"))
+                // color:warnList.currentIndex === index?"#DFEAF8":(listviewClickIndex === index?"#DFEAF8":(enter?"#EEF3FA":"#F8FAFD"))
                 color:(warnList.currentIndex === index?"#DFEAF8":(enter?"#EEF3FA":"#F8FAFD"))
                 Image{
                     id:select
@@ -361,7 +361,7 @@ Rectangle {
                     anchors.leftMargin: deleteHeaderLeftMargin
                     font.pixelSize: fontSize
                     color: "#3B84F6"
-                    text: qsTr("删除")
+                    text:curLanguage === lChinese?"删除":(curLanguage === lEnglish)?"Remove":(curLanguage === lKorean)?"삭제":"Cancella"
                     MouseArea{
                         anchors.fill: parent
                         onClicked: {
@@ -371,7 +371,7 @@ Rectangle {
                             askDialog.imgSrc = "qrc:/images/ico_warn.png"
                             askDialog.curType = askDialog.warnInfoSingleDelete
                             askDialog.open();
-                           // warnmodel.funDeleteIndex(index);
+                            // warnmodel.funDeleteIndex(index);
                         }
                     }
                 }
@@ -497,4 +497,52 @@ Rectangle {
     }
 
 
+    Connections{
+        target: main
+        onS_setLanguage:setLanguage(typeL);
+    }
+
+    function setLanguage(type){
+
+        switch(type){
+        case lEnglish:
+            textitle.text = "Log list";
+            txtBatchDelete.text = "Batch Remove"
+            txtDo.text = "Operation"
+            txtWarnTime.text = "Alarm Time"
+            txtWarnTemp.text = "Alarm Temperature"
+            warnImg.text = "Snapshots"
+            //deletetxt.text = "Remove"
+            break;
+        case lKorean:
+            textitle.text = "로그정보";
+            txtBatchDelete.text = "전체삭제"
+
+            txtDo.text = "설정"
+            txtWarnTime.text = "알람시간"
+            txtWarnTemp.text = "알람온도"
+            warnImg.text = "화면저장"
+            //deletetxt.text = "삭제"
+            break;
+        case lItaly:
+            textitle.text = "Elenco eventi";
+            txtBatchDelete.text = "Cancella tutti eventi"
+            txtDo.text = "Operazione"
+            txtWarnTime.text = "Ora Allarme"
+            txtWarnTemp.text = "Temperatura Allarme"
+            warnImg.text = "Istantanea"
+            //deletetxt.text = "Cancella"
+            break;
+        case lChinese:
+            textitle.text = "日志列表";
+            txtBatchDelete.text = "批量删除"
+
+            txtDo.text = "操作"
+            txtWarnTime.text = "告警时间"
+            txtWarnTemp.text = "告警温度"
+            warnImg.text = "抓拍图片"
+            //deletetxt.text = "删除"
+            break;
+        }
+    }
 }

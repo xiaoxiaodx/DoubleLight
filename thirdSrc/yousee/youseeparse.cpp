@@ -246,7 +246,7 @@ static float getTempAavl(s16* IrdaDataFloat, int height, int width, u16 slop ,s1
 /*
 预览回调, 此回调触发在工作线程
 */
-
+#include <QThread>
 IplImage* pFrame = NULL;
 IplImage* pFrameSrc = NULL;
 static void __stdcall _previewCallback(s32 errorCode, DataFrame* frame, void* customData) {
@@ -278,7 +278,7 @@ static void __stdcall _previewCallback(s32 errorCode, DataFrame* frame, void* cu
         cvInitFont(&font, CV_FONT_HERSHEY_SIMPLEX ,0.5, 0.5);
         cvSetData(pFrameSrc,(uchar*)frame->Bmp,tempHead->Width*4);
 
-        ImageInfo *info = new ImageInfo;
+        ImageInfo info;
         float maxAvgT = -1;
         for(int i=0;cont!=0;cont=cont->h_next,i++)
         {
@@ -293,7 +293,7 @@ static void __stdcall _previewCallback(s32 errorCode, DataFrame* frame, void* cu
             QRect rect(mdrects.x,mdrects.y,mdrects.width,mdrects.height);
             map.insert("rect",rect);
             map.insert("temp",avgT);
-            info->listRect.append(map);
+            info.listRect.append(map);
             if(maxAvgT == -1){
                 maxAvgT = avgT;
             }else{
@@ -303,30 +303,35 @@ static void __stdcall _previewCallback(s32 errorCode, DataFrame* frame, void* cu
             }
         }
 
-       // qDebug()<<"dsadsa********:";
         try {
-            info->pImg =  new QImage((uchar*)pFrameSrc->imageData, tempHead->Width, tempHead->Height, QImage::Format_RGB32);
+            info.pImg =  new QImage((uchar*)pFrameSrc->imageData, tempHead->Width, tempHead->Height, QImage::Format_RGB32);
             // 其它代码
         } catch ( const std::bad_alloc& e ) {
             DebugLog::getInstance()->writeLog("Yousee 图片分配内存失败");
-            info->pImg = nullptr;
+            info.pImg = nullptr;
         }
-        info->areaMaxtemp = maxAvgT;
-        info->isDrawLine = true;
+        info.areaMaxtemp = maxAvgT;
+        info.isDrawLine = true;
 
-        QMutexLocker locker(&XVideoTemp::buffMutex);
-        if(XVideoTemp::pBufferImginfo == nullptr)
-            XVideoTemp::pBufferImginfo = info;
+
+
+        XVideoTemp::mutex.lock();
+        if(XVideoTemp::listBufferImginfo.size() < XVideoTemp::maxBuffLen)
+            XVideoTemp::listBufferImginfo.append(info);
         else{
-            if(info->pImg != nullptr)
-                delete info->pImg;
-            delete info;
+            if(info.pImg != nullptr)
+                delete info.pImg;
         }
+
+        XVideoTemp::mutex.unlock();
+
         cvReleaseMemStorage(&stor);
     }else {
         //接收数据失败, 预览内置自动恢复, YET_PreviewRecoverBegin-YET_PreviewRecoverEnd
         DebugLog::getInstance()->writeLog("recevie fail :PreviewCallback,errorCode "+errorCode);
     }
+
+    QThread::msleep(5);
 }
 
 #include <QDateTime>

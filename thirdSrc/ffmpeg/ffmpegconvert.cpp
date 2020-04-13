@@ -39,7 +39,8 @@ bool FfmpegConvert::initConvert(int resW,int resH)
     // 创建RGB缓冲区同时分配内存
 
     try {
-        rgbBuf = new unsigned char[width*height * 4];
+        if(rgbBuf == nullptr)
+            rgbBuf = new unsigned char[width*height * 4];
         // 其它代码
     } catch ( const std::bad_alloc& e ) {
         DebugLog::getInstance()->writeLog("ffmppeg rgb32分配内存失败");
@@ -237,9 +238,9 @@ void FfmpegConvert::rgb32ToH264(QImage img,QByteArray &arr,bool &gotPic)
 
     yuvFrame->pts = (count++) * (codecCtx->time_base.den)  / (codecCtx->time_base.num *25);
 
-    qDebug()<<"yuvFrame:"<<yuvFrame->width<<"   "<<yuvFrame->height;
-    qDebug()<<"codecCtx:"<<codecCtx->width<<"   "<<codecCtx->height;
-    qDebug()<<"codecCtx:"<<img.width()<<"   "<<img.height();
+    //qDebug()<<"yuvFrame:"<<yuvFrame->width<<"   "<<yuvFrame->height;
+    //qDebug()<<"codecCtx:"<<codecCtx->width<<"   "<<codecCtx->height;
+    //qDebug()<<"codecCtx:"<<img.width()<<"   "<<img.height();
 
     ret = avcodec_send_frame(codecCtx, yuvFrame);
     if (ret != 0)
@@ -254,7 +255,7 @@ void FfmpegConvert::rgb32ToH264(QImage img,QByteArray &arr,bool &gotPic)
         return;
     }
 
-    qDebug()<<"获取一幅图:"<<pkt.size;
+    //qDebug()<<"获取一幅图:"<<pkt.size;
 
     gotPic = true;
     arr.append((char*)pkt.data,pkt.size);

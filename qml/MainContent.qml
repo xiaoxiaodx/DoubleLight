@@ -42,8 +42,6 @@ Rectangle {
 
     //   property int modelDataCurrentIndex: -1
 
-
-
     visible: false
 
     signal winMin();
@@ -80,6 +78,7 @@ Rectangle {
             onPressed: {
                 homeMenu.isDoubleClick = false;
                 clickPoint  = Qt.point(mouse.x, mouse.y)
+                mouse.accepted = false;
             }
 
             onDoubleClicked: {

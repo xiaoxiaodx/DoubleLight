@@ -96,7 +96,7 @@ Rectangle {
             }
 
             Text {
-                id: name
+                id: txtparset
                 font.pixelSize: fontSize
                 text: qsTr("参数设置")
 
@@ -756,4 +756,71 @@ Rectangle {
     }
 
 
+
+
+
+
+    Connections{
+        target: main
+        onS_setLanguage:setLanguage(typeL);
+    }
+
+    function setLanguage(type){
+
+        switch(type){
+        case lEnglish:
+            txtRecordSet.text = "Video Settings"
+            txtRecortPath.text = "Video Storage Path"
+            txtScreenShotPath.text = "Snapshots Storage Path"
+            txtWarnTemSet.text = "Alarm Temperatur"
+            labelSwitchTime.text = "Time Button"
+            labelTime.text = "Time Display"
+            txtparset.text = "Parameter Settings"
+            txtSwichBeer.text = "Siren Button"
+            txtSwichRecord.text = "Video Button"
+            txtSwichScreenShot.text = "Snapshots Button"
+            txtSwichWarn.text = "Alarm Button"
+            break;
+        case lKorean:
+            txtRecordSet.text = "비디오 설정"
+            txtRecortPath.text = "비디오 저장 위치"
+            txtScreenShotPath.text = "사진저장 경로"
+            txtWarnTemSet.text = "알람온도설정"
+            labelSwitchTime.text = "시간표시 On/Off"
+            labelTime.text = "시간표시"
+            txtparset.text = "파라미터 설정"
+            txtSwichBeer.text = "경보음 On/Off"
+            txtSwichRecord.text = "비디오 On/Off"
+            txtSwichScreenShot.text = "사진캡쳐"
+            txtSwichWarn.text = "알람 On/Off"
+            break;
+        case lItaly:
+
+            txtRecordSet.text = "Settaggio Video"
+            txtRecortPath.text = "Directory Video"
+            txtScreenShotPath.text = "Directory Fotografie"
+            txtWarnTemSet.text = "Allarme Temperatura"
+            labelSwitchTime.text = "Tasto Ora"
+            labelTime.text = "Ora"
+            txtparset.text = "Settaggio Parametri"
+            txtSwichBeer.text = "Tasto Sirena"
+            txtSwichRecord.text = "Tasto Video"
+            txtSwichScreenShot.text = "Tasto Fotografia"
+            txtSwichWarn.text = "Tasto Allarme"
+            break;
+        case lChinese:
+            txtRecordSet.text = "录像设置"
+            txtRecortPath.text = "录像存储路径"
+            txtScreenShotPath.text = "抓拍存储路径"
+            txtWarnTemSet.text = "告警温度设置"
+            labelSwitchTime.text = "时间开关"
+            labelTime.text = "时间显示"
+            txtparset.text = "参数设置"
+            txtSwichBeer.text = "蜂鸣开关"
+            txtSwichRecord.text = "录像开关"
+            txtSwichScreenShot.text = "抓拍开关"
+            txtSwichWarn.text = "报警开关"
+            break;
+        }
+    }
 }

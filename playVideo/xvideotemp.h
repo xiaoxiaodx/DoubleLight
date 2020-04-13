@@ -18,8 +18,12 @@
 #include "mysearch1.h"
 #include "youseeparse.h"
 #include "chttpapidevice.h"
-
+#include "shiganobject.h"
 #include "debuglog.h"
+#include "irc/ircnet.h"
+#include <QSemaphore>
+
+
 class XVideoTemp : public QQuickPaintedItem
 {
     Q_OBJECT
@@ -41,9 +45,10 @@ public:
     explicit XVideoTemp();
     ~XVideoTemp();
 
+    const static int maxBuffLen = 5;
 
-    static QMutex buffMutex;
-    static ImageInfo *pBufferImginfo;//缓存的图片指针
+    static QMutex mutex;
+    static QList<ImageInfo> listBufferImginfo;//缓存的图片指针
 signals:
     //qml
     void signal_loginStatus(QString msg);
@@ -52,12 +57,14 @@ signals:
     void signal_stop();
     void signal_areaMaxtemp(QVariant map);
     void signal_sendListRect(QVariant map);
+    void signal_initRedFrame(int mw,int mh);
     void signal_getInitPar();
 
     void signal_temp(float tempV);
     //红外参数
     void signal_parSet(QMap<QString,QVariant> map);
 
+    void signal_readOneFrame();
 public slots:
     void slot_timeout();
 
@@ -70,12 +77,12 @@ protected:
 private:
 
     void createYouseePull();
+    void createShiGan();
+    void createIRCNet();
 
     QTimer timerUpdate;
 
-    ImageInfo *pRenderImginfo = nullptr;//渲染使用的图片指针
-
-
+    ImageInfo mRenderImginfo;//渲染使用的图片指针
 
     bool isFirstData = false;
 
@@ -83,11 +90,15 @@ private:
     QList<yuvInfo> listYuv;
 
 
-
     QThread *youseeThread = nullptr;
     YouSeeParse *mYouSeeParse = nullptr;
 
+    QThread *shiganThread = nullptr;
+    ShiGanObject *pShiGanObject = nullptr;
 
+    IRCNet mircNet;
+    int tempImgWidth = 0;
+    int tempImgHeight = 0;
     float warnTemp;
 };
 

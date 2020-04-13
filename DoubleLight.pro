@@ -7,7 +7,7 @@ CONFIG += c++11
 # deprecated API to know how to port your code away from it.
 DEFINES += QT_DEPRECATED_WARNINGS
 # �汾��Ϣ
-VERSION = 1.0.0.5
+VERSION = 1.1.0.7
 # ͼ��
 RC_ICONS = myico.ico
 TARGET=GAOZHI_TCS
@@ -25,6 +25,8 @@ QMAKE_TARGET_COPYRIGHT = "Copyright 2020-2016 The Qt Company Ltd. All rights res
 
 # ���ģ����壩
 RC_LANG = 0x0004
+
+TRANSLATIONS = zh_CN.ts en_US.ts
 
 SOURCES += \
         main.cpp \
@@ -55,7 +57,11 @@ SOURCES += \
     thirdSrc/avi/avi_adapt.cpp \
     thirdSrc/avi/avienc_adapt.cpp \
     thirdSrc/avi/hi_avi.cpp \
-    recordVideo/record/avirecord.cpp
+    recordVideo/record/avirecord.cpp \
+    qmllanguage.cpp \
+    protocol/shigan.cpp \
+    protocol/shiganobject.cpp \
+    thirdSrc/irc/ircnet.cpp
 
 
 HEADERS += \
@@ -91,7 +97,11 @@ HEADERS += \
     thirdSrc/avi/defs.h \
     thirdSrc/avi/hi_avi.h \
     thirdSrc/avi/hi_type.h \
-    recordVideo/record/avirecord.h
+    recordVideo/record/avirecord.h \
+    qmllanguage.h \
+    protocol/shigan.h \
+    protocol/shiganobject.h \
+    thirdSrc/irc/ircnet.h
 
 RESOURCES += qml.qrc
 
@@ -138,4 +148,8 @@ LIBS += $$PWD/thirdLib/OpenCV4.1.1x64/x64/mingw/bin/libopencv_imgproc411.dll
 LIBS += $$PWD/thirdLib/OpenCV4.1.1x64/x64/mingw/bin/libopencv_core411.dll
 LIBS += $$PWD/thirdLib/OpenCV4.1.1x64/x64/mingw/bin/libopencv_highgui411.dll
 
-
+#十敢需要使用windows socket库支持
+LIBS += -lWs2_32
+#IRC
+INCLUDEPATH += $$PWD/thirdLib/irc/include
+LIBS += $$PWD/thirdLib/irc/IRNetSDK64.lib

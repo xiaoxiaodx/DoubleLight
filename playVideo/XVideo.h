@@ -28,6 +28,7 @@ public:
     Q_INVOKABLE void fun_setListRect(QVariant);
     Q_INVOKABLE void fun_updateDate();
     Q_INVOKABLE void fun_setRectPar(int sx,int sy,int sw,int sh,int pw,int ph);
+    Q_INVOKABLE void fun_initRedFrame(int w,int h);
 
     explicit XVideo();
     ~XVideo();
@@ -72,12 +73,14 @@ private:
     void updateUi();
 
 
-    QList<ImageInfo*> listImgInfo; // tcp使用
-
     FfmpegCodec *pffmpegCodec = nullptr;
 
     QMutex buffMutex;
     ImageInfo pRenderImginfo ;
+
+    const int maxBuffLen = 5;
+    QList<QImage *> listBuffImg;
+    QMutex mMutex;
     QImage *pBuffImg = nullptr;
 
     bool isFirstData = false;
@@ -87,7 +90,7 @@ private:
     QThread *searchThread = nullptr;
 
     const QString m_ip ="10.67.1.146";
-   // const QString m_ip ="192.168.1.188" ;
+    //const QString m_ip ="192.168.1.188" ;
 
 
     QThread *httpThread = nullptr;
@@ -99,12 +102,21 @@ private:
     QVariantList listRectInfo;
 
     float warnTemp ;
+
+
     qreal showRectX = 65;
     qreal showRectY = 41;
     qreal showRectW = 349;
     qreal showRectH = 327;
     qreal showParentW = 494;
     qreal showParentH = 369;
+
+    qreal tempImgResW =0;
+    qreal tempImgResH =0;
+
+
+
+
 };
 
 #endif // XVideo_H

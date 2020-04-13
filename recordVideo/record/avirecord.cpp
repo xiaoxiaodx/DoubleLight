@@ -1,5 +1,8 @@
 #include "avirecord.h"
 #include <QDir>
+#ifndef RECORDMAXTIME
+#define RECORDMAXTIME 1800000
+#endif
 AviRecord::AviRecord(QString did)
 {
 
@@ -32,9 +35,6 @@ void AviRecord::slot_writeImage(QString path,QImage img,int capx,int capy,int ca
     QImage img1 = img.copy(QRect(capx,capy,curResW,curResH));
 
     slot_startRecord("",0,img1.width(),img1.height());
-
-
-
 
     if(ffmpegConvert == nullptr){
         QThread::msleep(5);
@@ -106,16 +106,17 @@ void AviRecord::slot_writeVedio(char* buff,int len,long long tempTime)
         isWriteSucc = true;
 
 
-        if(mPeriodIndex*mPeriod < 1800000){
+        if(mPeriodIndex*mPeriod < RECORDMAXTIME){
 
             mPeriodIndex++;
         }else {
             //超过30分钟，关闭文件，这样在继续录文件时会重新打开一个文件
             slot_endRecord();
+            mPeriodIndex = 0;
             mRecordingFilePath = "";
         }
-
     }
+
     if(s32Ret != KEY_TRUE)
     {
         qDebug()<<("writer_writeframe vedio failed %s \n");
@@ -250,8 +251,6 @@ void AviRecord::slot_endRecord()
 
     if(!isWriteSucc)
         QFile::remove(curFileAbsolutePath);
-
-
 }
 //罗勇:
 int AviRecord::InitWriterHanle(void** pWriterHandle,MeidaVideo_T mediaInfo,char* fileName, char *idxName) //pWriterHandle是一个ADAPT_S类型的句柄，里面包含写文件的工具的信息
