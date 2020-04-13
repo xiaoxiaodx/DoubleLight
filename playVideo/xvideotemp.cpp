@@ -23,8 +23,9 @@ void XVideoTemp::startTemperatureVideo(float tp)
     DebugLog::getInstance()->writeLog("startTemperatureVideo ");
 
     //createYouseePull();
-    createShiGan();
-    //createIRCNet();
+    //createShiGan();
+    createIRCNet();
+
     warnTemp = tp;
 
     connect(&timerUpdate,&QTimer::timeout,this,&XVideoTemp::slot_timeout);

@@ -134,8 +134,6 @@ void ShiGan::readOneFrame(){
              <<"TemperWidth:"<<stMtHd.TemperWidth<<"    TemperHeigh:"<<stMtHd.TemperHeigh<<" TemperByte:"<<stMtHd.TemperByte;
 
         int w,h,x,y;
-
-
         if( stMtHd.ImageFlag )
         {
             w = stMtHd.ImageWidth;
@@ -162,6 +160,7 @@ void ShiGan::readOneFrame(){
                 info.pImg = nullptr;
             }
             fpos+=w*h*3;
+
         }
 
 
@@ -187,13 +186,63 @@ void ShiGan::readOneFrame(){
                     pfDivs[i].f1 = 0;
 
                     i++;
+                    qDebug()<<"-----------  "<<pfDivs[i].f2;
                 }
             }
 
+
+//            int diwei = 0x00ff & pucfts[50];
+//            int gaowei = 0x00ff & pucfts[50]>>8;
+//            int res = gaowei*256 + diwei;
+//            qDebug()<<"  "<<pucfts[50]<<"  "<<diwei<<"   "<<gaowei<<"   "<<res;
+
+//            static char *p = (char *)malloc(h*w);
+//            YouSeeParse::HotnessResetData((short*)pucfts,h,w,p,1,0);
+
+
+//            if(YouSeeParse::pFrame == NULL)
+//                YouSeeParse::pFrame=cvCreateImageHeader(cvSize(w,h),IPL_DEPTH_8U,1);
+//            cvSetData(YouSeeParse::pFrame,p,w);
+
+//            CvMemStorage*stor = NULL;
+//            CvSeq* cont = NULL;
+//            CvRect mdrects;
+
+//            stor = cvCreateMemStorage(0);
+//            cont=YouSeeParse::cvSegmentFGMask(YouSeeParse::pFrame,true,10.0,stor,cvPoint(0,0));
+
+
+//            //cvSetData(YouSeeParse::pFrameSrc,(uchar*)frame->Bmp,width*4);
+//            float maxAvgT = -1;
+//            for(int i=0;cont!=0;cont=cont->h_next,i++)
+//            {
+//                mdrects=((CvContour*)cont)->rect;
+//                float avgT = YouSeeParse::getTempAavl((short*)pucfts, h, w, 1, 0, &mdrects) ;
+//                if(mdrects.width < TEMP_MIN_INTERVAL && mdrects.height < TEMP_MIN_INTERVAL)
+//                {
+//                    continue;
+//                }
+
+//                QMap<QString,QVariant> map;
+//                QRect rect(mdrects.x,mdrects.y,mdrects.width,mdrects.height);
+//                map.insert("rect",rect);
+//                map.insert("temp",avgT);
+//                info.listRect.append(map);
+//                if(maxAvgT == -1){
+//                    maxAvgT = avgT;
+//                }else{
+//                    if(avgT > maxAvgT){
+//                        maxAvgT = avgT;
+//                    }
+//                }
+//            }
+//            info.areaMaxtemp = maxAvgT;
+//            info.isDrawLine = true;
             // center point temperature
             x = w/2;
             y = h/2;
             i = y * w + w;
+
 
             info.areaMaxtemp = pftpufs[i];
 
@@ -243,16 +292,22 @@ void ShiGan::readOneFrame(){
            //qDebug()<<" curImgInfo.listRect "<<curImgInfo.listRect.size();
            info.areaMaxtemp = maxAvgT;
            info.isDrawLine = true;
+
+//            info.areaMaxtemp = pftpufs[i];
+            qDebug()<<"pftpufs[0]:%f\n"<<pftpufs[i];
+
         }
 
+        XVideoTemp::mutex.lock();
+        if(XVideoTemp::listBufferImginfo.size() < XVideoTemp::maxBuffLen)
 
-
-        if(XVideoTemp::listBufferImginfo.size()<XVideoTemp::maxBuffLen){
             XVideoTemp::listBufferImginfo.append(info);
-        }else {
+        else{
             if(info.pImg != nullptr)
                 delete info.pImg;
         }
+
+        XVideoTemp::mutex.unlock();
 
     }
 }
