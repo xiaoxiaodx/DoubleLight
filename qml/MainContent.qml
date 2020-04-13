@@ -69,31 +69,7 @@ Rectangle {
         onSwinClose: winClose()
         onSwinMax: winMax()
 
-        MouseArea{
-            property point clickPoint: "0,0"
 
-            anchors.fill: parent
-            acceptedButtons: Qt.LeftButton
-            propagateComposedEvents: true
-            onPressed: {
-                homeMenu.isDoubleClick = false;
-                clickPoint  = Qt.point(mouse.x, mouse.y)
-                mouse.accepted = false;
-            }
-
-            onDoubleClicked: {
-                homeMenu.isDoubleClick = true
-                winMax();
-            }
-            onPositionChanged: {
-
-                if(!homeMenu.isDoubleClick){
-                    var offset = Qt.point(mouse.x - clickPoint.x, mouse.y - clickPoint.y)
-
-                    dragPosChange(offset.x, offset.y)
-                }
-            }
-        }
     }
     SwipeView {
           id:vedioContent

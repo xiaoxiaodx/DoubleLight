@@ -83,5 +83,7 @@
         <file>images/img_close.png</file>
         <file>images/ico_warn.png</file>
         <file>images/fullscreen.png</file>
+        <file>images/language.png</file>
+        <file>images/language_down.png</file>
     </qresource>
 </RCC>

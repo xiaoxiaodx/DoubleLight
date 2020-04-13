@@ -10,19 +10,35 @@ import QtQuick.Controls 2.12
 ComboBox {
     id: control
     //model: [{showStr:"TCP",hello:0},{ showStr:"P2P",hello:2}]
+    //显示内容属性
+    property int contentFontSize: 16
+    property string contentFontColor: "#ffffff"
+    property string contentBg: "#999999"
 
-    property string colorNor: "#999999"
-    property string colorPressed: "#409EFF"
-    property string fontColor: "#ffffff"
-    property string bordColor: "transparent"
-
-    property int itemHeight: 26
-    property string itembordColor: bordColor //子项的边界宽不能设置
-    property string itemColorNor: "#3A3D41"
-    property string itemColorHoverd: "#272727"
-    property int mRadius: 2
+    //指示器属性
+    property alias indicatorImgSrc: imgIndiator.source
     property int indicatorW: 6
     property int indicatorH: 4
+    //子项显示内容属性
+    property int itemLeftMargin: 5
+    property int itemTopMargin: 5
+    property int itemHeight: 34
+    property string itembordColor: bordColor //子项的边界宽不能设置
+    property string itemColorBgNor: "#3A3D41"
+    property string itemColorBgHoverd: "#272727"
+    property int itemFontSize: 14
+    property string itemFontColor: "#5A5E66"
+    //
+
+    property string bordColor: "transparent"
+
+
+
+    property int mRadius: 10
+
+
+
+
 
 
     delegate: ItemDelegate {
@@ -30,8 +46,8 @@ ComboBox {
         height:itemHeight
         contentItem: Text {
             text: showStr
-            color: fontColor
-            font: control.font
+            color: itemFontColor
+            font.pixelSize: itemFontSize
             elide: Text.ElideRight
             verticalAlignment: Text.AlignVCenter
             anchors.verticalCenter: parent.verticalCenter
@@ -43,11 +59,19 @@ ComboBox {
            // color: "#3A3D41"
             border.color: "#3A3D41"
             border.width: 0
-            color: control.highlightedIndex === index?itemColorHoverd:itemColorNor
+            color: control.highlightedIndex === index?itemColorBgHoverd:itemColorBgNor
         }
     }
 
-    indicator: Canvas {
+    indicator:Image {
+        id: imgIndiator
+        x: control.width - width - control.rightPadding
+        y: control.topPadding + (control.availableHeight - height) / 2
+        width: indicatorW
+        height: indicatorH
+    }
+
+        /*Canvas {
         id: canvas
         x: control.width - width - control.rightPadding
         y: control.topPadding + (control.availableHeight - height) / 2
@@ -70,14 +94,14 @@ ComboBox {
             context.fillStyle = control.pressed ? colorPressed :colorNor;
             context.fill();
         }
-    }
+    }*/
 
     contentItem: Text {
         leftPadding: 10
         rightPadding: control.indicator.width + control.spacing
         text: control.displayText
-        font: control.font
-        color: fontColor
+        color: contentFontColor
+        font.pixelSize: contentFontSize
         verticalAlignment: Text.AlignVCenter
         elide: Text.ElideRight
     }
@@ -85,15 +109,15 @@ ComboBox {
     background: Rectangle {
         implicitWidth: control.width
         implicitHeight: control.height
-        //border.color: control.pressed ? colorPressed : bordColor
         border.width: control.visualFocus ? 2 : 1
         border.color: bordColor
-        color: "#272727"
+        color: contentBg
         radius: mRadius
     }
 
     popup: Popup {
-        y: control.height - 1
+        x:itemLeftMargin
+        y: control.height + itemTopMargin
         width: control.width
         implicitHeight: contentItem.implicitHeight
         padding: 1
@@ -105,8 +129,6 @@ ComboBox {
             //currentIndex: control.highlightedIndex
 
             ScrollIndicator.vertical: ScrollIndicator { }
-
-
         }
 
         background: Rectangle {
@@ -114,7 +136,7 @@ ComboBox {
             border.width: 1
             border.color: bordColor
             color: "transparent"
-            //radius: mRadius
+            radius: mRadius
         }
     }
 }

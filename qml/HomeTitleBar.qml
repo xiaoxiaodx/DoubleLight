@@ -36,7 +36,6 @@ Rectangle {
         }
 
 
-
         MouseArea {
             id:mousearea
             property point clickPoint: "0,0"

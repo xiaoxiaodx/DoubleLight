@@ -75,6 +75,13 @@ public:
     static float temp_offset ;
     static float check_max_temp ;
     static float check_min_temp ;
+
+    static float getTempAavl(s16* IrdaDataFloat, int height, int width, u16 slop ,s16 offset , CvRect * rec);
+    static int HotnessResetData(s16* IrdaDataFloat, int height, int width,char *p,u16 slop,s16 offset);
+    static CvSeq* cvSegmentFGMask( CvArr* _mask, bool poly1Hull0,float perimScale,
+                                  CvMemStorage* storage, CvPoint offset);
+    static IplImage* pFrame;
+    static IplImage* pFrameSrc;
 signals:
     void signal_senImg(QImage *);
 public slots:

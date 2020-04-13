@@ -127,5 +127,30 @@ Popup {
     }
 
 
+    Connections{
+        target: main
+        onS_setLanguage:setLanguage(typeL);
+    }
+
+    function setLanguage(type){
+        switch(type){
+        case lEnglish:
+            txtCancel.text = "取消"
+            txtEnsure.text = "确定"
+            break;
+        case lKorean:
+            txtCancel.text = "取消"
+            txtEnsure.text = "确定"
+            break;
+        case lItaly:
+            txtCancel.text = "取消"
+            txtEnsure.text = "确定"
+            break;
+        case lChinese:
+            txtCancel.text = "取消"
+            txtEnsure.text = "确定"
+            break;
+        }
+    }
 }
 

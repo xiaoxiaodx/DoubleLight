@@ -14,15 +14,15 @@ Window {
           Qt.Window
     visible: true
 
-    width:1000
-    height:800
+    width:1200
+    height:900
 
     property bool isLocker: false
     visibility : "Windowed"
 
     property int mouseAdjustWidth: 10
-    property int minW: 960
-    property int minH: 540
+    property int minW: 1200
+    property int minH: 800
 
     property string toastStr: ""
     signal lockerCHange(bool lockchange);
@@ -65,7 +65,7 @@ Window {
         onWinClose:{
             askDialog.width = 427
             askDialog.height = 176
-            askDialog.askStr = qsTr("确认退出系统吗？")
+            askDialog.askStr = curLanguage=== lChinese?"确认退出系统吗？":curLanguage===lEnglish?"Confirm to exit ?":curLanguage===lKorean?"":""
             askDialog.imgSrc = "qrc:/images/icon_question.png"
             askDialog.curType = askDialog.exeClose
             askDialog.open();

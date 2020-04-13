@@ -19,11 +19,13 @@ Rectangle {
 
     signal s_getInitPar();
 
-
     signal s_temOffset(var mvalue);
     signal s_temMax(var mvalue);
     signal s_temMin(var mvalue);
     property int fontSize: 14
+
+    //第一根左对齐线
+    property int parSetFirstAlignLine: curLanguage === lChinese?124:255
     Settings {
         id:setting
         property alias recordPath: inputRecordPath.text
@@ -119,10 +121,9 @@ Rectangle {
                 id: txtTempDrift
                 text: qsTr("温漂设置")
                 font.pixelSize: fontSize
-                anchors.top: line2.bottom
-                anchors.left: line2.left
-                anchors.leftMargin: 48
-                anchors.topMargin: 24
+                anchors.right: rectTempDrift.left
+                anchors.rightMargin: 20
+                anchors.verticalCenter: rectTempDrift.verticalCenter
             }
 
             Rectangle{
@@ -131,9 +132,10 @@ Rectangle {
                 width: 88
                 height: 32
                 radius: 4
-                anchors.left: txtTempDrift.right
-                anchors.verticalCenter: txtTempDrift.verticalCenter
-                anchors.leftMargin: 20
+                anchors.left: line2.left
+                anchors.leftMargin: parSetFirstAlignLine
+                anchors.top: line2.bottom
+                anchors.topMargin: 20
                 LineEdit {
                     id: inputTempDrift
                     width: rectTempDrift.width  - 22
@@ -219,9 +221,10 @@ Rectangle {
                 id: txtTempMin
                 text: qsTr("温度控制阀")
                 font.pixelSize: fontSize
-                anchors.top: txtTempDrift.bottom
-                anchors.right: txtTempDrift.right
-                anchors.topMargin: 30
+                anchors.right: rectTempMin.left
+                anchors.rightMargin: 20
+                anchors.verticalCenter: rectTempMin.verticalCenter
+
             }
 
             Rectangle{
@@ -230,9 +233,10 @@ Rectangle {
                 width: 88
                 height: 32
                 radius: 4
-                anchors.left: txtTempMin.right
-                anchors.verticalCenter: txtTempMin.verticalCenter
-                anchors.leftMargin: 20
+                anchors.left: line2.left
+                anchors.top:line2.bottom
+                anchors.topMargin: 73
+                anchors.leftMargin: parSetFirstAlignLine
                 LineEdit {
                     id: inputTempMin
                     width: rectTempMin.width  - 22
@@ -430,18 +434,21 @@ Rectangle {
                 id: txtSwichWarn
                 text: qsTr("报警开关")
                 font.pixelSize: fontSize
-                anchors.top: txtTempMin.bottom
-                anchors.right: txtTempMin.right
-                anchors.topMargin: 30
+
+                anchors.right: swichWarn.left
+                anchors.rightMargin: 20
+                anchors.verticalCenter: swichWarn.verticalCenter
+
             }
 
             SimpleSwich{
                 id:swichWarn
                 width: 30
                 height: 15
-                anchors.left: txtSwichWarn.right
-                anchors.leftMargin: 20
-                anchors.verticalCenter: txtSwichWarn.verticalCenter
+                anchors.left: line2.left
+                anchors.leftMargin: parSetFirstAlignLine
+                anchors.top: line2.bottom
+                anchors.topMargin: 125
                 onCheckedChanged: s_warnSwith(checked)
             }
             Text {
@@ -484,17 +491,19 @@ Rectangle {
                 id: txtSwichScreenShot
                 text: qsTr("抓拍开关")
                 font.pixelSize: fontSize
-                anchors.top: txtSwichWarn.bottom
-                anchors.left: txtSwichWarn.left
-                anchors.topMargin: 26
+
+                anchors.right: swichScreenShot.left
+                anchors.rightMargin: 20
+                anchors.verticalCenter: swichScreenShot.verticalCenter
             }
             SimpleSwich{
                 id:swichScreenShot
                 width: 30
                 height: 15
-                anchors.left: txtSwichScreenShot.right
-                anchors.leftMargin: 20
-                anchors.verticalCenter: txtSwichScreenShot.verticalCenter
+                anchors.left: line2.left
+                anchors.leftMargin: parSetFirstAlignLine
+                anchors.top: line2.bottom
+                anchors.topMargin: 172
                 onCheckedChanged: s_screenShotSwith(checked)
             }
 
@@ -566,17 +575,20 @@ Rectangle {
                 id: txtSwichBeer
                 text: qsTr("蜂鸣开关")
                 font.pixelSize: fontSize
-                anchors.top: txtSwichScreenShot.bottom
-                anchors.left: txtSwichScreenShot.left
-                anchors.topMargin: 26
+
+                anchors.right: swichBeer.left
+                anchors.rightMargin: 20
+                anchors.verticalCenter: swichBeer.verticalCenter
+
             }
             SimpleSwich{
                 id:swichBeer
                 width: 30
                 height: 15
-                anchors.left: txtSwichBeer.right
-                anchors.leftMargin: 20
-                anchors.verticalCenter: txtSwichBeer.verticalCenter
+                anchors.left: line2.left
+                anchors.leftMargin: parSetFirstAlignLine
+                anchors.top: line2.bottom
+                anchors.topMargin:218
                 onCheckedChanged: s_beerSwith(checked)
             }
 

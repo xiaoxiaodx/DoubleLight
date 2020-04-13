@@ -24,6 +24,10 @@ public:
   void rgbToYuv(QImage img,int resW,int resH,QFile &yuvFlie);
   bool initConvert(int resW,int resH);
   void unInitConvert();
+
+  QImage* yuv420ToRgb32(char* pbuff_in,int nwidth,int nheight);
+  void initYuv420ToRgb32(int nwidth,int nheight);
+  void yuv420ToRgb32release();
 signals:
 
 public slots:
@@ -42,6 +46,10 @@ private:
     QMutex mutex;
 
 
+
+    AVFrame    *m_pFrameRGB,*m_pFrameYUV;
+    uint8_t *m_rgbBuffer,*m_yuvBuffer;
+    struct SwsContext *m_img_convert_ctx;
 };
 
 #endif // FFMPEGCONVERT_H

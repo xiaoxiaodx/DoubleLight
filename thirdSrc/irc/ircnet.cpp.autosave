@@ -55,6 +55,8 @@ void RawCallBackFunc(char * data, int width, int height, void * context){
                 temp_data[j*width+i] = (temp_data[j*width+i]-3300)/fTempValue - 273.2;
             }else{
                 fTempValue = 30;
+                //temp_data[j*width+i] = (temp_data[j*width+i]+7000)/fTempValue - 273.2;
+                
                 temp_data[j*width+i] = (temp_data[j*width+i]+7000)/fTempValue - 273.2;
             }
         }

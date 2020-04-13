@@ -10,7 +10,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 VERSION = 1.1.0.7
 # ͼ��
 RC_ICONS = myico.ico
-TARGET=GAOZHI_TCS
+TARGET=Gaozhi_Smart
 # ��˾����
 QMAKE_TARGET_COMPANY = "�����Ƽ�"
 

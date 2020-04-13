@@ -247,6 +247,7 @@ Rectangle {
                 anchors.left: parent.left
                 anchors.leftMargin: warnTimeHeaderLeftMargin
                 font.pixelSize: fontSize
+                font.bold: true
                 text: qsTr("告警时间")
             }
             Text {
@@ -255,6 +256,7 @@ Rectangle {
                 anchors.left: parent.left
                 anchors.leftMargin: warnTempHeaderLeftMargin
                 font.pixelSize: fontSize
+                font.bold: true
                 text: qsTr("告警温度")
             }
             Text {
@@ -263,6 +265,7 @@ Rectangle {
                 anchors.left: parent.left
                 anchors.leftMargin: warnImgHeaderLeftMargin
                 font.pixelSize: fontSize
+                font.bold: true
                 text: qsTr("抓拍图片")
             }
             Text {
@@ -271,6 +274,7 @@ Rectangle {
                 anchors.left: parent.left
                 anchors.leftMargin: deleteHeaderLeftMargin
                 font.pixelSize: fontSize
+                font.bold: true
                 text: qsTr("操作")
             }
         }
@@ -367,7 +371,7 @@ Rectangle {
                         onClicked: {
                             askDialog.width = 427
                             askDialog.height = 176
-                            askDialog.askStr = qsTr("确认删除信息吗？")
+                            askDialog.askStr = curLanguage=== lChinese?"确认删除信息吗？":curLanguage===lEnglish?"Confirm to delect ?":curLanguage===lKorean?"":""
                             askDialog.imgSrc = "qrc:/images/ico_warn.png"
                             askDialog.curType = askDialog.warnInfoSingleDelete
                             askDialog.open();

@@ -5,7 +5,8 @@
 float YouSeeParse::temp_offset = TEMP_OFFSET;
 float YouSeeParse::check_max_temp = CHECK_MAX_TEMP;
 float YouSeeParse::check_min_temp = CHECK_MIN_TEMP;
-
+IplImage* YouSeeParse::pFrame = NULL;
+IplImage* YouSeeParse::pFrameSrc = NULL;
 FACEDATA_T faceCoordinates;
 YouSeeParse::YouSeeParse(QObject *parent) : QObject(parent)
 {
@@ -79,23 +80,8 @@ void YouSeeParse::slot_login() {
         }
     }
 }
-/* * * * * * * * * * * * * * * * * * * *
- * 功能：  计算温度数据data中对应faceCoordinates.faceCoordinatesData区域（起始位置，宽，高）的温度值
- *
- * 参数说明：data： 温度数据
- *      width：   温度数据表 宽
- *      height：  温度数据表 高
- *      slope：   温度误差系数
- *      offset：  温度误差系数
- *
- * 注：温度浮点值：温度整数值/slope+offset，人脸像素坐标必须是连续的.
-* * * * * * * * * * * * * * * * * * * */
-#include <iostream>
 
-/*
-预览回调, 此回调触发在工作线程
-*/
-static int HotnessResetData(s16* IrdaDataFloat, int height, int width,char *p,u16 slop,s16 offset)
+int YouSeeParse::HotnessResetData(s16* IrdaDataFloat, int height, int width,char *p,u16 slop,s16 offset)
 {
     int x = 0, y = 0, pI = 0;
     for (y = 0; y < height; y++) {
@@ -112,7 +98,7 @@ static int HotnessResetData(s16* IrdaDataFloat, int height, int width,char *p,u1
     return 0;
 }
 
-static CvSeq*cvSegmentFGMask( CvArr* _mask, bool poly1Hull0,float perimScale,
+CvSeq* YouSeeParse::cvSegmentFGMask( CvArr* _mask, bool poly1Hull0,float perimScale,
                               CvMemStorage* storage, CvPoint offset )
 {
     CvMat mstub, *mask = cvGetMat( _mask, &mstub ,NULL,0);
@@ -161,7 +147,7 @@ static CvSeq*cvSegmentFGMask( CvArr* _mask, bool poly1Hull0,float perimScale,
     return contours;
 }
 
-static float getTempAavl(s16* IrdaDataFloat, int height, int width, u16 slop ,s16 offset , CvRect * rec) {
+float YouSeeParse::getTempAavl(s16* IrdaDataFloat, int height, int width, u16 slop ,s16 offset , CvRect * rec) {
     float temp = 0.0;
     float value =0.0;
     int tempCnt = 0;
@@ -242,13 +228,27 @@ static float getTempAavl(s16* IrdaDataFloat, int height, int width, u16 slop ,s1
 }
 
 
+/* * * * * * * * * * * * * * * * * * * *
+ * 功能：  计算温度数据data中对应faceCoordinates.faceCoordinatesData区域（起始位置，宽，高）的温度值
+ *
+ * 参数说明：data： 温度数据
+ *      width：   温度数据表 宽
+ *      height：  温度数据表 高
+ *      slope：   温度误差系数
+ *      offset：  温度误差系数
+ *
+ * 注：温度浮点值：温度整数值/slope+offset，人脸像素坐标必须是连续的.
+* * * * * * * * * * * * * * * * * * * */
+#include <iostream>
 
 /*
 预览回调, 此回调触发在工作线程
 */
+/*
+预览回调, 此回调触发在工作线程
+*/
 #include <QThread>
-IplImage* pFrame = NULL;
-IplImage* pFrameSrc = NULL;
+
 static void __stdcall _previewCallback(s32 errorCode, DataFrame* frame, void* customData) {
     if (YET_None == errorCode) {
         DataFrameHeader* tempHead = (DataFrameHeader*)frame->Head;
@@ -262,28 +262,28 @@ static void __stdcall _previewCallback(s32 errorCode, DataFrame* frame, void* cu
         CvMemStorage*stor = NULL;
         CvSeq* cont = NULL;
         CvRect mdrects;
-        HotnessResetData(tempData, tempHead->Width,tempHead->Height, p,tempHead->Slope,tempHead->Offset);
+        YouSeeParse::HotnessResetData(tempData, tempHead->Width,tempHead->Height, p,tempHead->Slope,tempHead->Offset);
 
-        if(pFrame == NULL)
-            pFrame=cvCreateImageHeader(cvSize(tempHead->Width,tempHead->Height),IPL_DEPTH_8U,1);
-        cvSetData(pFrame,p,tempHead->Width);
+        if(YouSeeParse::pFrame == NULL)
+            YouSeeParse::pFrame=cvCreateImageHeader(cvSize(tempHead->Width,tempHead->Height),IPL_DEPTH_8U,1);
+        cvSetData(YouSeeParse::pFrame,p,tempHead->Width);
 
         stor = cvCreateMemStorage(0);
-        cont=cvSegmentFGMask(pFrame,true,10.0,stor,cvPoint(0,0));
+        cont=YouSeeParse::cvSegmentFGMask(YouSeeParse::pFrame,true,10.0,stor,cvPoint(0,0));
 
-        if(pFrameSrc == NULL)
-            pFrameSrc=cvCreateImageHeader(cvSize(tempHead->Width,tempHead->Height),IPL_DEPTH_32F,1);
+        if(YouSeeParse::pFrameSrc == NULL)
+            YouSeeParse::pFrameSrc=cvCreateImageHeader(cvSize(tempHead->Width,tempHead->Height),IPL_DEPTH_32F,1);
 
         CvFont font;
         cvInitFont(&font, CV_FONT_HERSHEY_SIMPLEX ,0.5, 0.5);
-        cvSetData(pFrameSrc,(uchar*)frame->Bmp,tempHead->Width*4);
+        cvSetData(YouSeeParse::pFrameSrc,(uchar*)frame->Bmp,tempHead->Width*4);
 
         ImageInfo info;
         float maxAvgT = -1;
         for(int i=0;cont!=0;cont=cont->h_next,i++)
         {
             mdrects=((CvContour*)cont)->rect;
-            float avgT = getTempAavl(tempData, tempHead->Height, tempHead->Width, tempHead->Slope, tempHead->Offset, &mdrects) ;
+            float avgT = YouSeeParse::getTempAavl(tempData, tempHead->Height, tempHead->Width, tempHead->Slope, tempHead->Offset, &mdrects) ;
             if(mdrects.width < TEMP_MIN_INTERVAL && mdrects.height < TEMP_MIN_INTERVAL)
             {
                 continue;
@@ -304,7 +304,7 @@ static void __stdcall _previewCallback(s32 errorCode, DataFrame* frame, void* cu
         }
 
         try {
-            info.pImg =  new QImage((uchar*)pFrameSrc->imageData, tempHead->Width, tempHead->Height, QImage::Format_RGB32);
+            info.pImg =  new QImage((uchar*)YouSeeParse::pFrameSrc->imageData, tempHead->Width, tempHead->Height, QImage::Format_RGB32);
             // 其它代码
         } catch ( const std::bad_alloc& e ) {
             DebugLog::getInstance()->writeLog("Yousee 图片分配内存失败");

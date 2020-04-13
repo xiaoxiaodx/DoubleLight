@@ -10,57 +10,106 @@ Rectangle {
     signal swinMax();
     signal swinClose();
 
-    Image {
-        id: btnImg
 
-        anchors.left: parent.left
-        anchors.top: parent.top
-        anchors.leftMargin: 40
-        anchors.topMargin: 14
-        width: 148
-        height: 41
-        source: "qrc:/images/logo.png"
-
-    }
-
-    QmlTabBarButtonH{
-        id:tabbarBtn
+    Rectangle{
+        width: parent.width - rectLanguage.width -20
         height: parent.height
-        anchors.left: btnImg.right
-        anchors.leftMargin: 60
-        btnBgColor:"transparent"
-        btnBgSelectColor:"#272727"
-        mflagColor:"white"
-        textColor: "white"
-        textSelectColor:"white"
-        txtLeftMargin:7
-        textSize:18
-        Component.onCompleted: {
+        color: "#00ffffff"
+        Image {
+            id: btnImg
 
-            tabbarBtn.barModel.append({txtStr:qsTr("主预览")})//,imgSrc:"qrc:/images/homemenuClose.png",imgSrcEnter:"qrc:/images/homemenuClose.png"})
-            //tabbarBtn.barModel.append({txtStr:qsTr("录像回放")})//,imgSrc:"qrc:/images/homemenuClose.png",imgSrcEnter:"qrc:/images/homemenuClose.png"})
-            tabbarBtn.barModel.append({txtStr:qsTr("设备配置")})//,imgSrc:"qrc:/images/homemenuClose.png",imgSrcEnter:"qrc:/images/homemenuClose.png"})
-            tabbarBtn.barModel.append({txtStr:qsTr("告警管理")})//,imgSrc:"qrc:/images/homemenuClose.png",imgSrcEnter:"qrc:/images/homemenuClose.png"})
+            anchors.left: parent.left
+            anchors.top: parent.top
+            anchors.leftMargin: 40
+            anchors.topMargin: 14
+            width: 148
+            height: 41
+            source: "qrc:/images/logo.png"
 
         }
 
-    }
+        QmlTabBarButtonH{
+            id:tabbarBtn
+            height: parent.height
+            anchors.left: btnImg.right
+            anchors.leftMargin: 60
+            btnBgColor:"transparent"
+            btnBgSelectColor:"#272727"
+            mflagColor:"white"
+            textColor: "white"
+            textSelectColor:"white"
+            txtLeftMargin:7
+            textSize:18
+            Component.onCompleted: {
 
-    Row{
-        id:windowAdjust
-        anchors.right: parent.right
-        anchors.rightMargin: 10
-        anchors.verticalCenter: parent.verticalCenter
-        spacing:20
-
-        MyComBox{
-            id:cmb
-            width:100
-            height: 20
-            colorNor: "black"
-            ListModel{
+                tabbarBtn.barModel.append({txtStr:qsTr("主预览")})//,imgSrc:"qrc:/images/homemenuClose.png",imgSrcEnter:"qrc:/images/homemenuClose.png"})
+                //tabbarBtn.barModel.append({txtStr:qsTr("录像回放")})//,imgSrc:"qrc:/images/homemenuClose.png",imgSrcEnter:"qrc:/images/homemenuClose.png"})
+                tabbarBtn.barModel.append({txtStr:qsTr("设备配置")})//,imgSrc:"qrc:/images/homemenuClose.png",imgSrcEnter:"qrc:/images/homemenuClose.png"})
+                tabbarBtn.barModel.append({txtStr:qsTr("告警管理")})//,imgSrc:"qrc:/images/homemenuClose.png",imgSrcEnter:"qrc:/images/homemenuClose.png"})
 
             }
+
+        }
+
+        MouseArea{
+            property point clickPoint: "0,0"
+
+            anchors.fill: parent
+            acceptedButtons: Qt.LeftButton
+            propagateComposedEvents: true
+            onPressed: {
+                homeMenu.isDoubleClick = false;
+                clickPoint  = Qt.point(mouse.x, mouse.y)
+                //mouse.accepted = false;
+            }
+
+            onDoubleClicked: {
+                homeMenu.isDoubleClick = true
+                winMax();
+            }
+            onPositionChanged: {
+
+                if(!homeMenu.isDoubleClick){
+                    var offset = Qt.point(mouse.x - clickPoint.x, mouse.y - clickPoint.y)
+
+                    dragPosChange(offset.x, offset.y)
+                }
+            }
+        }
+    }
+
+    Rectangle{
+        id:rectLanguage
+        width: imgl.width + cmb.width +line.width+10
+        height: parent.height
+        color: "#00ffffff"
+        anchors.right: windowAdjust.left
+        anchors.rightMargin: 20
+        anchors.verticalCenter: parent.verticalCenter
+        Image {
+            id: imgl
+            width: 20
+            height: 20
+            anchors.left: parent.left
+            anchors.verticalCenter: parent.verticalCenter
+            source: "qrc:/images/language.png"
+        }
+        MyComBox{
+            id:cmb
+            width:110
+            height: 20
+            anchors.left: imgl.right
+            anchors.rightMargin: 10
+            anchors.verticalCenter: parent.verticalCenter
+            contentBg: "#00FFFFFF"
+            itemColorBgNor:"#ffffff"
+            itemColorBgHoverd: "#E7EAF1"
+            indicatorImgSrc:"qrc:/images/language_down.png"
+            indicatorW: 11
+            indicatorH: 7
+            itemLeftMargin:-12
+            itemTopMargin:0
+
             model: ListModel{
                 ListElement{showStr:"简体中文"}
                 ListElement{showStr:"English"}
@@ -73,6 +122,22 @@ Rectangle {
                 main.s_setLanguage(currentIndex);
             }
         }
+        Rectangle{
+            id:line
+            width: 2
+            height: 18
+            anchors.right: parent.right
+            anchors.verticalCenter: parent.verticalCenter
+        }
+    }
+
+    Row{
+        id:windowAdjust
+        anchors.right: parent.right
+        anchors.rightMargin: 10
+        width: 100
+        anchors.verticalCenter: parent.verticalCenter
+        spacing:20
         QmlImageButton{
             width: 20
             height: 20
@@ -97,10 +162,7 @@ Rectangle {
             imgSourseNormal: "qrc:/images/win_close.png"
             imgSoursePress: "qrc:/images/win_close_p.png"
             onClick:swinClose()
-
-
         }
-
     }
 
 

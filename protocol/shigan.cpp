@@ -16,7 +16,7 @@ bool ShiGan::startRec()
     int num;
     sockfd;
     struct hostent *he ;
-    struct sockaddr_in server;   
+    struct sockaddr_in server;
     WSADATA wd;
     if(WSAStartup(MAKEWORD(2,2),&wd)  != 0)                    //WSAStartup
     {
@@ -115,7 +115,7 @@ void ShiGan::readOneFrame(){
     if(iret == 1)
     {
 
-
+        ImageInfo info;
 
         framelen = (pNetMsg[4]<< 24)|(pNetMsg[3]<<16)|(pNetMsg[2] << 8)|(pNetMsg[1]);
         qDebug()<<"Recv over .. bufpos:%d,framelen:%d\n"<<bufpos<<" "<<framelen;
@@ -140,51 +140,39 @@ void ShiGan::readOneFrame(){
         {
             w = stMtHd.ImageWidth;
             h = stMtHd.ImageHeigh;
-
-            ImageInfo info;
-
-
-            QByteArray arr;
-
+            unsigned char pNetMsgTmp[(w+2)*h*3];
+            int tpos = 0;
             for(y=0; y < h; y++)
             {
                 for(x=0; x < w; x++)
                 {
                     // R G B
-//                    pNetMsg[fpos++];
-//                    pNetMsg[fpos++];
-//                    pNetMsg[fpos++];
-                    arr.append(pNetMsg[x*y*3 +fpos+2]);
-                    arr.append(pNetMsg[x*y*3 +fpos+1]);
-                    arr.append(pNetMsg[x*y*3 +fpos]);
-
-                    fpos+=3;
+                    pNetMsgTmp[tpos++] = pNetMsg[fpos+y*w*3+x*3+2];
+                    pNetMsgTmp[tpos++] = pNetMsg[fpos+y*w*3+x*3+1];
+                    pNetMsgTmp[tpos++] = pNetMsg[fpos+y*w*3+x*3];
                 }
-                arr.append('0');
-                arr.append('0');
+                pNetMsgTmp[tpos++] = 0;
+                pNetMsgTmp[tpos++] = 0;
             }
-
-
             try {
-
-                info.pImg =  new QImage((unsigned char*)arr.data(), w+2, h, QImage::Format_RGB888);
-
+                info.pImg =  new QImage(pNetMsgTmp, w, h, QImage::Format_RGB888);
                 // 其它代码
             } catch ( const std::bad_alloc& e ) {
-                qDebug()<<"Yousee 图片分配内存失败";
+                qDebug()<<" 图片分配内存失败";
                 info.pImg = nullptr;
             }
 
-
-            XVideoTemp::mutex.lock();
-            if(XVideoTemp::listBufferImginfo.size() < XVideoTemp::maxBuffLen)
-                XVideoTemp::listBufferImginfo.append(info);
-            else{
-                if(info.pImg != nullptr)
-                    delete info.pImg;
-            }
-
-            XVideoTemp::mutex.unlock();
+           // fpos += w*h*3;
+//            for(y=0; y < h; y++)
+//            {
+//                for(x=0; x < w; x++)
+//                {
+//                    // R G B
+//                    pNetMsg[fpos++];
+//                    pNetMsg[fpos++];
+//                    pNetMsg[fpos++];
+//                }
+//            }
         }
 
         fpos+=w*h*3;
@@ -212,20 +200,21 @@ void ShiGan::readOneFrame(){
                 }
             }
 
-
-
             // center point temperature
             x = w/2;
             y = h/2;
             i = y * w + w;
 
-            //info.areaMaxtemp = pftpufs[i];
+            info.areaMaxtemp = pftpufs[i];
             //printf("pftpufs[0]:%f\n",pftpufs[i]);
         }
 
-
-
-
+        if(XVideoTemp::listBufferImginfo.size()<XVideoTemp::maxBuffLen){
+            XVideoTemp::listBufferImginfo.append(info);
+        }else {
+            if(info.pImg != nullptr)
+                delete info.pImg;
+        }
 
     }
 }
