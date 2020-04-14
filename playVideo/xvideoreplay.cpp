@@ -17,7 +17,6 @@ XVideoReplay::XVideoReplay()
 //        yuvArr = yuvfile->readAll();
 
     connect(&timer,&QTimer::timeout,[&]{
-
 //        if(yuvfile->open(QIODevice::ReadOnly)){
 //           //yuvfile->seek(timeoutIndex*960*600*3/2);
 

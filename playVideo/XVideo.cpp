@@ -22,6 +22,7 @@ void XVideo::fun_setInitPar(QString ip,int parentW,int parentH,int x,int y,int w
     showRectH = h;
     showParentW = parentW;
     showParentH = parentH;
+   // update();
 }
 
 void XVideo::startNormalVideo(float tp)
@@ -304,25 +305,24 @@ void XVideo::fun_initRedFrame(int w,int h){
 
     tempImgResW = w;
     tempImgResH = h;
-    if(w == 384 && h==288){
+//    if(w == 384 && h==288){
 
-        showRectX = 65;
-        showRectY = 41;
-        showRectW = 349;
-        showRectH = 327;
-        showParentW = 494;
-        showParentH = 369;
+//        showRectX = 65;
+//        showRectY = 41;
+//        showRectW = 349;
+//        showRectH = 327;
+//        showParentW = 494;
+//        showParentH = 369;
 
 
-    }else if(w == 160 && h==120){
-        showRectX = 192;
-        showRectY = 107;
-        showRectW = 720;
-        showRectH = 605;
-        showParentW = 954;
-        showParentH = 714;
-
-    }
+//    }else if(w == 160 && h==120){
+//        showRectX = 192;
+//        showRectY = 107;
+//        showRectW = 720;
+//        showRectH = 605;
+//        showParentW = 954;
+//        showParentH = 714;
+//    }
 }
 
 

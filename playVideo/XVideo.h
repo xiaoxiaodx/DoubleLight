@@ -89,7 +89,7 @@ private:
     MySearch1 *psearch = nullptr;
     QThread *searchThread = nullptr;
 
-    QString m_ip ="10.67.1.146";
+    QString m_ip ="10.67.1.141";
     //const QString m_ip ="192.168.1.188" ;
 
 

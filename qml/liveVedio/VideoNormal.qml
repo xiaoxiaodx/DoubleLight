@@ -72,10 +72,10 @@ Rectangle {
 
         Rectangle{
             id:rectadmjt
-            x:100
-            y:100
-            width: 200
-            height: 200
+            x:deviceconfig.getShowRectX()
+            y:deviceconfig.getShowRectY()
+            width: deviceconfig.getShowRectW()
+            height: deviceconfig.getShowRectH()
             color: "#505D9CFF"
             visible:deviceconfig.getIsOpenAdjustRect();
             MouseArea{

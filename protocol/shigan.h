@@ -83,7 +83,8 @@ public:
     bool startRec();
     void loopInit();
     void loopUnInit();
-    void readOneFrame();
+    bool readOneFrame();
+    int KeepAliveReq();
 private:
     unsigned short do_crc_16(unsigned char *message, unsigned int len);
     bool PackHeader(unsigned char * buf, unsigned int len, unsigned char cmd1, unsigned char cmd2);

@@ -23,8 +23,8 @@ void XVideoTemp::startTemperatureVideo(float tp)
     DebugLog::getInstance()->writeLog("startTemperatureVideo ");
 
     //createYouseePull();
-    //createShiGan();
-    createIRCNet();
+    createShiGan();
+    //createIRCNet();
 
     warnTemp = tp;
 
@@ -65,7 +65,6 @@ void XVideoTemp::finishYouPull()
         youseeThread->wait();
         youseeThread = nullptr;
     }
-
 }
 
 void XVideoTemp::createShiGan(){
@@ -74,15 +73,11 @@ void XVideoTemp::createShiGan(){
         shiganThread = new QThread;
         pShiGanObject = new ShiGanObject;
         pShiGanObject->moveToThread(shiganThread);
-        connect(this,&XVideoTemp::signal_readOneFrame,pShiGanObject,&ShiGanObject::slot_loopRec);
-        shiganThread->start();
-    }
+        connect(this,&XVideoTemp::signal_startLoop,pShiGanObject,&ShiGanObject::slot_loopRec);
+        connect(this,&XVideoTemp::signal_shiganHeart,pShiGanObject,&ShiGanObject::sendHeart,Qt::DirectConnection);
 
-    if(pShiGanObject->startRec()){
-        qDebug()<<"开始接收shigan数据";
-        emit signal_readOneFrame();
-    }else{
-        qDebug()<<"启动shigan失败";
+        shiganThread->start();
+        emit signal_startLoop();
     }
 }
 
@@ -108,10 +103,6 @@ void XVideoTemp::fun_temOffset(QVariant mvalue){
 
 void XVideoTemp::slot_timeout()
 {
-
-
-
-
     if(mutex.tryLock()){
 
         if( listBufferImginfo.size() >0){
@@ -138,6 +129,18 @@ void XVideoTemp::slot_timeout()
         isFirstData = true;
     }
     update();
+
+
+    if(pShiGanObject != nullptr){
+        shiganHeartTimerCount ++ ;
+
+        if(shiganHeartTimerCount >= 800){
+            shiganHeartTimerCount = 0;
+            qDebug()<<"dsadsa";
+            emit signal_shiganHeart();
+        }
+
+    }
 }
 
 

@@ -65,6 +65,10 @@ signals:
     void signal_parSet(QMap<QString,QVariant> map);
 
     void signal_readOneFrame();
+
+    //shigan
+    void signal_startLoop();
+    void signal_shiganHeart();
 public slots:
     void slot_timeout();
 
@@ -95,11 +99,14 @@ private:
 
     QThread *shiganThread = nullptr;
     ShiGanObject *pShiGanObject = nullptr;
+    int shiganHeartTimerCount = 0;
 
     IRCNet mircNet;
     int tempImgWidth = 0;
     int tempImgHeight = 0;
     float warnTemp;
+
+
 };
 
 
