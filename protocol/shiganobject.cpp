@@ -28,10 +28,18 @@ void ShiGanObject::slot_loopRec(){
         QMutexLocker lockrt(&mMutex);
         if(isFinish)
             break;
-        if(!shiGan.readOneFrame()){
+
+        ImageInfo info;
+        info.pImg = nullptr;
+        if(!shiGan.readOneFrame(info)){
 
             break;
         }
+        if(info.pImg != nullptr){
+            qDebug()<<"info:"<<info.listRect.size();
+            emit signal_sendImageInfo(info.pImg, QVariant::fromValue(info.listRect),info.areaMaxtemp);
+        }
+        QThread::msleep(5);
     }
 
 

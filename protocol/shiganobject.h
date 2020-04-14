@@ -13,6 +13,7 @@ public:
     void forceFinishThread();
 signals:
 
+    void signal_sendImageInfo(QImage *,QVariant,float);
 public slots:
     void slot_loopRec();
     void sendHeart();

@@ -28,9 +28,12 @@ void XVideoTemp::startTemperatureVideo(float tp)
 
     warnTemp = tp;
 
-    connect(&timerUpdate,&QTimer::timeout,this,&XVideoTemp::slot_timeout);
+    //if(pShiGanObject == nullptr){
+        connect(&timerUpdate,&QTimer::timeout,this,&XVideoTemp::slot_timeout);
 
-    timerUpdate.start(5);
+        timerUpdate.start(50);
+   // }
+
 }
 
 void XVideoTemp::createYouseePull()
@@ -74,14 +77,44 @@ void XVideoTemp::createShiGan(){
         pShiGanObject = new ShiGanObject;
         pShiGanObject->moveToThread(shiganThread);
         connect(this,&XVideoTemp::signal_startLoop,pShiGanObject,&ShiGanObject::slot_loopRec);
-        connect(this,&XVideoTemp::signal_shiganHeart,pShiGanObject,&ShiGanObject::sendHeart,Qt::DirectConnection);
-
+        //connect(pShiGanObject,&ShiGanObject::signal_sendImageInfo,this,&XVideoTemp::slot_recImageInfo);
+        //connect(this,&XVideoTemp::signal_shiganHeart,pShiGanObject,&ShiGanObject::sendHeart,Qt::DirectConnection);
         shiganThread->start();
         emit signal_startLoop();
     }
 }
 
+void XVideoTemp::slot_recImageInfo(QImage *img,QVariant var,float f)
+{
 
+
+    if(mRenderImginfo.pImg != nullptr)
+        delete mRenderImginfo.pImg;
+
+    mRenderImginfo.pImg = img;
+    mRenderImginfo.areaMaxtemp = f;
+    mRenderImginfo.isDrawLine = true;
+    qDebug()<<"var.toList().size()  "<<var.toList().size();
+    if(var.toList().size() > 0){
+        QVariantList listv = var.toList();
+        for(int i=0;i<listv.size();i++){
+            QVariantMap map = listv.at(i).toMap();
+            mRenderImginfo.listRect.append(map);
+        }
+    }
+
+    if(mRenderImginfo.pImg != nullptr){
+
+    //如果不增加这句代码 ，则会出现视频不会第一时间显示，而是显示灰色图像
+    if(!isFirstData){
+        emit signal_loginStatus("Get the stream successfully");
+        emit signal_initRedFrame(mRenderImginfo.pImg->width(),mRenderImginfo.pImg->height());
+        isFirstData = true;
+    }
+    update();
+    }
+
+}
 void XVideoTemp::fun_getInitPar()
 {
     qDebug()<<"fun_getInitPar";
@@ -131,16 +164,16 @@ void XVideoTemp::slot_timeout()
     update();
 
 
-    if(pShiGanObject != nullptr){
-        shiganHeartTimerCount ++ ;
+//    if(pShiGanObject != nullptr){
+//        shiganHeartTimerCount ++ ;
 
-        if(shiganHeartTimerCount >= 800){
-            shiganHeartTimerCount = 0;
-            qDebug()<<"dsadsa";
-            emit signal_shiganHeart();
-        }
+//        if(shiganHeartTimerCount >= 800){
+//            shiganHeartTimerCount = 0;
+//            qDebug()<<"dsadsa";
+//            emit signal_shiganHeart();
+//        }
 
-    }
+//    }
 }
 
 
@@ -159,7 +192,6 @@ void XVideoTemp::paint(QPainter *painter)
     //DebugLog::getInstance()->writeLog("painter hongwai start***");
     qreal kX = (qreal)this->width()/(qreal)mRenderImginfo.pImg->width();
     qreal kY = (qreal)this->height()/(qreal)mRenderImginfo.pImg->height();
-
 
     painter->drawImage(QRect(0,0,this->width(),this->height()), *(mRenderImginfo.pImg));
 
@@ -189,6 +221,7 @@ void XVideoTemp::paint(QPainter *painter)
         map.insert("temp",strText);
 
         if(temp>warnTemp){
+
             painter->save();
             painter->setPen(QPen(QBrush(QColor(255,0,0)),2));
             painter->drawRect(desRect);

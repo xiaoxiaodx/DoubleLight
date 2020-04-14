@@ -1,8 +1,9 @@
 #include "shigan.h"
 
-#include "youseeparse.h"
+
 #include "xvideotemp.h"
 #include <QFile>
+bool firstSave= true;
 ShiGan::ShiGan()
 {
 
@@ -77,9 +78,7 @@ void ShiGan::loopUnInit()
     }
 }
 
-bool ShiGan::readOneFrame(){
-
-
+bool ShiGan::readOneFrame(ImageInfo &info){
     iret = NetMsgRecv(sockfd, pNetMsg, buflen, bufpos);
     if( iret < 0 )
     {
@@ -90,7 +89,7 @@ bool ShiGan::readOneFrame(){
     if(iret == 1)
     {
 
-        ImageInfo info;
+
 
         framelen = (pNetMsg[4]<< 24)|(pNetMsg[3]<<16)|(pNetMsg[2] << 8)|(pNetMsg[1]);
         //qDebug()<<"Recv over .. bufpos:%d,framelen:%d\n"<<bufpos<<" "<<framelen;
@@ -107,13 +106,12 @@ bool ShiGan::readOneFrame(){
 //               <<"W"<<stMtHd.ImageWidth<<" H:"<<stMtHd.ImageHeigh<<"   Byte:"<<stMtHd.ImageByte
 //              <<"Tempe Flag:"<<stMtHd.TemperFlag<<"  TemperType:"<<stMtHd.TemperType
 //             <<"TemperWidth:"<<stMtHd.TemperWidth<<"    TemperHeigh:"<<stMtHd.TemperHeigh<<" TemperByte:"<<stMtHd.TemperByte;
-
         int w,h,x,y;
         if( stMtHd.ImageFlag )
         {
             w = stMtHd.ImageWidth;
             h = stMtHd.ImageHeigh;
-            unsigned char pNetMsgTmp[(w+2)*h*3];
+            unsigned char *pNetMsgTmp = new unsigned char[(w+2)*h*3];
             int tpos = 0;
             for(y=0; y < h; y++)
             {
@@ -127,6 +125,7 @@ bool ShiGan::readOneFrame(){
                 pNetMsgTmp[tpos++] = 0;
                 pNetMsgTmp[tpos++] = 0;
             }
+
             try {
                 info.pImg =  new QImage(pNetMsgTmp, w, h, QImage::Format_RGB888);
                 // 其它代码
@@ -134,8 +133,8 @@ bool ShiGan::readOneFrame(){
                 qDebug()<<" 图片分配内存失败";
                 info.pImg = nullptr;
             }
+           // delete pNetMsgTmp;
             fpos+=w*h*3;
-
         }
 
         if( stMtHd.TemperFlag )
@@ -159,21 +158,15 @@ bool ShiGan::readOneFrame(){
                     pfDivs[i].f1 = 0;
 
                     i++;
-
                 }
             }
 
             x = w/2;
             y = h/2;
             i = y * w + w;
-
-
             info.areaMaxtemp = pftpufs[i];
 
             //qDebug()<<"pftpufs[0]:%f"<<pftpufs[i];
-
-
-
             static char *p = (char *)malloc(w*h);
 
             YouSeeParse::HotnessResetData(pftpufs,w,h,p,1,0);
@@ -221,15 +214,14 @@ bool ShiGan::readOneFrame(){
            // qDebug()<<"pftpufs[0]:%f\n"<<pftpufs[i];
         }
 
+
         XVideoTemp::mutex.lock();
         if(XVideoTemp::listBufferImginfo.size() < XVideoTemp::maxBuffLen)
-
             XVideoTemp::listBufferImginfo.append(info);
         else{
             if(info.pImg != nullptr)
                 delete info.pImg;
         }
-
         XVideoTemp::mutex.unlock();
 
     }
@@ -310,9 +302,9 @@ int ShiGan::KeepAliveReq()
     qDebug()<<" KeepAliveReq * 2"<<arr.toHex();
     if(-1 == len)
     {
-        return KEY_FALSE;
+        return 1;
     }
-    return KEY_TRUE;
+    return 0;
 }
 
 
@@ -394,7 +386,6 @@ int ShiGan::NetMsgRecv(SOCKET sockfd, unsigned char *pbufs, int buflen, int &buf
         qDebug()<<"bufs is full"<<rlen;
         return -1;
     }
-
 
     rlen = recv(sockfd, (char*)&pbufs[bufpos], (buflen-bufpos), 0);
     if( -1 == rlen )
