@@ -28,18 +28,28 @@ Rectangle {
     property int parSetFirstAlignLine: curLanguage === lChinese?124:255
     Settings {
         id:setting
+        fileName: "config.ini"
         property alias recordPath: inputRecordPath.text
         property alias screenShotPath: inputScreenShotPath.text
         property alias temDrift:inputTempDrift.text
         property alias tempMin: inputTempMin.text
         //property alias tempMax: inputTempMax.text
         property alias warnTem:inputTem.text
-
         property alias switchTime:swithTime.checked
         property alias switchWarn:swichWarn.checked
         property alias switchScreenShot:swichScreenShot.checked
         property alias switchBeer:swichBeer.checked
         property alias switchRecord:swichRecord.checked
+
+
+        property string tcpip:"10.67.1.146"
+        property bool isOpenAdjustRect: true
+        property int showRectX: 65;
+        property int showRectY : 41;
+        property int showRectW : 349;
+        property int showRectH : 327;
+        property int showParentW : 494;
+        property int showParentH : 369;
     }
 
     Rectangle{
@@ -768,7 +778,55 @@ Rectangle {
     }
 
 
+    function setTcpip(value){
+         setting.tcpip = value
+    }
+    function setIsOpenAdjustRect(value){
+         setting.isOpenAdjustRect = value
+    }
+    function setShowRectX(value){
+         setting.showRectX = value
+    }
+    function setShowRectY(value){
+         setting.showRectY = value
+    }
+    function setShowRectW(value){
+         setting.showRectW = value
+    }
+    function setShowRectH(value){
+         setting.showRectH = value
+    }
+    function setShowParentW(value){
+         setting.showParentW = value
+    }
+    function setShowParentH(value){
+        setting.showParentH = value
+    }
 
+    function getTcpip(){
+        return setting.tcpip
+    }
+    function getIsOpenAdjustRect(){
+        return setting.isOpenAdjustRect
+    }
+    function getShowRectX(){
+        return setting.showRectX
+    }
+    function getShowRectY(){
+        return setting.showRectY
+    }
+    function getShowRectW(){
+        return setting.showRectW
+    }
+    function getShowRectH(){
+        return setting.showRectH
+    }
+    function getShowParentW(){
+        return setting.showParentW
+    }
+    function getShowParentH(){
+        return setting.showParentH
+    }
 
 
 

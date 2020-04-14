@@ -12,6 +12,18 @@ XVideo::XVideo()
     pRenderImginfo.pImg = nullptr;
 }
 
+
+void XVideo::fun_setInitPar(QString ip,int parentW,int parentH,int x,int y,int w,int h)
+{
+    m_ip = ip;
+    showRectX = x;
+    showRectY = y;
+    showRectW = w;
+    showRectH = h;
+    showParentW = parentW;
+    showParentH = parentH;
+}
+
 void XVideo::startNormalVideo(float tp)
 {
     DebugLog::getInstance()->writeLog("startNormalVideo ");

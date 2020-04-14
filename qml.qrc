@@ -85,5 +85,7 @@
         <file>images/fullscreen.png</file>
         <file>images/language.png</file>
         <file>images/language_down.png</file>
+        <file>images/adjust_cancel.png</file>
+        <file>images/adjust_ensure.png</file>
     </qresource>
 </RCC>

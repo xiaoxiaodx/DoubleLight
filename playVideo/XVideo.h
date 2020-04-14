@@ -29,7 +29,7 @@ public:
     Q_INVOKABLE void fun_updateDate();
     Q_INVOKABLE void fun_setRectPar(int sx,int sy,int sw,int sh,int pw,int ph);
     Q_INVOKABLE void fun_initRedFrame(int w,int h);
-
+    Q_INVOKABLE void fun_setInitPar(QString ip,int parentW,int parentH,int x,int y,int w,int h);
     explicit XVideo();
     ~XVideo();
 
@@ -89,7 +89,7 @@ private:
     MySearch1 *psearch = nullptr;
     QThread *searchThread = nullptr;
 
-    const QString m_ip ="10.67.1.146";
+    QString m_ip ="10.67.1.146";
     //const QString m_ip ="192.168.1.188" ;
 
 
@@ -103,7 +103,6 @@ private:
 
     float warnTemp ;
 
-
     qreal showRectX = 65;
     qreal showRectY = 41;
     qreal showRectW = 349;
@@ -113,10 +112,6 @@ private:
 
     qreal tempImgResW =0;
     qreal tempImgResH =0;
-
-
-
-
 };
 
 #endif // XVideo_H

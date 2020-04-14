@@ -41,7 +41,7 @@ Rectangle {
         onClicked: {
 
             click()
-           // mouse.accepted = false
+            // mouse.accepted = false
         }
         onDoubleClicked:doubleClick(true);
 
@@ -58,7 +58,10 @@ Rectangle {
         anchors.verticalCenter: mPlayRect.verticalCenter
 
 
-        Component.onCompleted:video.startNormalVideo(deviceconfig.getWarnTem())
+        Component.onCompleted:{
+            video.fun_setInitPar(deviceconfig.getTcpip(),deviceconfig.getShowParentW(),deviceconfig.getShowParentH(),deviceconfig.getShowRectX(),deviceconfig.getShowRectY(),deviceconfig.getShowRectW(),deviceconfig.getShowRectH())
+            video.startNormalVideo(deviceconfig.getWarnTem())
+        }
 
 
 
@@ -74,7 +77,7 @@ Rectangle {
             width: 200
             height: 200
             color: "#505D9CFF"
-            visible:false//videoType === 1
+            visible:deviceconfig.getIsOpenAdjustRect();
             MouseArea{
                 id:areaTop
                 x:mouseAdjustWidth1
@@ -272,7 +275,57 @@ Rectangle {
 
                 }
             }
+
+            Rectangle{
+                id:rectEnsure
+                anchors.right: rectadmjt.right
+                anchors.top:rectadmjt.top
+                width: 20
+                height: 10
+                color: "transparent"
+                Image{
+                    id:imgEnsure
+                    width: 12
+                    height: 24
+                    source: "qrc:/images/adjust_ensure.png"
+                    MouseArea{
+                        anchors.fill: parent
+                        onClicked: {
+
+                            video.fun_setRectPar(rectadmjt.x,rectadmjt.y,rectadmjt.width,rectadmjt.height,video.width,video.height)
+                            rectadmjt.visible = false
+                            deviceconfig.setShowParentW(video.width)
+                            deviceconfig.setShowParentH(video.height)
+                            deviceconfig.setShowRectX(rectadmjt.x)
+                            deviceconfig.setShowRectY(rectadmjt.y)
+                            deviceconfig.setShowRectW(rectadmjt.width)
+                            deviceconfig.setShowRectH(rectadmjt.height)
+                            deviceconfig.setIsOpenAdjustRect(false)
+                        }
+                    }
+                }
+                Image{
+                    id:imgCancel
+                    width: 12
+                    height: 12
+                    anchors.top: imgEnsure.bottom
+                    anchors.left: imgEnsure.left
+                    source: "qrc:/images/adjust_cancel.png"
+                    MouseArea{
+                        anchors.fill: parent
+                        onClicked: {
+                            rectadmjt.x = deviceconfig.getShowRectX()
+                            rectadmjt.y = deviceconfig.getShowRectY()
+                            rectadmjt.width = deviceconfig.getShowRectW()
+                            rectadmjt.height = deviceconfig.getShowRectH()
+                        }
+                    }
+                }
+            }
         }
+
+
+
     }
 
 
@@ -282,11 +335,11 @@ Rectangle {
         onS_timeSwith:video.fun_timeSwitch(mchecked);//时间使能
         onS_temSet:video.fun_temSet(mvalue);//警报温度设置
     }
-//    Connections{
-//        target: videoTemp
-//        onS_sendList:video.fun_setListRect(vmap)
+    //    Connections{
+    //        target: videoTemp
+    //        onS_sendList:video.fun_setListRect(vmap)
 
-//    }
+    //    }
 
     function funsetlistRect(map){
         video.fun_setListRect(map)
