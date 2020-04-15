@@ -71,7 +71,7 @@ typedef struct tagFloatDiv
 }FloatDiv;
 #include <WinSock2.h>
 #include <QMutex>
-
+#include "youseeparse.h"
 
 
 class ShiGan
@@ -83,7 +83,7 @@ public:
     bool startRec();
     void loopInit();
     void loopUnInit();
-    bool readOneFrame();
+    bool readOneFrame(ImageInfo &info);
     int KeepAliveReq();
 private:
     unsigned short do_crc_16(unsigned char *message, unsigned int len);
@@ -105,6 +105,8 @@ private:
     float *pftpufs;
     unsigned char *pNetMsg;
     MediaContexHead stMtHd;
+
+
 };
 
 #endif // SHIGAN_H

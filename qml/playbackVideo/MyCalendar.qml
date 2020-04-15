@@ -127,16 +127,16 @@ Popup {
                     Rectangle{
 
                         id:dateShowRect
-                        width: labelYear.width + labelMonth.width
+                        width: labelYearMonth.width
                         height: parent.height
                         anchors.horizontalCenter: parent.horizontalCenter
                         color: bgColor
                         Label {
-                            id: labelYear
+                            id: labelYearMonth
                             anchors.verticalCenter: parent.verticalCenter
 
                             //text: the_calendar.selectedDate.getFullYear()+qsTr('年')
-                            text:control.visibleYear+qsTr('年')
+                            text:getMouthYearStr(control.visibleYear,(control.visibleMonth+1))//control.visibleYear+qsTr('年')
                             //elide: Text.ElideRight
                             horizontalAlignment: Text.AlignLeft
                             font.pixelSize: 14
@@ -144,18 +144,18 @@ Popup {
                             color: fontColor
                         }
 
-                        Label {
-                            id: labelMonth
-                            anchors.verticalCenter: parent.verticalCenter
-                            anchors.left: labelYear.right
-                            anchors.leftMargin: 1
-                            //注意Date原本的月份是0开始
-                            text: (control.visibleMonth+1)+qsTr('月');
-                            //elide: Text.ElideRight
-                            horizontalAlignment: Text.AlignRight
-                            font.pixelSize: 14
-                            color:fontColor
-                        }
+                        //                        Label {
+                        //                            id: labelMonth
+                        //                            anchors.verticalCenter: parent.verticalCenter
+                        //                            anchors.left: labelYear.right
+                        //                            anchors.leftMargin: 1
+                        //                            //注意Date原本的月份是0开始
+                        //                            text: (control.visibleMonth+1)+qsTr('月');
+                        //                            //elide: Text.ElideRight
+                        //                            horizontalAlignment: Text.AlignRight
+                        //                            font.pixelSize: 14
+                        //                            color:fontColor
+                        //                        }
                     }
 
 
@@ -171,10 +171,10 @@ Popup {
                     //color: "transparent"
                     height: the_calendar.height/8
                     Label {
-                        text: control.__locale.dayName(styleData.dayOfWeek, control.dayOfWeekFormat)
+                        text: getWeeklyStr(styleData.dayOfWeek+1)//control.__locale.dayName(styleData.dayOfWeek, control.dayOfWeekFormat)
                         anchors.centerIn: parent
                         color:Qt.rgba(0,0,0,0.65)
-                        font.pixelSize: 14
+                        font.pixelSize: 12
 
                     }
                 }
@@ -187,7 +187,7 @@ Popup {
                     //                          ?Qt.rgba(6/255,45/255,51/255,1)
                     //                          : Qt.rgba(3/255,28/255,35/255,1));
                     //color: styleData.selected?"#409EFF":((styleData.visibleMonth && styleData.valid)?(calendarEventModel.getDateEvent(styleData.date)):"#191919")
-                    color: styleData.selected?"#3B84F6":bgColor//(styleData.visibleMonth && styleData.valid)?(calendarEventModel.getDateEvent(styleData.date)):bgColor
+                    color: styleData.selected?"#8AB8FF":bgColor//(styleData.visibleMonth && styleData.valid)?(calendarEventModel.getDateEvent(styleData.date)):bgColor
 
                     Label {
                         text: styleData.date.getDate()
@@ -235,49 +235,61 @@ Popup {
             text: Qt.formatDate(the_calendar.selectedDate,"yyyy-MM-dd")
         }
 
-        QmlButton{
+        Rectangle{
             id:btnEnsure
-            width: 44
+            width: txtEnsure.width
             height: 22
-
+            color: "transparent"
             anchors.verticalCenter: txtToday.verticalCenter
             anchors.right: parent.right
             anchors.rightMargin: 16
-            colorNor:"#ffffff"
-            colorPressed: "#ffffff"
-            borderColor: "#D9D9D9"
-            fontColor: "#3B84F6"
-            borderW: 0
-            fontsize: 14
 
-            text: qsTr("确定")
-            onClicked: {
-                s_dayChange(Qt.formatDate(the_calendar.selectedDate,"yyyyMMdd"))
-                s_dayChange1(Qt.formatDate(the_calendar.selectedDate,"yyyy-MM-dd"))
-                root.close()
+            Text {
+                id: txtEnsure
+                font.pixelSize: 14
+                anchors.horizontalCenter: parent.horizontalCenter
+                color: "#3B84F6"
+                text: qsTr("取消")
+            }
+
+
+            MouseArea{
+                anchors.fill: parent
+                onClicked: {
+                    s_dayChange(Qt.formatDate(the_calendar.selectedDate,"yyyyMMdd"))
+                    s_dayChange1(Qt.formatDate(the_calendar.selectedDate,"yyyy-MM-dd"))
+                    root.close()
+                }
             }
         }
 
-        QmlButton{
+        Rectangle{
             id:btnCancel
-            width: 44
+            width: txtCancel.width
             height: 22
 
+            color: "transparent"
             anchors.verticalCenter: txtToday.verticalCenter
             anchors.right: btnEnsure.left
             anchors.rightMargin: 10
-            colorNor:"#ffffff"
-            colorPressed: "#ffffff"
-            borderColor: "#D9D9D9"
-            fontColor: "#3B84F6"
-            borderW: 0
-            fontsize: 14
 
-            text: qsTr("取消")
-            onClicked: {
-
-                root.close()
+            Text {
+                id: txtCancel
+                font.pixelSize: 14
+                color: "#3B84F6"
+                anchors.horizontalCenter: parent.horizontalCenter
+                text: qsTr("取消")
             }
+
+            MouseArea{
+                anchors.fill: parent
+                onClicked: {
+
+                    root.close()
+                }
+            }
+
+
         }
 
     }
@@ -286,6 +298,178 @@ Popup {
         return the_calendar.selectedDate
     }
 
+
+    function getMouthYearStr(year,month){
+
+        switch(curLanguage){
+        case lChinese:
+            return year+qsTr('年 ') + month+qsTr('月');;
+        case lEnglish:
+
+            return year + " "+getEnglishMouth(month);
+        case lKorean:
+            return year + " "+getEnglishMouth(month);
+        case lItaly:
+            return year + " "+getItalyMouth(month);
+        }
+
+    }
+
+    function getEnglishMouth(value){
+
+        switch(value){
+        case 1:
+            return "January";
+        case 2:
+            return "February";
+        case 3:
+            return "March";
+        case 4:
+            return "April";
+        case 5:
+            return "May";
+        case 6:
+            return "June";
+        case 7:
+            return "July";
+        case 8:
+            return "August";
+        case 9:
+            return "September";
+        case 10:
+            return "October";
+        case 11:
+            return "November";
+        case 12:
+            return "December";
+        }
+    }
+    function getItalyMouth(value){
+        switch(value){
+        case 1:
+            return "Gennaio";
+        case 2:
+            return "Febbraio";
+        case 3:
+            return "Marzo";
+        case 4:
+            return "Aprile";
+        case 5:
+            return "Maggio";
+        case 6:
+            return "Giugno";
+        case 7:
+            return "Luglio";
+        case 8:
+            return "Agosto";
+        case 9:
+            return "Settembre";
+        case 10:
+            return "Ottobre";
+        case 11:
+            return "Novembre";
+        case 12:
+            return "Dicembre";
+        }
+    }
+
+
+    function getWeeklyStr(week){
+
+       // console.debug("week:"+week);
+        switch(curLanguage){
+        case lChinese:
+            return getChineseWeekly(week);
+        case lEnglish:
+            return getEnglishWeekly(week);
+        case lKorean:
+            return getEnglishWeekly(week);
+        case lItaly:
+            return getItalyWeekly(week);
+        }
+
+    }
+    function getChineseWeekly(value){
+        switch(value){
+        case 1:
+            return "周一";
+        case 2:
+            return "周二";
+        case 3:
+            return "周三";
+        case 4:
+            return "周四";
+        case 5:
+            return "周五";
+        case 6:
+            return "周六";
+        case 7:
+            return "周日";
+        }
+    }
+    function getItalyWeekly(value){
+        switch(value){
+        case 1:
+            return "Lu";
+        case 2:
+            return "Ma";
+        case 3:
+            return "Me";
+        case 4:
+            return "Gi";
+        case 5:
+            return "Ve";
+        case 6:
+            return "Sa";
+        case 7:
+            return "Do";
+        }
+    }
+    function getEnglishWeekly(value){
+        switch(value){
+        case 1:
+            return "Mon";
+        case 2:
+            return "Tue";
+        case 3:
+            return "Wed";
+        case 4:
+            return "Thu";
+        case 5:
+            return "Fri";
+        case 6:
+            return "Sat";
+        case 7:
+            return "Sun";
+        }
+    }
+
+
+    Connections{
+        target: main
+        onS_setLanguage:setLanguage(typeL);
+    }
+
+    function setLanguage(type){
+        switch(type){
+        case lEnglish:
+            txtCancel.text = "Cancel"
+            txtEnsure.text = "Confirm "
+            break;
+        case lKorean:
+            txtCancel.text = "취소"
+            txtEnsure.text = "확인"
+            break;
+        case lItaly:
+            txtCancel.text = "Annullato"
+            txtEnsure.text = "Confermare"
+            break;
+        case lChinese:
+            txtCancel.text = "取消"
+            txtEnsure.text = "确定"
+            break;
+        }
+    }
 
 
 }

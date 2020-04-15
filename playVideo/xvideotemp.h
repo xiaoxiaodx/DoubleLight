@@ -72,12 +72,15 @@ signals:
     //shigan
     void signal_startLoop();
     void signal_shiganHeart();
+
 public slots:
     void slot_timeout();
 
     //void ready();
 
     void finishYouPull();
+
+    void slot_recImageInfo(QImage *,QVariant,float);
 protected:
     //  QSGNode* updatePaintNode(QSGNode *old, UpdatePaintNodeData *);
     void paint(QPainter *painter);

@@ -260,8 +260,6 @@ void XVideo::slot_recH264(char* h264Arr,int arrlen,quint64 time)
 void XVideo::fun_setListRect(QVariant var){
     //qDebug()<<"tcp 流线程 fun_setListRect:"<<QThread::currentThreadId()<<"    "<<var.toList();
 
-
-
     if(mMutex.tryLock()){
 
         if(listBuffImg.size()>0){

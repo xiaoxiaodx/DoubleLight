@@ -235,6 +235,7 @@ void IRCNet::FuncSetColor(int type)
 void FuncSerialDataCallBack(IRNETHANDLE hSerial, char * pRecvDataBuff, int BuffSize, void * context)
 {
     return;
+
 }
 
 void IRCNet::ircInit()

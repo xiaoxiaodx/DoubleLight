@@ -37,7 +37,6 @@ Popup {
         radius: 3
 
         //设置标题栏区域为拖拽区域
-
         Image {
             id: img
             width: 22
@@ -58,7 +57,7 @@ Popup {
         }
         Rectangle{
             id:btnEnsure
-            width: 55
+            width: txtEnsure.width +24
             height: 34
             border.width: 1
             border.color: "#3B84F6"
@@ -89,7 +88,7 @@ Popup {
 
         Rectangle{
             id:btnCancel
-            width: 55
+            width: txtCancel.width + 24
             height: 34
             anchors.bottom: btnEnsure.bottom
             anchors.right: btnEnsure.left
@@ -111,9 +110,7 @@ Popup {
 
                     root.close()
                 }
-
             }
-
         }
 
 
@@ -135,16 +132,16 @@ Popup {
     function setLanguage(type){
         switch(type){
         case lEnglish:
-            txtCancel.text = "取消"
-            txtEnsure.text = "确定"
+            txtCancel.text = "Cancel"
+            txtEnsure.text = "Confirm "
             break;
         case lKorean:
-            txtCancel.text = "取消"
-            txtEnsure.text = "确定"
+            txtCancel.text = "취소"
+            txtEnsure.text = "확인"
             break;
         case lItaly:
-            txtCancel.text = "取消"
-            txtEnsure.text = "确定"
+            txtCancel.text = "Annullato"
+            txtEnsure.text = "Confermare"
             break;
         case lChinese:
             txtCancel.text = "取消"

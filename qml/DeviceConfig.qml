@@ -15,7 +15,7 @@ Rectangle {
     signal s_temSet(var mvalue);
     signal s_screenShotPathSet(var mvalue);
     signal s_recordPathSet(var mvalue);
-//    signal s_temDrift(var mvalue);
+    //    signal s_temDrift(var mvalue);
 
     signal s_getInitPar();
 
@@ -23,11 +23,13 @@ Rectangle {
     signal s_temMax(var mvalue);
     signal s_temMin(var mvalue);
     signal s_temImage(var mvalue);
+
     property int fontSize: 14
+    property color fontColor: "#333333"
 
     //第一根左对齐线
-    property int parSetFirstAlignLine: curLanguage === lChinese?124:255
-    property int parSetSecondAlignLine: 124
+    property int parSetFirstAlignLine: curLanguage === lChinese?134:curLanguage === lEnglish?230:curLanguage === lKorean?204:210
+    property int parSetSecondAlignLine: curLanguage === lChinese?368:curLanguage === lEnglish?488:curLanguage === lKorean?388:538
     Settings {
         id:setting
         fileName: "config.ini"
@@ -46,7 +48,7 @@ Rectangle {
         //irc 图像选择
         property alias ircImgColorType: cmbImgSelect.currentIndex
 
-        property string tcpip:"10.67.1.146"
+        property string tcpip:"192.168.1.188"
         property bool isOpenAdjustRect: true
         property int showRectX: 65;
         property int showRectY : 41;
@@ -73,6 +75,7 @@ Rectangle {
             Text {
                 id: labelTime
                 font.pixelSize: fontSize
+                color: fontColor
                 text: qsTr("时间显示")
                 anchors.bottom: line1.top
                 anchors.left: line1.left
@@ -95,31 +98,32 @@ Rectangle {
                 id: labelSwitchTime
                 text: qsTr("时间开关")
                 font.pixelSize: fontSize
-                anchors.top: line1.bottom
-                anchors.left: line1.left
-                anchors.leftMargin: 48
-                anchors.topMargin: 20
+                color: fontColor
+                anchors.right: swithTime.left
+                anchors.rightMargin: 20
+                anchors.verticalCenter: swithTime.verticalCenter
             }
 
             SimpleSwich{
                 id:swithTime
                 width: 30
                 height: 15
-                anchors.left: labelSwitchTime.right
-                anchors.leftMargin: 20
-                anchors.verticalCenter: labelSwitchTime.verticalCenter
+                anchors.left: line1.left
+                anchors.leftMargin: parSetFirstAlignLine
+                anchors.top: line1.bottom
+                anchors.topMargin: 20
                 onCheckedChanged: s_timeSwith(checked)
             }
 
             Text {
                 id: txtparset
                 font.pixelSize: fontSize
+                color: fontColor
                 text: qsTr("参数设置")
 
                 anchors.bottom: line2.top
                 anchors.left: line2.left
                 anchors.bottomMargin: 20
-
             }
             Rectangle{
                 id:line2
@@ -134,6 +138,7 @@ Rectangle {
             Text {
                 id: txtTempDrift
                 text: qsTr("温漂设置")
+                color: fontColor
                 font.pixelSize: fontSize
                 anchors.right: rectTempDrift.left
                 anchors.rightMargin: 20
@@ -224,6 +229,7 @@ Rectangle {
             Text {
                 id: txtTemp
                 text: qsTr(" ℃")
+                color: fontColor
                 font.pixelSize: fontSize
                 anchors.verticalCenter: rectTempDrift.verticalCenter
                 anchors.left: rectTempDrift.right
@@ -234,6 +240,7 @@ Rectangle {
             Text {
                 id: txtTempMin
                 text: qsTr("温度控制阀")
+                color: fontColor
                 font.pixelSize: fontSize
                 anchors.right: rectTempMin.left
                 anchors.rightMargin: 20
@@ -337,118 +344,118 @@ Rectangle {
 
             Text {
                 id: txtTemp1
+
                 text: qsTr(" ℃")
+                color: fontColor
                 font.pixelSize: fontSize
                 anchors.verticalCenter: rectTempMin.verticalCenter
                 anchors.left: rectTempMin.right
                 anchors.topMargin: 6
             }
             ////////////
-//            Text {
-//                id: txtTempMax
-//                text: qsTr("最大温度检测")
-//                font.pixelSize: fontSize
-//                anchors.top: txtTempMin.bottom
-//                anchors.right: txtTempMin.right
-//                anchors.topMargin: 30
-//            }
+            //            Text {
+            //                id: txtTempMax
+            //                text: qsTr("最大温度检测")
+            //                font.pixelSize: fontSize
+            //                anchors.top: txtTempMin.bottom
+            //                anchors.right: txtTempMin.right
+            //                anchors.topMargin: 30
+            //            }
 
-//            Rectangle{
-//                id:rectTempMax
-//                color: "#D6D8DB"
-//                width: 88
-//                height: 32
-//                radius: 4
-//                anchors.left: txtTempMax.right
-//                anchors.leftMargin: 20
-//                anchors.verticalCenter: txtTempMax.verticalCenter
+            //            Rectangle{
+            //                id:rectTempMax
+            //                color: "#D6D8DB"
+            //                width: 88
+            //                height: 32
+            //                radius: 4
+            //                anchors.left: txtTempMax.right
+            //                anchors.leftMargin: 20
+            //                anchors.verticalCenter: txtTempMax.verticalCenter
 
-//                LineEdit {
-//                    id: inputTempMax
-//                    width: rectTempMax.width  - 22
-//                    height: rectTempMax.height -2
-//                    anchors.left: parent.left
-//                    anchors.leftMargin: 1
-//                    anchors.verticalCenter: rectTempMax.verticalCenter
-//                    border.width: 0
-//                    inputLimite:Qt.ImhDigitsOnly
-//                    font.pixelSize: fontSize
-//                    placeholderText: ""
-//                    isNeedDoubleClickEdit: false
-//                    textLeftPadding:0
-//                    txtColor: Qt.rgba(0,0,0,0.65)
-//                    text: "50"
-//                    color: "#F8FAFD"
-//                    onTextChanged: {
-//                        s_temMax(inputTempMax.text);
+            //                LineEdit {
+            //                    id: inputTempMax
+            //                    width: rectTempMax.width  - 22
+            //                    height: rectTempMax.height -2
+            //                    anchors.left: parent.left
+            //                    anchors.leftMargin: 1
+            //                    anchors.verticalCenter: rectTempMax.verticalCenter
+            //                    border.width: 0
+            //                    inputLimite:Qt.ImhDigitsOnly
+            //                    font.pixelSize: fontSize
+            //                    placeholderText: ""
+            //                    isNeedDoubleClickEdit: false
+            //                    textLeftPadding:0
+            //                    txtColor: Qt.rgba(0,0,0,0.65)
+            //                    text: "50"
+            //                    color: "#F8FAFD"
+            //                    onTextChanged: {
+            //                        s_temMax(inputTempMax.text);
 
-//                    }
-//                }
-//                Image {
-//                    id: imgValueMaxUp
-//                    width: 20
-//                    height: 15
-//                    source: "qrc:/images/arrow_up.png"
-//                    anchors.right: parent.right
-//                    anchors.rightMargin: 1
-//                    anchors.top: parent.top
-//                    anchors.topMargin: 1
-//                    MouseArea{
-//                        anchors.fill: parent
-//                        onPressed: {
-//                            imgValueMaxUp.source="qrc:/images/arrow_up_p.png"
-//                            var num = parseInt(inputTempMax.text)
-//                            if(num >= 100)
-//                                return
+            //                    }
+            //                }
+            //                Image {
+            //                    id: imgValueMaxUp
+            //                    width: 20
+            //                    height: 15
+            //                    source: "qrc:/images/arrow_up.png"
+            //                    anchors.right: parent.right
+            //                    anchors.rightMargin: 1
+            //                    anchors.top: parent.top
+            //                    anchors.topMargin: 1
+            //                    MouseArea{
+            //                        anchors.fill: parent
+            //                        onPressed: {
+            //                            imgValueMaxUp.source="qrc:/images/arrow_up_p.png"
+            //                            var num = parseInt(inputTempMax.text)
+            //                            if(num >= 100)
+            //                                return
 
-//                            inputTempMax.text = ""+(Number(num)+Number(1))
+            //                            inputTempMax.text = ""+(Number(num)+Number(1))
 
-//                        }
-//                        onReleased: imgValueMaxUp.source="qrc:/images/arrow_up.png"
-//                    }
-//                }
-//                Image {
-//                    id: imgValueMaxdown
-//                    width: 20
-//                    height: 15
-//                    source: "qrc:/images/arrow_low.png"
-//                    anchors.right: imgValueMaxUp.right
-//                    anchors.top: imgValueMaxUp.bottom
-//                    anchors.topMargin: 1
-//                    MouseArea{
-//                        anchors.fill: parent
+            //                        }
+            //                        onReleased: imgValueMaxUp.source="qrc:/images/arrow_up.png"
+            //                    }
+            //                }
+            //                Image {
+            //                    id: imgValueMaxdown
+            //                    width: 20
+            //                    height: 15
+            //                    source: "qrc:/images/arrow_low.png"
+            //                    anchors.right: imgValueMaxUp.right
+            //                    anchors.top: imgValueMaxUp.bottom
+            //                    anchors.topMargin: 1
+            //                    MouseArea{
+            //                        anchors.fill: parent
 
-//                        onPressed: {
+            //                        onPressed: {
 
-//                            imgValueMaxdown.source="qrc:/images/arrow_low_p.png"
-//                            var num = parseInt(inputTempMax.text)
+            //                            imgValueMaxdown.source="qrc:/images/arrow_low_p.png"
+            //                            var num = parseInt(inputTempMax.text)
 
-//                            if(num <= 0)
-//                                return
+            //                            if(num <= 0)
+            //                                return
 
-//                            inputTempMax.text = ""+(Number(num)-Number(1))
-//                        }
-//                        onReleased: imgValueMaxdown.source="qrc:/images/arrow_low.png"
-//                    }
-//                }
+            //                            inputTempMax.text = ""+(Number(num)-Number(1))
+            //                        }
+            //                        onReleased: imgValueMaxdown.source="qrc:/images/arrow_low.png"
+            //                    }
+            //                }
 
-//            }
-
-//            Text {
-//                id: txtTemp2
-//                text: qsTr(" ℃")
-//                font.pixelSize: fontSize
-//                anchors.verticalCenter: rectTempMax.verticalCenter
-//                anchors.left: rectTempMax.right
-
-//            }
+            //            }
+            //            Text {
+            //                id: txtTemp2
+            //                text: qsTr(" ℃")
+            //                font.pixelSize: fontSize
+            //                anchors.verticalCenter: rectTempMax.verticalCenter
+            //                anchors.left: rectTempMax.right
+            //            }
             /////////////////
 
             Text {
                 id: txtSwichWarn
                 text: qsTr("报警开关")
                 font.pixelSize: fontSize
-
+                color: fontColor
                 anchors.right: swichWarn.left
                 anchors.rightMargin: 20
                 anchors.verticalCenter: swichWarn.verticalCenter
@@ -468,18 +475,21 @@ Rectangle {
             Text {
                 id: txtWarnTemSet
                 text: qsTr("告警温度设置")
+                color: fontColor
                 font.pixelSize: fontSize
-                anchors.left: swichWarn.right
+                anchors.right: inputTem.left
+                anchors.rightMargin: 20
                 anchors.verticalCenter: swichWarn.verticalCenter
-                anchors.leftMargin: 100
+
             }
             LineEdit {
                 id: inputTem
                 width: 88
                 height: 28
-                anchors.left: txtWarnTemSet.right
-                anchors.leftMargin: 20
-                anchors.verticalCenter: txtWarnTemSet.verticalCenter
+                anchors.left: line2.left
+                anchors.leftMargin: parSetSecondAlignLine
+
+                anchors.verticalCenter:swichWarn.verticalCenter
                 border.width: 1
                 border.color: "#DEDFE3"
                 font.pixelSize: fontSize
@@ -495,7 +505,7 @@ Rectangle {
                 id: txtTem1
                 text: qsTr("℃")
                 font.pixelSize: fontSize
-
+                color: fontColor
                 anchors.left: inputTem.right
                 anchors.leftMargin: 6
                 anchors.verticalCenter: inputTem.verticalCenter
@@ -505,7 +515,7 @@ Rectangle {
                 id: txtSwichScreenShot
                 text: qsTr("抓拍开关")
                 font.pixelSize: fontSize
-
+                color: fontColor
                 anchors.right: swichScreenShot.left
                 anchors.rightMargin: 20
                 anchors.verticalCenter: swichScreenShot.verticalCenter
@@ -525,8 +535,9 @@ Rectangle {
                 id: txtScreenShotPath
                 text: qsTr("抓拍存储路径")
                 font.pixelSize: fontSize
-                anchors.left: swichScreenShot.right
-                anchors.leftMargin: 100
+                color: fontColor
+                anchors.right: rectScreenShotPath.left
+                anchors.rightMargin: 20
                 anchors.verticalCenter: swichScreenShot.verticalCenter
             }
             Rectangle{
@@ -537,9 +548,9 @@ Rectangle {
                 border.width: 1
                 width: 200
                 height: 28
-                anchors.left: txtScreenShotPath.right
-                anchors.verticalCenter: txtScreenShotPath.verticalCenter
-                anchors.leftMargin: 20
+                anchors.left: line2.left
+                anchors.leftMargin: parSetSecondAlignLine
+                anchors.verticalCenter: swichScreenShot.verticalCenter
                 LineEdit {
                     id: inputScreenShotPath
                     width: rectScreenShotPath.width - imgScreenShotPath.width - 22
@@ -589,7 +600,7 @@ Rectangle {
                 id: txtSwichBeer
                 text: qsTr("蜂鸣开关")
                 font.pixelSize: fontSize
-
+                color: fontColor
                 anchors.right: swichBeer.left
                 anchors.rightMargin: 20
                 anchors.verticalCenter: swichBeer.verticalCenter
@@ -610,6 +621,7 @@ Rectangle {
             Text {
                 id: txtRecordSet
                 text: qsTr("录像设置")
+                color: fontColor
                 font.pixelSize: fontSize
                 anchors.bottom: line3.top
                 anchors.left: line3.left
@@ -630,41 +642,42 @@ Rectangle {
             Text {
                 id: txtSwichRecord
                 text: qsTr("录像开关")
+                color: fontColor
                 font.pixelSize: fontSize
-                anchors.top: line3.bottom
-                anchors.left: line3.left
-                anchors.topMargin: 20
-                anchors.leftMargin: 48
+                anchors.verticalCenter: swichRecord.verticalCenter
+                anchors.right: swichRecord.left
+                anchors.rightMargin: 20
             }
             SimpleSwich{
                 id:swichRecord
                 width: 30
                 height: 15
-                anchors.left: txtSwichRecord.right
-                anchors.leftMargin: 20
-                anchors.verticalCenter: txtSwichRecord.verticalCenter
+                anchors.left: line3.left
+                anchors.leftMargin: parSetFirstAlignLine
+                anchors.top: line3.bottom
+                anchors.topMargin: 27
                 onCheckedChanged: s_recordSwith(checked)
             }
 
             Text {
                 id: txtRecortPath
                 text: qsTr("录像存储路径")
+                color: fontColor
                 font.pixelSize: fontSize
-                anchors.left: swichRecord.right
-                anchors.leftMargin: 100
+                anchors.right: rectRecordPath.left
+                anchors.rightMargin: 20
                 anchors.verticalCenter: swichRecord.verticalCenter
             }
             Rectangle{
-
                 id:rectRecordPath
                 color: "#F8FAFD"
                 border.color: "#DEDFE3"
                 border.width: 1
                 width: 200
                 height: 28
-                anchors.left: txtRecortPath.right
-                anchors.verticalCenter: txtRecortPath.verticalCenter
-                anchors.leftMargin: 20
+                anchors.left: line3.left
+                anchors.leftMargin: parSetSecondAlignLine
+                anchors.verticalCenter: swichRecord.verticalCenter
                 LineEdit {
                     id: inputRecordPath
                     width: rectRecordPath.width - imgRecordPath.width - 22
@@ -716,7 +729,8 @@ Rectangle {
                 id: txtImageSet
                 font.pixelSize: fontSize
                 text: qsTr("图像设置")
-
+                color: fontColor
+                visible: curLanguage === lChinese
                 anchors.bottom: line4.top
                 anchors.left: line4.left
                 anchors.bottomMargin: 20
@@ -726,6 +740,7 @@ Rectangle {
                 id:line4
                 width:parent.width - 20*2
                 height: 1
+                visible: curLanguage === lChinese
                 color: "#e2e2e2"
                 anchors.top: parent.top
                 anchors.topMargin: 627
@@ -736,23 +751,25 @@ Rectangle {
                 id: txtImageSelect
                 font.pixelSize: fontSize
                 text: qsTr("图像选择")
+                color: fontColor
+                visible: curLanguage === lChinese
                 anchors.right: cmbImgSelect.left
                 anchors.rightMargin: 20
                 anchors.verticalCenter: cmbImgSelect.verticalCenter
-
             }
             MyComBox{
                 id:cmbImgSelect
                 width:88
                 height: 28
+                visible: curLanguage === lChinese
                 anchors.left: line4.left
-                anchors.leftMargin: parSetSecondAlignLine
+                anchors.leftMargin: parSetFirstAlignLine
                 anchors.top: line4.bottom
                 anchors.topMargin: 20
                 contentBg: "#ffffff"
                 itemColorBgNor:"#FFFFFF"
                 itemColorBgHoverd: "#E7EAF1"
-                indicatorImgSrc:"qrc:/images/language_down.png"
+                indicatorImgSrc:"qrc:/images/imgTypeSelect.png"
                 indicatorW: 9
                 indicatorH: 5
                 itemLeftMargin:0
@@ -764,12 +781,12 @@ Rectangle {
                 mRadius:2
                 model: ListModel{
                     ListElement{showStr:"黑白"}
-                    ListElement{showStr:"彩色"}                    
+                    ListElement{showStr:"彩色"}
                 }
                 onCurrentIndexChanged: {
 
-//                    curLanguage = currentIndex
-//                    main.s_setLanguage(currentIndex);
+                    //                    curLanguage = currentIndex
+                    //                    main.s_setLanguage(currentIndex);
                     s_temImage(currentIndex);
                 }
             }
@@ -847,25 +864,25 @@ Rectangle {
 
 
     function setTcpip(value){
-         setting.tcpip = value
+        setting.tcpip = value
     }
     function setIsOpenAdjustRect(value){
-         setting.isOpenAdjustRect = value
+        setting.isOpenAdjustRect = value
     }
     function setShowRectX(value){
-         setting.showRectX = value
+        setting.showRectX = value
     }
     function setShowRectY(value){
-         setting.showRectY = value
+        setting.showRectY = value
     }
     function setShowRectW(value){
-         setting.showRectW = value
+        setting.showRectW = value
     }
     function setShowRectH(value){
-         setting.showRectH = value
+        setting.showRectH = value
     }
     function setShowParentW(value){
-         setting.showParentW = value
+        setting.showParentW = value
     }
     function setShowParentH(value){
         setting.showParentH = value
@@ -908,43 +925,48 @@ Rectangle {
         switch(type){
         case lEnglish:
             txtRecordSet.text = "Video Settings"
-            txtRecortPath.text = "Video Storage Path"
-            txtScreenShotPath.text = "Snapshots Storage Path"
+            txtRecortPath.text = "Storage Path"
+            txtScreenShotPath.text = "Storage Path"
             txtWarnTemSet.text = "Alarm Temperatur"
-            labelSwitchTime.text = "Time Button"
-            labelTime.text = "Time Display"
+            labelSwitchTime.text = "Time"
+            labelTime.text = "Time OSD"
             txtparset.text = "Parameter Settings"
-            txtSwichBeer.text = "Siren Button"
-            txtSwichRecord.text = "Video Button"
-            txtSwichScreenShot.text = "Snapshots Button"
-            txtSwichWarn.text = "Alarm Button"
+            txtSwichBeer.text = "Buzzer"
+            txtSwichRecord.text = "Video"
+            txtSwichScreenShot.text = "Snapshot"
+            txtSwichWarn.text = "Alarm"
+            txtTempMin.text = "Temperature control valve"
+            txtTempDrift.text = "Temperature drift setting"
             break;
         case lKorean:
             txtRecordSet.text = "비디오 설정"
-            txtRecortPath.text = "비디오 저장 위치"
-            txtScreenShotPath.text = "사진저장 경로"
+            txtRecortPath.text = "저장 경로"
+            txtScreenShotPath.text = "저장 경로"
             txtWarnTemSet.text = "알람온도설정"
-            labelSwitchTime.text = "시간표시 On/Off"
+            labelSwitchTime.text = "시간스위치 "
             labelTime.text = "시간표시"
             txtparset.text = "파라미터 설정"
-            txtSwichBeer.text = "경보음 On/Off"
-            txtSwichRecord.text = "비디오 On/Off"
-            txtSwichScreenShot.text = "사진캡쳐"
-            txtSwichWarn.text = "알람 On/Off"
+            txtSwichBeer.text = "알람 경보음"
+            txtSwichRecord.text = "비디오"
+            txtSwichScreenShot.text = "사진저장"
+            txtSwichWarn.text = "알람"
+            txtTempMin.text = "최대/최소 온도"
+            txtTempDrift.text = "온도변화폭 설정"
             break;
         case lItaly:
-
             txtRecordSet.text = "Settaggio Video"
             txtRecortPath.text = "Directory Video"
             txtScreenShotPath.text = "Directory Fotografie"
             txtWarnTemSet.text = "Allarme Temperatura"
-            labelSwitchTime.text = "Tasto Ora"
-            labelTime.text = "Ora"
+            labelSwitchTime.text = "Ora"
+            labelTime.text = "Ora OSD"
             txtparset.text = "Settaggio Parametri"
-            txtSwichBeer.text = "Tasto Sirena"
+            txtSwichBeer.text = "Sirena"
             txtSwichRecord.text = "Tasto Video"
-            txtSwichScreenShot.text = "Tasto Fotografia"
-            txtSwichWarn.text = "Tasto Allarme"
+            txtSwichScreenShot.text = "Fotografia"
+            txtSwichWarn.text = "Allarme"
+            txtTempMin.text = "Max Min Temperatura"
+            txtTempDrift.text = "Correzione Temperatura"
             break;
         case lChinese:
             txtRecordSet.text = "录像设置"
@@ -958,6 +980,8 @@ Rectangle {
             txtSwichRecord.text = "录像开关"
             txtSwichScreenShot.text = "抓拍开关"
             txtSwichWarn.text = "报警开关"
+            txtTempMin.text = "温度控制阀"
+            txtTempDrift.text = "温漂设置"
             break;
         }
     }

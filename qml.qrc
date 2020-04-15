@@ -87,5 +87,6 @@
         <file>images/language_down.png</file>
         <file>images/adjust_cancel.png</file>
         <file>images/adjust_ensure.png</file>
+        <file>images/imgTypeSelect.png</file>
     </qresource>
 </RCC>

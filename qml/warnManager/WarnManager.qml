@@ -69,7 +69,7 @@ Rectangle {
 
         Rectangle{
             id:rectBatch
-            width: 96
+            width: txtBatchDelete.width + imgBatchDelete.width +27
             height: 36
             color: "#3B84F6"
             radius: 4
@@ -87,7 +87,6 @@ Rectangle {
                 source: "qrc:/images/imgDelete.png"
 
             }
-
             Text {
                 id: txtBatchDelete
                 font.pixelSize: fontSize
@@ -104,7 +103,7 @@ Rectangle {
 
                     askDialog.width = 427
                     askDialog.height = 176
-                    askDialog.askStr = qsTr("确认要删除所选信息吗？")
+                    askDialog.askStr = curLanguage=== lChinese?"确认要删除所选信息吗？":curLanguage===lEnglish?"Confirm to delete?":curLanguage===lKorean?"삭제하시겠습니까?":"Cancella Tutta la Selezione?"
                     askDialog.imgSrc = "qrc:/images/ico_warn.png"
                     askDialog.curType = askDialog.warnInfoMutipleDelete
                     askDialog.open();
@@ -247,7 +246,8 @@ Rectangle {
                 anchors.left: parent.left
                 anchors.leftMargin: warnTimeHeaderLeftMargin
                 font.pixelSize: fontSize
-                font.bold: true
+                color: "#333333"
+                font.bold: curLanguage===lKorean
                 text: qsTr("告警时间")
             }
             Text {
@@ -256,7 +256,8 @@ Rectangle {
                 anchors.left: parent.left
                 anchors.leftMargin: warnTempHeaderLeftMargin
                 font.pixelSize: fontSize
-                font.bold: true
+                color: "#333333"
+                font.bold: curLanguage===lKorean
                 text: qsTr("告警温度")
             }
             Text {
@@ -265,7 +266,8 @@ Rectangle {
                 anchors.left: parent.left
                 anchors.leftMargin: warnImgHeaderLeftMargin
                 font.pixelSize: fontSize
-                font.bold: true
+                font.bold: curLanguage===lKorean
+                color: "#333333"
                 text: qsTr("抓拍图片")
             }
             Text {
@@ -274,7 +276,8 @@ Rectangle {
                 anchors.left: parent.left
                 anchors.leftMargin: deleteHeaderLeftMargin
                 font.pixelSize: fontSize
-                font.bold: true
+                font.bold: curLanguage===lKorean
+                color: "#333333"
                 text: qsTr("操作")
             }
         }
@@ -396,7 +399,7 @@ Rectangle {
         }
         MyCalendar{
             id:calendar
-            width: 280
+            width:280
             height: 314
             dim:false
             x:dateRect.x

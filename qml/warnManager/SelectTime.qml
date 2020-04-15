@@ -185,16 +185,16 @@ Rectangle {
     function setLanguage(type){
         switch(type){
         case lEnglish:
-            txtCancel.text = "取消"
-            txtEnsure.text = "确定"
+            txtCancel.text = "no"
+            txtEnsure.text = "yes "
             break;
         case lKorean:
-            txtCancel.text = "取消"
-            txtEnsure.text = "确定"
+            txtCancel.text = "취소"
+            txtEnsure.text = "확인"
             break;
         case lItaly:
-            txtCancel.text = "取消"
-            txtEnsure.text = "确定"
+            txtCancel.text = "no"
+            txtEnsure.text = "sì"
             break;
         case lChinese:
             txtCancel.text = "取消"

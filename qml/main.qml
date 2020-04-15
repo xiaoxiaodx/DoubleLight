@@ -65,7 +65,7 @@ Window {
         onWinClose:{
             askDialog.width = 427
             askDialog.height = 176
-            askDialog.askStr = curLanguage=== lChinese?"确认退出系统吗？":curLanguage===lEnglish?"Confirm to exit ?":curLanguage===lKorean?"":""
+            askDialog.askStr = curLanguage=== lChinese?"确认退出系统吗？":curLanguage===lEnglish?"Confirm to exit ?":curLanguage===lKorean?"나가시겠습니까?":"Uscita Dal Sistema?"
             askDialog.imgSrc = "qrc:/images/icon_question.png"
             askDialog.curType = askDialog.exeClose
             askDialog.open();
