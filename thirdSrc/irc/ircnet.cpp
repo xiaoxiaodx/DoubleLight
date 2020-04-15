@@ -189,8 +189,6 @@ void ShowCallBackFunc(BYTE * m_y, BYTE * m_u, BYTE * m_v, int stridey, int strid
         if(info.pImg != nullptr)
             delete info.pImg;
     }
-
-
 }
 
 void IRCNet::ircInit()
