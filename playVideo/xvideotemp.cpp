@@ -23,8 +23,8 @@ void XVideoTemp::startTemperatureVideo(float tp)
     DebugLog::getInstance()->writeLog("startTemperatureVideo ");
 
     //createYouseePull();
-    createShiGan();
-    //createIRCNet();
+    //createShiGan();
+    createIRCNet();
 
     warnTemp = tp;
 
@@ -81,6 +81,10 @@ void XVideoTemp::createShiGan(){
     }
 }
 
+void XVideoTemp::fun_colorShowType(int type){
+
+    mircNet.FuncSetColor(type+1);
+}
 
 void XVideoTemp::fun_getInitPar()
 {

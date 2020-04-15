@@ -22,10 +22,12 @@ Rectangle {
     signal s_temOffset(var mvalue);
     signal s_temMax(var mvalue);
     signal s_temMin(var mvalue);
+    signal s_temImage(var mvalue);
     property int fontSize: 14
 
     //第一根左对齐线
     property int parSetFirstAlignLine: curLanguage === lChinese?124:255
+    property int parSetSecondAlignLine: 124
     Settings {
         id:setting
         fileName: "config.ini"
@@ -41,6 +43,8 @@ Rectangle {
         property alias switchBeer:swichBeer.checked
         property alias switchRecord:swichRecord.checked
 
+        //irc 图像选择
+        property alias ircImgColorType: cmbImgSelect.currentIndex
 
         property string tcpip:"10.67.1.146"
         property bool isOpenAdjustRect: true
@@ -703,6 +707,70 @@ Rectangle {
                             fileDialog.open()
                         }
                     }
+                }
+            }
+
+
+
+            Text {
+                id: txtImageSet
+                font.pixelSize: fontSize
+                text: qsTr("图像设置")
+
+                anchors.bottom: line4.top
+                anchors.left: line4.left
+                anchors.bottomMargin: 20
+
+            }
+            Rectangle{
+                id:line4
+                width:parent.width - 20*2
+                height: 1
+                color: "#e2e2e2"
+                anchors.top: parent.top
+                anchors.topMargin: 627
+                anchors.horizontalCenter: parent.horizontalCenter
+            }
+
+            Text {
+                id: txtImageSelect
+                font.pixelSize: fontSize
+                text: qsTr("图像选择")
+                anchors.right: cmbImgSelect.left
+                anchors.rightMargin: 20
+                anchors.verticalCenter: cmbImgSelect.verticalCenter
+
+            }
+            MyComBox{
+                id:cmbImgSelect
+                width:88
+                height: 28
+                anchors.left: line4.left
+                anchors.leftMargin: parSetSecondAlignLine
+                anchors.top: line4.bottom
+                anchors.topMargin: 20
+                contentBg: "#ffffff"
+                itemColorBgNor:"#FFFFFF"
+                itemColorBgHoverd: "#E7EAF1"
+                indicatorImgSrc:"qrc:/images/language_down.png"
+                indicatorW: 9
+                indicatorH: 5
+                itemLeftMargin:0
+                itemTopMargin:0
+                itemFontColor: "#5A5E66"
+                contentFontColor: "#a6000000"
+                contentFontSize: fontSize
+                bordColor:"#DEDFE3"
+                mRadius:2
+                model: ListModel{
+                    ListElement{showStr:"黑白"}
+                    ListElement{showStr:"彩色"}                    
+                }
+                onCurrentIndexChanged: {
+
+//                    curLanguage = currentIndex
+//                    main.s_setLanguage(currentIndex);
+                    s_temImage(currentIndex);
                 }
             }
         }

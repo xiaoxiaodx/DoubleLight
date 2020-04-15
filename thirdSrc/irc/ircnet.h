@@ -15,7 +15,7 @@ class IRCNet : public QObject
 public:
     explicit IRCNet(QObject *parent = nullptr);
     void ircInit();
-
+    void FuncSetColor(int type);
 
 signals:
 
@@ -28,6 +28,7 @@ private:
     CHANNEL_CLIENTINFO clientInfo;
     IRNETHANDLE	m_handleClientStart;
     IRNETHANDLE	m_handleClientStart2;
+    IRNETHANDLE m_serialconnect;
     //IplImage* YUV420_To_IplImage_Opencv(char* pYUV420, int width, int height);
 
 };

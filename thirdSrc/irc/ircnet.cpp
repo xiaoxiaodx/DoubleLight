@@ -105,62 +105,6 @@ void RawCallBackFunc(char * data, int width, int height, void * context){
 }
 
 
-//static char *p = (char *)malloc(height*width);
-//CvMemStorage*stor = NULL;
-//CvSeq* cont = NULL;
-//CvRect mdrects;
-//YouSeeParse::HotnessResetData(tempData, width,height, p,tempHead->Slope,tempHead->Offset);
-
-//if(pFrame == NULL)
-//    pFrame=cvCreateImageHeader(cvSize(width,height),IPL_DEPTH_8U,1);
-//cvSetData(pFrame,p,width);
-
-//stor = cvCreateMemStorage(0);
-//cont=cvSegmentFGMask(pFrame,true,10.0,stor,cvPoint(0,0));
-
-//if(pFrameSrc == NULL)
-//    pFrameSrc=cvCreateImageHeader(cvSize(width,height),IPL_DEPTH_32F,1);
-
-//CvFont font;
-//cvInitFont(&font, CV_FONT_HERSHEY_SIMPLEX ,0.5, 0.5);
-//cvSetData(pFrameSrc,(uchar*)frame->Bmp,width*4);
-
-//ImageInfo info;
-//float maxAvgT = -1;
-//for(int i=0;cont!=0;cont=cont->h_next,i++)
-//{
-//    mdrects=((CvContour*)cont)->rect;
-//    float avgT = YouSeeParse::getTempAavl(tempData, height, width, tempHead->Slope, tempHead->Offset, &mdrects) ;
-//    if(mdrects.width < TEMP_MIN_INTERVAL && mdrects.height < TEMP_MIN_INTERVAL)
-//    {
-//        continue;
-//    }
-
-//    QMap<QString,QVariant> map;
-//    QRect rect(mdrects.x,mdrects.y,mdrects.width,mdrects.height);
-//    map.insert("rect",rect);
-//    map.insert("temp",avgT);
-//    info.listRect.append(map);
-//    if(maxAvgT == -1){
-//        maxAvgT = avgT;
-//    }else{
-//        if(avgT > maxAvgT){
-//            maxAvgT = avgT;
-//        }
-//    }
-//}
-
-//try {
-//    info.pImg =  new QImage((uchar*)pFrameSrc->imageData, width, height, QImage::Format_RGB32);
-//    // 其它代码
-//} catch ( const std::bad_alloc& e ) {
-//    DebugLog::getInstance()->writeLog("Yousee 图片分配内存失败");
-//    info.pImg = nullptr;
-//}
-//info.areaMaxtemp = maxAvgT;
-//info.isDrawLine = true;
-
-
 #include "ffmpegconvert.h"
 
 FfmpegConvert *yuv2rgb=nullptr;
@@ -183,14 +127,114 @@ void ShowCallBackFunc(BYTE * m_y, BYTE * m_u, BYTE * m_v, int stridey, int strid
         info.listRect.append(curImgInfo.listRect.at(i));
     info.areaMaxtemp = curImgInfo.areaMaxtemp;
 
+    XVideoTemp::mutex.lock();
     if(XVideoTemp::listBufferImginfo.size()<XVideoTemp::maxBuffLen){
         XVideoTemp::listBufferImginfo.append(info);
     }else {
         if(info.pImg != nullptr)
             delete info.pImg;
     }
+    XVideoTemp::mutex.unlock();
+}
 
+BOOL GetByte(BYTE * ou, char h, char l)
+{
+    if (!ou)
+    {
+        qDebug()<<"ou is NULL";
+        return false;
+    }
+    static std::map<char, BYTE> t;
+    //qDebug()<<"h:"<<h<<" l:"<<l<<" size:"<<t.size();
+    if (!t.size())
+    {
+        t['0'] = 0;
+        t['1'] = 1;
+        t['2'] = 2;
+        t['3'] = 3;
+        t['4'] = 4;
+        t['5'] = 5;
+        t['6'] = 6;
+        t['7'] = 7;
+        t['8'] = 8;
+        t['9'] = 9;
+        t['A'] = 10;
+        t['B'] = 11;
+        t['C'] = 12;
+        t['D'] = 13;
+        t['E'] = 14;
+        t['F'] = 15;
+        t['a'] = 10;
+        t['b'] = 11;
+        t['c'] = 12;
+        t['d'] = 13;
+        t['e'] = 14;
+        t['f'] = 15;
+    }
+    std::map<char, BYTE>::iterator i, j;
 
+    if ((i = t.find(h)) == t.end() || (j = t.find(l)) == t.end())
+    {
+        qDebug()<<"i = t.find(h)) == t.end()";
+        return false;
+    }
+
+    *ou = (i->second << 4) | (j->second);
+    return true;
+}
+
+void IRCNet::FuncSetColor(int type)
+{
+    char value[64];
+
+    if(type == 2) //彩色
+    {
+          sprintf(value,"AA05002D0104E1EBAA");
+    }
+    else
+    {
+         sprintf(value,"AA05002D0100DDEBAA");
+    }
+
+    int length = strlen(value);
+    //qDebug()<<"type:"<<type<<" length:"<<length<<" value:"<<value;
+    if (length == 0 || length % 2)
+    {
+        return;
+    }
+    char *tm = new char[length / 2];
+    if (!tm)
+    {
+        return;
+    }
+    bool fillrst = true;
+    for (int i = 0, j = length / 2; i < j; ++i)
+    {
+        //str.AppendFormat(_T("%02X "),st[2*i],st[2*i+1]);
+        if (!GetByte((BYTE*)(tm + i), value[2 * i], value[2 * i + 1]))
+        {
+            fillrst = false;
+            break;
+        }
+    }
+    //qDebug()<<"tm:"<<tm<<" fillrst:"<<fillrst;
+    if (fillrst && IRNET_ClientSerialSendNew(m_serialconnect, tm, length / 2))
+    {
+        qDebug()<<"IRNET_ClientSerialSendNew OK";
+        delete[] tm;
+        return;
+    }
+    else
+    {
+        qDebug()<<"IRNET_ClientSerialSendNew failed";
+    }
+    delete[] tm;
+    return;
+}
+
+void FuncSerialDataCallBack(IRNETHANDLE hSerial, char * pRecvDataBuff, int BuffSize, void * context)
+{
+    return;
 }
 
 void IRCNet::ircInit()
@@ -318,6 +362,44 @@ void IRCNet::ircInit()
             errcode = -6;
             return;
         }
+    }
+
+    if (m_serialconnect != IRNETHANDLE(-1))
+    {
+        if (IRNET_ClientSerialStop(m_serialconnect))
+        {
+            m_serialconnect = IRNETHANDLE(-1);
+        }
+
+    }
+
+    VSSERIAL_INFO serialInfo;
+    serialInfo.baudrate = 115200;
+    serialInfo.checkbit = 0;
+    serialInfo.databit = 8;
+    serialInfo.flowcontrol = 0;
+
+    std::string seraddr = "";
+    std::string pwd = "";
+    std::string username = "";
+    int type = 0;
+    WORD port = 0;
+    pwd = "888888";
+    username = "888888";
+    type = 1;
+    port = 3000;
+    m_serialconnect = IRNET_ClientSerialStart(NULL, "192.168.1.29",
+        "888888",
+        "888888",
+        type,
+        &serialInfo,
+        &FuncSerialDataCallBack,
+        this,
+        port);
+    if (m_serialconnect == IRNETHANDLE(-1))
+    {
+        qDebug()<<"Open Com trans Fail~";
+        return;
     }
 
     qDebug()<<"errcode : "<<errcode;

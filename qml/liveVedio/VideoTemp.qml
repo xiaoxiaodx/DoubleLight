@@ -57,6 +57,7 @@ Rectangle {
         onS_temMax:video.fun_temMax(mvalue);
         onS_temMin:video.fun_temMin(mvalue);
         onS_temOffset:video.fun_temOffset(mvalue);
+        onS_temImage:video.fun_colorShowType(mvalue);
     }
 
     function httpParCallback(smap){

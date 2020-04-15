@@ -29,17 +29,8 @@ ComboBox {
     property int itemFontSize: 14
     property string itemFontColor: "#5A5E66"
     //
-
     property string bordColor: "transparent"
-
-
-
     property int mRadius: 10
-
-
-
-
-
 
     delegate: ItemDelegate {
         width: control.width

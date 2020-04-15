@@ -42,6 +42,9 @@ public:
     Q_INVOKABLE void fun_temMin(QVariant mvalue);
     Q_INVOKABLE void fun_temOffset(QVariant mvalue);
 
+
+    Q_INVOKABLE void fun_colorShowType(int mvalue);
+
     explicit XVideoTemp();
     ~XVideoTemp();
 
