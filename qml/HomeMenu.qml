@@ -19,12 +19,15 @@ Rectangle {
             id: btnImg
 
             anchors.left: parent.left
-            anchors.top: parent.top
+
             anchors.leftMargin: 40
-            anchors.topMargin: 14
-            width: 148
-            height: 41
-            source: "qrc:/images/logo.png"
+
+           // anchors.verticalCenter: parent.verticalCenter
+            anchors.bottom: parent.bottom
+            anchors.bottomMargin: 10
+            width: 66
+            height: 40
+            source: "qrc:/images/logo2.png"
 
         }
 

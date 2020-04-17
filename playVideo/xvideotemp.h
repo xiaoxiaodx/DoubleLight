@@ -29,7 +29,7 @@ class XVideoTemp : public QQuickPaintedItem
     Q_OBJECT
 public:
 
-    Q_INVOKABLE void startTemperatureVideo(float warnTemp);
+    Q_INVOKABLE void startTemperatureVideo(float warnTemp,QVariant type);
 
     Q_INVOKABLE void fun_timeSwitch(bool isChecked);
     Q_INVOKABLE void fun_updateDate();

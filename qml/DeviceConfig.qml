@@ -27,6 +27,7 @@ Rectangle {
     property int fontSize: 14
     property color fontColor: "#333333"
 
+    property string curDevTypeStr:"E03"
     //第一根左对齐线
     property int parSetFirstAlignLine: curLanguage === lChinese?134:curLanguage === lEnglish?230:curLanguage === lKorean?204:210
     property int parSetSecondAlignLine: curLanguage === lChinese?368:curLanguage === lEnglish?488:curLanguage === lKorean?388:538
@@ -50,12 +51,34 @@ Rectangle {
 
         property string tcpip:"192.168.1.188"
         property bool isOpenAdjustRect: true
-        property int showRectX: 65;
-        property int showRectY : 41;
-        property int showRectW : 349;
-        property int showRectH : 327;
-        property int showParentW : 494;
-        property int showParentH : 369;
+        property int e03showRectX: 65;
+        property int e03showRectY : 41;
+        property int e03showRectW : 349;
+        property int e03showRectH : 327;
+        property int e03showParentW : 494;
+        property int e03showParentH : 369;
+
+        property int f03showRectX: 65;
+        property int f03showRectY : 41;
+        property int f03showRectW : 349;
+        property int f03showRectH : 327;
+        property int f03showParentW : 494;
+        property int f03showParentH : 369;
+
+        property int d06showRectX: 65;
+        property int d06showRectY : 41;
+        property int d06showRectW : 349;
+        property int d06showRectH : 327;
+        property int d06showParentW : 494;
+        property int d06showParentH : 369;
+
+        property int d04showRectX: 65;
+        property int d04showRectY : 41;
+        property int d04showRectW : 349;
+        property int d04showRectH : 327;
+        property int d04showParentW : 494;
+        property int d04showParentH : 369;
+
     }
 
     Rectangle{
@@ -730,7 +753,7 @@ Rectangle {
                 font.pixelSize: fontSize
                 text: qsTr("图像设置")
                 color: fontColor
-                visible: curLanguage === lChinese
+                visible: curDevTypeStr==="f03"
                 anchors.bottom: line4.top
                 anchors.left: line4.left
                 anchors.bottomMargin: 20
@@ -740,7 +763,7 @@ Rectangle {
                 id:line4
                 width:parent.width - 20*2
                 height: 1
-                visible: curLanguage === lChinese
+                visible: curDevTypeStr==="f03"
                 color: "#e2e2e2"
                 anchors.top: parent.top
                 anchors.topMargin: 627
@@ -752,7 +775,7 @@ Rectangle {
                 font.pixelSize: fontSize
                 text: qsTr("图像选择")
                 color: fontColor
-                visible: curLanguage === lChinese
+                visible: curDevTypeStr==="f03"
                 anchors.right: cmbImgSelect.left
                 anchors.rightMargin: 20
                 anchors.verticalCenter: cmbImgSelect.verticalCenter
@@ -761,7 +784,7 @@ Rectangle {
                 id:cmbImgSelect
                 width:88
                 height: 28
-                visible: curLanguage === lChinese
+                visible: curDevTypeStr==="f03"
                 anchors.left: line4.left
                 anchors.leftMargin: parSetFirstAlignLine
                 anchors.top: line4.bottom
@@ -869,23 +892,46 @@ Rectangle {
     function setIsOpenAdjustRect(value){
         setting.isOpenAdjustRect = value
     }
-    function setShowRectX(value){
-        setting.showRectX = value
+
+    function setRedRect(pw,ph,rx,ry,rw,rh){
+
+
+        if(curDevTypeStr === "e03"){
+            setting.e03showParentW = pw
+            setting.e03showParentH = ph
+            setting.e03showRectX = rx
+            setting.e03showRectY = ry
+            setting.e03showRectW = rw
+            setting.e03showRectH = rh
+        }else if(curDevTypeStr === "f03"){
+            setting.f03showParentW = pw
+            setting.f03showParentH = ph
+            setting.f03showRectX = rx
+            setting.f03showRectY = ry
+            setting.f03showRectW = rw
+            setting.f03showRectH = rh
+        }else if(curDevTypeStr === "d04"){
+            setting.d04showParentW = pw
+            setting.d04showParentH = ph
+            setting.d04showRectX = rx
+            setting.d04showRectY = ry
+            setting.d04showRectW = rw
+            setting.d04showRectH = rh
+        }else if(curDevTypeStr === "d06"){
+            setting.d06showParentW = pw
+            setting.d06showParentH = ph
+            setting.d06showRectX = rx
+            setting.d06showRectY = ry
+            setting.d06showRectW = rw
+            setting.d06showRectH = rh
+        }
     }
-    function setShowRectY(value){
-        setting.showRectY = value
-    }
-    function setShowRectW(value){
-        setting.showRectW = value
-    }
-    function setShowRectH(value){
-        setting.showRectH = value
-    }
-    function setShowParentW(value){
-        setting.showParentW = value
-    }
-    function setShowParentH(value){
-        setting.showParentH = value
+
+
+
+
+    function setSwitchTime(value){
+        setting.switchTime = value
     }
 
     function getTcpip(){
@@ -895,22 +941,72 @@ Rectangle {
         return setting.isOpenAdjustRect
     }
     function getShowRectX(){
-        return setting.showRectX
+
+        if(curDevTypeStr === "e03"){
+            return setting.e03showRectX
+        }else if(curDevTypeStr === "f03"){
+            return setting.f03showRectX
+        }else if(curDevTypeStr === "d04"){
+            return setting.d04showRectX
+        }else if(curDevTypeStr === "d06"){
+            return setting.d06showRectX
+        }
     }
     function getShowRectY(){
-        return setting.showRectY
+        if(curDevTypeStr === "e03"){
+            return setting.e03showRectY
+        }else if(curDevTypeStr === "f03"){
+            return setting.f03showRectY
+        }else if(curDevTypeStr === "d04"){
+            return setting.d04showRectY
+        }else if(curDevTypeStr === "d06"){
+            return setting.d06showRectY
+        }
+
     }
     function getShowRectW(){
-        return setting.showRectW
+        if(curDevTypeStr === "e03"){
+            return setting.e03showRectW
+        }else if(curDevTypeStr === "f03"){
+            return setting.f03showRectW
+        }else if(curDevTypeStr === "d04"){
+            return setting.d04showRectW
+        }else if(curDevTypeStr === "d06"){
+            return setting.d06showRectW
+        }
     }
     function getShowRectH(){
-        return setting.showRectH
+        if(curDevTypeStr === "e03"){
+            return setting.e03showRectH
+        }else if(curDevTypeStr === "f03"){
+            return setting.f03showRectH
+        }else if(curDevTypeStr === "d04"){
+            return setting.d04showRectH
+        }else if(curDevTypeStr === "d06"){
+            return setting.d06showRectH
+        }
     }
     function getShowParentW(){
-        return setting.showParentW
+        if(curDevTypeStr === "e03"){
+            return setting.e03showParentW
+        }else if(curDevTypeStr === "f03"){
+            return setting.f03showParentW
+        }else if(curDevTypeStr === "d04"){
+            return setting.d04showParentW
+        }else if(curDevTypeStr === "d06"){
+            return setting.d06showParentW
+        }
     }
     function getShowParentH(){
-        return setting.showParentH
+        if(curDevTypeStr === "e03"){
+            return setting.e03showParentH
+        }else if(curDevTypeStr === "f03"){
+            return setting.f03showParentH
+        }else if(curDevTypeStr === "d04"){
+            return setting.d04showParentH
+        }else if(curDevTypeStr === "d06"){
+            return setting.d06showParentH
+        }
     }
 
 

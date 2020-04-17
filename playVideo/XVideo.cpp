@@ -22,7 +22,9 @@ void XVideo::fun_setInitPar(QString ip,int parentW,int parentH,int x,int y,int w
     showRectH = h;
     showParentW = parentW;
     showParentH = parentH;
-   // update();
+
+
+    qDebug()<<" fun_setInitPar  "<<showRectX<<" "<<showRectY;
 }
 
 void XVideo::startNormalVideo(float tp)
@@ -31,6 +33,9 @@ void XVideo::startNormalVideo(float tp)
     warnTemp = tp;
     createTcpThread();
     //createSearchIp();
+
+
+
 }
 
 
@@ -55,16 +60,21 @@ void XVideo::createFFmpegDecodec()
 void XVideo::fun_getInitPar()
 {
     qDebug()<<"fun_getInitPar";
-    //  emit signal_getInitPar();
 
-    QThread::msleep(100);
     QMap<QString,QVariant> map;
-    map.insert("cmd","getosdparam");
-    emit signal_httpParSet(map);
     QThread::msleep(100);
-    map.insert("cmd","setcurrenttime");
+    map.insert("cmd","getinftempmodel");
     emit signal_httpParSet(map);
+//     QThread::msleep(100);
+//    map.insert("cmd","getosdparam");
+//    emit signal_httpParSet(map);
 
+    QTimer::singleShot(2000,[&]{
+
+        QMap<QString,QVariant> map;
+        map.insert("cmd","setcurrenttime");
+        emit signal_httpParSet(map);
+    });
 
 }
 

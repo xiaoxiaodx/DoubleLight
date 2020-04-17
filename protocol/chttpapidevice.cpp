@@ -133,6 +133,7 @@ int CHttpApiDevice::HttpMsgCallBack(char * pData) {
                                 QString ssionId = value.toString();
 
                                 sprintf(this->sessionId, "%s", ssionId.toStdString().c_str());
+                                qDebug() << "登录成功   sessionid : " << curCmdState;
                                 send_httpParSet(curCmdState);
                                 qDebug() << "登录成功   sessionid : " << sessionId;
                                 return 0;
@@ -166,6 +167,10 @@ int CHttpApiDevice::HttpMsgCallBack(char * pData) {
                 }
             }else if ( "setcurrenttime" == cmd ) {
 
+            }else if ("getinftempmodel" == cmd) {
+                qDebug()<<"rec getinftempmodel";
+                callbackMap.insert("timeenable",object.value("data").toObject().value("timeenable").toInt());
+                callbackMap.insert("tempmodel",object.value("data").toObject().value("tempmodel").toString());
             }
 
 
@@ -340,7 +345,8 @@ void CHttpApiDevice::HttpGetOsdParam(){
 bool CHttpApiDevice::send_httpParSet(QMap<QString,QVariant> map)
 {
 
-    DebugLog::getInstance()->writeLog(" send_httpParSet **************");
+    qDebug()<<"send_httpParSet  "<<map;
+    DebugLog::getInstance()->writeLog(" send_httpParSet **************:");
 
     QString cmd = map.value("cmd").toString();
 
@@ -360,7 +366,11 @@ bool CHttpApiDevice::send_httpParSet(QMap<QString,QVariant> map)
         LogoutDevice();
     }else if(cmd.compare("setcurrenttime") ==0){
         HttpSetDate();
+    }else if(cmd.compare("getinftempmodel") ==0){
+        HttpGetDeviceType();
     }
+
+
 }
 
 void CHttpApiDevice::slot_httpParSet(QMap<QString,QVariant> map)
@@ -373,42 +383,27 @@ void CHttpApiDevice::slot_httpParSet(QMap<QString,QVariant> map)
     mapSend.insert("cmd","login");
     send_httpParSet(mapSend);
 
-    //    qDebug()<<" slot_httpParSet";
-    //    QMap<QString ,QVariant> mapSend;
-    //    mapSend.insert("cmd","login");
-    //    qDebug()<<"+****1";
-    //    bool sendSucc = false;
-    //    if(send_httpParSet(mapSend)){//登录
-    //        qDebug()<<"+****2";
-    //        if(send_httpParSet(map)){//登出
-    //            qDebug()<<"+****3";
-    //            mapSend.insert("cmd","loginout");
-    //            send_httpParSet(mapSend);
 
-    //            sendSucc = true;
-    //        }
-    //    }
-
-    //    qDebug()<<"+**slot_httpParSet**1";
-    //    if(sendSucc){
-    //        qDebug()<<"一次数据请求成功"<<map.value("cmd").toString();
-
-    //    }else{
-    //        qDebug()<<"数据发送失败："<<map.value("cmd").toString();
-    //        listResendCmd.append(map);
-
-    //        if(!timerReSendCmd->isActive()){
-    //            timerReSendCmd->start(500);
-    //        }
-    //    }
-
-    //    qDebug()<<"+****2";
-    //    if(g_tcpsocket != nullptr){
-    //        g_tcpsocket->disconnectFromHost();
-    //        g_tcpsocket->abort();
-    //    }
 }
+void CHttpApiDevice::HttpGetDeviceType(){
 
+    JsonMsg_T info ={"getinftempmodel","request","","012345"};
+    if(!strlen(this->sessionId)) {
+        qDebug() <<"ssionId error "<<sessionId;
+        return ;
+    }
+    sprintf(info.ssionID, "%s", this->sessionId);
+
+    QJsonObject msgObject;
+    //QJsonObject dataObj;
+   // QDateTime dateT = QDateTime::currentDateTime();
+
+
+    CjsonMakeHttpHead(&msgObject, &info);
+//    dataObj.insert("utc", dateT.toUTC().toString("yyyy-MM-ddThh:mm:ssZ"));//设置utc时间，格式："2000-10-10T03:39:44Z"
+//    msgObject.insert("data", QJsonValue(dataObj));
+    SendRequestMsg(msgObject);
+}
 void CHttpApiDevice::HttpSetDate()
 {
     JsonMsg_T info ={"setcurrenttime","request","","012345"};

@@ -63,22 +63,22 @@ Rectangle{
             }
         }
 
-        Image{
-            id:img3
-            width: 34
-            height: 34
-            source: "qrc:/images/replay.png"
-            MouseArea{
-                anchors.fill:parent
-                onPressed: {
-                    img3.source = "qrc:/images/replay_p.png"
+//        Image{
+//            id:img3
+//            width: 34
+//            height: 34
+//            source: "qrc:/images/replay.png"
+//            MouseArea{
+//                anchors.fill:parent
+//                onPressed: {
+//                    img3.source = "qrc:/images/replay_p.png"
 
-                }
-                onReleased:img3.source = "qrc:/images/replay.png"
+//                }
+//                onReleased:img3.source = "qrc:/images/replay.png"
 
-                onClicked: qmlLanguage.setLanguage(1)
-            }
-        }
+//                onClicked: qmlLanguage.setLanguage(1)
+//            }
+//        }
     }
 
 

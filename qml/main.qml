@@ -18,7 +18,7 @@ Window {
     height:900
 
     property bool isLocker: false
-    visibility : "Windowed"
+    visibility : "AutomaticVisibility"
 
     property int mouseAdjustWidth: 10
     property int minW: 1200
@@ -43,6 +43,10 @@ Window {
 
     signal s_setLanguage(var typeL);
 
+    onVisibilityChanged: {
+
+        console.debug("visibly change "+visibility)
+    }
 
     MainContent{
         id:maincontent
@@ -51,9 +55,8 @@ Window {
         visible: true//isMainContent?true:false
 
         onWinMin: {
-            if(main.visibility === 4)
-                isSpecilState = true;
-
+//            if(main.visibility === 4)
+//                isSpecilState = true;
             main.visibility = "Minimized"
         }
         onWinMax: {

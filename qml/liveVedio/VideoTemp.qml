@@ -38,7 +38,7 @@ Rectangle {
         anchors.verticalCenter: mPlayRect.verticalCenter
 
 
-        Component.onCompleted:video.startTemperatureVideo(deviceconfig.getWarnTem());
+        //Component.onCompleted:video.startTemperatureVideo(deviceconfig.getWarnTem(),"EO3");
 
         onSignal_loginStatus: main.showToast(msg);
         onSignal_areaMaxtemp:tempParCallback(map);
@@ -46,6 +46,11 @@ Rectangle {
         onSignal_initRedFrame:videoNormal.funinitRedFrame(mw,mh)
 
     }
+    Connections{
+        target: videoNormal
+        onS_tempmodelSelect:video.startTemperatureVideo(deviceconfig.getWarnTem(),mtype);
+    }
+
 
 
 

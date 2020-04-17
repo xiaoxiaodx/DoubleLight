@@ -18,7 +18,7 @@ Rectangle {
 
     signal s_startTemWarn();
     signal s_endTemWarn();
-
+    signal s_tempmodelSelect(var mtype);
 
     property int mouseAdjustWidth1: 4
     property int    wTOP:1
@@ -59,7 +59,7 @@ Rectangle {
 
 
         Component.onCompleted:{
-            video.fun_setInitPar(deviceconfig.getTcpip(),deviceconfig.getShowParentW(),deviceconfig.getShowParentH(),deviceconfig.getShowRectX(),deviceconfig.getShowRectY(),deviceconfig.getShowRectW(),deviceconfig.getShowRectH())
+            //video.fun_setInitPar(deviceconfig.getTcpip(),deviceconfig.getShowParentW(),deviceconfig.getShowParentH(),deviceconfig.getShowRectX(),deviceconfig.getShowRectY(),deviceconfig.getShowRectW(),deviceconfig.getShowRectH())
             video.startNormalVideo(deviceconfig.getWarnTem())
         }
 
@@ -294,12 +294,8 @@ Rectangle {
 
                             video.fun_setRectPar(rectadmjt.x,rectadmjt.y,rectadmjt.width,rectadmjt.height,video.width,video.height)
                             rectadmjt.visible = false
-                            deviceconfig.setShowParentW(video.width)
-                            deviceconfig.setShowParentH(video.height)
-                            deviceconfig.setShowRectX(rectadmjt.x)
-                            deviceconfig.setShowRectY(rectadmjt.y)
-                            deviceconfig.setShowRectW(rectadmjt.width)
-                            deviceconfig.setShowRectH(rectadmjt.height)
+
+                            deviceconfig.setRedRect(video.width,video.height,rectadmjt.x,rectadmjt.y,rectadmjt.width,rectadmjt.height)
                             deviceconfig.setIsOpenAdjustRect(false)
                         }
                     }
@@ -338,7 +334,6 @@ Rectangle {
     //    Connections{
     //        target: videoTemp
     //        onS_sendList:video.fun_setListRect(vmap)
-
     //    }
 
     function funsetlistRect(map){
@@ -350,17 +345,33 @@ Rectangle {
     }
 
     function httpParCallback(smap){
-        console.debug("sss");
-        console.debug("smap:"+smap)
+
         var strcmd = smap.cmd;
         console.debug("strcmd:"+strcmd)
 
-        console.debug(" " + strcmd);
         if(strcmd === "getosdparam"){
             var enable = smap.enable;
 
         }else if(strcmd === "getrecordparam"){
 
+        }else if(strcmd === "getinftempmodel"){
+
+            console.debug(" **************** "+smap.tempmodel)
+            var enable = smap.timeenable;
+            if(smap.tempmodel === "D04")
+                deviceconfig.curDevTypeStr = "d04"
+            else if(smap.tempmodel === "D06")
+                deviceconfig.curDevTypeStr = "d06"
+            else if(smap.tempmodel === "E03")
+                deviceconfig.curDevTypeStr = "e03"
+            else if(smap.tempmodel === "F03")
+                deviceconfig.curDevTypeStr = "f03"
+
+            deviceconfig.setSwitchTime(enable)
+
+
+            video.fun_setInitPar(deviceconfig.getTcpip(),deviceconfig.getShowParentW(),deviceconfig.getShowParentH(),deviceconfig.getShowRectX(),deviceconfig.getShowRectY(),deviceconfig.getShowRectW(),deviceconfig.getShowRectH())
+            s_tempmodelSelect(smap.tempmodel);
         }
     }
 

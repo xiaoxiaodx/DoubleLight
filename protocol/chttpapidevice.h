@@ -87,6 +87,7 @@ private:
     void HttpGetRecordParam();
     void HttpSetRecordParam(int);
     void HttpSetDate();
+    void HttpGetDeviceType();
     QMap<QString,QVariant> curCmdState;
 
 

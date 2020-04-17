@@ -88,5 +88,7 @@
         <file>images/adjust_cancel.png</file>
         <file>images/adjust_ensure.png</file>
         <file>images/imgTypeSelect.png</file>
+        <file>images/logo1.png</file>
+        <file>images/logo2.png</file>
     </qresource>
 </RCC>
