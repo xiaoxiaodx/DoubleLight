@@ -29,7 +29,9 @@ CHttpApiDevice::CHttpApiDevice(QString devid, QString ip, unsigned short port, Q
 
 CHttpApiDevice::~CHttpApiDevice()
 {
-
+    QMap<QString , QVariant> map;
+    map.insert("cmd","loginout");
+    slot_httpParSet(map);
 }
 void CHttpApiDevice::slot_heartimertout(){
 
@@ -40,8 +42,6 @@ void CHttpApiDevice::slot_heartimertout(){
         map.insert("cmd","keepalive");
         slot_httpParSet(map);
     }
-
-
 }
 
 void CHttpApiDevice::slot_sendtimerout()
@@ -216,7 +216,7 @@ int CHttpApiDevice::HttpMsgCallBack(char * pData) {
                                 QString ssionId = value.toString();
 
                                 sprintf(this->sessionId, "%s", ssionId.toStdString().c_str());
-
+                                DebugLog::getInstance()->writeLog("get sessionID succ");
                                 qDebug() << "登录成功   sessionid : " << sessionId;
                                 return 0;
                             }
@@ -225,8 +225,9 @@ int CHttpApiDevice::HttpMsgCallBack(char * pData) {
                         qDebug()<<"value not object ";
                     }
                 } else {
+                    DebugLog::getInstance()->writeLog("get sessionID fail");
                     qDebug()<<"not find data ";
-                    // return -1;
+
                 }
 
             } else if ("loginout" == cmd) {

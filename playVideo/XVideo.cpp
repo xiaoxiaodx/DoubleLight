@@ -112,6 +112,8 @@ void XVideo::createHttpApi(){
         connect(this, &XVideo::signal_httpParSet,httpDevice,&CHttpApiDevice::slot_httpParSet);
         connect(this, &XVideo::signal_createHttp,httpDevice,&CHttpApiDevice::createConnect);
 
+        connect(httpThread, &QThread::finished,httpDevice,&CHttpApiDevice::deleteLater);
+        connect(httpThread, &QThread::finished,httpThread,&QThread::deleteLater);
 
         httpDevice->moveToThread(httpThread);
         httpThread->start();
@@ -366,6 +368,11 @@ XVideo::~XVideo()
     if(pffmpegCodec != nullptr)
         pffmpegCodec->deleteLater();
 
+    if(httpDevice != nullptr){
+
+
+        httpThread->quit();
+    }
 
 }
 
