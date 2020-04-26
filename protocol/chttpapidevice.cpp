@@ -24,11 +24,7 @@ CHttpApiDevice::CHttpApiDevice(QString devid, QString ip, unsigned short port, Q
     g_tcpsocket = NULL;
     timeHttpSocket = NULL;
 
-    connect(&SendTimer,&QTimer::timeout,this,&CHttpApiDevice::slot_sendtimerout);
-    connect(this,&CHttpApiDevice::signal_sendMag,this,&CHttpApiDevice::send_httpParSet);
 
-    connect(&reconnectTimer,&QTimer::timeout,this,&CHttpApiDevice::slot_heartimertout);
-    reconnectTimer.start(reconnectInter);
 }
 
 CHttpApiDevice::~CHttpApiDevice()
@@ -49,9 +45,10 @@ void CHttpApiDevice::slot_heartimertout(){
 
 void CHttpApiDevice::slot_sendtimerout()
 {
-    QMutexLocker locker(&m_msgMutex);
-    if(listMsg.size() < 0){
-        SendTimer.stop();
+    //QMutexLocker locker(&m_msgMutex);
+    qDebug()<<"slot_sendtimerout    "<<listMsg.size();
+    if(listMsg.size() <= 0){
+        SendTimer->stop();
     }else{
         QMap<QString,QVariant> map = listMsg.takeFirst();
         bool isOK = false;
@@ -61,20 +58,25 @@ void CHttpApiDevice::slot_sendtimerout()
         else
             map.insert("sendCount",1);
         //如果一条消息发送了多次则默认网络异常，则重新开始创建连接
-        if(sendcount > 2000/sendertimerInter){
+        if(sendcount > 10){
+            map.insert("sendCount",0);
             createConnect();
         }
-        listMsg.append(map);
-        if(sendcount % 4 == 0)
-            emit signal_sendMag(listMsg.at(0));
 
+        if(sendcount % 4 == 0){
+            emit signal_sendMag(map);
+
+            qDebug()<< "signal_sendMag  "<<map;
+
+        }
+        listMsg.append(map);
 
     }
 }
 
 void CHttpApiDevice::removeAlreadySend(QString cmd,QString msgid1){
 
-    QMutexLocker locker(&m_msgMutex);
+    //QMutexLocker locker(&m_msgMutex);
 
     for (int i=0;i<listMsg.size();i++) {
         QMap<QString,QVariant> map = listMsg.at(i);
@@ -89,7 +91,7 @@ void CHttpApiDevice::removeAlreadySend(QString cmd,QString msgid1){
 }
 
 QString CHttpApiDevice::createMsgId(QString cmd){
-    QMutexLocker locker(&m_msgMutex);
+    //QMutexLocker locker(&m_msgMutex);
     int msgId = 0;
     for (int i=0;i<listMsg.size();i++) {
         QMap<QString,QVariant> map = listMsg.at(i);
@@ -115,12 +117,21 @@ bool CHttpApiDevice::createConnect() {
         connect(g_tcpsocket, SIGNAL(readyRead()), this, SLOT(slot_ReadMsg()));
         connect(g_tcpsocket, &QTcpSocket::connected, this, &CHttpApiDevice::slot_Connected);
 
+        SendTimer = new QTimer;
+        reconnectTimer = new QTimer;
+        connect(SendTimer,&QTimer::timeout,this,&CHttpApiDevice::slot_sendtimerout);
+        connect(this,&CHttpApiDevice::signal_sendMag,this,&CHttpApiDevice::send_httpParSet);
+
+        connect(reconnectTimer,&QTimer::timeout,this,&CHttpApiDevice::slot_heartimertout);
+        reconnectTimer->start(reconnectInter);
         g_tcpsocket->setReadBufferSize(1024*1024);
 
+    }else {
+        g_tcpsocket->disconnectFromHost();
+        g_tcpsocket->abort();
     }
 
-    g_tcpsocket->disconnectFromHost();
-    g_tcpsocket->abort();
+
 
     g_tcpsocket->connectToHost(this->g_ip,this->g_port);
 
@@ -182,7 +193,7 @@ int CHttpApiDevice::HttpMsgCallBack(char * pData) {
 
             QJsonObject object = doucment.object();  // 转化为对象
             QString cmd = object.value("cmd").toString();
-            QString msgid = object.value("msgID").toString();
+            QString msgid = object.value("msgid").toString();
             removeAlreadySend(cmd,msgid);
             qDebug()<<"接收的命令:"<<cmd;
             QMap<QString,QVariant> callbackMap;
@@ -252,8 +263,10 @@ int CHttpApiDevice::HttpMsgCallBack(char * pData) {
                 callbackMap.insert("tempcontrol",object.value("data").toObject().value("ctrlparam").toObject().value("tempcontrol").toInt());
                 callbackMap.insert("osdenable",object.value("data").toObject().value("osdenable").toInt());
             }
-//            emit signal_MsgReply(cmd);
-//            qDebug()<<"signal_ReadMsg   ";
+            //            emit signal_MsgReply(cmd);
+            //            qDebug()<<"signal_ReadMsg   ";
+
+            DebugLog::getInstance()->writeLog("callbackMap:"+callbackMap.value("cmd").toString());
             emit signal_ReadMsg(callbackMap);
 
         } else {
@@ -395,27 +408,28 @@ void CHttpApiDevice::LogoutDevice(QString msgid){
 
 void CHttpApiDevice::slot_httpParSet(QMap<QString,QVariant> map)
 {
-//    curCmdState = map;
+    //    curCmdState = map;
 
-//    QMap<QString ,QVariant> mapSend;
-//    mapSend.insert("cmd","login");
-//    send_httpParSet(mapSend);
+    //    QMap<QString ,QVariant> mapSend;
+    //    mapSend.insert("cmd","login");
+    //    send_httpParSet(mapSend);
 
-    QMutexLocker locker(&m_msgMutex);
+    qDebug()<<" slot_httpParSet "<<map;
+    //QMutexLocker locker(&m_msgMutex);
 
     QString msgid = createMsgId(map.value("cmd").toString());
     map.insert("msgid",msgid);
     listMsg.append(map);
 
-    if(!SendTimer.isActive())
-        SendTimer.start(sendertimerInter);
+    if(SendTimer != nullptr && !SendTimer->isActive())
+        SendTimer->start(sendertimerInter);
 }
 
 bool CHttpApiDevice::send_httpParSet(QMap<QString,QVariant> map)
 {
 
     qDebug()<<"send_httpParSet  "<<map;
-    DebugLog::getInstance()->writeLog(" send_httpParSet **************:");
+    DebugLog::getInstance()->writeLog(" send_httpParSet :"+ map.value("cmd").toString());
 
     QString cmd = map.value("cmd").toString();
     QString msgid = map.value("msgid").toString();
@@ -423,7 +437,7 @@ bool CHttpApiDevice::send_httpParSet(QMap<QString,QVariant> map)
         bool enable = map.value("enable").toBool();
         HttpSetOsdParam(enable,msgid);
     }else if(cmd.compare("login") ==0){
-            LoginDevice(msgid);
+        LoginDevice(msgid);
     }else if(cmd.compare("loginout") ==0){
         LogoutDevice(msgid);
     }else if(cmd.compare("setcurrenttime") ==0){
@@ -580,7 +594,7 @@ void CHttpApiDevice::HttpGetMotiondetectParam(){
     SendRequestMsg(msgObject);
 
     //设备登出
-   // this->LogoutDevice();
+    // this->LogoutDevice();
 }
 void CHttpApiDevice::HttpSetMotiondetectParam(int enable){
 

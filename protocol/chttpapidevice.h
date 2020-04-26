@@ -40,7 +40,7 @@ public:
     int CjsonMakeHttpHead(QJsonObject *msgObject, JsonMsg_T *msg);
     int SendRequestMsg(QJsonObject msg);
 
-    bool createConnect();
+
 
 
     int  HttpMsgCallBack(char * pData);
@@ -70,7 +70,7 @@ public slots:
     void slot_httpParSet(QMap<QString,QVariant> map);
     void slot_httpGetInitPar();
 
-
+    bool createConnect();
     void slot_sendtimerout();
     void slot_heartimertout();
     bool send_httpParSet(QMap<QString,QVariant> map);
@@ -106,8 +106,8 @@ private:
     const bool cmdSendSucc = true;
 
     QMutex m_msgMutex;
-    QTimer SendTimer;
-    QTimer reconnectTimer;
+    QTimer *SendTimer = nullptr;
+    QTimer *reconnectTimer = nullptr;
     QList<QMap<QString,QVariant>> listMsg;
     int reconnectTimerCount = 0 ;
     int reconnectInter = 3000;

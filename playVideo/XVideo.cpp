@@ -70,8 +70,8 @@ void XVideo::fun_getInitPar()
     map.insert("cmd","setcurrenttime");
     emit signal_httpParSet(map);
 
-    map.insert("cmd","getiradinfo");
-    emit signal_httpParSet(map);
+//    map.insert("cmd","getiradinfo");
+//    emit signal_httpParSet(map);
 }
 
 
@@ -110,9 +110,13 @@ void XVideo::createHttpApi(){
         connect(httpDevice, &CHttpApiDevice::signal_ReadMsg, this, &XVideo::slog_HttpmsgCb);
         connect(this, &XVideo::signal_getInitPar,httpDevice,&CHttpApiDevice::slot_httpGetInitPar);
         connect(this, &XVideo::signal_httpParSet,httpDevice,&CHttpApiDevice::slot_httpParSet);
+        connect(this, &XVideo::signal_createHttp,httpDevice,&CHttpApiDevice::createConnect);
+
+
         httpDevice->moveToThread(httpThread);
         httpThread->start();
 
+        emit signal_createHttp();
         // emit signal_getInitPar();
         fun_getInitPar();
     }

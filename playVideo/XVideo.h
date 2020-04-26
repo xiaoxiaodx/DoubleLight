@@ -52,6 +52,7 @@ signals:
     void signal_httpParSet(QMap<QString,QVariant> map);
     void signal_httpUiParSet(QVariant map);
     void signal_getInitPar();
+    void signal_createHttp();
 
     //http 搜索
     void signal_resetSearch();
