@@ -24,14 +24,87 @@ CHttpApiDevice::CHttpApiDevice(QString devid, QString ip, unsigned short port, Q
     g_tcpsocket = NULL;
     timeHttpSocket = NULL;
 
-    //timeoutCnt = new QTimer;
+    connect(&SendTimer,&QTimer::timeout,this,&CHttpApiDevice::slot_sendtimerout);
+    connect(this,&CHttpApiDevice::signal_sendMag,this,&CHttpApiDevice::send_httpParSet);
+
+    connect(&reconnectTimer,&QTimer::timeout,this,&CHttpApiDevice::slot_heartimertout);
+    reconnectTimer.start(reconnectInter);
 }
 
 CHttpApiDevice::~CHttpApiDevice()
 {
 
 }
+void CHttpApiDevice::slot_heartimertout(){
 
+    reconnectTimerCount++;
+    if(reconnectInter * reconnectTimerCount >= 3*60*1000){
+        QMap<QString,QVariant> map;
+        map.insert("cmd","keepalive");
+        emit signal_sendMag(map);
+    }
+
+
+}
+
+void CHttpApiDevice::slot_sendtimerout()
+{
+    QMutexLocker locker(&m_msgMutex);
+    if(listMsg.size() < 0){
+        SendTimer.stop();
+    }else{
+        QMap<QString,QVariant> map = listMsg.takeFirst();
+        bool isOK = false;
+        int sendcount = map.value("sendCount",0).toInt(&isOK);
+        if(isOK)
+            map.insert("sendCount",sendcount+1);
+        else
+            map.insert("sendCount",1);
+        //如果一条消息发送了多次则默认网络异常，则重新开始创建连接
+        if(sendcount > 2000/sendertimerInter){
+            createConnect();
+        }
+        listMsg.append(map);
+        if(sendcount % 4 == 0)
+            emit signal_sendMag(listMsg.at(0));
+
+
+    }
+}
+
+void CHttpApiDevice::removeAlreadySend(QString cmd,QString msgid1){
+
+    QMutexLocker locker(&m_msgMutex);
+
+    for (int i=0;i<listMsg.size();i++) {
+        QMap<QString,QVariant> map = listMsg.at(i);
+        QString tmpCmd = map.value("cmd").toString();
+        QString msgid = map.value("msgid").toString();
+        if(cmd.compare(tmpCmd)==0 && msgid.compare(msgid1) ==0){
+            listMsg.removeAt(i);
+            break;
+        }
+    }
+
+}
+
+QString CHttpApiDevice::createMsgId(QString cmd){
+    QMutexLocker locker(&m_msgMutex);
+    int msgId = 0;
+    for (int i=0;i<listMsg.size();i++) {
+        QMap<QString,QVariant> map = listMsg.at(i);
+        QString tmpCmd = map.value("cmd").toString();
+        QString msgid = map.value("msgid").toString();
+        if(cmd.compare(tmpCmd)==0){
+            int tmpid = msgid.toInt();
+            if(msgId < tmpid){
+                msgId = tmpid+1;
+            }
+        }
+    }
+    return QString::number(msgId);
+
+}
 bool CHttpApiDevice::createConnect() {
 
     if (g_tcpsocket == NULL)
@@ -39,10 +112,8 @@ bool CHttpApiDevice::createConnect() {
         g_tcpsocket = new QTcpSocket;
         //timeHttpSocket = new QTimer;
 
-        timerReSendCmd = new QTimer;
-        connect(timerReSendCmd, &QTimer::timeout, this, &CHttpApiDevice::slot_resendCmd);
-
         connect(g_tcpsocket, SIGNAL(readyRead()), this, SLOT(slot_ReadMsg()));
+        connect(g_tcpsocket, &QTcpSocket::connected, this, &CHttpApiDevice::slot_Connected);
 
         g_tcpsocket->setReadBufferSize(1024*1024);
 
@@ -111,10 +182,9 @@ int CHttpApiDevice::HttpMsgCallBack(char * pData) {
 
             QJsonObject object = doucment.object();  // 转化为对象
             QString cmd = object.value("cmd").toString();
-
-
+            QString msgid = object.value("msgID").toString();
+            removeAlreadySend(cmd,msgid);
             qDebug()<<"接收的命令:"<<cmd;
-
             QMap<QString,QVariant> callbackMap;
             callbackMap.insert("cmd",cmd);
             if("login" == cmd) {
@@ -133,8 +203,7 @@ int CHttpApiDevice::HttpMsgCallBack(char * pData) {
                                 QString ssionId = value.toString();
 
                                 sprintf(this->sessionId, "%s", ssionId.toStdString().c_str());
-                                qDebug() << "登录成功   sessionid : " << curCmdState;
-                                send_httpParSet(curCmdState);
+
                                 qDebug() << "登录成功   sessionid : " << sessionId;
                                 return 0;
                             }
@@ -182,17 +251,7 @@ int CHttpApiDevice::HttpMsgCallBack(char * pData) {
                 callbackMap.insert("tempdrift",object.value("data").toObject().value("ctrlparam").toObject().value("tempdrift").toInt());
                 callbackMap.insert("tempcontrol",object.value("data").toObject().value("ctrlparam").toObject().value("tempcontrol").toInt());
                 callbackMap.insert("osdenable",object.value("data").toObject().value("osdenable").toInt());
-
-
             }
-
-
-            QMap<QString,QVariant> maplogout;
-            maplogout.insert("cmd","loginout");
-            send_httpParSet(maplogout);
-            qDebug() << "登录成功   sessionid : " << sessionId;
-
-
 //            emit signal_MsgReply(cmd);
 //            qDebug()<<"signal_ReadMsg   ";
             emit signal_ReadMsg(callbackMap);
@@ -205,35 +264,6 @@ int CHttpApiDevice::HttpMsgCallBack(char * pData) {
     }
 }
 
-void CHttpApiDevice::slot_resendCmd(){
-
-//    if(listResendCmd.size() <= 0){
-//        if(timerReSendCmd != nullptr){
-//            timerReSendCmd->stop();
-//            if(g_tcpsocket != nullptr){
-//                g_tcpsocket->disconnectFromHost();
-//                g_tcpsocket->abort();
-//            }
-//        }
-//        return;
-//    }
-
-//    QMap<QString,QVariant> map = listResendCmd.takeFirst();
-//    QMap<QString ,QVariant> mapSend;
-//    mapSend.insert("cmd","login");
-//    qDebug()<<"+****1";
-//    bool sendSucc = false;
-//    if(send_httpParSet(mapSend)){//登录
-//        qDebug()<<"+****2";
-//        if(send_httpParSet(map)){//登出
-//            qDebug()<<"+****3";
-//            mapSend.insert("cmd","loginout");
-//            sendSucc = send_httpParSet(mapSend);
-//        }
-//    }
-
-
-}
 void CHttpApiDevice::slot_httpGetInitPar()
 {
     DebugLog::getInstance()->writeLog(" slot_httpGetInitPar **************");
@@ -296,28 +326,25 @@ void CHttpApiDevice::slot_ReadMsg() {
     qDebug()<<" slot_ReadMsg    ***1";
 }
 void CHttpApiDevice::slot_Connected() {
-    this->g_httpTcpConnectState = true;
-    // timeHttpSocket->stop();
+    QMap<QString,QVariant> map;
+    map.insert("cmd","login");
+    emit signal_sendMag(map);
     qDebug()<<"connetc success !";
 }
 
 void CHttpApiDevice::slot_disconnected() {
     qDebug()<<"disconnect ";
-    // g_httpTcpConnectState = false;
+
 }
 void CHttpApiDevice::slot_connectServer() {
     qDebug()<<"time out  ";
-    //    if(false == g_httpTcpConnectState) {
-    //        g_tcpsocket->abort();
-    //        g_tcpsocket->connectToHost(g_ip, g_port);
-    //    } else {
-    //        timeHttpSocket->stop();
-    //    }
+
 }
 
 
-void CHttpApiDevice::LoginDevice(){
+void CHttpApiDevice::LoginDevice(QString msgid){
     JsonMsg_T info ={"login","request","","012345"};
+    sprintf(info.msgID, "%s",msgid.toLatin1().data());
     QJsonObject dataObj;
     QJsonObject msgObject;
     qDebug()<<"===="<<QString(QLatin1String(g_loginInfo.username));
@@ -327,8 +354,9 @@ void CHttpApiDevice::LoginDevice(){
     msgObject.insert("data", QJsonValue(dataObj));
     SendRequestMsg(msgObject);
 }
-void CHttpApiDevice::LogoutDevice(){
+void CHttpApiDevice::LogoutDevice(QString msgid){
     JsonMsg_T info ={"loginout","request","","012345"};
+    sprintf(info.msgID, "%s",msgid.toLatin1().data());
     if(!strlen(this->sessionId)) {
         qDebug() <<"ssionId error "<<sessionId;
         return ;
@@ -338,31 +366,49 @@ void CHttpApiDevice::LogoutDevice(){
     CjsonMakeHttpHead(&msgObject, &info);
     SendRequestMsg(msgObject);
 }
+//void CHttpApiDevice::HttpKeepalive()
+//{
+//    JsonMsg_T info ={"keepalive","request","","012345"};
+//    if(!strlen(this->sessionId)) {
+//        qDebug() <<"ssionId error "<<sessionId;
+//        return ;
+//    }
+//    sprintf(info.ssionID, "%s", this->sessionId);
+//    QJsonObject msgObject;
+//    CjsonMakeHttpHead(&msgObject, &info);
+//    SendRequestMsg(msgObject);
+//}
+
+//void CHttpApiDevice::HttpGetOsdParam(){
 
 
-void CHttpApiDevice::HttpGetOsdParam(){
-
-
-    JsonMsg_T info ={"getosdparam","request","","012345"};
-    if(!strlen(this->sessionId)) {
-        qDebug() <<"ssionId error "<<sessionId;
-        return ;
-    }
-    sprintf(info.ssionID, "%s", this->sessionId);
-    QJsonObject msgObject;
-    CjsonMakeHttpHead(&msgObject, &info);
-    SendRequestMsg(msgObject);
-
-
-}
+//    JsonMsg_T info ={"getosdparam","request","","012345"};
+//    if(!strlen(this->sessionId)) {
+//        qDebug() <<"ssionId error "<<sessionId;
+//        return ;
+//    }
+//    sprintf(info.ssionID, "%s", this->sessionId);
+//    QJsonObject msgObject;
+//    CjsonMakeHttpHead(&msgObject, &info);
+//    SendRequestMsg(msgObject);
+//}
 
 void CHttpApiDevice::slot_httpParSet(QMap<QString,QVariant> map)
 {
-    curCmdState = map;
+//    curCmdState = map;
 
-    QMap<QString ,QVariant> mapSend;
-    mapSend.insert("cmd","login");
-    send_httpParSet(mapSend);
+//    QMap<QString ,QVariant> mapSend;
+//    mapSend.insert("cmd","login");
+//    send_httpParSet(mapSend);
+
+    QMutexLocker locker(&m_msgMutex);
+
+    QString msgid = createMsgId(map.value("cmd").toString());
+    map.insert("msgid",msgid);
+    listMsg.append(map);
+
+    if(!SendTimer.isActive())
+        SendTimer.start(sendertimerInter);
 }
 
 bool CHttpApiDevice::send_httpParSet(QMap<QString,QVariant> map)
@@ -372,35 +418,39 @@ bool CHttpApiDevice::send_httpParSet(QMap<QString,QVariant> map)
     DebugLog::getInstance()->writeLog(" send_httpParSet **************:");
 
     QString cmd = map.value("cmd").toString();
-
+    QString msgid = map.value("msgid").toString();
     if(cmd.compare("setosdparam")==0){
         bool enable = map.value("enable").toBool();
-        HttpSetOsdParam(enable);
-    }else if(cmd.compare("getosdparam")==0){
-        HttpGetOsdParam();
+        HttpSetOsdParam(enable,msgid);
     }else if(cmd.compare("login") ==0){
-        if(createConnect()){
-            qDebug()<<"http 连接成功";
-            LoginDevice();
-        }else{
-            qDebug()<<"http 连接超时";
-        }
+            LoginDevice(msgid);
     }else if(cmd.compare("loginout") ==0){
-        LogoutDevice();
+        LogoutDevice(msgid);
     }else if(cmd.compare("setcurrenttime") ==0){
-        HttpSetDate();
+        HttpSetDate(msgid);
+    }else
+        httpSendCommonCmd(cmd,msgid);
+    /*else if(cmd.compare("getosdparam")==0){
+        httpSendCommonCmd("getosdparam");
     }else if(cmd.compare("getinftempmodel") ==0){
-        HttpGetDeviceType();
+        httpSendCommonCmd("getinftempmodel");
     }else if(cmd.compare("getiradinfo") ==0){
-        HttpGetIraInfo();
+        httpSendCommonCmd("getiradinfo");
     }else if(cmd.compare("setiradinfo")==0){
         HttpSetIraInfo(map);
-    }
+    }else if(cmd.compare("keepalive")==0){
+        httpSendCommonCmd("keepalive");
+    }*/
 }
 
-void CHttpApiDevice::HttpGetIraInfo()
+void CHttpApiDevice::httpSendCommonCmd(QString cmd,QString msgid)
 {
-    JsonMsg_T info ={"getiradinfo","request","","012345"};
+
+    JsonMsg_T info;
+    sprintf(info.cmd, "%s", cmd.toLatin1().data());
+    sprintf(info.msgID, "%s", msgid.toLatin1().data());
+    sprintf(info.method, "%s", "request");
+    sprintf(info.ssionID, "%s", "");
     if(!strlen(this->sessionId)) {
         qDebug() <<"ssionId error "<<sessionId;
         return ;
@@ -411,6 +461,20 @@ void CHttpApiDevice::HttpGetIraInfo()
     CjsonMakeHttpHead(&msgObject, &info);
     SendRequestMsg(msgObject);
 }
+
+//void CHttpApiDevice::HttpGetIraInfo()
+//{
+//    JsonMsg_T info ={"getiradinfo","request","","012345"};
+//    if(!strlen(this->sessionId)) {
+//        qDebug() <<"ssionId error "<<sessionId;
+//        return ;
+//    }
+//    sprintf(info.ssionID, "%s", this->sessionId);
+
+//    QJsonObject msgObject;
+//    CjsonMakeHttpHead(&msgObject, &info);
+//    SendRequestMsg(msgObject);
+//}
 
 void CHttpApiDevice::HttpSetIraInfo(QVariantMap value)
 {
@@ -442,26 +506,27 @@ void CHttpApiDevice::HttpSetIraInfo(QVariantMap value)
     SendRequestMsg(msgObject);
 }
 
-void CHttpApiDevice::HttpGetDeviceType(){
+//void CHttpApiDevice::HttpGetDeviceType(){
 
-    JsonMsg_T info ={"getinftempmodel","request","","012345"};
-    if(!strlen(this->sessionId)) {
-        qDebug() <<"ssionId error "<<sessionId;
-        return ;
-    }
-    sprintf(info.ssionID, "%s", this->sessionId);
+//    JsonMsg_T info ={"getinftempmodel","request","","012345"};
+//    if(!strlen(this->sessionId)) {
+//        qDebug() <<"ssionId error "<<sessionId;
+//        return ;
+//    }
+//    sprintf(info.ssionID, "%s", this->sessionId);
 
-    QJsonObject msgObject;
-    //QJsonObject dataObj;
-   // QDateTime dateT = QDateTime::currentDateTime();
-    CjsonMakeHttpHead(&msgObject, &info);
-//    dataObj.insert("utc", dateT.toUTC().toString("yyyy-MM-ddThh:mm:ssZ"));//设置utc时间，格式："2000-10-10T03:39:44Z"
-//    msgObject.insert("data", QJsonValue(dataObj));
-    SendRequestMsg(msgObject);
-}
-void CHttpApiDevice::HttpSetDate()
+//    QJsonObject msgObject;
+//    //QJsonObject dataObj;
+//   // QDateTime dateT = QDateTime::currentDateTime();
+//    CjsonMakeHttpHead(&msgObject, &info);
+////    dataObj.insert("utc", dateT.toUTC().toString("yyyy-MM-ddThh:mm:ssZ"));//设置utc时间，格式："2000-10-10T03:39:44Z"
+////    msgObject.insert("data", QJsonValue(dataObj));
+//    SendRequestMsg(msgObject);
+//}
+void CHttpApiDevice::HttpSetDate(QString msgid)
 {
     JsonMsg_T info ={"setcurrenttime","request","","012345"};
+    sprintf(info.msgID, "%s",msgid.toLatin1().data());
     if(!strlen(this->sessionId)) {
         qDebug() <<"ssionId error "<<sessionId;
         return ;
@@ -479,9 +544,11 @@ void CHttpApiDevice::HttpSetDate()
     SendRequestMsg(msgObject);
 }
 
-void CHttpApiDevice::HttpSetOsdParam(int osdTimeEnable){
+void CHttpApiDevice::HttpSetOsdParam(int osdTimeEnable,QString msgid){
+
 
     JsonMsg_T info ={"setosdparam","request","","012345"};
+    sprintf(info.msgID, "%s",msgid.toLatin1().data());
     if(!strlen(this->sessionId)) {
         qDebug() <<"ssionId error "<<sessionId;
         return ;
@@ -500,8 +567,7 @@ void CHttpApiDevice::HttpSetOsdParam(int osdTimeEnable){
 }
 
 void CHttpApiDevice::HttpGetMotiondetectParam(){
-    //登录设备
-    this->LoginDevice();
+
 
     JsonMsg_T info ={"getmotiondetectparam","request","","012345"};
     if(!strlen(this->sessionId)) {
@@ -514,11 +580,10 @@ void CHttpApiDevice::HttpGetMotiondetectParam(){
     SendRequestMsg(msgObject);
 
     //设备登出
-    this->LogoutDevice();
+   // this->LogoutDevice();
 }
 void CHttpApiDevice::HttpSetMotiondetectParam(int enable){
-    //登录设备
-    this->LoginDevice();
+
 
     JsonMsg_T info ={"setmotiondetectparam","request","","012345"};
     if(!strlen(this->sessionId)) {
@@ -539,21 +604,11 @@ void CHttpApiDevice::HttpSetMotiondetectParam(int enable){
 }
 
 void CHttpApiDevice::HttpGetRecordParam(){
-    //登录设备
-    //    loginFlag = false;
-    //    this->LoginDevice();
-    //    timerEventCmd = "getrecordparam";
-    //    timeoutCnt->start(200);
+
 }
 
 void CHttpApiDevice::HttpSetRecordParam(int enable){
-    //登录设备
-    //    loginFlag = false;
-    //    this->LoginDevice();
 
-    //    timerEventCmd = "setrecordparam";
-    //    timeoutCnt->start(200);
-    //    dataEnableParam = enable;
 }
 
 void CHttpApiDevice::slot_msgEvent() {

@@ -60,32 +60,18 @@ void XVideo::fun_setIraInfo(QVariantMap map)
 void XVideo::fun_getInitPar()
 {
     qDebug()<<"fun_getInitPar";
+    QMap<QString,QVariant> map;
+    map.insert("cmd","getinftempmodel");
+    emit signal_httpParSet(map);
 
-    QTimer::singleShot(500,[&]{
-        QMap<QString,QVariant> map;
-        map.insert("cmd","getinftempmodel");
-        emit signal_httpParSet(map);
-    });
+    map.insert("cmd","getosdparam");
+    emit signal_httpParSet(map);
 
-    QTimer::singleShot(1000,[&]{
-        QMap<QString,QVariant> map;
-        map.insert("cmd","getosdparam");
-        emit signal_httpParSet(map);
-    });
+    map.insert("cmd","setcurrenttime");
+    emit signal_httpParSet(map);
 
-    QTimer::singleShot(2000,[&]{
-        QMap<QString,QVariant> map;
-        map.insert("cmd","setcurrenttime");
-        emit signal_httpParSet(map);
-    });
-
-    QTimer::singleShot(1500,[&]{
-
-        QMap<QString,QVariant> map;
-        map.insert("cmd","getiradinfo");
-        emit signal_httpParSet(map);
-
-    });
+    map.insert("cmd","getiradinfo");
+    emit signal_httpParSet(map);
 }
 
 

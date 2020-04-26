@@ -12,6 +12,7 @@
 #include <QThread>
 #include <QMutex>
 #include <QEventLoop>
+#include <QMutex>
 using namespace std;
 
 typedef struct _JsonMsg_T{
@@ -68,37 +69,50 @@ public slots:
     void slot_msgEvent();
     void slot_httpParSet(QMap<QString,QVariant> map);
     void slot_httpGetInitPar();
-    void slot_resendCmd();
-    //void slot_exitLoop(QString );
+
+
+    void slot_sendtimerout();
+    void slot_heartimertout();
+    bool send_httpParSet(QMap<QString,QVariant> map);
+
 signals:
     void signal_ReadMsg(QMap<QString,QVariant>);//QJsonObject
     void signal_httpErr();
     void signal_MsgReply(QString cmd);
+    void signal_sendMag(QMap<QString,QVariant> map);
 private:
     int connectCount = 0;
 
-    bool send_httpParSet(QMap<QString,QVariant> map);
-    void LoginDevice();
-    void LogoutDevice();
+    void removeAlreadySend(QString cmd,QString msgid);
+    QString createMsgId(QString cmd);
+    void LoginDevice(QString msgid);
+    void LogoutDevice(QString msgid);
     void HttpGetOsdParam();
-    void HttpSetOsdParam(int osdTimeEnable);
+    void HttpSetOsdParam(int osdTimeEnable,QString msgid);
     void HttpGetMotiondetectParam();
     void HttpSetMotiondetectParam(int);
     void HttpGetRecordParam();
     void HttpSetRecordParam(int);
-    void HttpSetDate();
+    void HttpSetDate(QString msgid);
     void HttpGetDeviceType();
-    void HttpGetIraInfo();
+
+
     void HttpSetIraInfo(QVariantMap value);
-    QMap<QString,QVariant> curCmdState;
+
+    void httpSendCommonCmd(QString cmd,QString msgid);
 
 
     const bool cmdSend = false;
     const bool cmdSendSucc = true;
 
+    QMutex m_msgMutex;
+    QTimer SendTimer;
+    QTimer reconnectTimer;
+    QList<QMap<QString,QVariant>> listMsg;
+    int reconnectTimerCount = 0 ;
+    int reconnectInter = 3000;
 
-    QTimer *timerReSendCmd = nullptr;
-
+    int sendertimerInter = 200;
 
 };
 

@@ -95,8 +95,6 @@ private:
 
 
     SOCKET sockfd;
-
-
     int iret;
     int irlen;
     int buflen;
@@ -105,8 +103,6 @@ private:
     float *pftpufs;
     unsigned char *pNetMsg;
     MediaContexHead stMtHd;
-
-
 };
 
 #endif // SHIGAN_H
