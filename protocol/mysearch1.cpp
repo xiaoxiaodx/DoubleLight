@@ -11,6 +11,7 @@ MySearch1::MySearch1(QObject *parent) : QObject(parent)
 {
 
 }
+
 MySearch1::~MySearch1()
 {
     qDebug()<<" MySearch1 析构";
@@ -19,7 +20,6 @@ MySearch1::~MySearch1()
 //初始化搜索
 void MySearch1::startSearch()
 {
-
     qDebug()<<"startSearch ***";
     if(s_searchsocket == NULL){
 
@@ -29,10 +29,8 @@ void MySearch1::startSearch()
 
             if( !s_searchsocket->bind(SEARCH_PORT, QUdpSocket::ReuseAddressHint) ) {
                 qDebug()<<"bind ********** !"<<s_searchsocket->state();
-
             }else{
                 qDebug()<<"bind 成功" ;
-
             }
         } else {
             qDebug()<<"socket state failed , UDP search initialization error !"<<endl;

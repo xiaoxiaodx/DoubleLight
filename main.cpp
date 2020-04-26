@@ -8,7 +8,7 @@
 #include <qqmlcontext.h>
 #include "warnmodel.h"
 #include "application.h"
-#include "qmllanguage.h"
+
 int main(int argc, char *argv[])
 {
 

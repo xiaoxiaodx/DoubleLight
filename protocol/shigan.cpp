@@ -88,9 +88,6 @@ bool ShiGan::readOneFrame(ImageInfo &info){
 
     if(iret == 1)
     {
-
-
-
         framelen = (pNetMsg[4]<< 24)|(pNetMsg[3]<<16)|(pNetMsg[2] << 8)|(pNetMsg[1]);
         //qDebug()<<"Recv over .. bufpos:%d,framelen:%d\n"<<bufpos<<" "<<framelen;
 

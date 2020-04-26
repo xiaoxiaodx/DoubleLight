@@ -155,10 +155,7 @@ int CHttpApiDevice::HttpMsgCallBack(char * pData) {
                 return 0;
             } else if ( "getosdparam" == cmd ) {
                 if( object.contains("data") ) {
-
                     callbackMap.insert("enable",object.value("data").toObject().value("time").toObject().value("enabled").toInt());
-
-
                 }
             }else if ( "getrecordparam" == cmd ) {
                 if( object.contains("data") ) {
@@ -171,6 +168,22 @@ int CHttpApiDevice::HttpMsgCallBack(char * pData) {
                 qDebug()<<"rec getinftempmodel";
                 callbackMap.insert("timeenable",object.value("data").toObject().value("timeenable").toInt());
                 callbackMap.insert("tempmodel",object.value("data").toObject().value("tempmodel").toString());
+            }else if ("getiradinfo" == cmd) {
+                qDebug()<<"rec getiradinfo";
+
+                callbackMap.insert("alarmtempEnable",object.value("data").toObject().value("alarmparam").toObject().value("enable").toInt());
+                callbackMap.insert("alarmTemp",object.value("data").toObject().value("alarmparam").toObject().value("alarmtemp").toDouble());
+                callbackMap.insert("tempdriftcaplevelMin",object.value("data").toObject().value("ctrlparamlevel").toObject().value("tempdriftcaplevel").toObject().value("min").toInt());
+
+                callbackMap.insert("tempdriftcaplevelMax",object.value("data").toObject().value("ctrlparamlevel").toObject().value("tempdriftcaplevel").toObject().value("max").toInt());
+                callbackMap.insert("tempcontrolcaplevelMin",object.value("data").toObject().value("ctrlparamlevel").toObject().value("tempdriftcaplevel").toObject().value("min").toInt());
+                callbackMap.insert("tempcontrolcaplevelMax",object.value("data").toObject().value("ctrlparamlevel").toObject().value("tempdriftcaplevel").toObject().value("max").toInt());
+
+                callbackMap.insert("tempdrift",object.value("data").toObject().value("ctrlparam").toObject().value("tempdrift").toInt());
+                callbackMap.insert("tempcontrol",object.value("data").toObject().value("ctrlparam").toObject().value("tempcontrol").toInt());
+                callbackMap.insert("osdenable",object.value("data").toObject().value("osdenable").toInt());
+
+
             }
 
 
@@ -342,6 +355,16 @@ void CHttpApiDevice::HttpGetOsdParam(){
 
 
 }
+
+void CHttpApiDevice::slot_httpParSet(QMap<QString,QVariant> map)
+{
+    curCmdState = map;
+
+    QMap<QString ,QVariant> mapSend;
+    mapSend.insert("cmd","login");
+    send_httpParSet(mapSend);
+}
+
 bool CHttpApiDevice::send_httpParSet(QMap<QString,QVariant> map)
 {
 
@@ -368,23 +391,57 @@ bool CHttpApiDevice::send_httpParSet(QMap<QString,QVariant> map)
         HttpSetDate();
     }else if(cmd.compare("getinftempmodel") ==0){
         HttpGetDeviceType();
+    }else if(cmd.compare("getiradinfo") ==0){
+        HttpGetIraInfo();
+    }else if(cmd.compare("setiradinfo")==0){
+        HttpSetIraInfo(map);
     }
-
-
 }
 
-void CHttpApiDevice::slot_httpParSet(QMap<QString,QVariant> map)
+void CHttpApiDevice::HttpGetIraInfo()
+{
+    JsonMsg_T info ={"getiradinfo","request","","012345"};
+    if(!strlen(this->sessionId)) {
+        qDebug() <<"ssionId error "<<sessionId;
+        return ;
+    }
+    sprintf(info.ssionID, "%s", this->sessionId);
+
+    QJsonObject msgObject;
+    CjsonMakeHttpHead(&msgObject, &info);
+    SendRequestMsg(msgObject);
+}
+
+void CHttpApiDevice::HttpSetIraInfo(QVariantMap value)
 {
 
+    JsonMsg_T info ={"setiradinfo","request","","012345"};
+    if(!strlen(this->sessionId)) {
+        qDebug() <<"ssionId error "<<sessionId;
+        return ;
+    }
+    sprintf(info.ssionID, "%s", this->sessionId);
 
-    curCmdState = map;
+    QJsonObject msgObject;
+    QJsonObject dataObj, alarmparamObj,ctrlparamObj;
 
-    QMap<QString ,QVariant> mapSend;
-    mapSend.insert("cmd","login");
-    send_httpParSet(mapSend);
+    CjsonMakeHttpHead(&msgObject, &info);
 
+    dataObj.insert("osdenable",value.value("osdenable").toInt());
 
+    alarmparamObj.insert("alarmtempEnable", value.value("alarmtempEnable").toInt());
+    alarmparamObj.insert("alarmtemp", value.value("alarmtemp").toString().toDouble());
+
+    ctrlparamObj.insert("tempdrift", value.value("tempdrift").toString().toInt());
+    ctrlparamObj.insert("tempcontrol", value.value("tempcontrol").toString().toInt());
+
+    dataObj.insert("alarmparam", QJsonValue(alarmparamObj));
+    dataObj.insert("ctrlparam", QJsonValue(ctrlparamObj));
+    msgObject.insert("data", QJsonValue(dataObj));
+
+    SendRequestMsg(msgObject);
 }
+
 void CHttpApiDevice::HttpGetDeviceType(){
 
     JsonMsg_T info ={"getinftempmodel","request","","012345"};
@@ -397,8 +454,6 @@ void CHttpApiDevice::HttpGetDeviceType(){
     QJsonObject msgObject;
     //QJsonObject dataObj;
    // QDateTime dateT = QDateTime::currentDateTime();
-
-
     CjsonMakeHttpHead(&msgObject, &info);
 //    dataObj.insert("utc", dateT.toUTC().toString("yyyy-MM-ddThh:mm:ssZ"));//设置utc时间，格式："2000-10-10T03:39:44Z"
 //    msgObject.insert("data", QJsonValue(dataObj));
@@ -502,66 +557,6 @@ void CHttpApiDevice::HttpSetRecordParam(int enable){
 }
 
 void CHttpApiDevice::slot_msgEvent() {
-    //    timeoutCnt->stop();
-    //    if(loginFlag == true) {
-    //        if(timerEventCmd == "setosdparam") {
-    //            JsonMsg_T info ={"setosdparam","request","","012345"};
-    //            if(!strlen(this->sessionId)) {
-    //                qDebug() <<"ssionId error "<<sessionId;
-    //                return ;
-    //            }
-    //            sprintf(info.ssionID, "%s", this->sessionId);
 
-    //            QJsonObject msgObject;
-    //            QJsonObject dataObj, timeObj;
-
-    //            CjsonMakeHttpHead(&msgObject, &info);
-
-    //            timeObj.insert("enabled", dataEnableParam);
-    //            dataObj.insert("time", QJsonValue(timeObj));
-    //            msgObject.insert("data", QJsonValue(dataObj));
-    //            SendRequestMsg(msgObject);
-    //        }else if(timerEventCmd == "getosdparam") {
-    //            JsonMsg_T info ={"getosdparam","request","","012345"};
-    //            if(!strlen(this->sessionId)) {
-    //                qDebug() <<"ssionId error "<<sessionId;
-    //                return ;
-    //            }
-    //            sprintf(info.ssionID, "%s", this->sessionId);
-    //            QJsonObject msgObject;
-    //            CjsonMakeHttpHead(&msgObject, &info);
-    //            SendRequestMsg(msgObject);
-    //        }else if(timerEventCmd == "getrecordparam") {
-    //            JsonMsg_T info ={"getrecordparam","request","","012345"};
-    //            if(!strlen(this->sessionId)) {
-    //                qDebug() <<"ssionId error "<<sessionId;
-    //                return ;
-    //            }
-    //            sprintf(info.ssionID, "%s", this->sessionId);
-    //            QJsonObject msgObject;
-    //            CjsonMakeHttpHead(&msgObject, &info);
-    //            SendRequestMsg(msgObject);
-    //        } else if(timerEventCmd == "setrecordparam") {
-    //            JsonMsg_T info ={"setrecordparam","request","","012345"};
-    //            if(!strlen(this->sessionId)) {
-    //                qDebug() <<"ssionId error "<<sessionId;
-    //                return ;
-    //            }
-    //            sprintf(info.ssionID, "%s", this->sessionId);
-
-    //            QJsonObject msgObject;
-    //            QJsonObject dataObj, timeObj;
-
-    //            CjsonMakeHttpHead(&msgObject, &info);
-    //            timeObj.insert("alldayenabled", dataEnableParam);
-    //            dataObj.insert("time", QJsonValue(timeObj));
-    //            msgObject.insert("data", QJsonValue(dataObj));
-    //            SendRequestMsg(msgObject);
-    //        }
-    //        //设备登出
-    //        this->LogoutDevice();
-    //    } else {
-    //        timeoutCnt->start(100);
-    //    }
 }
 

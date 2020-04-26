@@ -22,7 +22,7 @@ class TcpWorker : public QObject
 {
     Q_OBJECT
 public:
-    explicit TcpWorker(QObject *parent = nullptr);
+    explicit TcpWorker(int type,QObject *parent = nullptr);
     ~TcpWorker();
 
 
@@ -32,7 +32,7 @@ public:
 signals:
 
     void signal_sendImg(QImage *pimg);
-    void signal_sendH264(char* vH264Arr,int arrLen,long long pts);
+    void signal_sendH264(char* vH264Arr,int arrLen,long long pts,int resw,int resh);
 
 public slots:
 
@@ -58,6 +58,8 @@ private:
     QueueVideoInputInfo_T infoV;
     QueueAudioInputInfo_T infoA;
 
+    int vResW;
+    int vResH;
 
     int byteArr2Int(QByteArray arr);
     void parseRecevieData();
@@ -104,7 +106,7 @@ private:
     bool isConnected;
     bool isHavaData;
 
-
+    int myType=0;
 
 
 };

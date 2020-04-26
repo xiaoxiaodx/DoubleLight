@@ -180,7 +180,7 @@ void WarnModel::funFlushWarnInfo(QString capturePath,QString logFileName)//这�
                 DebugLog::getInstance()->writeLog("对日期和时间区分时数据异常"+datetStr.size());
                 break;
             }
-            QString date = datetStr[0].mid(0,2)+"-"+datetStr[0].mid(2,2)+"-"+datetStr[0].mid(4,2);
+            QString date = datetStr[0].mid(0,4)+"-"+datetStr[0].mid(4,2)+"-"+datetStr[0].mid(6,2);
             QString time = datetStr[1].mid(0,2)+":"+datetStr[1].mid(2,2)+":"+datetStr[1].mid(4,2);
 
             m_listWarn.insert(0,new WarnModelData(false,date+" "+time,temp,fileName,absolutepath));
@@ -307,7 +307,7 @@ bool WarnModel::funScreenShoot(QString path,QQuickWindow *quic,int capx,int capy
     //QImage img2 = img1.scaled(QSize(960,600),Qt::IgnoreAspectRatio);
 
     QDateTime curDateTime =  QDateTime::currentDateTime();
-    QString  curDatetimeStr = curDateTime.toString("yyMMdd_hhmmss");
+    QString  curDatetimeStr = curDateTime.toString("yyyyMMdd_hhmmss");
 
     QString desFileDir = path+"/image";
 
@@ -360,7 +360,7 @@ bool WarnModel::funScreenShoot(QString path,QQuickWindow *quic,int capx,int capy
             out <<imgInfoStr << "\n";
             imgInfofile.close();
 
-            QString date = curDateTime.toString("yy-MM-dd");
+            QString date = curDateTime.toString("yyyy-MM-dd");
             QString time = curDateTime.toString("hh:mm:ss");
 
             //是当前日期才加入列表日志

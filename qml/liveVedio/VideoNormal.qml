@@ -77,7 +77,7 @@ Rectangle {
             width: deviceconfig.getShowRectW()
             height: deviceconfig.getShowRectH()
             color: "#505D9CFF"
-            visible:deviceconfig.getIsOpenAdjustRect();
+            visible:false//deviceconfig.getIsOpenAdjustRect();
             MouseArea{
                 id:areaTop
                 x:mouseAdjustWidth1
@@ -330,6 +330,10 @@ Rectangle {
         target: deviceconfig
         onS_timeSwith:video.fun_timeSwitch(mchecked);//时间使能
         onS_temSet:video.fun_temSet(mvalue);//警报温度设置
+
+
+        onS_iradInfoSet:video.fun_setIraInfo(mvalue);
+
     }
     //    Connections{
     //        target: videoTemp
@@ -369,9 +373,30 @@ Rectangle {
 
             deviceconfig.setSwitchTime(enable)
 
-
             video.fun_setInitPar(deviceconfig.getTcpip(),deviceconfig.getShowParentW(),deviceconfig.getShowParentH(),deviceconfig.getShowRectX(),deviceconfig.getShowRectY(),deviceconfig.getShowRectW(),deviceconfig.getShowRectH())
             s_tempmodelSelect(smap.tempmodel);
+        }else if(strcmd === "getiradinfo"){
+
+
+            var alarmtempEnable = smap.alarmtempEnable;
+            var alarmTemp = smap.alarmTemp;
+            var tempdriftcaplevelMin = smap.tempdriftcaplevelMin;
+            var tempdriftcaplevelMax = smap.tempdriftcaplevelMax;
+            var tempcontrolcaplevelMin = smap.tempcontrolcaplevelMin;
+            var tempcontrolcaplevelMax = smap.tempcontrolcaplevelMax;
+            var tempdrift = smap.tempdrift;
+            var tempcontrol = smap.tempcontrol;
+            var osdenable = smap.osdenable;
+
+            deviceconfig.tempcontrolcapMax = tempcontrolcaplevelMax
+            deviceconfig.tempcontrolcapMin = tempdriftcaplevelMin;
+            deviceconfig.tempdriftcapMax = tempdriftcaplevelMax;
+            deviceconfig.tempdriftcapMin = tempdriftcaplevelMin;
+            deviceconfig.setTemDrift(tempdrift)
+            deviceconfig.setWarnTem(alarmTemp)
+            deviceconfig.setSwitchTime(osdenable)
+            deviceconfig.setTempContrl(tempcontrol)
+            deviceconfig.setSwitchWarn(alarmtempEnable)
         }
     }
 

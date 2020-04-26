@@ -1,6 +1,6 @@
 import QtQuick 2.0
 import "../qml/simpleControl"
-
+import Qt.labs.settings 1.0
 Rectangle {
 
 
@@ -10,6 +10,10 @@ Rectangle {
     signal swinMax();
     signal swinClose();
 
+    Settings {
+        id:setting1
+        property alias curLindex: cmb.currentIndex
+    }
 
     Rectangle{
         width: parent.width - rectLanguage.width -20
@@ -17,20 +21,29 @@ Rectangle {
         color: "#00ffffff"
         Image {
             id: btnImg
-
             anchors.left: parent.left
-
             anchors.leftMargin: 40
-
-           // anchors.verticalCenter: parent.verticalCenter
-            anchors.bottom: parent.bottom
-            anchors.bottomMargin: 10
-            width: 66
+            anchors.verticalCenter: parent.verticalCenter
+//            anchors.bottom: parent.bottom
+//            anchors.bottomMargin: 10
+//            width: parent.height - 26
+//           parent.height - 26
+            width: 144
             height: 40
-            source: "qrc:/images/logo2.png"
-
+            source: "qrc:/images/logo5.png"
         }
 
+//        Text {
+//            id: btnImg
+//            anchors.left: parent.left
+//            anchors.leftMargin: 40
+//            anchors.verticalCenter: parent.verticalCenter
+
+//            color: "white"
+//            font.pixelSize: 30
+//            font.bold: true
+//            text: ""
+//        }
         QmlTabBarButtonH{
             id:tabbarBtn
             height: parent.height
@@ -50,6 +63,7 @@ Rectangle {
                 tabbarBtn.barModel.append({txtStr:qsTr("设备配置")})//,imgSrc:"qrc:/images/homemenuClose.png",imgSrcEnter:"qrc:/images/homemenuClose.png"})
                 tabbarBtn.barModel.append({txtStr:qsTr("告警管理")})//,imgSrc:"qrc:/images/homemenuClose.png",imgSrcEnter:"qrc:/images/homemenuClose.png"})
 
+                setLanguage(curLanguage)
             }
 
         }
@@ -112,17 +126,25 @@ Rectangle {
             indicatorH: 7
             itemLeftMargin:-12
             itemTopMargin:0
-
+            currentIndex:1
             model: ListModel{
                 ListElement{showStr:"简体中文"}
                 ListElement{showStr:"English"}
                 ListElement{showStr:"Italian"}
                 ListElement{showStr:"Korean"}
+                ListElement{showStr:"Russian"}
+                ListElement{showStr:"Lithuanian"}
+
             }
             //{["showStr":"简体中文" "showStr":"English","Italian","Korean"]}
             onCurrentIndexChanged: {
-                curLanguage = currentIndex
-                main.s_setLanguage(currentIndex);
+                console.debug("**********************" + cmb.currentIndex)
+                curLanguage = cmb.currentIndex
+                main.s_setLanguage(curLanguage);
+
+            }
+
+            Component.onCompleted: {
             }
         }
         Rectangle{
@@ -183,23 +205,30 @@ Rectangle {
             tabbarBtn.barModel.get(index++).txtStr =  "Device Settings"
             tabbarBtn.barModel.get(index++).txtStr =  "Alarm Management"
             break;
-            break;
         case lKorean:
             tabbarBtn.barModel.get(index++).txtStr =  "미리보기"
             tabbarBtn.barModel.get(index++).txtStr =  "장비설정"
             tabbarBtn.barModel.get(index++).txtStr =  "알람관리"
-            break;
             break;
         case lItaly:
             tabbarBtn.barModel.get(index++).txtStr =  "Vista Principale"
             tabbarBtn.barModel.get(index++).txtStr =  "Settaggio"
             tabbarBtn.barModel.get(index++).txtStr =  "Gestione Allarmi"
             break;
-            break;
         case lChinese:
             tabbarBtn.barModel.get(index++).txtStr =  "主预览"
             tabbarBtn.barModel.get(index++).txtStr =  "设备配置"
             tabbarBtn.barModel.get(index++).txtStr =  "告警管理"
+            break;
+        case lRussian:
+            tabbarBtn.barModel.get(index++).txtStr =  "Основной просмотр"
+            tabbarBtn.barModel.get(index++).txtStr =  "Конфигурация устройства"
+            tabbarBtn.barModel.get(index++).txtStr =  "Сигнал тревоги"
+            break;
+        case lLithuanian:
+            tabbarBtn.barModel.get(index++).txtStr =  "Pagrindinis vaizdas"
+            tabbarBtn.barModel.get(index++).txtStr =  "Įrenginio konfiguracija"
+            tabbarBtn.barModel.get(index++).txtStr =  "Aliarminis pranešimas"
             break;
         }
     }
