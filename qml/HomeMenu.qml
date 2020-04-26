@@ -65,13 +65,13 @@ Rectangle {
                 tabbarBtn.barModel.append({txtStr:qsTr("设备配置")})//,imgSrc:"qrc:/images/homemenuClose.png",imgSrcEnter:"qrc:/images/homemenuClose.png"})
                 tabbarBtn.barModel.append({txtStr:qsTr("告警管理")})//,imgSrc:"qrc:/images/homemenuClose.png",imgSrcEnter:"qrc:/images/homemenuClose.png"})
 
-<<<<<<< HEAD
-                setLanguage(curLanguage)
-=======
+
+                //setLanguage(curLanguage)
+
                  main.curLanguage = setting1.curLindex
                  main.s_setLanguage(setting1.curLindex);
                 // setLanguage(curLanguage)
->>>>>>> 8a8a93cdb25da892e1836b7d644d539a48fda3c2
+
             }
 
         }
@@ -146,18 +146,11 @@ Rectangle {
             }
             //{["showStr":"简体中文" "showStr":"English","Italian","Korean"]}
             onCurrentIndexChanged: {
-<<<<<<< HEAD
                 console.debug("**********************" + cmb.currentIndex)
                 curLanguage = cmb.currentIndex
                 main.s_setLanguage(curLanguage);
 
-=======
 
-                curLanguage = cmb.currentIndex
-                main.s_setLanguage(curLanguage);
-
-
->>>>>>> 8a8a93cdb25da892e1836b7d644d539a48fda3c2
             }
 
             Component.onCompleted: {

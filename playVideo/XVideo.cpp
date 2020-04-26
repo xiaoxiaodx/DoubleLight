@@ -48,17 +48,12 @@ void XVideo::createFFmpegDecodec()
             connect(m_readThread,&QThread::finished,pffmpegCodec,&FfmpegCodec::deleteLater);
     }
 }
-<<<<<<< HEAD
+
 
 void XVideo::fun_setIraInfo(QVariantMap map)
 {
 
-=======
 
-void XVideo::fun_setIraInfo(QVariantMap map)
-{
-
->>>>>>> 8a8a93cdb25da892e1836b7d644d539a48fda3c2
     emit signal_httpParSet(map);
 }
 

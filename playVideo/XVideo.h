@@ -93,10 +93,6 @@ private:
 
    // QString m_ip ="10.67.1.87";
    QString m_ip ="192.168.1.188" ;
-<<<<<<< HEAD
-=======
-
->>>>>>> 8a8a93cdb25da892e1836b7d644d539a48fda3c2
 
     QThread *httpThread = nullptr;
     CHttpApiDevice *httpDevice = nullptr;
