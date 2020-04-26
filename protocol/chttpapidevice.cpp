@@ -35,9 +35,10 @@ void CHttpApiDevice::slot_heartimertout(){
 
     reconnectTimerCount++;
     if(reconnectInter * reconnectTimerCount >= 3*60*1000){
+        reconnectTimerCount = 0;
         QMap<QString,QVariant> map;
         map.insert("cmd","keepalive");
-        emit signal_sendMag(map);
+        slot_httpParSet(map);
     }
 
 
@@ -84,6 +85,7 @@ void CHttpApiDevice::removeAlreadySend(QString cmd,QString msgid1){
         QString msgid = map.value("msgid").toString();
         if(cmd.compare(tmpCmd)==0 && msgid.compare(msgid1) ==0){
             listMsg.removeAt(i);
+            DebugLog::getInstance()->writeLog("remove msg:"+cmd);
             break;
         }
     }
@@ -341,7 +343,7 @@ void CHttpApiDevice::slot_ReadMsg() {
 void CHttpApiDevice::slot_Connected() {
     QMap<QString,QVariant> map;
     map.insert("cmd","login");
-    emit signal_sendMag(map);
+    slot_httpParSet(map);
     qDebug()<<"connetc success !";
 }
 
