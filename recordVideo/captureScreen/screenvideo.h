@@ -19,6 +19,8 @@ public:
     Q_INVOKABLE void funCreateAviRecordThread(QString recordPath,int period);
 
     Q_INVOKABLE QString funGetCurPath();
+    Q_INVOKABLE QString funIsExitCurCapturePath(QString path);
+    Q_INVOKABLE QString funIsExitCurRecordPath(QString path);
 public:
     explicit ScreenVideo(QObject *parent = nullptr);
 

@@ -13,9 +13,9 @@ int main(int argc, char *argv[])
 {
 
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
-    QGuiApplication app(argc, argv);
-//    if(!app.lock())
-//         return -42;
+    Application app(argc, argv);
+    if(!app.lock())
+         return -42;
     QFont font("Microsoft Yahei");
     app.setFont(font);
     app.setOrganizationName("GaoZhi"); //1

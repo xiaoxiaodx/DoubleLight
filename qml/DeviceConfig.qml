@@ -89,6 +89,12 @@ Rectangle {
         property int d04showParentH : 369;
     }
 
+
+    Component.onCompleted: {
+
+       setting.screenShotPath =  screenv.funIsExitCurCapturePath(setting.screenShotPath)
+        setting.recordPath = screenv.funIsExitCurRecordPath(setting.recordPath)
+    }
     Rectangle{
         width: parent.width
         height: parent.height - mDeviceStateBar.height

@@ -16,24 +16,48 @@ QString ScreenVideo::funGetCurPath()
     QDir dir;
     return dir.currentPath();
 }
+
+
+QString ScreenVideo::funIsExitCurCapturePath(QString path)
+{
+
+    QDir dir;
+
+
+    if (dir.exists(path))
+        return path;
+    else
+        return dir.currentPath()+"/capture";
+}
+
+QString ScreenVideo::funIsExitCurRecordPath(QString path)
+{
+    QDir dir;
+
+
+    if (dir.exists(path))
+        return path;
+    else
+        return dir.currentPath()+"/record";
+}
 //如果还没有创建则新建记录线程，如果创建了则发送参数信息
 void ScreenVideo::funCreateScreenThread(QString capturePath,QString recordPath,int period)
 {
-//    if(writeH264 == nullptr){
+    //    if(writeH264 == nullptr){
 
-//        writeH264 = new WriteH264(capturePath,recordPath,period);
-//        writeThread = new QThread;
-//        connect(this,&ScreenVideo::signal_writeH264,writeH264,&WriteH264::slot_writeH264);
-//        connect(this,&ScreenVideo::signal_screenShot,writeH264,&WriteH264::slot_screenShot);
-//        connect(this,&ScreenVideo::signal_recordPar,writeH264,&WriteH264::slot_recordPar);
-//        connect(this,&ScreenVideo::signal_screenCapturePar,writeH264,&WriteH264::slot_screenCapturePar);
-//        connect(this,&ScreenVideo::signal_forceFinishRecord,writeH264,&WriteH264::slot_forceFinishRecord);
-//        writeH264->moveToThread(writeThread);
-//        writeThread->start();
-//    }else{
-//        emit signal_recordPar(recordPath,period);
-//        emit signal_screenCapturePar(capturePath);
-//    }
+    //        writeH264 = new WriteH264(capturePath,recordPath,period);
+    //        writeThread = new QThread;
+    //        connect(this,&ScreenVideo::signal_writeH264,writeH264,&WriteH264::slot_writeH264);
+    //        connect(this,&ScreenVideo::signal_screenShot,writeH264,&WriteH264::slot_screenShot);
+    //        connect(this,&ScreenVideo::signal_recordPar,writeH264,&WriteH264::slot_recordPar);
+    //        connect(this,&ScreenVideo::signal_screenCapturePar,writeH264,&WriteH264::slot_screenCapturePar);
+    //        connect(this,&ScreenVideo::signal_forceFinishRecord,writeH264,&WriteH264::slot_forceFinishRecord);
+    //        writeH264->moveToThread(writeThread);
+    //        writeThread->start();
+    //    }else{
+    //        emit signal_recordPar(recordPath,period);
+    //        emit signal_screenCapturePar(capturePath);
+    //    }
 
 }
 
@@ -55,24 +79,24 @@ void ScreenVideo::funCreateAviRecordThread(QString recordPath,int period)
 }
 bool ScreenVideo::funScreenShoot(QString path,QQuickWindow *quic,int capx,int capy,int capw,int caph,float warnTemp)
 {
-//    if(nullptr == writeH264)
-//        DebugLog::getInstance()->writeLog("截屏线程还未初始化");
-//    else{
-//        QImage img= quic->grabWindow();
-//        emit signal_screenShot(img,capx,capy,capw,caph,warnTemp);
-//    }
+    //    if(nullptr == writeH264)
+    //        DebugLog::getInstance()->writeLog("截屏线程还未初始化");
+    //    else{
+    //        QImage img= quic->grabWindow();
+    //        emit signal_screenShot(img,capx,capy,capw,caph,warnTemp);
+    //    }
 }
 
 
 void ScreenVideo::funScreenRecrod(QString path,QQuickWindow *quic,int capx,int capy,int capw,int caph)
 {
 
-//    if(nullptr == writeH264)
-//        DebugLog::getInstance()->writeLog("录屏线程还未初始化");
-//    else{
-//        QImage img= quic->grabWindow();
-//        emit signal_writeH264(img,capx,capy,capw,caph);
-//    }
+    //    if(nullptr == writeH264)
+    //        DebugLog::getInstance()->writeLog("录屏线程还未初始化");
+    //    else{
+    //        QImage img= quic->grabWindow();
+    //        emit signal_writeH264(img,capx,capy,capw,caph);
+    //    }
 
 
     if(aviRecord == nullptr)

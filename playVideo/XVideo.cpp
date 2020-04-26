@@ -48,10 +48,17 @@ void XVideo::createFFmpegDecodec()
             connect(m_readThread,&QThread::finished,pffmpegCodec,&FfmpegCodec::deleteLater);
     }
 }
+<<<<<<< HEAD
 
 void XVideo::fun_setIraInfo(QVariantMap map)
 {
 
+=======
+
+void XVideo::fun_setIraInfo(QVariantMap map)
+{
+
+>>>>>>> 8a8a93cdb25da892e1836b7d644d539a48fda3c2
     emit signal_httpParSet(map);
 }
 
@@ -95,6 +102,8 @@ void XVideo::createTcpThread()
 
         connect(worker,&TcpWorker::signal_sendH264,this,&XVideo::slot_recH264,Qt::DirectConnection);
         connect(this,&XVideo::signal_connentSer,worker,&TcpWorker::creatNewTcpConnect);
+        connect(worker,&TcpWorker::signal_connected,this,&XVideo::slot_tcpConnected);
+
         connect(m_readThread,&QThread::finished,worker,&TcpWorker::deleteLater);
         connect(m_readThread,&QThread::finished,m_readThread,&QThread::deleteLater);
         worker->moveToThread(m_readThread);
@@ -103,8 +112,13 @@ void XVideo::createTcpThread()
         emit signal_connentSer(m_ip,555);
 
     }
-    createHttpApi();
 
+
+}
+
+void XVideo::slot_tcpConnected()
+{
+    createHttpApi();
 }
 
 void XVideo::createHttpApi(){

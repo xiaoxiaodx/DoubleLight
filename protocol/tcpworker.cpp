@@ -107,6 +107,8 @@ void TcpWorker::slot_tcpConnected()
     DebugLog::getInstance()->writeLog( " tcp连接成功");
     isConnected = true;
     slot_tcpSendAuthentication(m_did,m_usrName,m_password);
+
+    emit signal_connected();
 }
 
 void TcpWorker::slot_tcpDisconnected()

@@ -12,8 +12,8 @@ XVideoTemp::XVideoTemp()
 {
     // setFlag(QQuickItem::ItemHasContents);
     // setRenderTarget(QQuickPaintedItem::FramebufferObject);
-
     mRenderImginfo.pImg = nullptr;
+<<<<<<< HEAD
 
 
 
@@ -22,6 +22,13 @@ XVideoTemp::XVideoTemp()
 void XVideoTemp::startTemperatureVideo(float tp,QVariant type,QVariant par1,QVariant par2)
 {
 
+=======
+}
+
+void XVideoTemp::startTemperatureVideo(float tp,QVariant type,QVariant par1,QVariant par2)
+{
+
+>>>>>>> 8a8a93cdb25da892e1836b7d644d539a48fda3c2
     QString typeStr = type.toString();
 
     DebugLog::getInstance()->writeLog("startTemperatureVideo :"+typeStr);

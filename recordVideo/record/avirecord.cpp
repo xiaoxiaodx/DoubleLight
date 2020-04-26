@@ -51,7 +51,7 @@ void AviRecord::slot_writeImage(QString path,QImage img,int capx,int capy,int ca
 
 
         if(isGotPic)
-            slot_writeVedio(arr.data(),arr.length(),1000);
+            slot_writeVedio(arr.data(),arr.length(),mPeriod*1000*1000);
     }
 
 
@@ -100,7 +100,7 @@ void AviRecord::slot_writeVedio(char* buff,int len,long long tempTime)
     qint64  u64Pts = (tmpPts  - startTime)/1000;
 
     // qDebug()<<"writer_writeframe vedio";
-    int s32Ret = writer_writeframe(pwriteHandle, 0, mPeriod,(unsigned char*)buff, len, 1);
+    int s32Ret = writer_writeframe(pwriteHandle, 0, tempTime,(unsigned char*)buff, len, 1);
 
     if(s32Ret == 0){
         isWriteSucc = true;

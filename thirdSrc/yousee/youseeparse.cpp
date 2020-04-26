@@ -360,7 +360,7 @@ static void __stdcall _previewCallback(s32 errorCode, DataFrame* frame, void* cu
         DataFrameHeader* tempHead = (DataFrameHeader*)frame->Head;
         s16* tempData = (s16*) frame->Temp;//得到温度 坐标 表（一个像素点表示一个温度值）
         if(!tempHead){
-            qDebug()<<"解析失败";
+            qDebug()<<"yousee parse failue";
             return;
         }
 
@@ -413,7 +413,7 @@ static void __stdcall _previewCallback(s32 errorCode, DataFrame* frame, void* cu
             info.pImg =  new QImage((uchar*)YouSeeParse::pFrameSrc->imageData, tempHead->Width, tempHead->Height, QImage::Format_RGB32);
             // 其它代码
         } catch ( const std::bad_alloc& e ) {
-            DebugLog::getInstance()->writeLog("Yousee 图片分配内存失败");
+            DebugLog::getInstance()->writeLog("Yousee image new memory failue");
             info.pImg = nullptr;
         }
         info.areaMaxtemp = maxAvgT;

@@ -127,7 +127,7 @@ bool ShiGan::readOneFrame(ImageInfo &info){
                 info.pImg =  new QImage(pNetMsgTmp, w, h, QImage::Format_RGB888);
                 // 其它代码
             } catch ( const std::bad_alloc& e ) {
-                qDebug()<<" 图片分配内存失败";
+                qDebug()<<" image new memory failue";
                 info.pImg = nullptr;
             }
            // delete pNetMsgTmp;

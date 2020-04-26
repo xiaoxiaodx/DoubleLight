@@ -33,7 +33,11 @@ signals:
 
     void signal_sendImg(QImage *pimg);
     void signal_sendH264(char* vH264Arr,int arrLen,long long pts,int resw,int resh);
+<<<<<<< HEAD
 
+=======
+    void signal_connected();
+>>>>>>> 8a8a93cdb25da892e1836b7d644d539a48fda3c2
 public slots:
 
     void slot_readData();
