@@ -8,9 +8,9 @@ CONFIG += c++11
 DEFINES += QT_DEPRECATED_WARNINGS
 # �汾��Ϣ
 VERSION = 1.1.0.8
-# ͼ��
-RC_ICONS = myicon2.ico
-TARGET=Gaozhi_Smart
+# ͼ
+RC_ICONS = myicon5.ico
+TARGET=ITEM
 # ��˾����
 QMAKE_TARGET_COMPANY = "�����Ƽ�"
 
@@ -25,8 +25,6 @@ QMAKE_TARGET_COPYRIGHT = "Copyright 2020-2016 The Qt Company Ltd. All rights res
 
 # ���ģ����壩
 RC_LANG = 0x0004
-
-TRANSLATIONS = zh_CN.ts en_US.ts
 
 SOURCES += \
         main.cpp \
@@ -58,11 +56,10 @@ SOURCES += \
     thirdSrc/avi/avienc_adapt.cpp \
     thirdSrc/avi/hi_avi.cpp \
     recordVideo/record/avirecord.cpp \
-    qmllanguage.cpp \
     protocol/shigan.cpp \
     protocol/shiganobject.cpp \
-    thirdSrc/irc/ircnet.cpp
-
+    thirdSrc/irc/ircnet.cpp \
+    thirdSrc/J07/j07device.cpp
 
 HEADERS += \
     playVideo/XVideo.h \
@@ -98,10 +95,10 @@ HEADERS += \
     thirdSrc/avi/hi_avi.h \
     thirdSrc/avi/hi_type.h \
     recordVideo/record/avirecord.h \
-    qmllanguage.h \
     protocol/shigan.h \
     protocol/shiganobject.h \
-    thirdSrc/irc/ircnet.h
+    thirdSrc/irc/ircnet.h \
+    thirdSrc/J07/j07device.h
 
 RESOURCES += qml.qrc
 
@@ -147,6 +144,7 @@ INCLUDEPATH += $$PWD/thirdLib/OpenCV4.1.1x64/include
 LIBS += $$PWD/thirdLib/OpenCV4.1.1x64/x64/mingw/bin/libopencv_imgproc411.dll
 LIBS += $$PWD/thirdLib/OpenCV4.1.1x64/x64/mingw/bin/libopencv_core411.dll
 LIBS += $$PWD/thirdLib/OpenCV4.1.1x64/x64/mingw/bin/libopencv_highgui411.dll
+
 
 #十敢需要使用windows socket库支持
 LIBS += -lWs2_32

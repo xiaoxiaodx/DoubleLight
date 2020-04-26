@@ -12,16 +12,11 @@ XVideoTemp::XVideoTemp()
 {
     // setFlag(QQuickItem::ItemHasContents);
     // setRenderTarget(QQuickPaintedItem::FramebufferObject);
-
     mRenderImginfo.pImg = nullptr;
 }
 
-
-
-void XVideoTemp::startTemperatureVideo(float tp,QVariant type)
+void XVideoTemp::startTemperatureVideo(float tp,QVariant type,QVariant par1,QVariant par2)
 {
-
-
 
     QString typeStr = type.toString();
 
@@ -35,17 +30,24 @@ void XVideoTemp::startTemperatureVideo(float tp,QVariant type)
         createShiGan();
     }else if (typeStr.compare("F03")==0) {
         createIRCNet();
+    }else if (typeStr.compare("J07")==0) {
+        createJ07(par1.toString());
     }else{
         DebugLog::getInstance()->writeLog("------>>> tempVideo type is unknow <<<------");
     }
 
-
     warnTemp = tp;
 
-    //if(pShiGanObject == nullptr){
     connect(&timerUpdate,&QTimer::timeout,this,&XVideoTemp::slot_timeout);
     timerUpdate.start(10);
-    // }
+}
+
+void XVideoTemp::createJ07(QString ip)
+{
+    if(j07device == nullptr){
+        j07device = new J07Device(ip);
+        j07device->startRec();
+    }
 }
 
 void XVideoTemp::createYouseePull()
@@ -133,6 +135,7 @@ void XVideoTemp::slot_recImageInfo(QImage *img,QVariant var,float f)
 void XVideoTemp::fun_getInitPar()
 {
     qDebug()<<"fun_getInitPar";
+
     emit signal_getInitPar();
 }
 
@@ -151,6 +154,7 @@ void XVideoTemp::fun_temOffset(QVariant mvalue){
 
 void XVideoTemp::slot_timeout()
 {
+
     if(mutex.tryLock()){
 
         if( listBufferImginfo.size() >0){

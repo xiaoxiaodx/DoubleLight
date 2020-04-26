@@ -21,6 +21,7 @@
 #include "shiganobject.h"
 #include "debuglog.h"
 #include "irc/ircnet.h"
+#include "J07/j07device.h"
 #include <QSemaphore>
 
 
@@ -29,7 +30,7 @@ class XVideoTemp : public QQuickPaintedItem
     Q_OBJECT
 public:
 
-    Q_INVOKABLE void startTemperatureVideo(float warnTemp,QVariant type);
+    Q_INVOKABLE void startTemperatureVideo(float warnTemp,QVariant type,QVariant par1=0,QVariant par2=0);
 
     Q_INVOKABLE void fun_timeSwitch(bool isChecked);
     Q_INVOKABLE void fun_updateDate();
@@ -89,6 +90,7 @@ private:
     void createYouseePull();
     void createShiGan();
     void createIRCNet();
+    void createJ07(QString ip);
 
     QTimer timerUpdate;
 
@@ -105,12 +107,17 @@ private:
 
     QThread *shiganThread = nullptr;
     ShiGanObject *pShiGanObject = nullptr;
+
+    J07Device *j07device = nullptr;
     int shiganHeartTimerCount = 0;
 
     IRCNet mircNet;
     int tempImgWidth = 0;
     int tempImgHeight = 0;
     float warnTemp;
+
+
+    bool isStartTempVideo = false;
 
 
 };

@@ -20,7 +20,7 @@ void ShiGanObject::forceFinishThread()
 void ShiGanObject::slot_loopRec(){
 
     if(!shiGan.startRec()){
-        qDebug()<<"启动循环失败";
+        qDebug()<<"shigan start loop failue";
         return;
     }
     shiGan.loopInit();

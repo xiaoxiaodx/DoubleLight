@@ -20,8 +20,6 @@ public:
 //    Q_INVOKABLE void funPause();
 
     Q_INVOKABLE void funPlayTimeChange(QString path,QString date,QTime time);
-
-
 signals:
 
 protected:

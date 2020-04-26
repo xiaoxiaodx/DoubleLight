@@ -147,6 +147,14 @@ Popup {
             txtCancel.text = "取消"
             txtEnsure.text = "确定"
             break;
+        case lRussian:
+            txtCancel.text = "Отмена"
+            txtEnsure.text = "Подтвердить"
+            break;
+        case lChinese:
+            txtCancel.text = "Taip"
+            txtEnsure.text = "Ne"
+            break;
         }
     }
 }

@@ -88,6 +88,8 @@ Rectangle {
               isShowScreen:!isLocker
           }
 
+
+
           DeviceConfig{
               id:deviceconfig
               color: "#DFE1E6"

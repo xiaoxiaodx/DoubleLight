@@ -30,6 +30,8 @@ public:
     Q_INVOKABLE void fun_setRectPar(int sx,int sy,int sw,int sh,int pw,int ph);
     Q_INVOKABLE void fun_initRedFrame(int w,int h);
     Q_INVOKABLE void fun_setInitPar(QString ip,int parentW,int parentH,int x,int y,int w,int h);
+    Q_INVOKABLE void fun_setIraInfo(QVariantMap map);
+
     explicit XVideo();
     ~XVideo();
 
@@ -60,6 +62,7 @@ public slots:
 
     void slog_HttpmsgCb(QMap<QString,QVariant>);
     void recSearchIp(QString ip);
+    void slot_tcpConnected();
 protected:
     //  QSGNode* updatePaintNode(QSGNode *old, UpdatePaintNodeData *);
     void paint(QPainter *painter);
@@ -89,8 +92,8 @@ private:
     MySearch1 *psearch = nullptr;
     QThread *searchThread = nullptr;
 
-    //QString m_ip ="10.67.1.141";
-    QString m_ip ="192.168.1.188" ;
+   // QString m_ip ="10.67.1.87";
+   QString m_ip ="192.168.1.188" ;
 
 
     QThread *httpThread = nullptr;

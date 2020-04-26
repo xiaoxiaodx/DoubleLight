@@ -303,14 +303,19 @@ Popup {
 
         switch(curLanguage){
         case lChinese:
-            return year+qsTr('年 ') + month+qsTr('月');;
+            return year+qsTr('年 ') + month+qsTr('月');
         case lEnglish:
-
             return year + " "+getEnglishMouth(month);
         case lKorean:
             return year + " "+getEnglishMouth(month);
         case lItaly:
             return year + " "+getItalyMouth(month);
+        case lRussian:
+            return year + " "+getRussianMouth(month);
+        case lLithuanian:
+            return year + " "+getLithuanianMouth(month);
+
+
         }
 
     }
@@ -344,6 +349,35 @@ Popup {
             return "December";
         }
     }
+    function getRussianMouth(value){
+        switch(value){
+        case 1:
+            return "Январь";
+        case 2:
+            return "Февраль";
+        case 3:
+            return "Март";
+        case 4:
+            return "Апрель";
+        case 5:
+            return "Май";
+        case 6:
+            return "Июнь";
+        case 7:
+            return "Июль";
+        case 8:
+            return "Август";
+        case 9:
+            return "Сентябрь";
+        case 10:
+            return "Октябрь";
+        case 11:
+            return "Ноябрь";
+        case 12:
+            return "Декабрь";
+        }
+    }
+
     function getItalyMouth(value){
         switch(value){
         case 1:
@@ -373,10 +407,38 @@ Popup {
         }
     }
 
+    function getLithuanianMouth(value){
+        switch(value){
+        case 1:
+            return "Sausis";
+        case 2:
+            return "Vasaris";
+        case 3:
+            return "Kovas";
+        case 4:
+            return "Balandis";
+        case 5:
+            return "Gegužė";
+        case 6:
+            return "Birželis";
+        case 7:
+            return "Liepa";
+        case 8:
+            return "Rugpjūtis";
+        case 9:
+            return "Rugsėjis";
+        case 10:
+            return "Spalis";
+        case 11:
+            return "Lapkritis";
+        case 12:
+            return "Gruodis";
+        }
+    }
 
     function getWeeklyStr(week){
 
-       // console.debug("week:"+week);
+        // console.debug("week:"+week);
         switch(curLanguage){
         case lChinese:
             return getChineseWeekly(week);
@@ -386,6 +448,10 @@ Popup {
             return getEnglishWeekly(week);
         case lItaly:
             return getItalyWeekly(week);
+        case lRussian:
+            return getRussianWeekly(week);
+        case lLithuanian:
+            return getLithuanianWeekly(week);
         }
 
     }
@@ -444,7 +510,45 @@ Popup {
         }
     }
 
+    function getRussianWeekly(value){
+        switch(value){
+        case 1:
+            return "Пн";
+        case 2:
+            return "Вт";
+        case 3:
+            return "Ср";
+        case 4:
+            return "Чт";
+        case 5:
+            return "Пт";
+        case 6:
+            return "Сб";
+        case 7:
+            return "Вс";
+        }
+    }
 
+    function getLithuanianWeekly(value){
+
+        switch(value){
+        case 1:
+            return "Pr.";
+        case 2:
+            return "A.";
+        case 3:
+            return "T.";
+        case 4:
+            return "K.";
+        case 5:
+            return "Pn.";
+        case 6:
+            return "Š.";
+        case 7:
+            return "Sk.";
+        }
+
+    }
     Connections{
         target: main
         onS_setLanguage:setLanguage(typeL);
@@ -467,6 +571,14 @@ Popup {
         case lChinese:
             txtCancel.text = "取消"
             txtEnsure.text = "确定"
+            break;
+        case lLithuanian:
+            txtCancel.text = "Atšaukti"
+            txtEnsure.text = "Patvirtinti"
+            break;
+        case lRussian:
+            txtCancel.text = "Отмена"
+            txtEnsure.text = "Подтвердить"
             break;
         }
     }

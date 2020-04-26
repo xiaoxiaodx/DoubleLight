@@ -24,16 +24,25 @@ Rectangle {
     signal s_temMin(var mvalue);
     signal s_temImage(var mvalue);
 
+    signal s_iradInfoSet(var mvalue);
+
     property int fontSize: 14
     property color fontColor: "#333333"
 
     property string curDevTypeStr:"E03"
     //第一根左对齐线
-    property int parSetFirstAlignLine: curLanguage === lChinese?134:curLanguage === lEnglish?230:curLanguage === lKorean?204:210
-    property int parSetSecondAlignLine: curLanguage === lChinese?368:curLanguage === lEnglish?488:curLanguage === lKorean?388:538
+    property int parSetFirstAlignLine: curLanguage === lChinese?134:curLanguage === lEnglish?230:curLanguage === lKorean?204:curLanguage ===lRussian?210:300
+    property int parSetSecondAlignLine: curLanguage === lChinese?368:curLanguage === lEnglish?488:curLanguage === lKorean?388:curLanguage ===lRussian?538:700
+
+    property int tempdriftcapMax: 2
+    property int tempdriftcapMin: -2
+    property int tempcontrolcapMax: 6
+    property int tempcontrolcapMin: 0
     Settings {
         id:setting
+
         fileName: "config.ini"
+
         property alias recordPath: inputRecordPath.text
         property alias screenShotPath: inputScreenShotPath.text
         property alias temDrift:inputTempDrift.text
@@ -78,9 +87,14 @@ Rectangle {
         property int d04showRectH : 327;
         property int d04showParentW : 494;
         property int d04showParentH : 369;
-
     }
 
+
+    Component.onCompleted: {
+
+       setting.screenShotPath =  screenv.funIsExitCurCapturePath(setting.screenShotPath)
+        setting.recordPath = screenv.funIsExitCurRecordPath(setting.recordPath)
+    }
     Rectangle{
         width: parent.width
         height: parent.height - mDeviceStateBar.height
@@ -214,7 +228,7 @@ Rectangle {
                         onPressed: {
                             imgValueUp.source="qrc:/images/arrow_up_p.png"
                             var num = parseInt(inputTempDrift.text)
-                            if(num >= 2)
+                            if(num >= tempdriftcapMax)
                                 return
 
                             inputTempDrift.text = ""+(Number(num)+Number(1))
@@ -239,7 +253,7 @@ Rectangle {
                             imgValuedown.source="qrc:/images/arrow_low_p.png"
                             var num = parseInt(inputTempDrift.text)
 
-                            if(num <= -2)
+                            if(num <= tempdriftcapMin)
                                 return
 
                             inputTempDrift.text = ""+(Number(num)-Number(1))
@@ -329,11 +343,10 @@ Rectangle {
                         onPressed: {
                             imgValueMinUp.source="qrc:/images/arrow_up_p.png"
                             var num = parseInt(inputTempMin.text)
-                            if(num >= 6)
+                            if(num >= tempcontrolcapMax)
                                 return
 
                             inputTempMin.text = ""+(Number(num)+Number(1))
-
                         }
                         onReleased: imgValueMinUp.source="qrc:/images/arrow_up.png"
                     }
@@ -354,7 +367,7 @@ Rectangle {
                             imgValueMindown.source="qrc:/images/arrow_low_p.png"
                             var num = parseInt(inputTempMin.text)
 
-                            if(num <= 0)
+                            if(num <= tempcontrolcapMin)
                                 return
 
                             inputTempMin.text = ""+(Number(num)-Number(1))
@@ -780,6 +793,16 @@ Rectangle {
                 anchors.rightMargin: 20
                 anchors.verticalCenter: cmbImgSelect.verticalCenter
             }
+
+//            Button{
+//                width: 100
+//                height: 30
+//                text: "test "
+//                anchors.left: txtImageSelect.right
+//                anchors.top: txtImageSelect.top
+//                onClicked: iradInfoSet()
+//            }
+
             MyComBox{
                 id:cmbImgSelect
                 width:88
@@ -851,6 +874,40 @@ Rectangle {
         }
     }
 
+    //            dataObj.insert("osdenable",value.value("osdenable").toInt());
+    //            alarmparamObj.insert("alarmtempEnable", value.value("alarmtempEnable").toInt());
+    //            alarmparamObj.insert("alarmtemp", value.value("alarmtemp").toDouble());
+    //            ctrlparamObj.insert("tempdrift", value.value("tempdrift").toInt());
+    //            ctrlparamObj.insert("tempcontrol", value.value("tempcontrol").toInt());
+    //            dataObj.insert("alarmparam", QJsonValue(alarmparamObj));
+    //            dataObj.insert("ctrlparam", QJsonValue(ctrlparamObj));
+
+
+
+    function iradInfoSet(){
+
+        var osdenableV;
+        if(swithTime.checked)
+            osdenableV = 1
+        else
+            osdenableV = 0
+        var alarmtempEnableV;
+        if(swichWarn.checked)
+            alarmtempEnableV = 1;
+        else
+            alarmtempEnableV = 0;
+
+        var map ={
+            osdenable:osdenableV,
+            alarmtempEnable:alarmtempEnableV,
+            alarmtemp:inputTem.text,
+            tempdrift:inputTempDrift.text,
+            tempcontrol:inputTempMin.text,
+            cmd:"setiradinfo"
+        }
+        s_iradInfoSet(map);
+    }
+
 
     function getRecordPath(){
         return setting.recordPath;
@@ -861,16 +918,34 @@ Rectangle {
     function getTemDrift(){
         return setting.temDrift
     }
+    function setTemDrift(mvalue){
+        inputTempDrift.text = mvalue;
+    }
+
+
     function getWarnTem(){
         return setting.warnTem
     }
+    function setWarnTem(mvalue){
+        inputTem.text = mvalue
+    }
+
     function getSwitchWarn()
     {
         return setting.switchWarn;
     }
 
+    function setSwitchWarn(mvalue)
+    {
+       swichWarn.checked = mvalue
+    }
+
     function getSwitchTime(){
         return setting.switchTime
+    }
+
+    function setSwitchTime(mvalue){
+        swithTime.checked = mvalue
     }
 
     function getSwitchRecord(){
@@ -885,6 +960,9 @@ Rectangle {
         return setting.switchBeer
     }
 
+    function setTempContrl(mavlue){
+        inputTempMin.text = mavlue
+    }
 
     function setTcpip(value){
         setting.tcpip = value
@@ -927,12 +1005,6 @@ Rectangle {
         }
     }
 
-
-
-
-    function setSwitchTime(value){
-        setting.switchTime = value
-    }
 
     function getTcpip(){
         return setting.tcpip
@@ -1023,7 +1095,7 @@ Rectangle {
             txtRecordSet.text = "Video Settings"
             txtRecortPath.text = "Storage Path"
             txtScreenShotPath.text = "Storage Path"
-            txtWarnTemSet.text = "Alarm Temperatur"
+            txtWarnTemSet.text = "Alarm Temperature"
             labelSwitchTime.text = "Time"
             labelTime.text = "Time OSD"
             txtparset.text = "Parameter Settings"
@@ -1078,6 +1150,36 @@ Rectangle {
             txtSwichWarn.text = "报警开关"
             txtTempMin.text = "温度控制阀"
             txtTempDrift.text = "温漂设置"
+            break;
+        case lRussian:
+            txtRecordSet.text = "Настройка записи"
+            txtRecortPath.text = "Путь хранения видео"
+            txtScreenShotPath.text = "Путь сохранения снимка"
+            txtWarnTemSet.text = "Температура тревоги"
+            labelSwitchTime.text = "Время"
+            labelTime.text = "Время OSD"
+            txtparset.text = "Настройка параметров"
+            txtSwichBeer.text = "Звуковой сигнал"
+            txtSwichRecord.text = "Запись"
+            txtSwichScreenShot.text = "Снимок"
+            txtSwichWarn.text = "Тревога"
+            txtTempMin.text = "Max Min температура"
+            txtTempDrift.text = "Коррекция температуры"
+            break;
+        case lLithuanian:
+            txtRecordSet.text = "Vaizdo parametrų nustatymas"
+            txtRecortPath.text = "Vaizdo įrašo saugojimo kelias "
+            txtScreenShotPath.text = "Momentinių nuotraukų išsaugojimo kelias"
+            txtWarnTemSet.text = "Temperatūros aliarmas"
+            labelSwitchTime.text = "Rodymas"
+            labelTime.text = "Laiko rodymas"
+            txtparset.text = "Parametrų nustatymai"
+            txtSwichBeer.text = "Sirena"
+            txtSwichRecord.text = "Įrašyti vaizdą"
+            txtSwichScreenShot.text = "Nuotrauka "
+            txtSwichWarn.text = "Aliarmas"
+            txtTempMin.text = "Temperatūros ribų nustatymas"
+            txtTempDrift.text = "Temperatūrinio dreifo nustatymas "
             break;
         }
     }

@@ -6,6 +6,9 @@ import QtQml 2.12
 import "./dialog"
 
 //import DeviceManagerment 1.0
+
+
+
 Window {
 
     id: main;
@@ -14,15 +17,15 @@ Window {
           Qt.Window
     visible: true
 
-    width:1200
+    width:1400
     height:900
 
     property bool isLocker: false
     visibility : "AutomaticVisibility"
 
     property int mouseAdjustWidth: 10
-    property int minW: 1200
-    property int minH: 800
+    property int minW: 1400
+    property int minH: 900
 
     property string toastStr: ""
     signal lockerCHange(bool lockchange);
@@ -40,9 +43,13 @@ Window {
     property int lEnglish: 1
     property int lItaly: 2
     property int lKorean: 3
+    property int lRussian: 4
+    property int lLithuanian: 5
+
 
     signal s_setLanguage(var typeL);
 
+    Component.onCompleted: s_setLanguage(curLanguage)
     onVisibilityChanged: {
 
         console.debug("visibly change "+visibility)
@@ -68,7 +75,13 @@ Window {
         onWinClose:{
             askDialog.width = 427
             askDialog.height = 176
-            askDialog.askStr = curLanguage=== lChinese?"确认退出系统吗？":curLanguage===lEnglish?"Confirm to exit ?":curLanguage===lKorean?"나가시겠습니까?":"Uscita Dal Sistema?"
+            askDialog.askStr = curLanguage=== lChinese?"确认退出系统吗？":
+                               curLanguage===lEnglish?"Confirm to exit ?":
+                               curLanguage===lKorean?"나가시겠습니까?":
+                               curLanguage===lItaly?"Uscita Dal Sistema?":
+                               curLanguage===lRussian?"Подтвердить выход?":
+                               curLanguage===lLithuanian?"Patvirtinti išėjimą?":""
+
             askDialog.imgSrc = "qrc:/images/icon_question.png"
             askDialog.curType = askDialog.exeClose
             askDialog.open();

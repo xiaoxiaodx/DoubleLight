@@ -23,7 +23,6 @@ void XVideo::fun_setInitPar(QString ip,int parentW,int parentH,int x,int y,int w
     showParentW = parentW;
     showParentH = parentH;
 
-
     qDebug()<<" fun_setInitPar  "<<showRectX<<" "<<showRectY;
 }
 
@@ -33,12 +32,7 @@ void XVideo::startNormalVideo(float tp)
     warnTemp = tp;
     createTcpThread();
     //createSearchIp();
-
-
-
 }
-
-
 
 
 void XVideo::createFFmpegDecodec()
@@ -50,43 +44,59 @@ void XVideo::createFFmpegDecodec()
         pffmpegCodec->aNakedStreamDecodeInit(AV_CODEC_ID_PCM_ALAW,AV_SAMPLE_FMT_S16,8000,1);
         pffmpegCodec->resetSample(AV_CH_LAYOUT_MONO,AV_CH_LAYOUT_MONO,8000,44100,AV_SAMPLE_FMT_S16,AV_SAMPLE_FMT_S16,160);
 
-
         if(m_readThread != nullptr)
             connect(m_readThread,&QThread::finished,pffmpegCodec,&FfmpegCodec::deleteLater);
     }
+}
 
+void XVideo::fun_setIraInfo(QVariantMap map)
+{
+
+    emit signal_httpParSet(map);
 }
 
 void XVideo::fun_getInitPar()
 {
     qDebug()<<"fun_getInitPar";
 
-    QMap<QString,QVariant> map;
-    QThread::msleep(100);
-    map.insert("cmd","getinftempmodel");
-    emit signal_httpParSet(map);
-//     QThread::msleep(100);
-//    map.insert("cmd","getosdparam");
-//    emit signal_httpParSet(map);
+    QTimer::singleShot(500,[&]{
+        QMap<QString,QVariant> map;
+        map.insert("cmd","getinftempmodel");
+        emit signal_httpParSet(map);
+    });
+
+    QTimer::singleShot(1000,[&]{
+        QMap<QString,QVariant> map;
+        map.insert("cmd","getosdparam");
+        emit signal_httpParSet(map);
+    });
 
     QTimer::singleShot(2000,[&]{
-
         QMap<QString,QVariant> map;
         map.insert("cmd","setcurrenttime");
         emit signal_httpParSet(map);
     });
 
+    QTimer::singleShot(1500,[&]{
+
+        QMap<QString,QVariant> map;
+        map.insert("cmd","getiradinfo");
+        emit signal_httpParSet(map);
+
+    });
 }
 
 
 void XVideo::createTcpThread()
 {
     if(worker == nullptr){
-        worker = new TcpWorker();
+        worker = new TcpWorker(0);
         m_readThread = new QThread;
 
         connect(worker,&TcpWorker::signal_sendH264,this,&XVideo::slot_recH264,Qt::DirectConnection);
         connect(this,&XVideo::signal_connentSer,worker,&TcpWorker::creatNewTcpConnect);
+        connect(worker,&TcpWorker::signal_connected,this,&XVideo::slot_tcpConnected);
+
         connect(m_readThread,&QThread::finished,worker,&TcpWorker::deleteLater);
         connect(m_readThread,&QThread::finished,m_readThread,&QThread::deleteLater);
         worker->moveToThread(m_readThread);
@@ -95,8 +105,13 @@ void XVideo::createTcpThread()
         emit signal_connentSer(m_ip,555);
 
     }
-    createHttpApi();
 
+
+}
+
+void XVideo::slot_tcpConnected()
+{
+    createHttpApi();
 }
 
 void XVideo::createHttpApi(){
@@ -119,7 +134,6 @@ void XVideo::slog_HttpmsgCb(QMap<QString,QVariant> map) {
 
     qDebug()<<" slog_HttpmsgCb "<<map;
     emit signal_httpUiParSet(QVariant::fromValue(map));
-
 }
 
 void XVideo::createSearchIp()
@@ -135,7 +149,6 @@ void XVideo::createSearchIp()
     //        psearch->moveToThread(searchThread);
     //        searchThread->start();
     //    }
-
     //    emit signal_resetSearch();
 
 }
@@ -145,7 +158,6 @@ void XVideo::recSearchIp(QString ip)
 
     DebugLog::getInstance()->writeLog("my recSearchIp:"+ip);
     //qDebug()<<"my recSearchIp:"<<ip;
-
     //m_ip = "10.67.1.146";//ip;//"192.168.1.101";
     //createTcpThread();
 
@@ -313,24 +325,24 @@ void XVideo::fun_initRedFrame(int w,int h){
 
     tempImgResW = w;
     tempImgResH = h;
-//    if(w == 384 && h==288){
+    //    if(w == 384 && h==288){
 
-//        showRectX = 65;
-//        showRectY = 41;
-//        showRectW = 349;
-//        showRectH = 327;
-//        showParentW = 494;
-//        showParentH = 369;
+    //        showRectX = 65;
+    //        showRectY = 41;
+    //        showRectW = 349;
+    //        showRectH = 327;
+    //        showParentW = 494;
+    //        showParentH = 369;
 
 
-//    }else if(w == 160 && h==120){
-//        showRectX = 192;
-//        showRectY = 107;
-//        showRectW = 720;
-//        showRectH = 605;
-//        showParentW = 954;
-//        showParentH = 714;
-//    }
+    //    }else if(w == 160 && h==120){
+    //        showRectX = 192;
+    //        showRectY = 107;
+    //        showRectW = 720;
+    //        showRectH = 605;
+    //        showParentW = 954;
+    //        showParentH = 714;
+    //    }
 }
 
 

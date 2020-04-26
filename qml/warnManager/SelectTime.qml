@@ -173,9 +173,7 @@ Rectangle {
                 }
             }
         }
-
     }
-
 
     Connections{
         target: main
@@ -199,6 +197,14 @@ Rectangle {
         case lChinese:
             txtCancel.text = "取消"
             txtEnsure.text = "确定"
+            break
+        case lRussian:
+            txtCancel.text = "нет"
+            txtEnsure.text = "да"
+            break;
+        case lLithuanian:
+            txtCancel.text = "Ne"
+            txtEnsure.text = "Taip"
             break;
         }
     }

@@ -88,6 +88,8 @@ private:
     void HttpSetRecordParam(int);
     void HttpSetDate();
     void HttpGetDeviceType();
+    void HttpGetIraInfo();
+    void HttpSetIraInfo(QVariantMap value);
     QMap<QString,QVariant> curCmdState;
 
 

@@ -38,7 +38,7 @@ Rectangle {
         anchors.verticalCenter: mPlayRect.verticalCenter
 
 
-        //Component.onCompleted:video.startTemperatureVideo(deviceconfig.getWarnTem(),"EO3");
+        //Component.onCompleted:video.startTemperatureVideo(deviceconfig.getWarnTem(),"D04");
 
         onSignal_loginStatus: main.showToast(msg);
         onSignal_areaMaxtemp:tempParCallback(map);
@@ -48,7 +48,12 @@ Rectangle {
     }
     Connections{
         target: videoNormal
-        onS_tempmodelSelect:video.startTemperatureVideo(deviceconfig.getWarnTem(),mtype);
+        onS_tempmodelSelect:{
+            if(mtype === "J07")
+                video.startTemperatureVideo(deviceconfig.getWarnTem(),mtype,deviceconfig.getJ07ip())
+            else
+                video.startTemperatureVideo(deviceconfig.getWarnTem(),mtype);
+        }
     }
 
 

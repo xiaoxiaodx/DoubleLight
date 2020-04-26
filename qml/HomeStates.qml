@@ -38,11 +38,13 @@ Rectangle{
                 anchors.fill:parent
                 onClicked: {
 
-                    if(!deviceconfig.getSwitchRecord()){
-                        main.showToast(qsTr("禁止录像"))
-                        return;
-                    }else{
+
                        if(!img2.isChecked){
+
+                           if(!deviceconfig.getSwitchRecord()){
+                               //main.showToast(qsTr("禁止录像"))
+                               return;
+                           }
                            img2.isChecked = true;
                            img2.source = "qrc:/images/recordv_p.png"
                            captureScrennTimer.isRecord = true
@@ -57,7 +59,7 @@ Rectangle{
                            captureScrennTimer.isRecord = false
                            vedioLayout.stopRecordLable();
                        }
-                    }
+
 
                 }
             }

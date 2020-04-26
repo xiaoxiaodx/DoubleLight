@@ -2,10 +2,10 @@
 #include<QFile>
 
 #include "debuglog.h"
-TcpWorker::TcpWorker(QObject *parent) : QObject(parent)
+TcpWorker::TcpWorker(int type,QObject *parent) : QObject(parent)
 {
 
-    // qDebug()<<"TcpWorker thread thread:"<<QThread::currentThreadId();
+    myType = type;
     initVariable();
     readDataBuff.clear();
 }
@@ -107,6 +107,8 @@ void TcpWorker::slot_tcpConnected()
     DebugLog::getInstance()->writeLog( " tcp连接成功");
     isConnected = true;
     slot_tcpSendAuthentication(m_did,m_usrName,m_password);
+
+    emit signal_connected();
 }
 
 void TcpWorker::slot_tcpDisconnected()
@@ -145,6 +147,7 @@ int TcpWorker::saveVideoInfo(QByteArray &arr)
 
     QByteArray arrW = arr.mid(index,4);
     int width = byteArr2Int(arrW);
+    vResW = width;
     index += 4;
 
 
@@ -152,6 +155,7 @@ int TcpWorker::saveVideoInfo(QByteArray &arr)
 
     int height = byteArr2Int(arrH);
 
+    vResH = height;
     index += 4;
 
     //  bitrate
@@ -313,7 +317,8 @@ void TcpWorker::parseRecevieData()
                 quint64 ptsH = 0x00000000ffffffff & infoV.highPts;
                 quint64 ptsL = 0x00000000ffffffff & infoV.lowPts;
                 quint64 pts = ptsH *256 *255*256 + ptsL;
-                emit signal_sendH264(readDataBuff.data(),m_streamDateLen,pts);
+
+                emit signal_sendH264(readDataBuff.data(),m_streamDateLen,pts,vResW,vResH);
 
 
                 readDataBuff.remove(0,m_streamDateLen);
