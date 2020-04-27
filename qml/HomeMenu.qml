@@ -23,14 +23,15 @@ Rectangle {
             id: btnImg
             anchors.left: parent.left
             anchors.leftMargin: 40
+//            anchors.topMargin: 10
             anchors.verticalCenter: parent.verticalCenter
 //            anchors.bottom: parent.bottom
 //            anchors.bottomMargin: 10
 //            width: parent.height - 26
 //           parent.height - 26
-            width: 144
-            height: 40
-            source: "qrc:/images/logo5.png"
+            width: 160
+            height: 50
+            source: "qrc:/images/logo6.png"
         }
 
 //        Text {

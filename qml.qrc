@@ -93,5 +93,6 @@
         <file>images/logo3.png</file>
         <file>images/logo4.png</file>
         <file>images/logo5.png</file>
+        <file>images/logo6.png</file>
     </qresource>
 </RCC>

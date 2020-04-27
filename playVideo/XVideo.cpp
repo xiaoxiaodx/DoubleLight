@@ -369,6 +369,7 @@ XVideo::~XVideo()
         pffmpegCodec->deleteLater();
 
     if(httpDevice != nullptr){
+
         httpThread->quit();
     }
 
