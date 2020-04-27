@@ -31,7 +31,7 @@ CHttpApiDevice::~CHttpApiDevice()
 {
     QMap<QString , QVariant> map;
     map.insert("cmd","loginout");
-    slot_httpParSet(map);
+    send_httpParSet(map);
 }
 void CHttpApiDevice::slot_heartimertout(){
 
