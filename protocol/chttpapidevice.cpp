@@ -29,9 +29,10 @@ CHttpApiDevice::CHttpApiDevice(QString devid, QString ip, unsigned short port, Q
 
 CHttpApiDevice::~CHttpApiDevice()
 {
+    DebugLog::getInstance()->writeLog("~CHttpApiDevice");
     QMap<QString , QVariant> map;
     map.insert("cmd","loginout");
-    slot_httpParSet(map);
+    send_httpParSet(map);
 }
 void CHttpApiDevice::slot_heartimertout(){
 

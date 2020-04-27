@@ -371,7 +371,7 @@ XVideo::~XVideo()
     if(httpDevice != nullptr){
 
 
-        httpThread->quit();
+       httpThread->quit();
     }
 
 }

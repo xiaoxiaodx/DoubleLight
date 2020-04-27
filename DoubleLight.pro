@@ -9,8 +9,8 @@ DEFINES += QT_DEPRECATED_WARNINGS
 # �汾��Ϣ
 VERSION = 1.1.0.8
 # ͼ
-RC_ICONS = myicon5.ico
-TARGET=ITEM
+RC_ICONS = myicon6.ico
+TARGET=TTM-S
 # ��˾����
 QMAKE_TARGET_COMPANY = "�����Ƽ�"
 
