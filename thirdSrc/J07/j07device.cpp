@@ -16,7 +16,8 @@ void J07Device::createTcpThread()
         worker = new TcpWorker(1);
         m_readThread = new QThread;
 
-        connect(worker,&TcpWorker::signal_sendH264,this,&J07Device::slot_recH264,Qt::DirectConnection);
+        // connect(worker,&TcpWorker::signal_sendH264,this,&J07Device::slot_recH264,Qt::DirectConnection);
+        connect(worker,&TcpWorker::signal_sendImg,this,&J07Device::slot_recImg,Qt::DirectConnection);
         connect(this,&J07Device::signal_connentSer,worker,&TcpWorker::creatNewTcpConnect);
         connect(m_readThread,&QThread::finished,worker,&TcpWorker::deleteLater);
         connect(m_readThread,&QThread::finished,m_readThread,&QThread::deleteLater);
@@ -28,11 +29,31 @@ void J07Device::createTcpThread()
 }
 
 
+void J07Device::slot_recImg(QImage *img,int len,quint64 time,int resw,int resh){
+
+    //qDebug()<<"slot_recImg";
+    if(img != nullptr){
+        ImageInfo info;
+        info.pImg =img;
+        info.listRect.clear();
+        XVideoTemp::mutex.lock();
+        if(XVideoTemp::listBufferImginfo.size() < XVideoTemp::maxBuffLen)
+            XVideoTemp::listBufferImginfo.append(info);
+        else{
+            if(info.pImg != nullptr)
+                delete info.pImg;
+        }
+
+        XVideoTemp::mutex.unlock();
+    }
+}
+
+
 //tcpworker 线程  rgba数据
 void J07Device::slot_recH264(char* h264Arr,int arrlen,quint64 time,int resw,int resh)
 {
 
-   // qDebug()<<QString(__FUNCTION__) <<"    "<<arrlen<< " "<<resw<<"  "<<resh;
+    qDebug()<<QString(__FUNCTION__) <<"***/***    "<<arrlen<< " "<<resw<<"  "<<resh;
 
     if(rgbBuff == nullptr)
         rgbBuff = new char[resw*resh*4];

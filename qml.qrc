@@ -94,5 +94,6 @@
         <file>images/logo4.png</file>
         <file>images/logo5.png</file>
         <file>images/logo6.png</file>
+        <file>qml/dialog/ProgressDialog.qml</file>
     </qresource>
 </RCC>

@@ -18,26 +18,21 @@ XVideoTemp::XVideoTemp()
 
 void XVideoTemp::startTemperatureVideo(float tp,QVariant type,QVariant par1,QVariant par2)
 {
-
-
     QString typeStr = type.toString();
-
     DebugLog::getInstance()->writeLog("startTemperatureVideo :"+typeStr);
-
     if(typeStr.compare("E03")==0){//384*288
         createYouseePull();
-    }else if (typeStr.compare("D04")==0) {//
+    }else if (typeStr.compare("D04")==0){//
         createYouseePull();
-    }else if (typeStr.compare("D06")==0) {
+    }else if (typeStr.compare("D06")==0){
         createShiGan();
-    }else if (typeStr.compare("F03")==0) {
+    }else if (typeStr.compare("F03")==0){
         createIRCNet();
-    }else if (typeStr.compare("J07")==0) {
-        createJ07(par1.toString());
+    }else if (typeStr.compare("J07-S")==0){
+        createJ07("192.168.173.188");
     }else{
         DebugLog::getInstance()->writeLog("------>>> tempVideo type is unknow <<<------");
     }
-
     warnTemp = tp;
 
     connect(&timerUpdate,&QTimer::timeout,this,&XVideoTemp::slot_timeout);

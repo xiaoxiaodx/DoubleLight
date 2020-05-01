@@ -51,6 +51,7 @@ typedef enum _Enum_MediaType
     MediaType_G726,
     MediaType_AAC,
     MediaType_PCM,
+    MediaType_RGB,
     MediaType_MSG,
 }Enum_MediaType;
 

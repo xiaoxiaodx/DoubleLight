@@ -10,6 +10,8 @@ XVideo::XVideo()
 
 
     pRenderImginfo.pImg = nullptr;
+
+    //createSearchIp();
 }
 
 
@@ -34,7 +36,6 @@ void XVideo::startNormalVideo(float tp)
     //createSearchIp();
 }
 
-
 void XVideo::createFFmpegDecodec()
 {
     if(pffmpegCodec == nullptr)
@@ -49,11 +50,12 @@ void XVideo::createFFmpegDecodec()
     }
 }
 
-
+void XVideo::fun_sendCommonPar(QVariantMap map)
+{
+    emit signal_httpParSet(map);
+}
 void XVideo::fun_setIraInfo(QVariantMap map)
 {
-
-
     emit signal_httpParSet(map);
 }
 
@@ -61,17 +63,17 @@ void XVideo::fun_getInitPar()
 {
     qDebug()<<"fun_getInitPar";
     QMap<QString,QVariant> map;
-    map.insert("cmd","getinftempmodel");
-    emit signal_httpParSet(map);
+    //    map.insert("cmd","getinftempmodel");
+    //    emit signal_httpParSet(map);
 
-    map.insert("cmd","getosdparam");
-    emit signal_httpParSet(map);
+    //    map.insert("cmd","getosdparam");
+    //    emit signal_httpParSet(map);
 
-    map.insert("cmd","setcurrenttime");
-    emit signal_httpParSet(map);
+    //    map.insert("cmd","setcurrenttime");
+    //    emit signal_httpParSet(map);
 
-//    map.insert("cmd","getiradinfo");
-//    emit signal_httpParSet(map);
+    //    map.insert("cmd","getiradinfo");
+    //    emit signal_httpParSet(map);
 }
 
 
@@ -91,10 +93,7 @@ void XVideo::createTcpThread()
         m_readThread->start();
 
         emit signal_connentSer(m_ip,555);
-
     }
-
-
 }
 
 void XVideo::slot_tcpConnected()
@@ -111,6 +110,7 @@ void XVideo::createHttpApi(){
         connect(this, &XVideo::signal_getInitPar,httpDevice,&CHttpApiDevice::slot_httpGetInitPar);
         connect(this, &XVideo::signal_httpParSet,httpDevice,&CHttpApiDevice::slot_httpParSet);
         connect(this, &XVideo::signal_createHttp,httpDevice,&CHttpApiDevice::createConnect);
+        connect(httpDevice, &CHttpApiDevice::signal_httpConnected,this,&XVideo::slot_httpConnected);
 
         connect(httpThread, &QThread::finished,httpDevice,&CHttpApiDevice::deleteLater);
         connect(httpThread, &QThread::finished,httpThread,&QThread::deleteLater);
@@ -120,8 +120,16 @@ void XVideo::createHttpApi(){
 
         emit signal_createHttp();
         // emit signal_getInitPar();
-        fun_getInitPar();
+        //fun_getInitPar();
     }
+}
+//获取型号后在获取其他参数
+void XVideo::slot_httpConnected()
+{
+
+    QMap<QString,QVariant> map;
+    map.insert("cmd","getinftempmodel");
+    emit signal_httpParSet(map);
 }
 
 void XVideo::slog_HttpmsgCb(QMap<QString,QVariant> map) {
@@ -132,18 +140,19 @@ void XVideo::slog_HttpmsgCb(QMap<QString,QVariant> map) {
 
 void XVideo::createSearchIp()
 {
-    //    if(psearch == nullptr){
-    //        psearch = new MySearch1;
-    //        searchThread = new QThread;
-    //        connect(psearch,&MySearch1::signal_sendIp,this,&XVideo::recSearchIp);
-    //        connect(this,&XVideo::signal_resetSearch,psearch,&MySearch1::resetSearch);
-    //        connect(this,&XVideo::signal_finishSearch,psearch,&MySearch1::forceFinishSearch);
-    //        connect(searchThread,&QThread::finished,searchThread,&MySearch1::deleteLater);
-    //        connect(searchThread,&QThread::finished,psearch,&MySearch1::deleteLater);
-    //        psearch->moveToThread(searchThread);
-    //        searchThread->start();
-    //    }
-    //    emit signal_resetSearch();
+    if(psearch == nullptr){
+        psearch = new MySearch1;
+        psearch->createSearch();
+//        searchThread = new QThread;
+        connect(psearch,&MySearch1::signal_sendIp,this,&XVideo::recSearchIp);
+//        connect(this,&XVideo::signal_resetSearch,psearch,&MySearch1::resetSearch);
+//        connect(this,&XVideo::signal_finishSearch,psearch,&MySearch1::forceFinishSearch);
+//        connect(searchThread,&QThread::finished,searchThread,&MySearch1::deleteLater);
+//        connect(searchThread,&QThread::finished,psearch,&MySearch1::deleteLater);
+//        psearch->moveToThread(searchThread);
+//        searchThread->start();
+    }
+    //emit signal_resetSearch();
 
 }
 
@@ -152,9 +161,8 @@ void XVideo::recSearchIp(QString ip)
 
     DebugLog::getInstance()->writeLog("my recSearchIp:"+ip);
     //qDebug()<<"my recSearchIp:"<<ip;
-    //m_ip = "10.67.1.146";//ip;//"192.168.1.101";
-    //createTcpThread();
-
+    m_ip = ip;//ip;//"192.168.1.101";
+    createTcpThread();
 }
 
 
@@ -320,14 +328,12 @@ void XVideo::fun_initRedFrame(int w,int h){
     tempImgResW = w;
     tempImgResH = h;
     //    if(w == 384 && h==288){
-
     //        showRectX = 65;
     //        showRectY = 41;
     //        showRectW = 349;
     //        showRectH = 327;
     //        showParentW = 494;
     //        showParentH = 369;
-
 
     //    }else if(w == 160 && h==120){
     //        showRectX = 192;

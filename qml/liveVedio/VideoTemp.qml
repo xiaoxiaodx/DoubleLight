@@ -31,9 +31,13 @@ Rectangle {
     XVideoTemp{
         id:video
 
-        width:(mPlayRect.width*0.75>mPlayRect.height?mPlayRect.height*1.333:mPlayRect.width) -6
-        height: (mPlayRect.width*0.75>mPlayRect.height?mPlayRect.height:mPlayRect.width*0.75) -6
 
+        property real whradia: /*0.5625*/ 0.75
+        property real hwradia: /*1.778 */ 1.333
+
+
+        width:(mPlayRect.width*whradia>mPlayRect.height?mPlayRect.height*hwradia:mPlayRect.width) -6
+        height: (mPlayRect.width*whradia>mPlayRect.height?mPlayRect.height:mPlayRect.width*whradia) -6
         anchors.horizontalCenter: mPlayRect.horizontalCenter
         anchors.verticalCenter: mPlayRect.verticalCenter
 
@@ -55,9 +59,6 @@ Rectangle {
                 video.startTemperatureVideo(deviceconfig.getWarnTem(),mtype);
         }
     }
-
-
-
 
     Connections{
         target: deviceconfig
@@ -94,7 +95,7 @@ Rectangle {
             if( Number(tempV) >= Number(num)){
                 vedioLayout.startWarn(tempV);
             }else{
-                //  vedioLayout.endWarn();
+                //vedioLayout.endWarn();
             }
         }
     }

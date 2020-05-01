@@ -31,6 +31,7 @@ public:
     Q_INVOKABLE void fun_initRedFrame(int w,int h);
     Q_INVOKABLE void fun_setInitPar(QString ip,int parentW,int parentH,int x,int y,int w,int h);
     Q_INVOKABLE void fun_setIraInfo(QVariantMap map);
+    Q_INVOKABLE void fun_sendCommonPar(QVariantMap map);
 
     explicit XVideo();
     ~XVideo();
@@ -64,6 +65,7 @@ public slots:
     void slog_HttpmsgCb(QMap<QString,QVariant>);
     void recSearchIp(QString ip);
     void slot_tcpConnected();
+    void slot_httpConnected();
 protected:
     //  QSGNode* updatePaintNode(QSGNode *old, UpdatePaintNodeData *);
     void paint(QPainter *painter);
@@ -71,11 +73,12 @@ private:
     void createSearchIp();
     void createTcpThread();
     void createFFmpegDecodec();
-
     void createHttpApi();
 
     void updateUi();
 
+
+    QString deviceType = "";
 
     FfmpegCodec *pffmpegCodec = nullptr;
 
@@ -90,10 +93,11 @@ private:
     bool isFirstData = false;
 
     MySearch1 *psearch = nullptr;
-    QThread *searchThread = nullptr;
+   // QThread *searchThread = nullptr;
 
-   // QString m_ip ="10.67.1.87";
-   QString m_ip ="192.168.1.188" ;
+    //QString m_ip = "10.67.1.180";
+    QString m_ip ="192.168.173.188";
+   //QString m_ip ="192.168.1.188";
 
     QThread *httpThread = nullptr;
     CHttpApiDevice *httpDevice = nullptr;
@@ -101,16 +105,17 @@ private:
     QThread *m_readThread = nullptr;
     TcpWorker *worker = nullptr;
 
+
     QVariantList listRectInfo;
 
     float warnTemp ;
 
-    qreal showRectX = 65;
-    qreal showRectY = 41;
-    qreal showRectW = 349;
-    qreal showRectH = 327;
-    qreal showParentW = 494;
-    qreal showParentH = 369;
+    qreal showRectX = 128;
+    qreal showRectY = 84;
+    qreal showRectW = 471;
+    qreal showRectH = 300;
+    qreal showParentW = 694;
+    qreal showParentH = 388;
 
     qreal tempImgResW =0;
     qreal tempImgResH =0;

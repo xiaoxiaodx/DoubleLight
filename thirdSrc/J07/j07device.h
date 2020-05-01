@@ -10,7 +10,7 @@ class J07Device : public QObject
 {
     Q_OBJECT
 public:
-    explicit J07Device(QString vip="192.168.1.188",QObject *parent = nullptr);
+    explicit J07Device(QString vip="10.67.1.180",QObject *parent = nullptr);
     ~J07Device();
 
     void startRec();
@@ -23,7 +23,7 @@ signals:
 
 public slots:
     void slot_recH264(char *buff,int len,quint64 time,int resw,int resh);
-
+    void slot_recImg(QImage *img,int len,quint64 time,int resw,int resh);
 private:
     QString m_ip ="";
     void createTcpThread();

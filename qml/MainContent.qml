@@ -69,7 +69,6 @@ Rectangle {
         onSwinClose: winClose()
         onSwinMax: winMax()
 
-
     }
     SwipeView {
           id:vedioContent

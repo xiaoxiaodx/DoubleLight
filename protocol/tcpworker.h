@@ -17,6 +17,63 @@
 #include <QMutex>
 
 #define MAX_AUDIO_FRAME_SIZE 192000
+#include "shigan.h"
+//typedef enum
+//{
+//    CMD_HeartBeat			= 0x31,
+//    CMD_transfers 			= 0x32,
+//    CMD_SetCalPoint 		= 0x33,
+//    CMD_PlaneCalibration	= 0x34,
+//    CMD_DrawCalibRect		= 0x35,
+//    CMD_SnapVideo			= 0x36,
+//    CMD_AlarmSnapVideo		= 0x37,
+//    CMD_SetTemperAlarm		= 0x38,
+//    CMD_SetTemperOffset		= 0x39,
+//    CMD_Reboot				= 0x3A,
+//    CMD_UpGrade 			= 0x3B,
+//    CMD_SetNetInfo			= 0x3C,
+//    CMD_GetNetInfo			= 0x3D,
+//    CMD_GetVersion			= 0x80,
+//    CMD_Cmd_Ack	  			= 0x1f,
+//}CMD;
+
+//typedef enum
+//{
+//    ACK_OK = 0x00,
+//    ACK_Err_Para  = 0x33,
+//    ACK_Err_CRC   = 0x44,
+//    ACK_Err_NoExit= 0xfd,
+//    ACK_UpGrade_File	= 0x55,
+//    ACK_UpGrade_Data	= 0x50,
+//    ACK_NR,
+//}MSG_ACK;
+
+
+
+//// 媒体头
+//typedef struct tagMediaContexHead
+//{
+//    unsigned char ImageFlag		:1;		// 图像存在标识
+//    unsigned char ImageByte		:7;		// 每个图像单元占字节
+//    unsigned char ImageType		:8;		// 图像类型
+//    unsigned short ImageHeigh	:16;	// 图像长度
+//    unsigned short ImageWidth	:16;	// 图像宽度
+
+//    unsigned char TemperFlag	:1;		// 温度存在标识
+//    unsigned char TemperByte	:7;		// 每个温度单元占字节
+//    unsigned char TemperType	:8;		// 温度类型
+//    unsigned short TemperHeigh	:16;	// 温度长度
+//    unsigned short TemperWidth	:16;	// 温度宽度
+//}MediaContexHead;
+
+//typedef struct tagFloatDiv
+//{
+//    unsigned short f1:16;
+//    unsigned short f2:16;
+//}FloatDiv;
+
+#define MSG_HEAR_LEN		23
+#define MAX_MSG_BUF_LEN		(1024*1024)
 
 class TcpWorker : public QObject
 {
@@ -31,9 +88,10 @@ public:
     void forceStopParse();
 signals:
 
-    void signal_sendImg(QImage *pimg);
+    //void signal_sendImg(QImage *pimg);
     void signal_sendH264(char* vH264Arr,int arrLen,long long pts,int resw,int resh);
     void signal_connected();
+    void signal_sendImg(QImage *img,int len,quint64 time,int resw,int resh);
 
 public slots:
 
@@ -69,6 +127,7 @@ private:
     void resetAVFlag();
 
     void parseH264(QByteArray arr,int arrlen);
+    void parseShiGanRgb(QByteArray arr,int arrlen);
 
     QTcpSocket *tcpSocket;
 
@@ -106,6 +165,9 @@ private:
     bool isCheckedDataLong;
     bool isConnected;
     bool isHavaData;
+
+    unsigned char * pNetMsg = nullptr;
+    unsigned char *pNetMsgTmp = nullptr;
 
     int myType=0;
 

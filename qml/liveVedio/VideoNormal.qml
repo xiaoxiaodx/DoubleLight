@@ -49,35 +49,35 @@ Rectangle {
     XVideo{
         id:video
 
+        property real whradia:  0.75
+        property real hwradia: 1.333
+//        property real whradia: 0.5625
+//        property real hwradia: 1.778
         //anchors.fill: parent
 
-        width:(mPlayRect.width*0.75>mPlayRect.height?mPlayRect.height*1.333:mPlayRect.width) -6
-        height: (mPlayRect.width*0.75>mPlayRect.height?mPlayRect.height:mPlayRect.width*0.75) -6
+        width:(mPlayRect.width*whradia>mPlayRect.height?mPlayRect.height*hwradia:mPlayRect.width) -6
+        height: (mPlayRect.width*whradia>mPlayRect.height?mPlayRect.height:mPlayRect.width*whradia) -6
 
         anchors.horizontalCenter: mPlayRect.horizontalCenter
         anchors.verticalCenter: mPlayRect.verticalCenter
-
 
         Component.onCompleted:{
             //video.fun_setInitPar(deviceconfig.getTcpip(),deviceconfig.getShowParentW(),deviceconfig.getShowParentH(),deviceconfig.getShowRectX(),deviceconfig.getShowRectY(),deviceconfig.getShowRectW(),deviceconfig.getShowRectH())
             video.startNormalVideo(deviceconfig.getWarnTem())
         }
 
-
-
         onSignal_loginStatus: main.showToast(msg);
 
         onSignal_httpUiParSet:httpParCallback(map);
 
-
         Rectangle{
             id:rectadmjt
-            x:deviceconfig.getShowRectX()
-            y:deviceconfig.getShowRectY()
-            width: deviceconfig.getShowRectW()
-            height: deviceconfig.getShowRectH()
+            x:0//deviceconfig.getShowRectX()
+            y:0//deviceconfig.getShowRectY()
+            width: 100//deviceconfig.getShowRectW()
+            height:100// deviceconfig.getShowRectH()
             color: "#505D9CFF"
-            visible:false//deviceconfig.getIsOpenAdjustRect();
+            visible:false;//deviceconfig.getIsOpenAdjustRect();
             MouseArea{
                 id:areaTop
                 x:mouseAdjustWidth1
@@ -252,7 +252,6 @@ Rectangle {
                         adjustWindow(wBOTTOM,0,offsetY);
                     }
                     //setDlgPoint(offset.x, 0)
-
                 }
             }
 
@@ -319,21 +318,33 @@ Rectangle {
                 }
             }
         }
-
-
-
     }
-
 
 
     Connections{
         target: deviceconfig
         onS_timeSwith:video.fun_timeSwitch(mchecked);//时间使能
         onS_temSet:video.fun_temSet(mvalue);//警报温度设置
+        onS_deviceUpdate:{
+            var map ={
 
-
+                cmd:"update"
+            }
+            video.fun_sendCommonPar(map)
+        }
         onS_iradInfoSet:video.fun_setIraInfo(mvalue);
-
+        onS_warnSwith:{
+            var map ={
+                cmd:"",
+                isSubscription:false
+            }
+            map.isSubscription=mchecked
+            if(mchecked)
+                map.cmd="alarmsubscription"
+            else
+                map.cmd="unalarmsubscription"
+            video.fun_sendCommonPar(map)
+        }
     }
     //    Connections{
     //        target: videoTemp
@@ -361,6 +372,9 @@ Rectangle {
         }else if(strcmd === "getinftempmodel"){
 
             console.debug(" **************** "+smap.tempmodel)
+            var map ={
+                cmd:""
+            }
             var enable = smap.timeenable;
             if(smap.tempmodel === "D04")
                 deviceconfig.curDevTypeStr = "d04"
@@ -370,14 +384,34 @@ Rectangle {
                 deviceconfig.curDevTypeStr = "e03"
             else if(smap.tempmodel === "F03")
                 deviceconfig.curDevTypeStr = "f03"
+            else if(smap.tempmodel === "J07-S"){
+                deviceconfig.curDevTypeStr = "J07-S"
+                map.cmd = "getiradinfo";
+                video.fun_sendCommonPar(map);
+
+                if(deviceconfig.getSwitchWarn()){
+
+                    var map ={
+                        cmd:"alarmsubscription",
+                        isSubscription:true
+                    }
+                    video.fun_sendCommonPar(map)
+
+                }
+            }
+
 
             deviceconfig.setSwitchTime(enable)
 
+            map.cmd = "getosdparam"
+            video.fun_sendCommonPar(map);
+            map.cmd = "setcurrenttime"
+            video.fun_sendCommonPar(map);
+
             video.fun_setInitPar(deviceconfig.getTcpip(),deviceconfig.getShowParentW(),deviceconfig.getShowParentH(),deviceconfig.getShowRectX(),deviceconfig.getShowRectY(),deviceconfig.getShowRectW(),deviceconfig.getShowRectH())
+
             s_tempmodelSelect(smap.tempmodel);
         }else if(strcmd === "getiradinfo"){
-
-
             var alarmtempEnable = smap.alarmtempEnable;
             var alarmTemp = smap.alarmTemp;
             var tempdriftcaplevelMin = smap.tempdriftcaplevelMin;
@@ -397,6 +431,13 @@ Rectangle {
             deviceconfig.setSwitchTime(osdenable)
             deviceconfig.setTempContrl(tempcontrol)
             deviceconfig.setSwitchWarn(alarmtempEnable)
+        }else if(strcmd === "pushalarm"){
+
+            startWarn(smap.temperature);
+        }else if(strcmd === "update"){
+
+            deviceconfig.updateDevice(smap.did,smap.url)
+            // updateprogress.startupLoad(smap.did,smap.url,deviceconfig.getUpdateFilePath)
         }
     }
 

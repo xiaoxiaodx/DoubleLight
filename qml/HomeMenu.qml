@@ -19,32 +19,32 @@ Rectangle {
         width: parent.width - rectLanguage.width -20
         height: parent.height
         color: "#00ffffff"
-        Image {
-            id: btnImg
-            anchors.left: parent.left
-            anchors.leftMargin: 40
-//            anchors.topMargin: 10
-            anchors.verticalCenter: parent.verticalCenter
-//            anchors.bottom: parent.bottom
-//            anchors.bottomMargin: 10
-//            width: parent.height - 26
-//           parent.height - 26
-            width: 160
-            height: 50
-            source: "qrc:/images/logo6.png"
-        }
-
-//        Text {
+//        Image {
 //            id: btnImg
 //            anchors.left: parent.left
 //            anchors.leftMargin: 40
+////            anchors.topMargin: 10
 //            anchors.verticalCenter: parent.verticalCenter
-
-//            color: "white"
-//            font.pixelSize: 30
-//            font.bold: true
-//            text: ""
+////            anchors.bottom: parent.bottom
+////            anchors.bottomMargin: 10
+////            width: parent.height - 26
+////           parent.height - 26
+//            width: 160
+//            height: 50
+//            source: "qrc:/images/logo6.png"
 //        }
+
+        Text {
+            id: btnImg
+            anchors.left: parent.left
+            anchors.leftMargin: 40
+            anchors.verticalCenter: parent.verticalCenter
+
+            color: "white"
+            font.pixelSize: 30
+            font.bold: true
+            text: ""
+        }
         QmlTabBarButtonH{
             id:tabbarBtn
             height: parent.height
@@ -59,13 +59,11 @@ Rectangle {
             textSize:18
             Component.onCompleted: {
 
-
                 console.debug("curLanguagev     11:"+curLanguage)
                 tabbarBtn.barModel.append({txtStr:qsTr("主预览")})//,imgSrc:"qrc:/images/homemenuClose.png",imgSrcEnter:"qrc:/images/homemenuClose.png"})
                 //tabbarBtn.barModel.append({txtStr:qsTr("录像回放")})//,imgSrc:"qrc:/images/homemenuClose.png",imgSrcEnter:"qrc:/images/homemenuClose.png"})
                 tabbarBtn.barModel.append({txtStr:qsTr("设备配置")})//,imgSrc:"qrc:/images/homemenuClose.png",imgSrcEnter:"qrc:/images/homemenuClose.png"})
                 tabbarBtn.barModel.append({txtStr:qsTr("告警管理")})//,imgSrc:"qrc:/images/homemenuClose.png",imgSrcEnter:"qrc:/images/homemenuClose.png"})
-
 
                 //setLanguage(curLanguage)
 
@@ -97,7 +95,6 @@ Rectangle {
 
                 if(!homeMenu.isDoubleClick){
                     var offset = Qt.point(mouse.x - clickPoint.x, mouse.y - clickPoint.y)
-
                     dragPosChange(offset.x, offset.y)
                 }
             }
@@ -143,15 +140,13 @@ Rectangle {
                 ListElement{showStr:"Korean"}
                 ListElement{showStr:"Russian"}
                 ListElement{showStr:"Lithuanian"}
-
             }
+
             //{["showStr":"简体中文" "showStr":"English","Italian","Korean"]}
-            onCurrentIndexChanged: {
+            onCurrentIndexChanged:{
                 console.debug("**********************" + cmb.currentIndex)
                 curLanguage = cmb.currentIndex
                 main.s_setLanguage(curLanguage);
-
-
             }
 
             Component.onCompleted: {

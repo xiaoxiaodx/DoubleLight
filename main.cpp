@@ -8,7 +8,7 @@
 #include <qqmlcontext.h>
 #include "warnmodel.h"
 #include "application.h"
-
+#include "updateprogressc.h"
 int main(int argc, char *argv[])
 {
 
@@ -38,7 +38,7 @@ int main(int argc, char *argv[])
     qmlRegisterType<ReplayTimeline>("TimeLine", 1, 0, "TimeLine");
     qmlRegisterType<XVideoReplay>("XVideoReplay", 1, 0, "XVideoReplay");
     qmlRegisterType<WarnModel>("WarnModel", 1, 0, "WarnModel");
-
+    qmlRegisterType<updateProgressC>("UpdateProgressC", 1, 0, "UpdateProgressC");
     engine.load(QUrl(QStringLiteral("qrc:/qml/main.qml")));
 
     if (engine.rootObjects().isEmpty())

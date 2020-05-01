@@ -123,6 +123,7 @@ void TcpWorker::slot_tcpDisconnected()
 void TcpWorker::slot_readData()
 {
 
+    //qDebug()<<"slot_readData    "<<
     isHavaData = true;
    // isConnected = true;
 

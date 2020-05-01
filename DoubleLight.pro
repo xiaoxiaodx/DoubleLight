@@ -59,7 +59,10 @@ SOURCES += \
     protocol/shigan.cpp \
     protocol/shiganobject.cpp \
     thirdSrc/irc/ircnet.cpp \
-    thirdSrc/J07/j07device.cpp
+    thirdSrc/J07/j07device.cpp \
+    qmlcplus/updateprogressc.cpp \
+    qmlcplus/upcontrol.cpp \
+    protocol/warntcpserver.cpp
 
 HEADERS += \
     playVideo/XVideo.h \
@@ -98,7 +101,10 @@ HEADERS += \
     protocol/shigan.h \
     protocol/shiganobject.h \
     thirdSrc/irc/ircnet.h \
-    thirdSrc/J07/j07device.h
+    thirdSrc/J07/j07device.h \
+    qmlcplus/updateprogressc.h \
+    qmlcplus/upcontrol.h \
+    protocol/warntcpserver.h
 
 RESOURCES += qml.qrc
 

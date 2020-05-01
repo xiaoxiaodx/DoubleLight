@@ -27,7 +27,7 @@ typedef struct _LoginInfo_T{
     char password[32];
 
 }LoginInfo_T;
-
+#include "warntcpserver.h"
 class CHttpApiDevice : public QObject
 {
 
@@ -39,10 +39,6 @@ public:
 
     int CjsonMakeHttpHead(QJsonObject *msgObject, JsonMsg_T *msg);
     int SendRequestMsg(QJsonObject msg);
-
-
-
-
     int  HttpMsgCallBack(char * pData);
 
 public:
@@ -75,11 +71,13 @@ public slots:
     void slot_heartimertout();
     bool send_httpParSet(QMap<QString,QVariant> map);
 
+    void slot_WarnMsg(QMap<QString,QVariant> map);
 signals:
     void signal_ReadMsg(QMap<QString,QVariant>);//QJsonObject
     void signal_httpErr();
     void signal_MsgReply(QString cmd);
     void signal_sendMag(QMap<QString,QVariant> map);
+    void signal_httpConnected();
 private:
     int connectCount = 0;
 
@@ -97,11 +95,17 @@ private:
     void HttpGetDeviceType();
 
 
-    void HttpSetIraInfo(QVariantMap value);
+
+    void HttpSetIraInfo(QVariantMap value,QString msgid);
+    void HttpSubscriptionWarn(QMap<QString,QVariant>,QString msgid);
 
     void httpSendCommonCmd(QString cmd,QString msgid);
 
 
+    void createWarnService(int port);
+    void destroyWarnService();
+
+    QString read_ip_address();
     const bool cmdSend = false;
     const bool cmdSendSucc = true;
 
@@ -113,6 +117,12 @@ private:
     int reconnectInter = 3000;
 
     int sendertimerInter = 200;
+
+    QString parseStr = "";
+    QMap<QString,QVariant> warnPushMap;
+
+    //QThread *m_warnPushThread= nullptr;
+    WarnTcpServer *warnTcpServer = nullptr;
 
 };
 

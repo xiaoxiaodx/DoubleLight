@@ -9,19 +9,38 @@
 #include <debuglog.h>
 MySearch1::MySearch1(QObject *parent) : QObject(parent)
 {
-
+    connect(&timer,&QTimer::timeout,this,&MySearch1::slot_timeout);
 }
 
 MySearch1::~MySearch1()
 {
     qDebug()<<" MySearch1 析构";
+   // s_searchsocket->abort();
+}
+void MySearch1::createSearch()
+{
+    qDebug()<<"create ip search ";
+    if(s_searchsocket == nullptr){
+        s_searchsocket = new QUdpSocket(this);//udp
+        connect(s_searchsocket,SIGNAL(readyRead()),this,SLOT(readResultMsg()));
+//        if( !s_searchsocket->bind(SEARCH_PORT, QUdpSocket::ReuseAddressHint) ) {
+//            qDebug()<<"bind ********** !"<<s_searchsocket->state();
+//        }else{
+//            qDebug()<<"bind 成功" ;
+//        }
+    }
+    timer.start(1000);
+}
+void MySearch1::slot_timeout()
+{
+    sendSearch();
 }
 
 //初始化搜索
 void MySearch1::startSearch()
 {
     qDebug()<<"startSearch ***";
-    if(s_searchsocket == NULL){
+    if(s_searchsocket == nullptr){
 
         s_searchsocket = new QUdpSocket(this);//udp
         if(s_searchsocket->state()!=s_searchsocket->BoundState) {
@@ -32,7 +51,7 @@ void MySearch1::startSearch()
             }else{
                 qDebug()<<"bind 成功" ;
             }
-        } else {
+        }else {
             qDebug()<<"socket state failed , UDP search initialization error !"<<endl;
         }
         //qDebug()<<"startSearch ***2";
@@ -54,25 +73,23 @@ void MySearch1::startSearch()
 
 void MySearch1::resetSearch()
 {
-    if(s_searchsocket != NULL)
+    if(s_searchsocket != nullptr)
     {
-
         disconnect(s_searchsocket,SIGNAL(readyRead()),this,SLOT(readResultMsg()));
         s_searchsocket->abort();
         s_searchsocket->close();
-        s_searchsocket= NULL;
-
+        s_searchsocket= nullptr;
     }
     startSearch();
 }
 void MySearch1::forceFinishSearch()
 {
-    if(s_searchsocket != NULL)
+    if(s_searchsocket != nullptr)
     {
         disconnect(s_searchsocket,SIGNAL(readyRead()),this,SLOT(readResultMsg()));
         s_searchsocket->abort();
         s_searchsocket->close();
-        s_searchsocket= NULL;
+        s_searchsocket= nullptr;
     }
 }
 
@@ -87,7 +104,8 @@ void MySearch1::readResultMsg()
     //QByteArray tmpdata=s_searchsocket->readAll();
     s_searchsocket->readDatagram(msg,2048);
 
-    qDebug()<<" readResultMsg   ************";
+
+    qDebug()<<" readSearchResultMsg   ************";
 
 
     QJsonParseError jsonError;
@@ -106,6 +124,8 @@ void MySearch1::readResultMsg()
                             qDebug() << "ip : " << ip;
 
                             DebugLog::getInstance()->writeLog("ip:"+ip);
+
+                            timer.stop();
                             emit signal_sendIp(ip);
                         }
                     }
