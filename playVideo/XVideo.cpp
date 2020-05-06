@@ -143,14 +143,14 @@ void XVideo::createSearchIp()
     if(psearch == nullptr){
         psearch = new MySearch1;
         psearch->createSearch();
-//        searchThread = new QThread;
+        //        searchThread = new QThread;
         connect(psearch,&MySearch1::signal_sendIp,this,&XVideo::recSearchIp);
-//        connect(this,&XVideo::signal_resetSearch,psearch,&MySearch1::resetSearch);
-//        connect(this,&XVideo::signal_finishSearch,psearch,&MySearch1::forceFinishSearch);
-//        connect(searchThread,&QThread::finished,searchThread,&MySearch1::deleteLater);
-//        connect(searchThread,&QThread::finished,psearch,&MySearch1::deleteLater);
-//        psearch->moveToThread(searchThread);
-//        searchThread->start();
+        //        connect(this,&XVideo::signal_resetSearch,psearch,&MySearch1::resetSearch);
+        //        connect(this,&XVideo::signal_finishSearch,psearch,&MySearch1::forceFinishSearch);
+        //        connect(searchThread,&QThread::finished,searchThread,&MySearch1::deleteLater);
+        //        connect(searchThread,&QThread::finished,psearch,&MySearch1::deleteLater);
+        //        psearch->moveToThread(searchThread);
+        //        searchThread->start();
     }
     //emit signal_resetSearch();
 
@@ -253,6 +253,44 @@ void XVideo::fun_setRectPar(int sx,int sy,int sw,int sh,int pw,int ph){
 
     showParentW = pw;
     showParentH = ph;
+
+    qreal kx = (qreal)showParentW / (qreal)1920;
+    qreal ky = (qreal)showParentH / (qreal)1080;
+
+    qreal x1 = showRectX / kx;
+    qreal y1 = showRectY / ky;
+    qreal w = showRectW / kx;
+    qreal h = showRectH / ky;
+
+    int desX = x1/2;
+    int desY = y1/2;
+    int desW = w/2;
+    int desH = h/2;
+
+
+    QMap<QString,QVariant> map;
+    map.insert("cmd","setmeasurablerange");
+    map.insert("x",desX*2);
+    map.insert("y",desY*2);
+    map.insert("w",desW*2);
+    map.insert("h",desH*2);
+
+
+    emit signal_httpParSet(map);
+
+
+    QString pos1 =  "pos1:"+ QString::number(x1,'f',1)+"    "+QString::number(y1,'f',3);
+    QString pos2 = "pos2:"+QString::number(x1+w,'f',1)+"    "+QString::number(y1,'f',3);
+    QString pos3 = "pos3:"+QString::number(x1,'f',1)+"  "+QString::number(y1+h,'f',3);
+    QString pos4 = "pos4:"+QString::number(x1+w,'f',1)+"    "+QString::number(y1+h,'f',3);
+
+    QString str1920 ="1920*1080 rect:"+QString::number(x1)+" "+QString::number(y1)+" "+QString::number(w)+"  "+QString::number(h);
+
+    DebugLog::getInstance()->writeLog(str1920);
+    DebugLog::getInstance()->writeLog(pos1);
+    DebugLog::getInstance()->writeLog(pos2);
+    DebugLog::getInstance()->writeLog(pos3);
+    DebugLog::getInstance()->writeLog(pos4);
 }
 
 //tcpworker 线程
@@ -283,7 +321,6 @@ void XVideo::slot_recH264(char* h264Arr,int arrlen,quint64 time)
 //由红外控制ui更新
 void XVideo::fun_setListRect(QVariant var){
     //qDebug()<<"tcp 流线程 fun_setListRect:"<<QThread::currentThreadId()<<"    "<<var.toList();
-
     if(mMutex.tryLock()){
 
         if(listBuffImg.size()>0){
@@ -306,7 +343,6 @@ void XVideo::fun_setListRect(QVariant var){
         isFirstData = true;
     }
 
-
     pRenderImginfo.listRect.clear();
     if(var.toList().size() > 0){
         QVariantList listv = var.toList();
@@ -317,9 +353,6 @@ void XVideo::fun_setListRect(QVariant var){
     }
 
     update();
-
-
-
 }
 
 void XVideo::fun_initRedFrame(int w,int h){

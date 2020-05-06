@@ -13,7 +13,17 @@ XVideoTemp::XVideoTemp()
     // setFlag(QQuickItem::ItemHasContents);
     // setRenderTarget(QQuickPaintedItem::FramebufferObject);
     mRenderImginfo.pImg = nullptr;
+    testRect.setRect(10,10,100,100);
+    testRect1.setRect(10,10,100,100);
+    testRect2.setRect(10,10,100,100);
+}
 
+void XVideoTemp::fun_recTestRect(int x,int y,int w,int h,int x1,int y1,int w1,int h1,int x2,int y2,int w2,int h2)
+{
+   // qDebug()<<"dsadsadsa    fun_recTestRect";
+    testRect.setRect(x,y,w,h);
+    testRect1.setRect(x1,y1,w1,h1);
+    testRect2.setRect(x2,y2,w2,h2);
 }
 
 void XVideoTemp::startTemperatureVideo(float tp,QVariant type,QVariant par1,QVariant par2)
@@ -27,9 +37,10 @@ void XVideoTemp::startTemperatureVideo(float tp,QVariant type,QVariant par1,QVar
     }else if (typeStr.compare("D06")==0){
         createShiGan();
     }else if (typeStr.compare("F03")==0){
-        createIRCNet();
+        //createIRCNet();
+        createJ07("10.67.1.160");
     }else if (typeStr.compare("J07-S")==0){
-        createJ07("192.168.173.188");
+        createJ07("10.67.1.111");
     }else{
         DebugLog::getInstance()->writeLog("------>>> tempVideo type is unknow <<<------");
     }
@@ -210,6 +221,37 @@ void XVideoTemp::paint(QPainter *painter)
     qreal kY = (qreal)this->height()/(qreal)mRenderImginfo.pImg->height();
 
     painter->drawImage(QRect(0,0,this->width(),this->height()), *(mRenderImginfo.pImg));
+
+
+
+    /********************/
+
+    painter->save();
+    painter->setPen(QPen(QBrush(QColor(255,0,255)),2));
+
+    qreal x1 = kX * testRect.x();
+    qreal y1 = kY * testRect.y();
+    qreal w1 = kX * testRect.width();
+    qreal h1 = kY * testRect.height();
+
+    qreal x2 = kX * testRect1.x();
+    qreal y2 = kY * testRect1.y();
+    qreal w2 = kX * testRect1.width();
+    qreal h2 = kY * testRect1.height();
+
+    qreal x3 = kX * testRect2.x();
+    qreal y3 = kY * testRect2.y();
+    qreal w3 = kX * testRect2.width();
+    qreal h3 = kY * testRect2.height();
+
+    painter->drawRect(QRectF(x1,y1,w1,h1));
+    painter->drawRect(QRectF(x2,y2,w2,h2));
+    painter->drawRect(QRectF(x3,y3,w3,h3));
+
+
+    //qDebug()<<" testRect    "<<testRect<<"  "<<x1<<"    "<<y1<<"    "<<w1<<"    "<<h1;
+    painter->restore();
+    /********************/
 
 
     //将矩形链表发送给可见光

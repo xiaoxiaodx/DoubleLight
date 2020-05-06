@@ -93,13 +93,12 @@ private:
     void HttpSetRecordParam(int);
     void HttpSetDate(QString msgid);
     void HttpGetDeviceType();
-
-
-
     void HttpSetIraInfo(QVariantMap value,QString msgid);
     void HttpSubscriptionWarn(QMap<QString,QVariant>,QString msgid);
 
-    void httpSendCommonCmd(QString cmd,QString msgid);
+    void HttpSetMeasureRect(QVariantMap value);
+
+    void httpSendCommonCmd(QString cmd,QString );
 
 
     void createWarnService(int port);
@@ -114,7 +113,7 @@ private:
     QTimer *reconnectTimer = nullptr;
     QList<QMap<QString,QVariant>> listMsg;
     int reconnectTimerCount = 0 ;
-    int reconnectInter = 3000;
+    int reconnectInter = 1000;
 
     int sendertimerInter = 200;
 

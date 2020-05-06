@@ -19,6 +19,8 @@ Rectangle {
     signal s_startTemWarn();
     signal s_endTemWarn();
     signal s_tempmodelSelect(var mtype);
+    signal s_testRect(var x0,var y0,var w0,var h0,var x1,var y1,var w1,var h1,var x2,var y2,var w2,var h2);
+
 
     property int mouseAdjustWidth1: 4
     property int    wTOP:1
@@ -46,13 +48,22 @@ Rectangle {
         onDoubleClicked:doubleClick(true);
 
     }
+
+    Text {
+        id: pos1
+        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.bottomMargin: 10
+        anchors.bottom:parent.bottom
+        color: "red"
+        text: qsTr("text")
+    }
     XVideo{
         id:video
 
-        property real whradia:  0.75
-        property real hwradia: 1.333
-//        property real whradia: 0.5625
-//        property real hwradia: 1.778
+        //property real whradia:  0.75
+       //property real hwradia: 1.333
+        property real whradia: 0.5625
+        property real hwradia: 1.778
         //anchors.fill: parent
 
         width:(mPlayRect.width*whradia>mPlayRect.height?mPlayRect.height*hwradia:mPlayRect.width) -6
@@ -70,6 +81,21 @@ Rectangle {
 
         onSignal_httpUiParSet:httpParCallback(map);
 
+
+        MouseArea{
+            id:mouse22
+            anchors.fill: parent
+            cursorShape: Qt.CrossCursor
+            onClicked: {
+                var kx = video.width / 1920;
+                var ky = video.height / 1080;
+
+                var x1 = mouse.x / kx;
+                var y1 = mouse.y / ky;
+
+                pos1.text ="pos:"+ x1 +"    "+y1
+            }
+        }
         Rectangle{
             id:rectadmjt
             x:0//deviceconfig.getShowRectX()
@@ -292,10 +318,10 @@ Rectangle {
                         onClicked: {
 
                             video.fun_setRectPar(rectadmjt.x,rectadmjt.y,rectadmjt.width,rectadmjt.height,video.width,video.height)
-                            rectadmjt.visible = false
+                            //rectadmjt.visible = false
 
                             deviceconfig.setRedRect(video.width,video.height,rectadmjt.x,rectadmjt.y,rectadmjt.width,rectadmjt.height)
-                            deviceconfig.setIsOpenAdjustRect(false)
+                            //deviceconfig.setIsOpenAdjustRect(false)
                         }
                     }
                 }
@@ -438,14 +464,16 @@ Rectangle {
 
             deviceconfig.updateDevice(smap.did,smap.url)
             // updateprogress.startupLoad(smap.did,smap.url,deviceconfig.getUpdateFilePath)
+
+
+        }else if("getiradrect" === strcmd){
+            s_testRect(smap.x0,smap.y0,smap.w0,smap.h0,smap.x1,smap.y1,smap.w1,smap.h1,smap.x2,smap.y2,smap.w2,smap.h2);
         }
     }
 
     function updateDate(){
         video.fun_updateDate();
     }
-
-
 
     function adjustWindow(adjustw,dX,dY)
     {
@@ -501,7 +529,7 @@ Rectangle {
         }
 
 
-        video.fun_setRectPar(rectadmjt.x,rectadmjt.y,rectadmjt.width,rectadmjt.height,video.width,video.height)
+        //video.fun_setRectPar(rectadmjt.x,rectadmjt.y,rectadmjt.width,rectadmjt.height,video.width,video.height)
         console.debug("矩形位置："+rectadmjt.x+" "+rectadmjt.y+" "+rectadmjt.width+" "+rectadmjt.height+" "+video.width+" "+video.height);
 
     }

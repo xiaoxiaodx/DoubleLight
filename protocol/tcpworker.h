@@ -128,6 +128,7 @@ private:
 
     void parseH264(QByteArray arr,int arrlen);
     void parseShiGanRgb(QByteArray arr,int arrlen);
+    void parseShiGanRgb1(QByteArray arr,int arrlen,int resw,int resh);
 
     QTcpSocket *tcpSocket;
 

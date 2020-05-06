@@ -62,7 +62,8 @@ SOURCES += \
     thirdSrc/J07/j07device.cpp \
     qmlcplus/updateprogressc.cpp \
     qmlcplus/upcontrol.cpp \
-    protocol/warntcpserver.cpp
+    protocol/warntcpserver.cpp \
+    consoleprocess.cpp
 
 HEADERS += \
     playVideo/XVideo.h \
@@ -104,7 +105,8 @@ HEADERS += \
     thirdSrc/J07/j07device.h \
     qmlcplus/updateprogressc.h \
     qmlcplus/upcontrol.h \
-    protocol/warntcpserver.h
+    protocol/warntcpserver.h \
+    consoleprocess.h
 
 RESOURCES += qml.qrc
 

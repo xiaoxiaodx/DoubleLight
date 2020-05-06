@@ -59,6 +59,8 @@ signals:
     void signal_resetSearch();
     void signal_finishSearch();
 
+
+
 public slots:
     void slot_recH264(char *buff,int len,quint64 time);
 
@@ -77,9 +79,7 @@ private:
 
     void updateUi();
 
-
     QString deviceType = "";
-
     FfmpegCodec *pffmpegCodec = nullptr;
 
     QMutex buffMutex;
@@ -95,8 +95,8 @@ private:
     MySearch1 *psearch = nullptr;
    // QThread *searchThread = nullptr;
 
-    //QString m_ip = "10.67.1.180";
-    QString m_ip ="192.168.173.188";
+    QString m_ip = "10.67.1.111";
+   // QString m_ip ="192.168.173.101";
    //QString m_ip ="192.168.1.188";
 
     QThread *httpThread = nullptr;

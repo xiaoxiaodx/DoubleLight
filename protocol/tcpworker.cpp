@@ -123,6 +123,7 @@ void TcpWorker::slot_tcpDisconnected()
 void TcpWorker::slot_readData()
 {
 
+    //qDebug()<<"slot_readData    "<<
     isHavaData = true;
    // isConnected = true;
 
@@ -321,8 +322,11 @@ void TcpWorker::parseRecevieData()
                 quint64 ptsL = 0x00000000ffffffff & infoV.lowPts;
                 quint64 pts = ptsH *256 *255*256 + ptsL;
 
-                emit signal_sendH264(readDataBuff.data(),m_streamDateLen,pts,vResW,vResH);
-
+                if(myType == 0)
+                    emit signal_sendH264(readDataBuff.data(),m_streamDateLen,pts,vResW,vResH);
+                else if((myType == 1)){
+                    parseShiGanRgb1(readDataBuff,m_streamDateLen,vResW,vResH);
+                }
 
                 readDataBuff.remove(0,m_streamDateLen);
                 resetAVFlag();
@@ -414,13 +418,9 @@ void TcpWorker::parseRecevieData()
             if(m_streamDateLen > 0 && readDataBuff.length()>=needlen)
             {
                 //audioSrc->write(readDataBuff.data(),m_streamDateLen);
-
-
                 quint64 ptsH = 0x00000000ffffffff & infoA.highPts;
                 quint64 ptsL = 0x00000000ffffffff & infoA.lowPts;
                 quint64 pts = ptsH *256 *255*256 + ptsL;
-
-
 
                 readDataBuff.remove(0,m_streamDateLen);
 
@@ -537,6 +537,27 @@ void TcpWorker::parseShiGanRgb(QByteArray arr,int arrlen)
 
         emit signal_sendImg(pImg,w*h*3,10,w,h);
     }
+
+}
+void TcpWorker::parseShiGanRgb1(QByteArray arr,int arrlen,int resw,int resh)
+{
+
+
+    if(pNetMsgTmp == nullptr)
+        pNetMsgTmp = new unsigned char[resw * resh* 4];
+
+    memcpy(pNetMsgTmp,arr.data(),arrlen);
+
+    QImage *pImg = nullptr;
+    try {
+        pImg =  new QImage(pNetMsgTmp, resw,resh, QImage::Format_RGBA8888);
+        // 其它代码
+    } catch ( const std::bad_alloc& e ) {
+        qDebug()<<" 图片分配内存失败";
+        pImg = nullptr;
+    }
+   // qDebug()<<" parseShiGanRgb1 "<<resw<<"  "<<resh<<"  "<<arrlen;
+    emit signal_sendImg(pImg,arrlen,10,resw,resh);
 
 }
 void TcpWorker::parseH264(QByteArray arr,int arrlen)

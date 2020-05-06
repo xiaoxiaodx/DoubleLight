@@ -28,6 +28,16 @@ Rectangle {
         onDoubleClicked:doubleClick(true);
 
     }
+
+    Text {
+        id: pos1
+        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.bottomMargin: 10
+        anchors.bottom:parent.bottom
+        color: "red"
+        text: qsTr("text")
+    }
+
     XVideoTemp{
         id:video
 
@@ -38,6 +48,9 @@ Rectangle {
 
         width:(mPlayRect.width*whradia>mPlayRect.height?mPlayRect.height*hwradia:mPlayRect.width) -6
         height: (mPlayRect.width*whradia>mPlayRect.height?mPlayRect.height:mPlayRect.width*whradia) -6
+
+       // width: 206
+       // height: 156
         anchors.horizontalCenter: mPlayRect.horizontalCenter
         anchors.verticalCenter: mPlayRect.verticalCenter
 
@@ -49,6 +62,21 @@ Rectangle {
         onSignal_sendListRect:videoNormal.funsetlistRect(map)
         onSignal_initRedFrame:videoNormal.funinitRedFrame(mw,mh)
 
+        MouseArea{
+            id:mouse22
+            anchors.fill: parent
+            cursorShape: Qt.CrossCursor
+            onClicked: {
+                var kx = video.width / 206;
+                var ky = video.height / 156;
+
+                var x1 = mouse.x / kx;
+                var y1 = mouse.y / ky;
+
+
+                pos1.text ="pos:"+ x1 +"    "+y1
+            }
+        }
     }
     Connections{
         target: videoNormal
@@ -58,13 +86,14 @@ Rectangle {
             else
                 video.startTemperatureVideo(deviceconfig.getWarnTem(),mtype);
         }
+        onS_testRect: video.fun_recTestRect(x0,y0,w0,h0,x1,y1,w1,h1,x2,y2,w2,h2);
+
     }
 
     Connections{
         target: deviceconfig
         onS_timeSwith:video.fun_timeSwitch(mchecked);
         onS_temSet:video.fun_temSet( mvalue);
-
         onS_temMax:video.fun_temMax(mvalue);
         onS_temMin:video.fun_temMin(mvalue);
         onS_temOffset:video.fun_temOffset(mvalue);
@@ -97,6 +126,8 @@ Rectangle {
             }else{
                 //vedioLayout.endWarn();
             }
+        }else if("getiradrect" === cmdType){
+            video.fun_recTestRect(smap.x,smap.y,smap.w,smap.h);
         }
     }
 

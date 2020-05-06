@@ -24,8 +24,6 @@ CHttpApiDevice::CHttpApiDevice(QString devid, QString ip, unsigned short port, Q
     g_tcpsocket = NULL;
     timeHttpSocket = NULL;
 
-
-
     warnPushMap.insert("ip",read_ip_address());
     warnPushMap.insert("switchSubscription",false);
     warnPushMap.insert("port",6458);
@@ -39,7 +37,6 @@ CHttpApiDevice::~CHttpApiDevice()
     QMap<QString , QVariant> map;
     map.insert("cmd","loginout");
     send_httpParSet(map);
-
 }
 
 void CHttpApiDevice::slot_heartimertout(){
@@ -54,6 +51,12 @@ void CHttpApiDevice::slot_heartimertout(){
         if(warnPushMap.value("switchSubscription").toBool())
             HttpSubscriptionWarn(warnPushMap, 0);
     }
+
+
+    QMap<QString,QVariant> map;
+    map.insert("cmd","getiradrect");
+    slot_httpParSet(map);
+
 
 }
 
@@ -266,21 +269,36 @@ int CHttpApiDevice::HttpMsgCallBack(char * pData) {
                 callbackMap.insert("tempcontrol",object.value("data").toObject().value("ctrlparam").toObject().value("tempcontrol").toInt());
                 callbackMap.insert("osdenable",object.value("data").toObject().value("osdenable").toInt());
             }else if("pushalarm" == cmd){
-                 callbackMap.insert("alarmtype",object.value("data").toObject().value("alarmtype").toInt());
-                 callbackMap.insert("year",object.value("data").toObject().value("alarmtime").toObject().value("year").toInt());
-                 callbackMap.insert("mouth",object.value("data").toObject().value("alarmtime").toObject().value("month").toInt());
-                 callbackMap.insert("day",object.value("data").toObject().value("alarmtime").toObject().value("day").toInt());
-                 callbackMap.insert("hour",object.value("data").toObject().value("alarmtime").toObject().value("hour").toInt());
-                 callbackMap.insert("min",object.value("data").toObject().value("alarmtime").toObject().value("min").toInt());
-                 callbackMap.insert("sec",object.value("data").toObject().value("alarmtime").toObject().value("sec").toInt());
-                 callbackMap.insert("temperature",object.value("data").toObject().value("temperature").toDouble());
+                callbackMap.insert("alarmtype",object.value("data").toObject().value("alarmtype").toInt());
+                callbackMap.insert("year",object.value("data").toObject().value("alarmtime").toObject().value("year").toInt());
+                callbackMap.insert("mouth",object.value("data").toObject().value("alarmtime").toObject().value("month").toInt());
+                callbackMap.insert("day",object.value("data").toObject().value("alarmtime").toObject().value("day").toInt());
+                callbackMap.insert("hour",object.value("data").toObject().value("alarmtime").toObject().value("hour").toInt());
+                callbackMap.insert("min",object.value("data").toObject().value("alarmtime").toObject().value("min").toInt());
+                callbackMap.insert("sec",object.value("data").toObject().value("alarmtime").toObject().value("sec").toInt());
+                callbackMap.insert("temperature",object.value("data").toObject().value("temperature").toDouble());
             }else if("update" == cmd){
 
-
                 QString tmp="http://"+g_ip+":80/cgi-bin/hi3510/upgrade.cgi";
-
                 callbackMap.insert("did","INEW-004122-JWGWM");
                 callbackMap.insert("url",tmp);
+            }else if ("getiradrect"==cmd) {
+                callbackMap.insert("x0",object.value("data").toObject().value("x0").toInt());
+                callbackMap.insert("y0",object.value("data").toObject().value("y0").toInt());
+                callbackMap.insert("w0",object.value("data").toObject().value("w0").toInt());
+                callbackMap.insert("h0",object.value("data").toObject().value("h0").toInt());
+
+                callbackMap.insert("x1",object.value("data").toObject().value("x1").toInt());
+                callbackMap.insert("y1",object.value("data").toObject().value("y1").toInt());
+                callbackMap.insert("w1",object.value("data").toObject().value("w1").toInt());
+                callbackMap.insert("h1",object.value("data").toObject().value("h1").toInt());
+
+                callbackMap.insert("x2",object.value("data").toObject().value("x2").toInt());
+                callbackMap.insert("y2",object.value("data").toObject().value("y2").toInt());
+                callbackMap.insert("w2",object.value("data").toObject().value("w2").toInt());
+                callbackMap.insert("h2",object.value("data").toObject().value("h2").toInt());
+
+                qDebug()<<"rec rect:"<<object.value("data").toObject().value("x").toInt();
             }
             //            emit signal_MsgReply(cmd);
             //            qDebug()<<"signal_ReadMsg   ";
@@ -322,7 +340,7 @@ void CHttpApiDevice::slot_ReadMsg() {
 
         QString keyContentLength = "Content-Length: ";
 
-       //不包含 长度字段 则下一组测试
+        //不包含 长度字段 则下一组测试
         if(!oneData.contains(keyContentLength)){
             //如果还有下一帧数据，则丢弃这一帧无效数据
             if((i+1)<listData.size())
@@ -332,7 +350,7 @@ void CHttpApiDevice::slot_ReadMsg() {
         int contentOffset = oneData.indexOf(keyContentLength);
 
         QString keyConnect = "\r\nConnection";
-       //不包含 长度字段 则下一组测试
+        //不包含 长度字段 则下一组测试
         if(!oneData.contains(keyConnect)){
             //如果还有下一帧数据，则丢弃这一帧无效数据
             if((i+1)<listData.size())
@@ -353,20 +371,20 @@ void CHttpApiDevice::slot_ReadMsg() {
 
         QString keyJson = "\r\n\r\n";
         //不包含 JSON字段 则下一组测试
-         if(!oneData.contains(keyJson)){
-             //如果还有下一帧数据，则丢弃这一帧无效数据
-             if((i+1)<listData.size())
-                 charOffset =charOffset + oneData.length() + httpheadLen;
-             continue;
-         }
-         int jsonOffset = oneData.indexOf(keyJson);
-         if(oneData.length() >= (jsonOffset+keyJson.length() + contentLen)){
-             QString bodyData = oneData.mid(jsonOffset+keyJson.length(),contentLen);
-             charOffset =charOffset + oneData.length() + httpheadLen;
-             qDebug()<<"    bodyData    "<<bodyData<<"  " <<bodyData.length();
-             HttpMsgCallBack(bodyData.toLatin1().data());
+        if(!oneData.contains(keyJson)){
+            //如果还有下一帧数据，则丢弃这一帧无效数据
+            if((i+1)<listData.size())
+                charOffset =charOffset + oneData.length() + httpheadLen;
+            continue;
+        }
+        int jsonOffset = oneData.indexOf(keyJson);
+        if(oneData.length() >= (jsonOffset+keyJson.length() + contentLen)){
+            QString bodyData = oneData.mid(jsonOffset+keyJson.length(),contentLen);
+            charOffset =charOffset + oneData.length() + httpheadLen;
+            qDebug()<<"    bodyData    "<<bodyData<<"  " <<bodyData.length();
+            HttpMsgCallBack(bodyData.toLatin1().data());
 
-         }
+        }
 
         //解析分发
         //HttpMsgCallBack(bodyData);
@@ -457,7 +475,6 @@ bool CHttpApiDevice::send_httpParSet(QMap<QString,QVariant> map)
     }else if(cmd.compare("setiradinfo")==0){
         HttpSetIraInfo(map, msgid);
     }else if(cmd.compare("alarmsubscription")==0){
-
         warnPushMap.insert("ip",read_ip_address());
         warnPushMap.insert("switchSubscription",true);
         warnPushMap.insert("port",6458);
@@ -471,8 +488,12 @@ bool CHttpApiDevice::send_httpParSet(QMap<QString,QVariant> map)
         warnPushMap.insert("isSubscription",false);
         destroyWarnService();
         HttpSubscriptionWarn(warnPushMap, msgid);
+    }else if(cmd.compare("setmeasurablerange")==0){
+       HttpSetMeasureRect(map);
+
     }else
         httpSendCommonCmd(cmd,msgid);
+
     /*else if(cmd.compare("getosdparam")==0){
         httpSendCommonCmd("getosdparam");
     }else if(cmd.compare("getinftempmodel") ==0){
@@ -484,6 +505,42 @@ bool CHttpApiDevice::send_httpParSet(QMap<QString,QVariant> map)
     }else if(cmd.compare("keepalive")==0){
         httpSendCommonCmd("keepalive");
     }*/
+}
+
+void CHttpApiDevice::HttpSetMeasureRect(QVariantMap value)
+{
+    JsonMsg_T info;
+    sprintf(info.cmd, "%s", "setmeasurablerange");
+    sprintf(info.msgID, "%s", value.value("msgid").toString().toLatin1().data());
+    sprintf(info.method, "%s", "request");
+    sprintf(info.ssionID, "%s", "");
+    if(!strlen(this->sessionId)) {
+        qDebug() <<"ssionId error "<<sessionId;
+        return ;
+    }
+    sprintf(info.ssionID, "%s", this->sessionId);
+
+    QJsonObject msgObject;
+    QJsonObject dataObj, alarmparamObj,ctrlparamObj;
+
+    CjsonMakeHttpHead(&msgObject, &info);
+
+    dataObj.insert("x",value.value("x").toInt());
+    dataObj.insert("y",value.value("y").toInt());
+    dataObj.insert("w",value.value("w").toInt());
+    dataObj.insert("h",value.value("h").toInt());
+
+//    alarmparamObj.insert("alarmtempEnable", value.value("alarmtempEnable").toInt());
+//    alarmparamObj.insert("alarmtemp", value.value("alarmtemp").toString().toDouble());
+
+//    ctrlparamObj.insert("tempdrift", value.value("tempdrift").toString().toInt());
+//    ctrlparamObj.insert("tempcontrol", value.value("tempcontrol").toString().toInt());
+
+//    dataObj.insert("alarmparam", QJsonValue(alarmparamObj));
+//    dataObj.insert("ctrlparam", QJsonValue(ctrlparamObj));
+    msgObject.insert("data", QJsonValue(dataObj));
+
+    SendRequestMsg(msgObject);
 }
 
 void CHttpApiDevice::destroyWarnService()
@@ -552,9 +609,9 @@ void CHttpApiDevice::HttpSubscriptionWarn(QMap<QString,QVariant> map,QString msg
     sprintf(info.ssionID, "%s", "");
 
     if(isSubscription){
-       sprintf(info.cmd, "%s", "alarmsubscription");
+        sprintf(info.cmd, "%s", "alarmsubscription");
     }else {
-       sprintf(info.cmd, "%s", "unalarmsubscription");
+        sprintf(info.cmd, "%s", "unalarmsubscription");
     }
 
     if(!strlen(this->sessionId)) {

@@ -43,9 +43,10 @@ public:
     Q_INVOKABLE void fun_temMin(QVariant mvalue);
     Q_INVOKABLE void fun_temOffset(QVariant mvalue);
 
-
     Q_INVOKABLE void fun_colorShowType(int mvalue);
 
+    //
+    Q_INVOKABLE void fun_recTestRect(int x,int y,int w,int h,int x1,int y1,int w1,int h1,int x2,int y2,int w2,int h2);
     explicit XVideoTemp();
     ~XVideoTemp();
 
@@ -120,6 +121,10 @@ private:
     bool isStartTempVideo = false;
 
 
+
+    QRect testRect;//测试使用
+     QRect testRect1;//测试使用
+      QRect testRect2;//测试使用
 };
 
 

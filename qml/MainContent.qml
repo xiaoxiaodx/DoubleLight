@@ -39,7 +39,6 @@ Rectangle {
 
     property int curVindex: -1
 
-
     //   property int modelDataCurrentIndex: -1
 
     visible: false
@@ -63,12 +62,9 @@ Rectangle {
             GradientStop { position: 0.0; color: "#5D9CFF"}
             GradientStop { position: 1.0; color: "#2D76E7"}
         }
-
-
         onSwinMin:  winMin()
         onSwinClose: winClose()
         onSwinMax: winMax()
-
     }
     SwipeView {
           id:vedioContent
