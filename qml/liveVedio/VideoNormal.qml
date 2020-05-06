@@ -81,21 +81,20 @@ Rectangle {
 
         onSignal_httpUiParSet:httpParCallback(map);
 
+        //        MouseArea{
+        //            id:mouse22
+        //            anchors.fill: parent
+        //            cursorShape: Qt.CrossCursor
+        //            onClicked: {
+        //                var kx = video.width / 1920;
+        //                var ky = video.height / 1080;
 
-        MouseArea{
-            id:mouse22
-            anchors.fill: parent
-            cursorShape: Qt.CrossCursor
-            onClicked: {
-                var kx = video.width / 1920;
-                var ky = video.height / 1080;
+        //                var x1 = mouse.x / kx;
+        //                var y1 = mouse.y / ky;
 
-                var x1 = mouse.x / kx;
-                var y1 = mouse.y / ky;
-
-                pos1.text ="pos:"+ x1 +"    "+y1
-            }
-        }
+        //                pos1.text ="pos:"+ x1 +"    "+y1
+        //            }
+        //        }
         Rectangle{
             id:rectadmjt
             x:0//deviceconfig.getShowRectX()
@@ -103,7 +102,7 @@ Rectangle {
             width: 100//deviceconfig.getShowRectW()
             height:100// deviceconfig.getShowRectH()
             color: "#505D9CFF"
-            visible:false;//deviceconfig.getIsOpenAdjustRect();
+            visible:true;//deviceconfig.getIsOpenAdjustRect();
             MouseArea{
                 id:areaTop
                 x:mouseAdjustWidth1

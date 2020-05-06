@@ -40,7 +40,7 @@ void XVideoTemp::startTemperatureVideo(float tp,QVariant type,QVariant par1,QVar
         //createIRCNet();
         createJ07("10.67.1.160");
     }else if (typeStr.compare("J07-S")==0){
-        createJ07("10.67.1.111");
+        createJ07("10.67.1.29");
     }else{
         DebugLog::getInstance()->writeLog("------>>> tempVideo type is unknow <<<------");
     }
