@@ -62,21 +62,21 @@ Rectangle {
         onSignal_sendListRect:videoNormal.funsetlistRect(map)
         onSignal_initRedFrame:videoNormal.funinitRedFrame(mw,mh)
 
-        MouseArea{
-            id:mouse22
-            anchors.fill: parent
-            cursorShape: Qt.CrossCursor
-            onClicked: {
-                var kx = video.width / 206;
-                var ky = video.height / 156;
+//        MouseArea{
+//            id:mouse22
+//            anchors.fill: parent
+//            cursorShape: Qt.CrossCursor
+//            onClicked: {
+//                var kx = video.width / 206;
+//                var ky = video.height / 156;
 
-                var x1 = mouse.x / kx;
-                var y1 = mouse.y / ky;
+//                var x1 = mouse.x / kx;
+//                var y1 = mouse.y / ky;
 
 
-                pos1.text ="pos:"+ x1 +"    "+y1
-            }
-        }
+//                pos1.text ="pos:"+ x1 +"    "+y1
+//            }
+//        }
     }
     Connections{
         target: videoNormal

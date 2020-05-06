@@ -5,7 +5,7 @@
 #include <render/texturenode.h>
 #include <QPainter>
 
-
+#include "XVideo.h"
 QList<ImageInfo> XVideoTemp::listBufferImginfo;//缓存的图片指针
 QMutex XVideoTemp::mutex;
 XVideoTemp::XVideoTemp()
@@ -38,9 +38,9 @@ void XVideoTemp::startTemperatureVideo(float tp,QVariant type,QVariant par1,QVar
         createShiGan();
     }else if (typeStr.compare("F03")==0){
         //createIRCNet();
-        createJ07("10.67.1.160");
+        createJ07(XVideo::m_ip);
     }else if (typeStr.compare("J07-S")==0){
-        createJ07("10.67.1.29");
+        createJ07(XVideo::m_ip);
     }else{
         DebugLog::getInstance()->writeLog("------>>> tempVideo type is unknow <<<------");
     }
