@@ -538,6 +538,10 @@ Rectangle {
 
     }
 
+    
+    function fun_sendCommonPar(map){
+        video.fun_sendCommonPar(map)
+    }
 }
 
 

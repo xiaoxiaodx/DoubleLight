@@ -4,7 +4,7 @@ import "../dialog"
 import "../"
 Rectangle {
 
-    id:root
+    id:vediolayout
 
     property int currentIndex: -1
 
@@ -20,6 +20,9 @@ Rectangle {
         height: 600
     }
 
+    function fun_sendCommonPar(map){
+        videoNormal.fun_sendCommonPar(map)
+    }
 
     RowLayout{
 

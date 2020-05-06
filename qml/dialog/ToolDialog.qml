@@ -14,15 +14,15 @@ Popup {
     //设置窗口的背景控件，不设置的话Popup的边框会显示出来
     background: rect
 
-    property int curType: -1;
-    //signal s_deviceIDstr(var name,var strID,var strAccoount,var strPassword)
-    signal s_showToast(var str1)
-    signal s_CurTypeMsg(var type);
 
-    property string imgSrc:""
-    property int exeClose: 0
-    property int warnInfoSingleDelete: 1
-    property int warnInfoMutipleDelete: 2
+    signal s_setdid(var map)
+    signal s_setinftempmodel(var map)
+    signal s_setinftemptype(var map)
+    signal s_getdevicekey(var map)
+    signal s_setsignature(var map)
+    signal s_getsdcardparam(var map)
+    signal s_setsdcardformat(var map)
+
 
     Rectangle {
         id: rect
@@ -39,7 +39,7 @@ Popup {
                 id: txtDid
                 anchors.left: parent.left
                 anchors.verticalCenter: parent.verticalCenter
-                text: qsTr("text")
+                text: qsTr("")
             }
 
             Button{
@@ -48,6 +48,16 @@ Popup {
                 anchors.left: txtDid.right
                 anchors.leftMargin: 10
                 anchors.verticalCenter: parent.verticalCenter
+
+                onClicked: {
+                    var map = {
+                        cmd:"setdid",
+                        uuid:txtDid.text,
+                        lisence:XCVRYL,
+                        pushlis:CHZIPV
+                    }
+                    s_setdid(map)
+                }
             }
 
             Text {
@@ -55,45 +65,46 @@ Popup {
                 anchors.left: btnWriteDid.right
                 anchors.leftMargin: 10
                 anchors.verticalCenter: parent.verticalCenter
-                text: qsTr("text")
+                text: qsTr("")
             }
         }
 
         Rectangle{
             id:rectSetModel
-            width: parent.width
+            width: 200
             height: 40
             anchors.left: rectdid.left
             anchors.top: rectdid.bottom
             anchors.topMargin: 10
             LineEdit {
                 id: inputTempDrift
-                width: rectSetModel.width  - 22
+                width: rectSetModel.width  - 40
                 height: rectSetModel.height -2
                 anchors.left: rectdid.left
                 anchors.verticalCenter: rectSetModel.verticalCenter
-                border.width: 0
-                inputLimite:Qt.ImhDigitsOnly
-                font.pixelSize: fontSize
+                border.width: 1
+                //inputLimite:Qt.ImhDigitsOnly
+                //font.pixelSize: fontSize
                 placeholderText: ""
-                isNeedDoubleClickEdit: false
+                //isNeedDoubleClickEdit: false
                 textLeftPadding:0
                 txtColor: Qt.rgba(0,0,0,0.65)
                 text: "0"
                 color: "#F8FAFD"
-                isReadOnly:true
-                onTextChanged: {
-                    s_temOffset(inputTempDrift.text);
-
-                }
             }
 
             Button{
                 id:btnSetModel
-                anchors.left: rectdid.left
+                anchors.left: inputTempDrift.right
+                anchors.leftMargin: 10
                 anchors.verticalCenter: inputTempDrift.verticalCenter
                 text: "设置型号"
                 onClicked: {
+                    var map = {
+                        cmd:"setinftempmodel",
+                        tempmodel:inputTempDrift.text
+                    }
+                    s_setinftempmodel(map)
                 }
             }
 
@@ -120,14 +131,35 @@ Popup {
                 anchors.left: parent.left
                 anchors.verticalCenter: parent.verticalCenter
             }
-
             Button{
-                id:btnWriteLicense
+                id:btnGetdevicekey
                 anchors.left: txtKeyID.right
                 anchors.leftMargin: 10
                 anchors.verticalCenter: parent.verticalCenter
+                text: "获取算法 key"
+                onClicked: {
+                    var map = {
+                        cmd:"getdevicekey",
+                    }
+                    s_getdevicekey(map)
+
+                }
+            }
+
+            Button{
+                id:btnWriteLicense
+                anchors.left: btnGetdevicekey.right
+                anchors.leftMargin: 10
+                anchors.verticalCenter: parent.verticalCenter
                 text: "烧写licence"
-                onClicked: {}
+                onClicked: {
+
+                    var map = {
+                        cmd:"devicekey",
+                        key:txtKeyID.text
+                    }
+                    s_setsignature(map)
+                }
             }
 
             Text {
@@ -152,19 +184,42 @@ Popup {
             Text {
                 id: txtsdinfo
                 anchors.left: parent.left
+                anchors.leftMargin: 10
                 anchors.verticalCenter: parent.verticalCenter
-                text: qsTr("text")
+                text: qsTr("")
             }
 
             Button{
                 id:btnGetSd
+                anchors.left: parent.left
+                anchors.leftMargin: 10
+                anchors.verticalCenter: parent.verticalCenter
                 text: "获取sdcard信息"
+                onClicked: {
+
+                    var map = {
+                        cmd:"getsdcardparam"
+                    }
+                    s_getsdcardparam(map)
+                }
             }
         }
 
 
+        Button{
+            id:btnFormat
+            anchors.left: rectSdCard.left
+            anchors.top: rectSdCard.bottom
+            anchors.topMargin: 10
+            text: "sd卡格式化"
+            onClicked: {
+                var map = {
+                    cmd:"setsdcardformat"
+                }
+                s_setsdcardformat(map)
 
-
+            }
+        }
 
         Rectangle{
             id:btnEnsure
@@ -223,8 +278,6 @@ Popup {
                 }
             }
         }
-
-
         layer.enabled: true
         layer.effect: DropShadow {
             transparentBorder: true
@@ -234,7 +287,15 @@ Popup {
         }
     }
 
+    function getdid(str)
+    {
+        txtDid.text = str
+    }
 
+    function getinftempmodel(str)
+    {
+        txtSetModel.text = str
+    }
 
 
 }
