@@ -351,7 +351,6 @@ void XVideo::fun_setListRect(QVariant var){
             pRenderImginfo.listRect.append(map);
         }
     }
-
     update();
 }
 

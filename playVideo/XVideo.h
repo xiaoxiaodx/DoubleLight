@@ -14,7 +14,7 @@
 #include "mysearch1.h"
 #include "youseeparse.h"
 #include "chttpapidevice.h"
-
+#include "productiontool.h"
 #include "debuglog.h"
 class XVideo : public QQuickPaintedItem
 {
@@ -58,8 +58,6 @@ signals:
     //http 搜索
     void signal_resetSearch();
     void signal_finishSearch();
-
-
 
 public slots:
     void slot_recH264(char *buff,int len,quint64 time);
@@ -119,6 +117,8 @@ private:
 
     qreal tempImgResW =0;
     qreal tempImgResH =0;
+
+    ProductionTool productionTool;
 };
 
 #endif // XVideo_H

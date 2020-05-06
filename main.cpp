@@ -10,7 +10,7 @@
 #include "application.h"
 #include "updateprogressc.h"
 
-#include "consoleprocess.h"
+
 int main(int argc, char *argv[])
 {
 
@@ -34,7 +34,7 @@ int main(int argc, char *argv[])
 //    app.installTranslator(&translator);
 
 
-    ConsoleProcess pro;
+
     qmlRegisterType<XVideo>("XVideo", 1, 0, "XVideo");
     qmlRegisterType<XVideoTemp>("XVideoTemp", 1, 0, "XVideoTemp");
     qmlRegisterType<ScreenVideo>("ScreenVideo", 1, 0, "ScreenVideo");
