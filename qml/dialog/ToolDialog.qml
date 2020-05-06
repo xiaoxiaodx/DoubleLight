@@ -151,10 +151,15 @@ Popup {
             anchors.topMargin: 10
             Text {
                 id: txtsdinfo
+                anchors.left: parent.left
+                anchors.verticalCenter: parent.verticalCenter
                 text: qsTr("text")
             }
 
-
+            Button{
+                id:btnGetSd
+                text: "获取sdcard信息"
+            }
         }
 
 
