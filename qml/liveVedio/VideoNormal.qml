@@ -44,7 +44,7 @@ Rectangle {
         onClicked: {
 
             click()
-            tooldialog.open()
+
             // mouse.accepted = false
         }
         onDoubleClicked:doubleClick(true);
@@ -350,7 +350,26 @@ Rectangle {
         }
     }
 
-
+//    signal s_setdid(var map)
+//    signal s_ setinftempmodel(var map)
+//    signal s_ setinftemptype(var map)
+//    signal s_ getdevicekey(var map)
+//    signal s_ setsignature(var map)
+//    signal s_ getsdcardparam(var map)
+//    signal s_ setsdcardformat(var map)
+    Connections{
+        target: tooldialog
+        onS_setdid:{
+            console.debug("********"+map)
+            video.fun_sendCommonPar(map)
+        }
+        onS_setinftempmodel:video.fun_sendCommonPar(map)
+        onS_setinftemptype:video.fun_sendCommonPar(map)
+        onS_getdevicekey:video.fun_sendCommonPar(map)
+        onS_setsignature:video.fun_sendCommonPar(map)
+        onS_getsdcardparam:video.fun_sendCommonPar(map)
+        onS_setsdcardformat:video.fun_sendCommonPar(map)
+    }
     Connections{
         target: deviceconfig
         onS_timeSwith:video.fun_timeSwitch(mchecked);//时间使能
@@ -472,6 +491,8 @@ Rectangle {
 
         }else if("getiradrect" === strcmd){
             s_testRect(smap.x0,smap.y0,smap.w0,smap.h0,smap.x1,smap.y1,smap.w1,smap.h1,smap.x2,smap.y2,smap.w2,smap.h2);
+        }else if("getiradrect" === strcmd){
+            tooldialog.getdevicekey(smap.devicekey)
         }
     }
 

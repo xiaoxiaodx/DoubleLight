@@ -18,6 +18,8 @@ Rectangle {
         id:tooldialog
         width: 600
         height: 600
+        visible: true
+        z:2
     }
 
 
@@ -35,7 +37,7 @@ Rectangle {
             Layout.fillWidth: true
             mIsSelected: 1 === currentIndex
             onClick:{
-                tooldialog.open()
+                    tooldialog.open()
                      currentIndex = 1
                 }
 

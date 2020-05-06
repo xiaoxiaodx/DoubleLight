@@ -53,9 +53,9 @@ void CHttpApiDevice::slot_heartimertout(){
     }
 
 
-    QMap<QString,QVariant> map;
-    map.insert("cmd","getiradrect");
-    slot_httpParSet(map);
+//    QMap<QString,QVariant> map;
+//    map.insert("cmd","getiradrect");
+//    slot_httpParSet(map);
 
 
 }
@@ -491,7 +491,16 @@ bool CHttpApiDevice::send_httpParSet(QMap<QString,QVariant> map)
     }else if(cmd.compare("setmeasurablerange")==0){
        HttpSetMeasureRect(map);
 
-    }else
+    }else if(cmd.compare("setdid")==0){
+        HttpSetMeasureRect(map);
+
+     }else if(cmd.compare("setinftempmodel")==0){
+        HttpSetMeasureRect(map);
+
+     }else if(cmd.compare("setinftemptype")==0){
+        HttpSetMeasureRect(map);
+
+     }else
         httpSendCommonCmd(cmd,msgid);
 
     /*else if(cmd.compare("getosdparam")==0){

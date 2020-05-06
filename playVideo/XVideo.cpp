@@ -52,6 +52,8 @@ void XVideo::createFFmpegDecodec()
 
 void XVideo::fun_sendCommonPar(QVariantMap map)
 {
+
+    qDebug()<<"fun_sendCommonPar";
     emit signal_httpParSet(map);
 }
 void XVideo::fun_setIraInfo(QVariantMap map)

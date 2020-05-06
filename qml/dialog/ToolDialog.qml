@@ -14,7 +14,6 @@ Popup {
     //设置窗口的背景控件，不设置的话Popup的边框会显示出来
     background: rect
 
-
     signal s_setdid(var map)
     signal s_setinftempmodel(var map)
     signal s_setinftemptype(var map)
@@ -22,7 +21,6 @@ Popup {
     signal s_setsignature(var map)
     signal s_getsdcardparam(var map)
     signal s_setsdcardformat(var map)
-
 
     Rectangle {
         id: rect
@@ -53,8 +51,8 @@ Popup {
                     var map = {
                         cmd:"setdid",
                         uuid:txtDid.text,
-                        lisence:XCVRYL,
-                        pushlis:CHZIPV
+                        lisence:"XCVRYL",
+                        pushlis:"CHZIPV"
                     }
                     s_setdid(map)
                 }
@@ -244,9 +242,7 @@ Popup {
                 anchors.fill: parent
                 onClicked: {
 
-                    if(curType > -1){
-                        s_CurTypeMsg(curType)
-                    }
+
                     root.close()
                 }
             }
@@ -289,15 +285,27 @@ Popup {
 
     function getdid(str)
     {
-        txtDid.text = str
+        txtDid.text = str;
     }
 
     function getinftempmodel(str)
     {
-        txtSetModel.text = str
+        txtSetModel.text = str;
     }
 
+    function getdevicekey(str)
+    {
+        txtKeyID.text = str;
+    }
 
+    function getsignature(str)
+    {
+        txtLicenseInfo.text = str
+    }
+
+    function getsdcardparam(str){
+        txtsdinfo.text = str
+    }
 
 }
 
