@@ -48,6 +48,7 @@ void XVideoTemp::startTemperatureVideo(float tp,QVariant type,QVariant par1,QVar
 
     connect(&timerUpdate,&QTimer::timeout,this,&XVideoTemp::slot_timeout);
     timerUpdate.start(10);
+
 }
 
 void XVideoTemp::createJ07(QString ip)

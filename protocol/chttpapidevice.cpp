@@ -492,13 +492,13 @@ bool CHttpApiDevice::send_httpParSet(QMap<QString,QVariant> map)
        HttpSetMeasureRect(map);
 
     }else if(cmd.compare("setdid")==0){
-        HttpSetMeasureRect(map);
+
 
      }else if(cmd.compare("setinftempmodel")==0){
-        HttpSetMeasureRect(map);
+
 
      }else if(cmd.compare("setinftemptype")==0){
-        HttpSetMeasureRect(map);
+
 
      }else
         httpSendCommonCmd(cmd,msgid);
@@ -515,6 +515,109 @@ bool CHttpApiDevice::send_httpParSet(QMap<QString,QVariant> map)
         httpSendCommonCmd("keepalive");
     }*/
 }
+
+
+void CHttpApiDevice::HttpSetDid(QVariantMap value){
+
+    JsonMsg_T info;
+    sprintf(info.cmd, "%s", "setdid");
+    sprintf(info.msgID, "%s", value.value("msgid").toString().toLatin1().data());
+    sprintf(info.method, "%s", "request");
+    sprintf(info.ssionID, "%s", "");
+    if(!strlen(this->sessionId)) {
+        qDebug() <<"ssionId error "<<sessionId;
+        return ;
+    }
+    sprintf(info.ssionID, "%s", this->sessionId);
+
+    QJsonObject msgObject;
+    QJsonObject dataObj, alarmparamObj,ctrlparamObj;
+
+    CjsonMakeHttpHead(&msgObject, &info);
+
+    dataObj.insert("uuid",value.value("uuid").toString());
+
+
+    msgObject.insert("data", QJsonValue(dataObj));
+
+    SendRequestMsg(msgObject);
+}
+void CHttpApiDevice::HttpSetinftempmodel(QVariantMap value){
+
+    JsonMsg_T info;
+    sprintf(info.cmd, "%s", "setinftemptype");
+    sprintf(info.msgID, "%s", value.value("msgid").toString().toLatin1().data());
+    sprintf(info.method, "%s", "request");
+    sprintf(info.ssionID, "%s", "");
+    if(!strlen(this->sessionId)) {
+        qDebug() <<"ssionId error "<<sessionId;
+        return ;
+    }
+    sprintf(info.ssionID, "%s", this->sessionId);
+
+    QJsonObject msgObject;
+    QJsonObject dataObj, alarmparamObj,ctrlparamObj;
+
+    CjsonMakeHttpHead(&msgObject, &info);
+
+    dataObj.insert("temptype",value.value("temptype").toString());
+
+
+    msgObject.insert("data", QJsonValue(dataObj));
+
+    SendRequestMsg(msgObject);
+}
+void CHttpApiDevice::HttpSetinftemptype(QVariantMap value){
+
+    JsonMsg_T info;
+    sprintf(info.cmd, "%s", "setinftemptype");
+    sprintf(info.msgID, "%s", value.value("msgid").toString().toLatin1().data());
+    sprintf(info.method, "%s", "request");
+    sprintf(info.ssionID, "%s", "");
+    if(!strlen(this->sessionId)) {
+        qDebug() <<"ssionId error "<<sessionId;
+        return ;
+    }
+    sprintf(info.ssionID, "%s", this->sessionId);
+
+    QJsonObject msgObject;
+    QJsonObject dataObj, alarmparamObj,ctrlparamObj;
+
+    CjsonMakeHttpHead(&msgObject, &info);
+
+    dataObj.insert("temptype",value.value("temptype").toString());
+
+
+    msgObject.insert("data", QJsonValue(dataObj));
+
+    SendRequestMsg(msgObject);
+}
+void CHttpApiDevice::HttpSetsignature(QVariantMap value){
+
+    JsonMsg_T info;
+    sprintf(info.cmd, "%s", "setsignature");
+    sprintf(info.msgID, "%s", value.value("msgid").toString().toLatin1().data());
+    sprintf(info.method, "%s", "request");
+    sprintf(info.ssionID, "%s", "");
+    if(!strlen(this->sessionId)) {
+        qDebug() <<"ssionId error "<<sessionId;
+        return ;
+    }
+    sprintf(info.ssionID, "%s", this->sessionId);
+
+    QJsonObject msgObject;
+    QJsonObject dataObj, alarmparamObj,ctrlparamObj;
+
+    CjsonMakeHttpHead(&msgObject, &info);
+
+    dataObj.insert("signature",value.value("signature").toString());
+
+
+    msgObject.insert("data", QJsonValue(dataObj));
+
+    SendRequestMsg(msgObject);
+}
+
 
 void CHttpApiDevice::HttpSetMeasureRect(QVariantMap value)
 {
