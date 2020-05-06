@@ -33,7 +33,7 @@ Popup {
         Rectangle{
             id:rectdid
             width: parent.width
-            height: 50
+            height: 40
 
             Text{
                 id: txtDid
@@ -50,8 +50,116 @@ Popup {
                 anchors.verticalCenter: parent.verticalCenter
             }
 
+            Text {
+                id: txtWritedDid
+                anchors.left: btnWriteDid.right
+                anchors.leftMargin: 10
+                anchors.verticalCenter: parent.verticalCenter
+                text: qsTr("text")
+            }
+        }
+
+        Rectangle{
+            id:rectSetModel
+            width: parent.width
+            height: 40
+            anchors.left: rectdid.left
+            anchors.top: rectdid.bottom
+            anchors.topMargin: 10
+            LineEdit {
+                id: inputTempDrift
+                width: rectSetModel.width  - 22
+                height: rectSetModel.height -2
+                anchors.left: rectdid.left
+                anchors.verticalCenter: rectSetModel.verticalCenter
+                border.width: 0
+                inputLimite:Qt.ImhDigitsOnly
+                font.pixelSize: fontSize
+                placeholderText: ""
+                isNeedDoubleClickEdit: false
+                textLeftPadding:0
+                txtColor: Qt.rgba(0,0,0,0.65)
+                text: "0"
+                color: "#F8FAFD"
+                isReadOnly:true
+                onTextChanged: {
+                    s_temOffset(inputTempDrift.text);
+
+                }
+            }
+
+            Button{
+                id:btnSetModel
+                anchors.left: rectdid.left
+                anchors.verticalCenter: inputTempDrift.verticalCenter
+                text: "设置型号"
+                onClicked: {
+                }
+            }
+
+            Text {
+                id: txtSetModel
+                anchors.left: btnSetModel.right
+                anchors.leftMargin: 10
+                anchors.verticalCenter: btnSetModel.verticalCenter
+                text: qsTr("")
+            }
+        }
+
+        Rectangle{
+            id:faceRect
+            width: parent.width
+            height: 40
+            anchors.left: rectdid.left
+            anchors.top: rectSetModel.bottom
+            anchors.topMargin: 10
+
+            Text {
+                id: txtKeyID
+                text: qsTr("")
+                anchors.left: parent.left
+                anchors.verticalCenter: parent.verticalCenter
+            }
+
+            Button{
+                id:btnWriteLicense
+                anchors.left: txtKeyID.right
+                anchors.leftMargin: 10
+                anchors.verticalCenter: parent.verticalCenter
+                text: "烧写licence"
+                onClicked: {}
+            }
+
+            Text {
+                id: txtLicenseInfo
+                anchors.left: btnWriteLicense.right
+                anchors.leftMargin: 10
+                anchors.verticalCenter: parent.verticalCenter
+                text: qsTr("")
+            }
 
         }
+
+
+
+        Rectangle{
+            id:rectSdCard
+            width: parent.width
+            height: 40
+            anchors.left: rectdid.left
+            anchors.top: faceRect.bottom
+            anchors.topMargin: 10
+            Text {
+                id: txtsdinfo
+                text: qsTr("text")
+            }
+
+
+        }
+
+
+
+
 
         Rectangle{
             id:btnEnsure
