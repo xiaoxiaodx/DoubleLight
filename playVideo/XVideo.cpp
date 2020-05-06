@@ -4,7 +4,7 @@
 #include <render/texturenode.h>
 #include <QPainter>
 
-QString XVideo::m_ip;
+QString XVideo::m_ip = "10.67.1.29";
 XVideo::XVideo()
 {
     qDebug()<<"XVideo "<<"  "<<QThread::currentThreadId() ;
@@ -33,8 +33,8 @@ void XVideo::startNormalVideo(float tp)
 {
     DebugLog::getInstance()->writeLog("startNormalVideo ");
     warnTemp = tp;
-
-    createSearchIp();
+    createTcpThread();
+    //createSearchIp();
 }
 
 void XVideo::createFFmpegDecodec()
@@ -162,7 +162,7 @@ void XVideo::recSearchIp(QString ip)
 
     DebugLog::getInstance()->writeLog("my recSearchIp:"+ip);
     //qDebug()<<"my recSearchIp:"<<ip;
-    m_ip = ip;//ip;//"192.168.1.101";
+   // m_ip = ip;//ip;//"192.168.1.101";
     createTcpThread();
 }
 
