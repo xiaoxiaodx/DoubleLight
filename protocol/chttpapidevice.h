@@ -113,7 +113,7 @@ private:
     QTimer *reconnectTimer = nullptr;
     QList<QMap<QString,QVariant>> listMsg;
     int reconnectTimerCount = 0 ;
-    int reconnectInter = 1000;
+    int reconnectInter = 200;
 
     int sendertimerInter = 200;
 
