@@ -4,7 +4,7 @@
 #include <render/texturenode.h>
 #include <QPainter>
 
-QString XVideo::m_ip = "10.67.1.29";
+
 XVideo::XVideo()
 {
     qDebug()<<"XVideo "<<"  "<<QThread::currentThreadId() ;
