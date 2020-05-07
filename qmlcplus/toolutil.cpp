@@ -1,36 +1,42 @@
-#include "toolutil.h"
+#include "toolUtil.h"
 
 #include <QFile>
 #include <QDebug>
 
-toolUtil::toolUtil(QObject *parent) : QObject(parent)
+ToolUtil::ToolUtil(QObject *parent) : QObject(parent)
 {
     m_Process.setProcessChannelMode(QProcess::MergedChannels);
     connect(&m_Process,SIGNAL(readyReadStandardOutput()),this,SLOT(slot_consoleOutput()));
 }
 
-void toolUtil::funStartCmd(QString str)
+void ToolUtil::funStartCmd(QString keystr)
 {
-    m_Process.start(str);
+
+    QString cmd = "act_dv300_common.exe "+keystr+" "+keystr+" 5d7073359bb502922d0b0566b8d8a6e1 883a63d3af6569f8997b625bd1162966f92139a2";
+
+    /*act_dv300_common.exe 76b627633d6beb09edeae06a7952b2a2 76b627633d6beb09edeae06a7952b2a2 5d7073359bb502922d0b0566b8d8a6eb 883a63d3af6569f8997b625bd1162966f92139af*/
+
+    m_Process.start(cmd);
 }
 
-void toolUtil::slot_consoleOutput()
+void ToolUtil::slot_consoleOutput()
 {
-    qDebug()<<"dsadsad";
+
     QByteArray qbt = m_Process.readAllStandardOutput();
     QString msg = QString::fromLocal8Bit(qbt);
 
+    qDebug()<<"slot_consoleOutput "<<msg;
     QFile file("lisence.key");
-
     if(file.open(QIODevice::WriteOnly | QIODevice::Append)){
         QTextStream  in(&file);
         in<<msg<<endl;
         file.close();
     }
-    qDebug()<<msg;
+
+    emit signal_sendLisence(msg);
 }
 
-void toolUtil::readDidFile(QString path)
+void ToolUtil::readDidFile(QString path)
 {
 
     QFile file(path);
@@ -49,7 +55,7 @@ void toolUtil::readDidFile(QString path)
 }
 
 
-void toolUtil::setWriteDidLabel()
+void ToolUtil::setWriteDidLabel()
 {
 
     if(myDidList.size() <= 0){

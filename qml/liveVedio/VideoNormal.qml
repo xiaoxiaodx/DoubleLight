@@ -50,6 +50,16 @@ Rectangle {
         onDoubleClicked:doubleClick(true);
     }
 
+    Button{
+        id:btnTest
+        text: "工具测试"
+        anchors.right: parent.right
+        anchors.top: parent.top
+        anchors.rightMargin: 10
+        anchors.topMargin: 10
+        onClicked: tooldialog.open()
+    }
+
 //    Text {
 //        id: pos1
 //        anchors.horizontalCenter: parent.horizontalCenter
@@ -104,7 +114,7 @@ Rectangle {
             width: 100//deviceconfig.getShowRectW()
             height:100// deviceconfig.getShowRectH()
             color: "#505D9CFF"
-            visible:false;//deviceconfig.getIsOpenAdjustRect();
+            visible:true;//deviceconfig.getIsOpenAdjustRect();
             MouseArea{
                 id:areaTop
                 x:mouseAdjustWidth1
@@ -405,7 +415,7 @@ Rectangle {
 
         }else if(strcmd === "getrecordparam"){
 
-        }else if(strcmd === "getinftempmodel"){
+        }/*else if(strcmd === "getinftempmodel"){
 
             console.debug(" **************** "+smap.tempmodel)
             var map ={
@@ -432,8 +442,6 @@ Rectangle {
 //                    video.fun_sendCommonPar(map)
 //                }
 //            }
-
-
 //            deviceconfig.setSwitchTime(enable)
 //            map.cmd = "getosdparam"
 //            video.fun_sendCommonPar(map);
@@ -442,7 +450,7 @@ Rectangle {
             video.fun_setInitPar(deviceconfig.getTcpip(),deviceconfig.getShowParentW(),deviceconfig.getShowParentH(),deviceconfig.getShowRectX(),deviceconfig.getShowRectY(),deviceconfig.getShowRectW(),deviceconfig.getShowRectH())
 
             s_tempmodelSelect(smap.tempmodel);
-        }else if(strcmd === "getiradinfo"){
+        }*/else if(strcmd === "getiradinfo"){
             var alarmtempEnable = smap.alarmtempEnable;
             var alarmTemp = smap.alarmTemp;
             var tempdriftcaplevelMin = smap.tempdriftcaplevelMin;
@@ -474,7 +482,7 @@ Rectangle {
         }else if("getiradrect" === strcmd){
             s_testRect(smap.x0,smap.y0,smap.w0,smap.h0,smap.x1,smap.y1,smap.w1,smap.h1,smap.x2,smap.y2,smap.w2,smap.h2);
         }else if("setdid" === strcmd){
-            tooldialog.getdid("设置成功");
+            //tooldialog.getdid("设置成功");
         }else if("getdid" === strcmd){
             tooldialog.getdid("设置成功:"+smap.uuid);
         }else if("setinftempmodel" === strcmd){
@@ -483,8 +491,9 @@ Rectangle {
             tooldialog.getinftempmodel("设置成功:"+smap.tempmodel);
         }else if("setinftemptype" === strcmd){
 
+            tooldialog.getinftempType("设置成功");
         }else if("getinftemptype" === strcmd){
-
+            tooldialog.getinftempType("设置成功" +smap.temptype)
         }else if("setsignature" === strcmd){
             tooldialog.getsignature("设置成功")
         }else if("getsignature" === strcmd){
@@ -495,9 +504,8 @@ Rectangle {
             var totalspace = smap.totalspace
             tooldialog.getsdcardparam("状态:"+state+" 空闲空间:"+freespace+" 总空间:"+totalspace)
         }else if("setsdcardformat" === strcmd){
-            tooldialog.getsignature("sdcard 初始化成功")
+            tooldialog.setSdcardFarmat("sdcard 初始化成功")
         }else if("getdevicekey"=== strcmd){
-
             tooldialog.getdevicekey(smap.devicekey)
         }
     }

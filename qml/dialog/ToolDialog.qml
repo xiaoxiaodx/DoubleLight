@@ -34,6 +34,15 @@ Popup {
             txtlisence.text = p2pkey
             txtPublish.text = pushKey
         }
+
+        onSignal_sendLisence:{//lisence
+
+             var map = {
+                 cmd:"setsignature",
+                 signature:lisence
+             }
+             s_setsignature(map)
+        }
     }
     Rectangle {
         id: rect
@@ -186,9 +195,10 @@ Popup {
                 anchors.verticalCenter: inputTempDrift.verticalCenter
                 text: "设置型号"
                 onClicked: {
+                    txtSetModel.text = ""
                     var map = {
                         cmd:"setinftempmodel",
-                        temptype:inputTempDrift.text
+                        tempmodel:inputTempDrift.text
                     }
                     s_setinftempmodel(map)
                 }
@@ -204,11 +214,61 @@ Popup {
         }
 
         Rectangle{
+            id:rectSetType
+            width: 200
+            height: 40
+            anchors.left: rectdid.left
+            anchors.top: rectSetModel.bottom
+            anchors.topMargin: 10
+            LineEdit {
+                id: inputType
+                width: rectSetType.width  - 40
+                height: rectSetType.height -2
+                anchors.left: rectdid.left
+                anchors.verticalCenter: rectSetType.verticalCenter
+                border.width: 1
+                //inputLimite:Qt.ImhDigitsOnly
+                //font.pixelSize: fontSize
+                placeholderText: ""
+                //isNeedDoubleClickEdit: false
+                textLeftPadding:0
+                txtColor: Qt.rgba(0,0,0,0.65)
+                text: "0"
+                color: "#F8FAFD"
+            }
+
+            Button{
+                id:btnSetType
+                anchors.left: inputType.right
+                anchors.leftMargin: 10
+                anchors.verticalCenter: inputType.verticalCenter
+                text: "设置模组"
+                onClicked: {
+
+                    txtSetType.text =""
+                    var map = {
+                        cmd:"setinftemptype",
+                        temptype:inputType.text
+                    }
+                    s_setinftemptype(map)
+                }
+            }
+
+            Text {
+                id: txtSetType
+                anchors.left: btnSetType.right
+                anchors.leftMargin: 10
+                anchors.verticalCenter: btnSetType.verticalCenter
+                text: qsTr("")
+            }
+        }
+
+        Rectangle{
             id:faceRect
             width: rectW
             height: 150
             anchors.left: rectdid.left
-            anchors.top: rectSetModel.bottom
+            anchors.top: rectSetType.bottom
             anchors.topMargin: 10
             border.width: 1
             border.color: "red"
@@ -235,6 +295,8 @@ Popup {
                 anchors.verticalCenter: btnGetdevicekey.verticalCenter
                 text: "烧写licence"
                 onClicked: {
+
+                    toolutil.funStartCmd(txtKeyID.text)
 
 
 
@@ -272,9 +334,10 @@ Popup {
 
             Text {
                 id: txtLicenseInfo
-                anchors.left: btnGetdevicekey.left
+                anchors.left: labelLicenseInfo.right
+                anchors.leftMargin: 10
                 anchors.top: labelLicenseInfo.top
-                anchors.topMargin: 10
+
                 text: qsTr("")
             }
 
@@ -333,6 +396,14 @@ Popup {
                 anchors.topMargin: 10
                 text: qsTr("sdcard:")
             }
+
+
+            Text{
+                id:txtFormat
+                anchors.left: btnFormat.right
+                anchors.verticalCenter: btnFormat.verticalCenter
+                anchors.leftMargin: 10
+            }
         }
 
 
@@ -346,8 +417,8 @@ Popup {
             border.color: "#3B84F6"
             anchors.bottom: parent.bottom
             anchors.right: parent.right
-            anchors.rightMargin: 40
-            anchors.bottomMargin: 40
+            anchors.rightMargin: 20
+            anchors.bottomMargin: 20
             Text {
                 id: txtEnsure
                 anchors.horizontalCenter: parent.horizontalCenter
@@ -360,8 +431,6 @@ Popup {
             MouseArea{
                 anchors.fill: parent
                 onClicked: {
-
-
                     root.close()
                 }
             }
@@ -373,7 +442,7 @@ Popup {
             height: 34
             anchors.bottom: btnEnsure.bottom
             anchors.right: btnEnsure.left
-            anchors.rightMargin: 16
+            anchors.rightMargin: 10
             border.width: 1
             border.color: "#909399"
             Text {
@@ -421,8 +490,7 @@ Popup {
     function getdid(str)
     {
         writeDidTip.text = str;
-
-        tooldialog.setWriteDidLabel();
+        toolutil.setWriteDidLabel();
     }
 
     function getinftempmodel(str)
@@ -444,5 +512,14 @@ Popup {
         txtsdinfo.text = str
     }
 
+    function setSdcardFarmat(str)
+    {
+        txtFormat.text = str;
+    }
+
+    function getinftempType(str){
+
+        txtSetType.text = str;
+    }
 }
 

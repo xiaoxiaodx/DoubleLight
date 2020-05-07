@@ -319,6 +319,7 @@ int CHttpApiDevice::HttpMsgCallBack(char * pData) {
                 sendMap.insert("cmd","getinftemptype");
                 slot_httpParSet(sendMap);
             }else if("getinftemptype"==cmd){
+
                 callbackMap.insert("temptype",object.value("data").toObject().value("temptype").toString());
 
             }else if("setsignature"==cmd){
@@ -522,18 +523,21 @@ bool CHttpApiDevice::send_httpParSet(QMap<QString,QVariant> map)
         HttpSubscriptionWarn(warnPushMap, msgid);
     }else if(cmd.compare("setmeasurablerange")==0){
         HttpSetMeasureRect(map);
-
     }else if(cmd.compare("setdid")==0){
         HttpSetDid(map);
-
     }else if(cmd.compare("setinftempmodel")==0){
         HttpSetinftempmodel(map);
-
     }else if(cmd.compare("setinftemptype")==0){
         HttpSetinftemptype(map);
-
+    }else if(cmd.compare("setsignature")==0){
+        HttpSetsignature(map);
     }else
         httpSendCommonCmd(cmd,msgid);
+
+
+
+
+
 
     /*else if(cmd.compare("getosdparam")==0){
         httpSendCommonCmd("getosdparam");
@@ -568,6 +572,8 @@ void CHttpApiDevice::HttpSetDid(QVariantMap value){
     CjsonMakeHttpHead(&msgObject, &info);
 
     dataObj.insert("uuid",value.value("uuid").toString());
+    dataObj.insert("lisence",value.value("lisence").toString());
+    dataObj.insert("pushlis",value.value("pushlis").toString());
 
 
     msgObject.insert("data", QJsonValue(dataObj));
@@ -588,13 +594,11 @@ void CHttpApiDevice::HttpSetinftempmodel(QVariantMap value){
     sprintf(info.ssionID, "%s", this->sessionId);
 
     QJsonObject msgObject;
-    QJsonObject dataObj, alarmparamObj,ctrlparamObj;
+    QJsonObject dataObj;
 
     CjsonMakeHttpHead(&msgObject, &info);
 
-    dataObj.insert("temptype",value.value("temptype").toString());
-
-
+    dataObj.insert("tempmodel",value.value("tempmodel").toString());
     msgObject.insert("data", QJsonValue(dataObj));
 
     SendRequestMsg(msgObject);
@@ -613,7 +617,7 @@ void CHttpApiDevice::HttpSetinftemptype(QVariantMap value){
     sprintf(info.ssionID, "%s", this->sessionId);
 
     QJsonObject msgObject;
-    QJsonObject dataObj, alarmparamObj,ctrlparamObj;
+    QJsonObject dataObj;
 
     CjsonMakeHttpHead(&msgObject, &info);
 
