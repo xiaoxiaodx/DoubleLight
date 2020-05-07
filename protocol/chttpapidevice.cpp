@@ -304,7 +304,7 @@ int CHttpApiDevice::HttpMsgCallBack(char * pData) {
                 sendMap.insert("cmd","getdid");
                 slot_httpParSet(sendMap);
             }else if("getdid"==cmd){
-                callbackMap.insert("uuid",object.value("data").toObject().value("uuid").toInt());
+                callbackMap.insert("uuid",object.value("data").toObject().value("uuid").toString());
 
             }else if("setinftempmodel"==cmd){
                 QMap<QString,QVariant> sendMap;
@@ -481,8 +481,10 @@ void CHttpApiDevice::slot_httpParSet(QMap<QString,QVariant> map)
     map.insert("msgid",msgid);
     listMsg.append(map);
 
-    if(SendTimer != nullptr && !SendTimer->isActive())
+    if(SendTimer != nullptr && !SendTimer->isActive()){
+        qDebug()<<"**************************************************";
         SendTimer->start(sendertimerInter);
+    }
 }
 
 bool CHttpApiDevice::send_httpParSet(QMap<QString,QVariant> map)
@@ -575,7 +577,7 @@ void CHttpApiDevice::HttpSetDid(QVariantMap value){
 void CHttpApiDevice::HttpSetinftempmodel(QVariantMap value){
 
     JsonMsg_T info;
-    sprintf(info.cmd, "%s", "setinftemptype");
+    sprintf(info.cmd, "%s", "setinftempmodel");
     sprintf(info.msgID, "%s", value.value("msgid").toString().toLatin1().data());
     sprintf(info.method, "%s", "request");
     sprintf(info.ssionID, "%s", "");

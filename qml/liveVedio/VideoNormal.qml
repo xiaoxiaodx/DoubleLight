@@ -420,27 +420,25 @@ Rectangle {
                 deviceconfig.curDevTypeStr = "e03"
             else if(smap.tempmodel === "F03")
                 deviceconfig.curDevTypeStr = "f03"
-            else if(smap.tempmodel === "J07-S"){
+            else if(smap.tempmodel === "J07-S")
                 deviceconfig.curDevTypeStr = "J07-S"
-                map.cmd = "getiradinfo";
-                video.fun_sendCommonPar(map);
-                if(deviceconfig.getSwitchWarn()){
-                    var map ={
-                        cmd:"alarmsubscription",
-                        isSubscription:true
-                    }
-                    video.fun_sendCommonPar(map)
-                }
-            }
+//                map.cmd = "getiradinfo";
+//                video.fun_sendCommonPar(map);
+//                if(deviceconfig.getSwitchWarn()){
+//                    var map ={
+//                        cmd:"alarmsubscription",
+//                        isSubscription:true
+//                    }
+//                    video.fun_sendCommonPar(map)
+//                }
+//            }
 
 
-            deviceconfig.setSwitchTime(enable)
-
-            map.cmd = "getosdparam"
-            video.fun_sendCommonPar(map);
-            map.cmd = "setcurrenttime"
-            video.fun_sendCommonPar(map);
-
+//            deviceconfig.setSwitchTime(enable)
+//            map.cmd = "getosdparam"
+//            video.fun_sendCommonPar(map);
+//            map.cmd = "setcurrenttime"
+//            video.fun_sendCommonPar(map);
             video.fun_setInitPar(deviceconfig.getTcpip(),deviceconfig.getShowParentW(),deviceconfig.getShowParentH(),deviceconfig.getShowRectX(),deviceconfig.getShowRectY(),deviceconfig.getShowRectW(),deviceconfig.getShowRectH())
 
             s_tempmodelSelect(smap.tempmodel);

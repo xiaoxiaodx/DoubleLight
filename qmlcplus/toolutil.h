@@ -6,14 +6,13 @@
 class toolUtil : public QObject
 {
     Q_OBJECT
-
-
 public:
-    explicit toolUtil(QObject *parent = nullptr);
-
     Q_INVOKABLE void funStartCmd(QString cmd);
     Q_INVOKABLE void readDidFile(QString str);
     Q_INVOKABLE void setWriteDidLabel();
+
+    explicit toolUtil(QObject *parent = nullptr);
+
     QStringList myDidList;
 signals:
 

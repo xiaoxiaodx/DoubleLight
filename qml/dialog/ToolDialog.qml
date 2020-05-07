@@ -236,6 +236,8 @@ Popup {
                 text: "烧写licence"
                 onClicked: {
 
+
+
                    /* var map = {
                         cmd:"devicekey",
                         key:txtKeyID.text
@@ -418,12 +420,9 @@ Popup {
 
     function getdid(str)
     {
-
-
         writeDidTip.text = str;
 
         tooldialog.setWriteDidLabel();
-
     }
 
     function getinftempmodel(str)
