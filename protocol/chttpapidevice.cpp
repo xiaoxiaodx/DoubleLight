@@ -53,9 +53,9 @@ void CHttpApiDevice::slot_heartimertout(){
     }
 
 
-    QMap<QString,QVariant> map;
-    map.insert("cmd","getiradrect");
-    slot_httpParSet(map);
+//    QMap<QString,QVariant> map;
+//    map.insert("cmd","getiradrect");
+//    slot_httpParSet(map);
 
 
 }

@@ -49,14 +49,14 @@ Rectangle {
 
     }
 
-    Text {
-        id: pos1
-        anchors.horizontalCenter: parent.horizontalCenter
-        anchors.bottomMargin: 10
-        anchors.bottom:parent.bottom
-        color: "red"
-        text: qsTr("text")
-    }
+//    Text {
+//        id: pos1
+//        anchors.horizontalCenter: parent.horizontalCenter
+//        anchors.bottomMargin: 10
+//        anchors.bottom:parent.bottom
+//        color: "red"
+//        text: qsTr("text")
+//    }
     XVideo{
         id:video
 
@@ -81,20 +81,20 @@ Rectangle {
 
         onSignal_httpUiParSet:httpParCallback(map);
 
-                MouseArea{
-                    id:mouse22
-                    anchors.fill: parent
-                    cursorShape: Qt.CrossCursor
-                    onClicked: {
-                        var kx = video.width / 1920;
-                        var ky = video.height / 1080;
+//                MouseArea{
+//                    id:mouse22
+//                    anchors.fill: parent
+//                    cursorShape: Qt.CrossCursor
+//                    onClicked: {
+//                        var kx = video.width / 1920;
+//                        var ky = video.height / 1080;
 
-                        var x1 = mouse.x / kx;
-                        var y1 = mouse.y / ky;
+//                        var x1 = mouse.x / kx;
+//                        var y1 = mouse.y / ky;
 
-                        pos1.text ="pos:"+ x1 +"    "+y1
-                    }
-                }
+//                        pos1.text ="pos:"+ x1 +"    "+y1
+//                    }
+//                }
         Rectangle{
             id:rectadmjt
             x:0//deviceconfig.getShowRectX()
@@ -102,7 +102,7 @@ Rectangle {
             width: 100//deviceconfig.getShowRectW()
             height:100// deviceconfig.getShowRectH()
             color: "#505D9CFF"
-            visible:true;//deviceconfig.getIsOpenAdjustRect();
+            visible:false;//deviceconfig.getIsOpenAdjustRect();
             MouseArea{
                 id:areaTop
                 x:mouseAdjustWidth1
@@ -394,6 +394,8 @@ Rectangle {
 
         }else if(strcmd === "getrecordparam"){
 
+        }else if(strcmd === "getip"){
+            deviceconfig.setTcpip(smap.ip)
         }else if(strcmd === "getinftempmodel"){
 
             console.debug(" **************** "+smap.tempmodel)
@@ -435,7 +437,7 @@ Rectangle {
 
             video.fun_setInitPar(deviceconfig.getTcpip(),deviceconfig.getShowParentW(),deviceconfig.getShowParentH(),deviceconfig.getShowRectX(),deviceconfig.getShowRectY(),deviceconfig.getShowRectW(),deviceconfig.getShowRectH())
 
-            s_tempmodelSelect(smap.tempmodel);
+            s_tempmodelSelect(smap.tempmodel,deviceconfig.getTcpip());
         }else if(strcmd === "getiradinfo"){
             var alarmtempEnable = smap.alarmtempEnable;
             var alarmTemp = smap.alarmTemp;
@@ -463,7 +465,6 @@ Rectangle {
 
             deviceconfig.updateDevice(smap.did,smap.url)
             // updateprogress.startupLoad(smap.did,smap.url,deviceconfig.getUpdateFilePath)
-
 
         }else if("getiradrect" === strcmd){
             s_testRect(smap.x0,smap.y0,smap.w0,smap.h0,smap.x1,smap.y1,smap.w1,smap.h1,smap.x2,smap.y2,smap.w2,smap.h2);

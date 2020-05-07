@@ -15,7 +15,7 @@ MySearch1::MySearch1(QObject *parent) : QObject(parent)
 MySearch1::~MySearch1()
 {
     qDebug()<<" MySearch1 析构";
-   // s_searchsocket->abort();
+   forceFinishSearch();
 }
 void MySearch1::createSearch()
 {
