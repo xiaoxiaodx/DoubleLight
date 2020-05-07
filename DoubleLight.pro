@@ -63,7 +63,8 @@ SOURCES += \
     qmlcplus/updateprogressc.cpp \
     qmlcplus/upcontrol.cpp \
     protocol/warntcpserver.cpp \
-    productiontool.cpp
+    productiontool.cpp \
+    qmlcplus/toolutil.cpp
 
 HEADERS += \
     playVideo/XVideo.h \
@@ -106,7 +107,8 @@ HEADERS += \
     qmlcplus/updateprogressc.h \
     qmlcplus/upcontrol.h \
     protocol/warntcpserver.h \
-    productiontool.h
+    productiontool.h \
+    qmlcplus/toolutil.h
 
 RESOURCES += qml.qrc
 

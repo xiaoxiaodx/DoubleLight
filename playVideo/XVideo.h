@@ -14,8 +14,8 @@
 #include "mysearch1.h"
 #include "youseeparse.h"
 #include "chttpapidevice.h"
-
 #include "debuglog.h"
+
 class XVideo : public QQuickPaintedItem
 {
     Q_OBJECT

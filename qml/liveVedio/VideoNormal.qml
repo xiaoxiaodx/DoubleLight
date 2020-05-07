@@ -48,19 +48,16 @@ Rectangle {
             // mouse.accepted = false
         }
         onDoubleClicked:doubleClick(true);
-
     }
 
-
-
-    Text {
-        id: pos1
-        anchors.horizontalCenter: parent.horizontalCenter
-        anchors.bottomMargin: 10
-        anchors.bottom:parent.bottom
-        color: "red"
-        text: qsTr("text")
-    }
+//    Text {
+//        id: pos1
+//        anchors.horizontalCenter: parent.horizontalCenter
+//        anchors.bottomMargin: 10
+//        anchors.bottom:parent.bottom
+//        color: "red"
+//        text: qsTr("text")
+//    }
     XVideo{
         id:video
 
