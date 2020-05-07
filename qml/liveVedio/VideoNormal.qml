@@ -498,11 +498,14 @@ Rectangle {
             tooldialog.getsdcardparam("状态:"+state+" 空闲空间:"+freespace+" 总空间:"+totalspace)
         }else if("setsdcardformat" === strcmd){
             tooldialog.getsignature("sdcard 初始化成功")
+        }else if("getdevicekey"=== strcmd){
+
+            tooldialog.getdevicekey(smap.devicekey)
         }
     }
 
     function updateDate(){
-        video.fun_updateDate();
+        video.fun_updateDate(smap.devicekey);
     }
 
     function adjustWindow(adjustw,dX,dY)

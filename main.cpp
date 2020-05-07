@@ -10,6 +10,7 @@
 #include "application.h"
 #include "updateprogressc.h"
 
+#include "toolutil.h"
 
 int main(int argc, char *argv[])
 {
@@ -42,6 +43,8 @@ int main(int argc, char *argv[])
     qmlRegisterType<XVideoReplay>("XVideoReplay", 1, 0, "XVideoReplay");
     qmlRegisterType<WarnModel>("WarnModel", 1, 0, "WarnModel");
     qmlRegisterType<updateProgressC>("UpdateProgressC", 1, 0, "UpdateProgressC");
+    qmlRegisterType<toolUtil>("ToolUtil", 1, 0, "ToolUtil");
+
     engine.load(QUrl(QStringLiteral("qrc:/qml/main.qml")));
 
     if (engine.rootObjects().isEmpty())

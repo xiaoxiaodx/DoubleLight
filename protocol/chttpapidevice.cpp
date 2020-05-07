@@ -303,22 +303,36 @@ int CHttpApiDevice::HttpMsgCallBack(char * pData) {
                 QMap<QString,QVariant> sendMap;
                 sendMap.insert("cmd","getdid");
                 slot_httpParSet(sendMap);
+            }else if("getdid"==cmd){
+                callbackMap.insert("uuid",object.value("data").toObject().value("uuid").toInt());
+
             }else if("setinftempmodel"==cmd){
                 QMap<QString,QVariant> sendMap;
                 sendMap.insert("cmd","getinftempmodel");
                 slot_httpParSet(sendMap);
+            }else if("getinftempmodel"==cmd){
+
+                callbackMap.insert("tempmodel",object.value("data").toObject().value("tempmodel").toString());
+
             }else if("setinftemptype"==cmd){
                 QMap<QString,QVariant> sendMap;
                 sendMap.insert("cmd","getinftemptype");
                 slot_httpParSet(sendMap);
+            }else if("getinftemptype"==cmd){
+                callbackMap.insert("temptype",object.value("data").toObject().value("temptype").toString());
+
             }else if("setsignature"==cmd){
                 QMap<QString,QVariant> sendMap;
                 sendMap.insert("cmd","getsignature");
                 slot_httpParSet(sendMap);
+            }else if("getsignature"==cmd){
+              callbackMap.insert("signature",object.value("data").toObject().value("signature").toString());
             }else if("getsdcardparam"==cmd){
                 callbackMap.insert("sdstatus",object.value("data").toObject().value("sdstatus").toInt());
                 callbackMap.insert("freespace",object.value("data").toObject().value("freespace").toInt());
                 callbackMap.insert("totalspace",object.value("data").toObject().value("totalspace").toInt());
+            }else if("getdevicekey"==cmd){
+                callbackMap.insert("devicekey",object.value("data").toObject().value("devicekey").toString());
             }
             DebugLog::getInstance()->writeLog("callbackMap:"+callbackMap.value("cmd").toString());
             emit signal_ReadMsg(callbackMap);
@@ -508,13 +522,13 @@ bool CHttpApiDevice::send_httpParSet(QMap<QString,QVariant> map)
         HttpSetMeasureRect(map);
 
     }else if(cmd.compare("setdid")==0){
-
+        HttpSetDid(map);
 
     }else if(cmd.compare("setinftempmodel")==0){
-
+        HttpSetinftempmodel(map);
 
     }else if(cmd.compare("setinftemptype")==0){
-
+        HttpSetinftemptype(map);
 
     }else
         httpSendCommonCmd(cmd,msgid);

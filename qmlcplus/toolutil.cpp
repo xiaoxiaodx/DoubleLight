@@ -37,7 +37,6 @@ void toolUtil::readDidFile(QString path)
 
     if(file.open(QFile::ReadOnly | QFile::Text)){
 
-        //writeDidFilePath = file.fileName();
         QTextStream in(&file);
         while (!in.atEnd()) {
             myDidList.append(in.readLine());
@@ -45,6 +44,8 @@ void toolUtil::readDidFile(QString path)
         file.close();
     }else
         return;
+
+    setWriteDidLabel();
 }
 
 
@@ -56,7 +57,7 @@ void toolUtil::setWriteDidLabel()
        emit signal_setDidInfo("","","");
     }else {
 
-        QString str = myDidList.at(0);
+        QString str = myDidList.takeFirst();
 
         QStringList writeDidInfo = str.split("\t");
 

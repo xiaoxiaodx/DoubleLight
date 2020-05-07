@@ -3,6 +3,8 @@ import QtQuick.Controls 2.5
 import "../simpleControl"
 import QtGraphicalEffects 1.12
 import QtQuick.Dialogs 1.3
+
+import ToolUtil 1.0
 Popup {
     id: root
     x: parent.width/2 - root.width/2
@@ -22,6 +24,17 @@ Popup {
     signal s_getsdcardparam(var map)
     signal s_setsdcardformat(var map)
 
+    property int rectW: 330
+
+    ToolUtil{
+        id:toolutil
+
+        onSignal_setDidInfo:{
+            txtDid.text = did
+            txtlisence.text = p2pkey
+            txtPublish.text = pushKey
+        }
+    }
     Rectangle {
         id: rect
         anchors.fill: parent
@@ -30,7 +43,7 @@ Popup {
         //设置标题栏区域为拖拽区域
         Rectangle{
             id:rectdid
-            width:300
+            width:rectW
             height: 160
             border.width: 1
             border.color: "red"
@@ -52,7 +65,7 @@ Popup {
                         id:btnImportFile
                         text: "导入did文件"
                         anchors.verticalCenter: parent.verticalCenter
-
+                        onClicked: fileDialog.open()
                     }
 
                     Button{
@@ -66,11 +79,19 @@ Popup {
                             var map = {
                                 cmd:"setdid",
                                 uuid:txtDid.text,
-                                lisence:"XCVRYL",
-                                pushlis:"CHZIPV"
+                                lisence:txtlisence.text,
+                                pushlis:txtPublish.text
                             }
                             s_setdid(map)
+                            writeDidTip.text = ""
                         }
+                    }
+
+                    Text{
+                        id:writeDidTip
+                        anchors.left: btnWriteDid.right
+                        anchors.verticalCenter: btnWriteDid.verticalCenter
+                        anchors.leftMargin: 10
                     }
                 }
 
@@ -167,7 +188,7 @@ Popup {
                 onClicked: {
                     var map = {
                         cmd:"setinftempmodel",
-                        tempmodel:inputTempDrift.text
+                        temptype:inputTempDrift.text
                     }
                     s_setinftempmodel(map)
                 }
@@ -184,7 +205,7 @@ Popup {
 
         Rectangle{
             id:faceRect
-            width: 300
+            width: rectW
             height: 150
             anchors.left: rectdid.left
             anchors.top: rectSetModel.bottom
@@ -215,11 +236,11 @@ Popup {
                 text: "烧写licence"
                 onClicked: {
 
-                    var map = {
+                   /* var map = {
                         cmd:"devicekey",
                         key:txtKeyID.text
                     }
-                    s_setsignature(map)
+                    s_setsignature(map)*/
                 }
             }
 
@@ -234,9 +255,9 @@ Popup {
             Text {
                 id: txtKeyID
                 text: qsTr("")
-                anchors.left: btnGetdevicekey.left
+                anchors.left: labelKeyID.right
+                anchors.leftMargin: 10
                 anchors.top: labelKeyID.top
-                anchors.topMargin: 10
             }
 
             Text {
@@ -261,7 +282,7 @@ Popup {
 
         Rectangle{
             id:rectSdCard
-            width: 300
+            width: rectW
             height: 100
             anchors.left: rectdid.left
             anchors.top: faceRect.bottom
@@ -383,29 +404,26 @@ Popup {
         id: fileDialog
         property string pathname:""
         title: "Please choose a file path"
-        selectFolder:true
+        selectFolder:false
         selectMultiple: false
         //folder: shortcuts.home
         onAccepted: {
-            if(pathname === "recordPath"){
-                var str = fileDialog.fileUrl.toString();
-                inputRecordPath.text = str.replace('file:///','');
-                // devicemanagerment.recordingPath = txtVedioSavePath.text
-            }else if(pathname === "screenShotPath"){
-                inputScreenShotPath.text = fileDialog.fileUrl.toString().replace('file:///','');
-                //devicemanagerment.screenShotPath = txtscreenshotSavePath.text
-            }else if(pathname === "updatePath"){
-                inputUpdatePath.text = fileDialog.fileUrl.toString().replace('file:///','');
-                //devicemanagerment.screenShotPath = txtscreenshotSavePath.text
-            }
+            var str = fileDialog.fileUrl.toString();
+            toolutil.readDidFile(str.replace('file:///',''))
         }
         onRejected: {
+
         }
     }
 
     function getdid(str)
     {
-        txtDid.text = str;
+
+
+        writeDidTip.text = str;
+
+        tooldialog.setWriteDidLabel();
+
     }
 
     function getinftempmodel(str)
