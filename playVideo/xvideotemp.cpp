@@ -38,7 +38,7 @@ void XVideoTemp::startTemperatureVideo(float tp,QVariant type,QVariant par1,QVar
         createShiGan();
     }else if (typeStr.compare("F03")==0){
         //createIRCNet();
-        createJ07("10.67.1.160");
+        createJ07("10.67.1.139");
     }else if (typeStr.compare("J07-S")==0){
         createJ07("10.67.1.139");
     }else{

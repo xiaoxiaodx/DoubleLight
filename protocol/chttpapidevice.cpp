@@ -299,13 +299,26 @@ int CHttpApiDevice::HttpMsgCallBack(char * pData) {
                 callbackMap.insert("h2",object.value("data").toObject().value("h2").toInt());
 
                 qDebug()<<"rec rect:"<<object.value("data").toObject().value("x").toInt();
+            }else if("setdid"==cmd){
+                QMap<QString,QVariant> sendMap;
+                sendMap.insert("cmd","getdid");
+                slot_httpParSet(sendMap);
+            }else if("setinftempmodel"==cmd){
+                QMap<QString,QVariant> sendMap;
+                sendMap.insert("cmd","getinftempmodel");
+                slot_httpParSet(sendMap);
+            }else if("setinftemptype"==cmd){
+                QMap<QString,QVariant> sendMap;
+                sendMap.insert("cmd","getinftemptype");
+                slot_httpParSet(sendMap);
+            }else if("setsignature"==cmd){
+                QMap<QString,QVariant> sendMap;
+                sendMap.insert("cmd","getsignature");
+                slot_httpParSet(sendMap);
             }
-            //            emit signal_MsgReply(cmd);
-            //            qDebug()<<"signal_ReadMsg   ";
 
             DebugLog::getInstance()->writeLog("callbackMap:"+callbackMap.value("cmd").toString());
             emit signal_ReadMsg(callbackMap);
-
         } else {
             qDebug()<<"not is document !";
         }

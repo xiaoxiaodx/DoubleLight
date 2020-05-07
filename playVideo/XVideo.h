@@ -14,7 +14,7 @@
 #include "mysearch1.h"
 #include "youseeparse.h"
 #include "chttpapidevice.h"
-#include "productiontool.h"
+
 #include "debuglog.h"
 class XVideo : public QQuickPaintedItem
 {
@@ -117,8 +117,6 @@ private:
 
     qreal tempImgResW =0;
     qreal tempImgResH =0;
-
-    ProductionTool productionTool;
 };
 
 #endif // XVideo_H

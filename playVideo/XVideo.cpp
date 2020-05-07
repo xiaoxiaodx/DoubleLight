@@ -7,10 +7,7 @@
 XVideo::XVideo()
 {
     qDebug()<<"XVideo "<<"  "<<QThread::currentThreadId() ;
-
-
     pRenderImginfo.pImg = nullptr;
-
     //createSearchIp();
 }
 

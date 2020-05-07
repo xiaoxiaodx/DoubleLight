@@ -350,13 +350,6 @@ Rectangle {
         }
     }
 
-//    signal s_setdid(var map)
-//    signal s_ setinftempmodel(var map)
-//    signal s_ setinftemptype(var map)
-//    signal s_ getdevicekey(var map)
-//    signal s_ setsignature(var map)
-//    signal s_ getsdcardparam(var map)
-//    signal s_ setsdcardformat(var map)
     Connections{
         target: tooldialog
         onS_setdid:{
@@ -395,10 +388,6 @@ Rectangle {
             video.fun_sendCommonPar(map)
         }
     }
-    //    Connections{
-    //        target: videoTemp
-    //        onS_sendList:video.fun_setListRect(vmap)
-    //    }
 
     function funsetlistRect(map){
         video.fun_setListRect(map)
@@ -412,6 +401,7 @@ Rectangle {
 
         var strcmd = smap.cmd;
         console.debug("strcmd:"+strcmd)
+        console.debug("smap:"+smap)
 
         if(strcmd === "getosdparam"){
             var enable = smap.enable;
@@ -437,15 +427,12 @@ Rectangle {
                 deviceconfig.curDevTypeStr = "J07-S"
                 map.cmd = "getiradinfo";
                 video.fun_sendCommonPar(map);
-
                 if(deviceconfig.getSwitchWarn()){
-
                     var map ={
                         cmd:"alarmsubscription",
                         isSubscription:true
                     }
                     video.fun_sendCommonPar(map)
-
                 }
             }
 
@@ -491,8 +478,29 @@ Rectangle {
 
         }else if("getiradrect" === strcmd){
             s_testRect(smap.x0,smap.y0,smap.w0,smap.h0,smap.x1,smap.y1,smap.w1,smap.h1,smap.x2,smap.y2,smap.w2,smap.h2);
-        }else if("getiradrect" === strcmd){
-            tooldialog.getdevicekey(smap.devicekey)
+        }else if("setdid" === strcmd){
+            tooldialog.getdid("设置成功");
+        }else if("getdid" === strcmd){
+            tooldialog.getdid("设置成功:"+smap.uuid);
+        }else if("setinftempmodel" === strcmd){
+            tooldialog.getinftempmodel("设置成功");
+        }else if("getinftempmodel" === strcmd){
+            tooldialog.getinftempmodel("设置成功:"+smap.tempmodel);
+        }else if("setinftemptype" === strcmd){
+
+        }else if("getinftemptype" === strcmd){
+
+        }else if("setsignature" === strcmd){
+            tooldialog.getsignature("设置成功")
+        }else if("getsignature" === strcmd){
+            tooldialog.getsignature("设置成功:"+smap.signature)
+        }else if("getsdcardparam" === strcmd){
+            var state = smap.sdstatus
+            var freespace = smap.freespace
+            var totalspace = smap.totalspace
+            tooldialog.getsdcardparam("状态:"+state+" 空闲空间:"+freespace+" 总空间:"+totalspace)
+        }else if("setsdcardformat" === strcmd){
+            tooldialog.getsignature("sdcard 初始化成功")
         }
     }
 
