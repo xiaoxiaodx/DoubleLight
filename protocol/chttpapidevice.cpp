@@ -438,14 +438,6 @@ void CHttpApiDevice::LogoutDevice(QString msgid){
 
 void CHttpApiDevice::slot_httpParSet(QMap<QString,QVariant> map)
 {
-    //    curCmdState = map;
-
-    //    QMap<QString ,QVariant> mapSend;
-    //    mapSend.insert("cmd","login");
-    //    send_httpParSet(mapSend);
-
-    qDebug()<<" slot_httpParSet "<<map;
-    //QMutexLocker locker(&m_msgMutex);
 
     QString msgid = createMsgId(map.value("cmd").toString());
     map.insert("msgid",msgid);
@@ -459,7 +451,7 @@ bool CHttpApiDevice::send_httpParSet(QMap<QString,QVariant> map)
 {
 
     qDebug()<<"send_httpParSet  "<<map;
-    DebugLog::getInstance()->writeLog(" send_httpParSet :"+ map.value("cmd").toString());
+    DebugLog::getInstance()->writeLog("http_sendMsg :"+ map.value("cmd").toString());
 
     QString cmd = map.value("cmd").toString();
     QString msgid = map.value("msgid").toString();

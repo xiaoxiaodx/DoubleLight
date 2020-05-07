@@ -411,7 +411,7 @@ Rectangle {
                 deviceconfig.curDevTypeStr = "e03"
             else if(smap.tempmodel === "F03")
                 deviceconfig.curDevTypeStr = "f03"
-            else if(smap.tempmodel === "J07-S"){
+            else if(smap.tempmodel === "J07-S" || smap.tempmodel === "J07"){
                 deviceconfig.curDevTypeStr = "J07-S"
                 map.cmd = "getiradinfo";
                 video.fun_sendCommonPar(map);
@@ -423,7 +423,6 @@ Rectangle {
                         isSubscription:true
                     }
                     video.fun_sendCommonPar(map)
-
                 }
             }
 

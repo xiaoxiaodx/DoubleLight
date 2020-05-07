@@ -81,10 +81,9 @@ Rectangle {
     Connections{
         target: videoNormal
         onS_tempmodelSelect:{
-            if(mtype === "J07")
-                video.startTemperatureVideo(deviceconfig.getWarnTem(),mtype,deviceconfig.getJ07ip())
-            else
-                video.startTemperatureVideo(deviceconfig.getWarnTem(),mtype);
+
+                video.startTemperatureVideo(deviceconfig.getWarnTem(),mtype,deviceconfig.getTcpip())
+
         }
         onS_testRect: video.fun_recTestRect(x0,y0,w0,h0,x1,y1,w1,h1,x2,y2,w2,h2);
 

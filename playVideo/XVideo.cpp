@@ -135,7 +135,7 @@ void XVideo::slot_httpConnected()
 
 void XVideo::slog_HttpmsgCb(QMap<QString,QVariant> map) {
 
-    qDebug()<<" slog_HttpmsgCb "<<map;
+    DebugLog::getInstance()->writeLog("http_RecCallback :"+ map.value("cmd").toString());
     emit signal_httpUiParSet(QVariant::fromValue(map));
 }
 
