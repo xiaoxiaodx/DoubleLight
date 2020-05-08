@@ -53,9 +53,9 @@ void CHttpApiDevice::slot_heartimertout(){
     }
 
 
-    //    QMap<QString,QVariant> map;
-    //    map.insert("cmd","getiradrect");
-    //    slot_httpParSet(map);
+        QMap<QString,QVariant> map;
+        map.insert("cmd","getiradrect");
+        slot_httpParSet(map);
 
 
 }
@@ -531,10 +531,12 @@ bool CHttpApiDevice::send_httpParSet(QMap<QString,QVariant> map)
         HttpSetinftemptype(map);
     }else if(cmd.compare("setsignature")==0){
         HttpSetsignature(map);
+    }else if(cmd.compare("setmeasurableoffset")==0){
+        HttpSetDxDy(map);
+    }else if(cmd.compare("setinftemplevel")==0){
+        HttpSetinftemplevel(map);
     }else
         httpSendCommonCmd(cmd,msgid);
-
-
 
 
 
@@ -628,6 +630,66 @@ void CHttpApiDevice::HttpSetinftemptype(QVariantMap value){
 
     SendRequestMsg(msgObject);
 }
+
+void CHttpApiDevice::HttpSetinftemplevel(QVariantMap value)
+{
+    JsonMsg_T info;
+    sprintf(info.cmd, "%s", "setinftemplevel");
+    sprintf(info.msgID, "%s", value.value("msgid").toString().toLatin1().data());
+    sprintf(info.method, "%s", "request");
+    sprintf(info.ssionID, "%s", "");
+    if(!strlen(this->sessionId)) {
+        qDebug() <<"ssionId error "<<sessionId;
+        return ;
+    }
+    sprintf(info.ssionID, "%s", this->sessionId);
+
+    QJsonObject msgObject;
+    QJsonObject dataObj, alarmparamObj,ctrlparamObj;
+
+    CjsonMakeHttpHead(&msgObject, &info);
+
+
+    dataObj.insert("templevel",value.value("templevel").toInt());
+
+    msgObject.insert("data", QJsonValue(dataObj));
+    SendRequestMsg(msgObject);
+}
+
+void CHttpApiDevice::HttpSetDxDy(QVariantMap value){
+
+
+    JsonMsg_T info;
+    sprintf(info.cmd, "%s", "setmeasurableoffset");
+    sprintf(info.msgID, "%s", value.value("msgid").toString().toLatin1().data());
+    sprintf(info.method, "%s", "request");
+    sprintf(info.ssionID, "%s", "");
+    if(!strlen(this->sessionId)) {
+        qDebug() <<"ssionId error "<<sessionId;
+        return ;
+    }
+    sprintf(info.ssionID, "%s", this->sessionId);
+
+    QJsonObject msgObject;
+    QJsonObject dataObj, alarmparamObj,ctrlparamObj;
+
+    CjsonMakeHttpHead(&msgObject, &info);
+
+    double dx = value.value("px").toDouble();
+    double dy = value.value("py").toDouble();
+
+    int dx1 = dx;
+    int dx2 = dy;
+
+    dataObj.insert("px",dx1);
+    dataObj.insert("py",dx2);
+
+
+    msgObject.insert("data", QJsonValue(dataObj));
+    SendRequestMsg(msgObject);
+}
+
+
 void CHttpApiDevice::HttpSetsignature(QVariantMap value){
 
     JsonMsg_T info;

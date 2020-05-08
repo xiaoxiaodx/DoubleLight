@@ -20,7 +20,6 @@ class XVideo : public QQuickPaintedItem
 {
     Q_OBJECT
 public:
-
     Q_INVOKABLE void startNormalVideo(float tp);
     Q_INVOKABLE void fun_timeSwitch(bool isChecked);
     Q_INVOKABLE void fun_temSet(QVariant mvalue);
@@ -35,13 +34,13 @@ public:
 
     explicit XVideo();
     ~XVideo();
-
 signals:
     //tcp
     void signal_connentSer(QString ip,int port);
     void signal_disconnentSer();
     void signal_tcpSendAuthentication(QString did,QString name,QString pwd);
     void signal_destoryTcpWork();
+    void signal_setIp(QString ip);
     //qml
     void signal_loginStatus(QString msg);
     void signal_waitingLoad(QString msgload);

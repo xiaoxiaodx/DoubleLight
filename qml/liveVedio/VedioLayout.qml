@@ -4,7 +4,7 @@ import "../dialog"
 import "../"
 Rectangle {
 
-    id:root
+    id:vediolayout
 
     property int currentIndex: -1
 
@@ -18,9 +18,11 @@ Rectangle {
         id:tooldialog
         width: 600
         height: 600
-        z:2
     }
 
+    function fun_sendCommonPar(map){
+        videoNormal.fun_sendCommonPar(map)
+    }
 
     RowLayout{
 
@@ -36,7 +38,7 @@ Rectangle {
             Layout.fillWidth: true
             mIsSelected: 1 === currentIndex
             onClick:{
-                    //tooldialog.open()
+               // tooldialog.open()
                      currentIndex = 1
                 }
 
@@ -64,6 +66,10 @@ Rectangle {
                 }else{
                     videoNormal.visible = true;
                 }
+            }
+
+            onS_dxdy:{videoNormal.funSetDxdY(dx,dy)
+
             }
         }
     }

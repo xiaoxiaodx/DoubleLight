@@ -23,6 +23,7 @@ Popup {
     signal s_setsignature(var map)
     signal s_getsdcardparam(var map)
     signal s_setsdcardformat(var map)
+    signal s_setinftemplevel(var map)
 
     property int rectW: 330
 
@@ -407,6 +408,20 @@ Popup {
         }
 
 
+        Button{
+            id:btnsetinftemplevel
+            anchors.top: rectSdCard.bottom
+            anchors.topMargin: 5
+            anchors.horizontalCenter: parent.horizontalCenter
+            text:"设置温度等级"
+            onClicked: {
+                var map = {
+                    cmd:"setinftemplevel",
+                    templevel:6
+                }
+                s_setinftemplevel(map)
+            }
+        }
 
 
         Rectangle{

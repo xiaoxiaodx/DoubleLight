@@ -18,10 +18,19 @@ XVideoTemp::XVideoTemp()
     testRect2.setRect(10,10,100,100);
 }
 
+
+void XVideoTemp::fun_setDxDy(QVariant dx,QVariant dy)
+{
+
+
+}
+
 void XVideoTemp::fun_recTestRect(int x,int y,int w,int h,int x1,int y1,int w1,int h1,int x2,int y2,int w2,int h2)
 {
    // qDebug()<<"dsadsadsa    fun_recTestRect";
     testRect.setRect(x,y,w,h);
+
+
     testRect1.setRect(x1,y1,w1,h1);
     testRect2.setRect(x2,y2,w2,h2);
 }
@@ -38,9 +47,11 @@ void XVideoTemp::startTemperatureVideo(float tp,QVariant type,QVariant par1,QVar
         createShiGan();
     }else if (typeStr.compare("F03")==0){
         //createIRCNet();
-        createJ07("10.67.1.139");
+        createJ07(par1.toString());
     }else if (typeStr.compare("J07-S")==0){
-        createJ07("10.67.1.139");
+        createJ07(par1.toString());
+    }else if (typeStr.compare("J07")==0){
+        createJ07(par1.toString());
     }else{
         DebugLog::getInstance()->writeLog("------>>> tempVideo type is unknow <<<------");
     }
@@ -190,8 +201,6 @@ void XVideoTemp::slot_timeout()
         isFirstData = true;
     }
     update();
-
-
     //    if(pShiGanObject != nullptr){
     //        shiganHeartTimerCount ++ ;
 
@@ -200,7 +209,6 @@ void XVideoTemp::slot_timeout()
     //            qDebug()<<"dsadsa";
     //            emit signal_shiganHeart();
     //        }
-
     //    }
 }
 

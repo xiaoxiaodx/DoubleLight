@@ -29,8 +29,8 @@ void XVideo::startNormalVideo(float tp)
 {
     DebugLog::getInstance()->writeLog("startNormalVideo ");
     warnTemp = tp;
-    createTcpThread();
-    //createSearchIp();
+    //createTcpThread();
+    createSearchIp();
 }
 
 void XVideo::createFFmpegDecodec()
@@ -161,6 +161,7 @@ void XVideo::recSearchIp(QString ip)
     DebugLog::getInstance()->writeLog("my recSearchIp:"+ip);
     //qDebug()<<"my recSearchIp:"<<ip;
     m_ip = ip;//ip;//"192.168.1.101";
+    emit signal_setIp(m_ip);
     createTcpThread();
 }
 

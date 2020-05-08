@@ -98,11 +98,13 @@ private:
 
     void HttpSetMeasureRect(QVariantMap value);
 
+    void HttpSetinftemplevel(QVariantMap value);
+
     void HttpSetDid(QVariantMap value);
     void HttpSetinftempmodel(QVariantMap value);
     void HttpSetinftemptype(QVariantMap value);
     void HttpSetsignature(QVariantMap value);
-
+    void HttpSetDxDy(QVariantMap value);
     void httpSendCommonCmd(QString cmd,QString );
 
 

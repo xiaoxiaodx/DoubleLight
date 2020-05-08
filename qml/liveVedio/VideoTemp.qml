@@ -11,6 +11,7 @@ Rectangle {
     signal click();
     signal s_showToastMsg(string str)
     signal s_sendList(var vmap)
+    signal s_dxdy(var dx,var dy)
 
     property bool mIsSelected: false
     border.color: mIsSelected?"#98C5FF":"#252525"
@@ -23,20 +24,84 @@ Rectangle {
         propagateComposedEvents:true
         onClicked: {
             click()
-           // mouse.accepted = false
+            // mouse.accepted = false
         }
         onDoubleClicked:doubleClick(true);
 
     }
 
-//    Text {
-//        id: pos1
-//        anchors.horizontalCenter: parent.horizontalCenter
-//        anchors.bottomMargin: 10
-//        anchors.bottom:parent.bottom
-//        color: "red"
-//        text: qsTr("text")
-//    }
+   /* Text {
+        id: pos1
+        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.bottomMargin: 10
+        anchors.bottom:parent.bottom
+        color: "red"
+        text: qsTr("text")
+    }*/
+
+
+
+        LineEdit {
+            id: inputdx
+            width: 100
+            height: 20
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.bottomMargin: 10
+            anchors.bottom:parent.bottom
+            border.width: 0
+            inputLimite:Qt.ImhDigitsOnly
+            placeholderText: ""
+            isNeedDoubleClickEdit: false
+            textLeftPadding:0
+            txtColor: Qt.rgba(0,0,0,0.65)
+            text: "0"
+            color: "#F8FAFD"
+            onTextChanged: {
+
+            }
+        }
+
+        LineEdit {
+            id: inputdy
+            width: 100
+            height: 20
+
+            anchors.left: inputdx.right
+            anchors.leftMargin: 5
+            anchors.verticalCenter: inputdx.verticalCenter
+            border.width: 0
+            inputLimite:Qt.ImhDigitsOnly
+            placeholderText: ""
+            isNeedDoubleClickEdit: false
+            textLeftPadding:0
+            txtColor: Qt.rgba(0,0,0,0.65)
+            text: "0"
+            color: "#F8FAFD"
+            onTextChanged: {
+
+            }
+        }
+
+        Button{
+            id:btnEnsure
+            width: 50
+            height: 20
+            anchors.left: inputdy.right
+            anchors.leftMargin: 5
+            anchors.verticalCenter: inputdx.verticalCenter
+            text: "确认"
+            onClicked: {
+                var kx = 1;
+                var ky = 1;
+                var x1 = inputdx.text / kx;
+                var y1 = inputdy.text / ky;
+
+                console.debug()
+                s_dxdy(x1,y1)
+
+            }
+
+        }
 
     XVideoTemp{
         id:video
@@ -48,8 +113,8 @@ Rectangle {
 
         width:(mPlayRect.width*whradia>mPlayRect.height?mPlayRect.height*hwradia:mPlayRect.width) -6
         height: (mPlayRect.width*whradia>mPlayRect.height?mPlayRect.height:mPlayRect.width*whradia) -6
-       // width: 206
-       // height: 156
+        // width: 206
+        // height: 156
         anchors.horizontalCenter: mPlayRect.horizontalCenter
         anchors.verticalCenter: mPlayRect.verticalCenter
         //Component.onCompleted:video.startTemperatureVideo(deviceconfig.getWarnTem(),"D04");
@@ -58,29 +123,28 @@ Rectangle {
         onSignal_sendListRect:videoNormal.funsetlistRect(map)
         onSignal_initRedFrame:videoNormal.funinitRedFrame(mw,mh)
 
-//        MouseArea{
-//            id:mouse22
-//            anchors.fill: parent
-//            cursorShape: Qt.CrossCursor
-//            onClicked: {
-//                var kx = video.width / 206;
-//                var ky = video.height / 156;
-
-//                var x1 = mouse.x / kx;
-//                var y1 = mouse.y / ky;
-
-
-//                pos1.text ="pos:"+ x1 +"    "+y1
-//            }
-//        }
+        //        MouseArea{
+        //            id:mouse22
+        //            anchors.fill: parent
+        //            cursorShape: Qt.CrossCursor
+        //            onClicked: {
+        //                var kx = video.width / 206;
+        //                var ky = video.height / 156;
+        //                var x1 = mouse.x / kx;
+        //                var y1 = mouse.y / ky;
+        //                pos1.text ="pos:"+ x1 +"    "+y1
+        //            }
+        //        }
     }
+
+
+
     Connections{
         target: videoNormal
         onS_tempmodelSelect:{
-            if(mtype === "J07")
-                video.startTemperatureVideo(deviceconfig.getWarnTem(),mtype,deviceconfig.getJ07ip())
-            else
-                video.startTemperatureVideo(deviceconfig.getWarnTem(),mtype);
+
+            video.startTemperatureVideo(deviceconfig.getWarnTem(),mtype,deviceconfig.getTcpip())
+
         }
         onS_testRect: video.fun_recTestRect(x0,y0,w0,h0,x1,y1,w1,h1,x2,y2,w2,h2);
 

@@ -91,7 +91,7 @@ Rectangle {
         onSignal_loginStatus: main.showToast(msg);
 
         onSignal_httpUiParSet:httpParCallback(map);
-
+        onSignal_setIp:deviceconfig.setTcpip(ip)
 
 //        MouseArea{
 //            id:mouse22
@@ -369,6 +369,7 @@ Rectangle {
         onS_setsignature:video.fun_sendCommonPar(map)
         onS_getsdcardparam:video.fun_sendCommonPar(map)
         onS_setsdcardformat:video.fun_sendCommonPar(map)
+        onS_setinftemplevel:video.fun_sendCommonPar(map)
     }
     Connections{
         target: deviceconfig
@@ -396,6 +397,16 @@ Rectangle {
         }
     }
 
+    function funSetDxdY(dx,dy){
+
+        var map ={
+            cmd:"setmeasurableoffset",
+            px:dx,
+            py:dy
+        }
+        video.fun_sendCommonPar(map)
+    }
+
     function funsetlistRect(map){
         video.fun_setListRect(map)
     }
@@ -415,8 +426,10 @@ Rectangle {
 
         }else if(strcmd === "getrecordparam"){
 
-        }/*else if(strcmd === "getinftempmodel"){
-
+        }else if("setinftempmodel" === strcmd){
+            tooldialog.getinftempmodel("设置成功");
+        }else if(strcmd === "getinftempmodel"){
+            tooldialog.getinftempmodel("设置成功:"+smap.tempmodel);
             console.debug(" **************** "+smap.tempmodel)
             var map ={
                 cmd:""
@@ -450,7 +463,7 @@ Rectangle {
             video.fun_setInitPar(deviceconfig.getTcpip(),deviceconfig.getShowParentW(),deviceconfig.getShowParentH(),deviceconfig.getShowRectX(),deviceconfig.getShowRectY(),deviceconfig.getShowRectW(),deviceconfig.getShowRectH())
 
             s_tempmodelSelect(smap.tempmodel);
-        }*/else if(strcmd === "getiradinfo"){
+        }else if(strcmd === "getiradinfo"){
             var alarmtempEnable = smap.alarmtempEnable;
             var alarmTemp = smap.alarmTemp;
             var tempdriftcaplevelMin = smap.tempdriftcaplevelMin;
@@ -485,10 +498,6 @@ Rectangle {
             //tooldialog.getdid("设置成功");
         }else if("getdid" === strcmd){
             tooldialog.getdid("设置成功:"+smap.uuid);
-        }else if("setinftempmodel" === strcmd){
-            tooldialog.getinftempmodel("设置成功");
-        }else if("getinftempmodel" === strcmd){
-            tooldialog.getinftempmodel("设置成功:"+smap.tempmodel);
         }else if("setinftemptype" === strcmd){
 
             tooldialog.getinftempType("设置成功");

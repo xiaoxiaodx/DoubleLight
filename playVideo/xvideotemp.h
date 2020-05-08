@@ -37,6 +37,9 @@ public:
     Q_INVOKABLE void fun_temSet(QVariant mvalue);
     Q_INVOKABLE void fun_temDrift(QVariant mvalue);
 
+    Q_INVOKABLE void fun_setDxDy(QVariant dx,QVariant dy);
+
+
     Q_INVOKABLE void fun_getInitPar();
 
     Q_INVOKABLE void fun_temMax(QVariant mvalue);
