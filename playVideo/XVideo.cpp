@@ -29,8 +29,15 @@ void XVideo::startNormalVideo(float tp)
 {
     DebugLog::getInstance()->writeLog("startNormalVideo ");
     warnTemp = tp;
-    //createTcpThread();
-    createSearchIp();
+    createTcpThread();
+    //createSearchIp();
+    connect(&timerUpdate,&QTimer::timeout,this,&XVideo::slot_update);
+    timerUpdate.start(50);
+}
+
+void XVideo::slot_update()
+{
+    update();
 }
 
 void XVideo::createFFmpegDecodec()
@@ -351,7 +358,7 @@ void XVideo::fun_setListRect(QVariant var){
             pRenderImginfo.listRect.append(map);
         }
     }
-    update();
+    //update();
 }
 
 void XVideo::fun_initRedFrame(int w,int h){

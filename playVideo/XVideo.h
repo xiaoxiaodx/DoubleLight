@@ -65,6 +65,8 @@ public slots:
     void recSearchIp(QString ip);
     void slot_tcpConnected();
     void slot_httpConnected();
+
+    void slot_update();
 protected:
     //  QSGNode* updatePaintNode(QSGNode *old, UpdatePaintNodeData *);
     void paint(QPainter *painter);
@@ -75,6 +77,8 @@ private:
     void createHttpApi();
 
     void updateUi();
+
+
 
     QString deviceType = "";
     FfmpegCodec *pffmpegCodec = nullptr;
@@ -116,6 +120,8 @@ private:
 
     qreal tempImgResW =0;
     qreal tempImgResH =0;
+
+    QTimer timerUpdate;
 };
 
 #endif // XVideo_H
