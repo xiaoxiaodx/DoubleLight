@@ -695,7 +695,7 @@ Rectangle {
                     visible: curDevTypeStr==="f03"
                     color: "#e2e2e2"
                     anchors.top: parent.top
-                    anchors.topMargin: 627
+                    anchors.topMargin: 764
                     anchors.horizontalCenter: parent.horizontalCenter
                 }
 
@@ -709,15 +709,6 @@ Rectangle {
                     anchors.rightMargin: 20
                     anchors.verticalCenter: cmbImgSelect.verticalCenter
                 }
-
-                //            Button{
-                //                width: 100
-                //                height: 30
-                //                text: "test "
-                //                anchors.left: txtImageSelect.right
-                //                anchors.top: txtImageSelect.top
-                //                onClicked: iradInfoSet()
-                //            }
 
                 MyComBox{
                     id:cmbImgSelect
@@ -762,7 +753,6 @@ Rectangle {
                     anchors.bottom: line5.top
                     anchors.left: line5.left
                     anchors.bottomMargin: 20
-
                 }
                 Rectangle{
                     id:line5
@@ -771,7 +761,7 @@ Rectangle {
                     //visible: curDevTypeStr==="f03"
                     color: "#e2e2e2"
                     anchors.top: parent.top
-                    anchors.topMargin: 764
+                    anchors.topMargin: 627
                     anchors.horizontalCenter: parent.horizontalCenter
                 }
 
@@ -854,6 +844,8 @@ Rectangle {
                             s_deviceUpdate();
                             //progressdialog.open();
                         }
+                        onPressed: btnSave.color = "#81C3FF"
+                        onReleased: btnSave.color = "#3B84F6"
                     }
                 }
 
@@ -882,6 +874,8 @@ Rectangle {
                         onClicked: {
                            iradInfoSet();
                         }
+                        onPressed: btnSave.color = "#81C3FF"
+                        onReleased: btnSave.color = "#3B84F6"
                     }
                 }
             }

@@ -1,4 +1,4 @@
-﻿#ifndef XVideo_H
+#ifndef XVideo_H
 #define XVideo_H
 #include <QQuickPaintedItem>
 #include <QImage>
@@ -32,6 +32,9 @@ public:
     Q_INVOKABLE void fun_setInitPar(QString ip,int parentW,int parentH,int x,int y,int w,int h);
     Q_INVOKABLE void fun_setIraInfo(QVariantMap map);
     Q_INVOKABLE void fun_sendCommonPar(QVariantMap map);
+
+    Q_INVOKABLE void fun_temMin(QVariant mvalue);
+    Q_INVOKABLE void fun_temOffset(QVariant mvalue);
 
     explicit XVideo();
     ~XVideo();

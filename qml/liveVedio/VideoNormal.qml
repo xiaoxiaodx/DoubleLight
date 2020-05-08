@@ -88,10 +88,8 @@ Rectangle {
 //                    onClicked: {
 //                        var kx = video.width / 1920;
 //                        var ky = video.height / 1080;
-
 //                        var x1 = mouse.x / kx;
 //                        var y1 = mouse.y / ky;
-
 //                        pos1.text ="pos:"+ x1 +"    "+y1
 //                    }
 //                }
@@ -122,7 +120,6 @@ Rectangle {
                         adjustWindow(wTOP,0,offsetY);
                     }
                 }
-
             }
 
             MouseArea{
@@ -370,6 +367,8 @@ Rectangle {
                 map.cmd="unalarmsubscription"
             video.fun_sendCommonPar(map)
         }
+        onS_temMin:video.fun_temMin(mvalue);//温度控制阀
+        onS_temOffset:video.fun_temOffset(mvalue);//温漂
     }
     //    Connections{
     //        target: videoTemp
@@ -449,7 +448,7 @@ Rectangle {
             var osdenable = smap.osdenable;
 
             deviceconfig.tempcontrolcapMax = tempcontrolcaplevelMax
-            deviceconfig.tempcontrolcapMin = tempdriftcaplevelMin;
+            deviceconfig.tempcontrolcapMin = tempcontrolcaplevelMin;
             deviceconfig.tempdriftcapMax = tempdriftcaplevelMax;
             deviceconfig.tempdriftcapMin = tempdriftcaplevelMin;
             deviceconfig.setTemDrift(tempdrift)
@@ -467,6 +466,8 @@ Rectangle {
 
         }else if("getiradrect" === strcmd){
             s_testRect(smap.x0,smap.y0,smap.w0,smap.h0,smap.x1,smap.y1,smap.w1,smap.h1,smap.x2,smap.y2,smap.w2,smap.h2);
+        }else if("alarmsubscription" === strcmd){
+
         }
     }
 

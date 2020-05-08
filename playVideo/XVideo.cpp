@@ -162,7 +162,7 @@ void XVideo::recSearchIp(QString ip)
 
     DebugLog::getInstance()->writeLog("my recSearchIp:"+ip);
     //qDebug()<<"my recSearchIp:"<<ip;
-    m_ip = ip;//ip;//"192.168.1.101";
+    m_ip = "10.67.1.139";//ip;//"192.168.1.101";
     createTcpThread();
 
     QMap<QString,QVariant> map;
@@ -395,8 +395,24 @@ void XVideo::fun_timeSwitch(bool isChecked){
 
 void XVideo::fun_temSet(QVariant mvalue){
     warnTemp = mvalue.toFloat();
+
+
 }
 
+void XVideo::fun_temMin(QVariant mvalue)
+{
+
+}
+void XVideo::fun_temOffset(QVariant mvalue)
+{
+
+}
+
+
+//void XVideo::fun_temMin()
+//{
+
+//}
 
 XVideo::~XVideo()
 {

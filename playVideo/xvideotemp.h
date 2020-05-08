@@ -36,9 +36,7 @@ public:
     Q_INVOKABLE void fun_updateDate();
     Q_INVOKABLE void fun_temSet(QVariant mvalue);
     Q_INVOKABLE void fun_temDrift(QVariant mvalue);
-
     Q_INVOKABLE void fun_getInitPar();
-
     Q_INVOKABLE void fun_temMax(QVariant mvalue);
     Q_INVOKABLE void fun_temMin(QVariant mvalue);
     Q_INVOKABLE void fun_temOffset(QVariant mvalue);

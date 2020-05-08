@@ -94,8 +94,8 @@ Rectangle {
         onS_timeSwith:video.fun_timeSwitch(mchecked);
         onS_temSet:video.fun_temSet( mvalue);
         onS_temMax:video.fun_temMax(mvalue);
-        onS_temMin:video.fun_temMin(mvalue);
-        onS_temOffset:video.fun_temOffset(mvalue);
+        onS_temMin:video.fun_temMin(mvalue);//温度控制阀
+        onS_temOffset:video.fun_temOffset(mvalue);//温漂
         onS_temImage:video.fun_colorShowType(mvalue);
     }
 

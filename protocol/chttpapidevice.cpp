@@ -457,7 +457,10 @@ bool CHttpApiDevice::send_httpParSet(QMap<QString,QVariant> map)
     QString msgid = map.value("msgid").toString();
     if(cmd.compare("setosdparam")==0){
         bool enable = map.value("enable").toBool();
-        HttpSetOsdParam(enable,msgid);
+        if(enable)
+            HttpSetOsdParam(1,msgid);
+        else
+            HttpSetOsdParam(0,msgid);
     }else if(cmd.compare("login") ==0){
         LoginDevice(msgid);
     }else if(cmd.compare("loginout") ==0){
