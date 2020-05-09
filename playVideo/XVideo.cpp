@@ -154,7 +154,6 @@ void XVideo::createSearchIp()
         //        searchThread->start();
     }
     //emit signal_resetSearch();
-
 }
 
 void XVideo::recSearchIp(QString ip)
@@ -162,15 +161,13 @@ void XVideo::recSearchIp(QString ip)
 
     DebugLog::getInstance()->writeLog("my recSearchIp:"+ip);
     //qDebug()<<"my recSearchIp:"<<ip;
-    m_ip = "10.67.1.139";//ip;//"192.168.1.101";
+    m_ip = ip;//ip;//"192.168.1.101";
     createTcpThread();
-
     QMap<QString,QVariant> map;
     map.insert("cmd","getip");
     map.insert("ip",m_ip);
     emit signal_httpUiParSet(QVariant::fromValue(map));
 }
-
 
 void XVideo::updateUi()
 {
