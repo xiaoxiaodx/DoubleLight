@@ -10,6 +10,7 @@ void J07Device::startRec()
 {
     createTcpThread();
 }
+
 void J07Device::createTcpThread()
 {
     if(worker == nullptr){

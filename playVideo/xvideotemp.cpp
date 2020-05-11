@@ -29,14 +29,13 @@ void XVideoTemp::fun_recTestRect(int x,int y,int w,int h,int x1,int y1,int w1,in
 {
    // qDebug()<<"dsadsadsa    fun_recTestRect";
     testRect.setRect(x,y,w,h);
-
-
     testRect1.setRect(x1,y1,w1,h1);
     testRect2.setRect(x2,y2,w2,h2);
 }
 
 void XVideoTemp::startTemperatureVideo(float tp,QVariant type,QVariant par1,QVariant par2)
 {
+
     QString typeStr = type.toString();
     DebugLog::getInstance()->writeLog("startTemperatureVideo :"+typeStr);
     if(typeStr.compare("E03")==0){//384*288
@@ -58,7 +57,7 @@ void XVideoTemp::startTemperatureVideo(float tp,QVariant type,QVariant par1,QVar
     warnTemp = tp;
 
     connect(&timerUpdate,&QTimer::timeout,this,&XVideoTemp::slot_timeout);
-    timerUpdate.start(10);
+    timerUpdate.start(30);
 }
 
 void XVideoTemp::createJ07(QString ip)

@@ -21,7 +21,6 @@ void XVideo::fun_setInitPar(QString ip,int parentW,int parentH,int x,int y,int w
     showRectH = h;
     showParentW = parentW;
     showParentH = parentH;
-
     qDebug()<<" fun_setInitPar  "<<showRectX<<" "<<showRectY;
 }
 
@@ -29,14 +28,35 @@ void XVideo::startNormalVideo(float tp)
 {
     DebugLog::getInstance()->writeLog("startNormalVideo ");
     warnTemp = tp;
-    createTcpThread();
-    //createSearchIp();
+    //createTcpThread();
+    createSearchIp();
     connect(&timerUpdate,&QTimer::timeout,this,&XVideo::slot_update);
-    timerUpdate.start(50);
+    timerUpdate.start(20);
 }
 
 void XVideo::slot_update()
 {
+    if(mMutex.tryLock()){
+
+        if(listBuffImg.size()>0){
+            if(pRenderImginfo.pImg != nullptr){
+                delete pRenderImginfo.pImg;
+                pRenderImginfo.pImg = nullptr;
+            }
+            QImage *img = listBuffImg.takeFirst();
+            pRenderImginfo.pImg = img;
+        }
+        mMutex.unlock();
+    }
+
+
+
+    //如果不增加这句代码 ，则会出现视频不会第一时间显示，而是显示灰色图像
+    if(!isFirstData){
+        emit signal_loginStatus("Get the stream successfully");
+        isFirstData = true;
+    }
+
     update();
 }
 
@@ -97,7 +117,6 @@ void XVideo::createTcpThread()
         connect(m_readThread,&QThread::finished,m_readThread,&QThread::deleteLater);
         worker->moveToThread(m_readThread);
         m_readThread->start();
-
         emit signal_connentSer(m_ip,555);
     }
 }
@@ -159,24 +178,20 @@ void XVideo::createSearchIp()
         //        searchThread->start();
     }
     //emit signal_resetSearch();
-
 }
 
-void XVideo::recSearchIp(QString ip)
+void XVideo::recSearchIp(QString ip,QString ver)
 {
-
     DebugLog::getInstance()->writeLog("my recSearchIp:"+ip);
     //qDebug()<<"my recSearchIp:"<<ip;
-    m_ip = ip;//ip;//"192.168.1.101";
-    emit signal_setIp(m_ip);
+    //m_ip = "10.67.1.139";
+    m_ip = ip;
+    emit signal_setIp(m_ip,ver);
     createTcpThread();
 }
 
-
 void XVideo::updateUi()
 {
-
-
 
 }
 
@@ -202,7 +217,7 @@ void XVideo::paint(QPainter *painter)
 
 
     if(tempImgResW == 0)
-        return;
+        tempImgResW = 1;
     // DebugLog::getInstance()->writeLog("painter kejianguang start***");
     qreal kX = (qreal)this->width()/(qreal)tempImgResW;
     qreal kY = (qreal)this->height()/(qreal)tempImgResH;
@@ -328,27 +343,9 @@ void XVideo::slot_recH264(char* h264Arr,int arrlen,quint64 time)
 //由红外控制ui更新
 void XVideo::fun_setListRect(QVariant var){
     //qDebug()<<"tcp 流线程 fun_setListRect:"<<QThread::currentThreadId()<<"    "<<var.toList();
-    if(mMutex.tryLock()){
-
-        if(listBuffImg.size()>0){
-            if(pRenderImginfo.pImg != nullptr){
-                delete pRenderImginfo.pImg;
-                pRenderImginfo.pImg = nullptr;
-            }
-            QImage *img = listBuffImg.takeFirst();
-            pRenderImginfo.pImg = img;
-        }
-        mMutex.unlock();
-    }
 
     if(pRenderImginfo.pImg == nullptr)
         return;
-
-    //如果不增加这句代码 ，则会出现视频不会第一时间显示，而是显示灰色图像
-    if(!isFirstData){
-        emit signal_loginStatus("Get the stream successfully");
-        isFirstData = true;
-    }
 
     pRenderImginfo.listRect.clear();
     if(var.toList().size() > 0){
@@ -396,7 +393,18 @@ void XVideo::fun_timeSwitch(bool isChecked){
 void XVideo::fun_temSet(QVariant mvalue){
     warnTemp = mvalue.toFloat();
 }
+#include <QProcess>
+#include <QCoreApplication>
+void XVideo::fun_restart(){
 
+
+    QString program = QCoreApplication::applicationFilePath();
+    QStringList arguments = QCoreApplication::arguments();
+    QString workingDirectory = QDir::currentPath();
+    QProcess::startDetached(program, arguments, workingDirectory);
+    QCoreApplication::exit();
+
+}
 
 XVideo::~XVideo()
 {

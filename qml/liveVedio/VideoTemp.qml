@@ -106,7 +106,6 @@ Rectangle {
     XVideoTemp{
         id:video
 
-
         property real whradia: /*0.5625*/ 0.75
         property real hwradia: /*1.778 */ 1.333
 

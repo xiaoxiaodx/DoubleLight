@@ -14,7 +14,7 @@ public:
 
     void createSearch();
 signals:
-    void signal_sendIp(QString ip);
+    void signal_sendIp(QString ip,QString ver);
 public slots:
     void startSearch();
     void forceFinishSearch();

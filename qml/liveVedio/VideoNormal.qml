@@ -60,6 +60,18 @@ Rectangle {
         onClicked: tooldialog.open()
     }
 
+    Button{
+        id:btnTestFinish
+        text: "重启"
+        anchors.right: btnTest.left
+        anchors.top: parent.top
+        anchors.rightMargin: 10
+        anchors.topMargin: 10
+        onClicked: {
+            video.fun_restart();
+        }
+    }
+
 //    Text {
 //        id: pos1
 //        anchors.horizontalCenter: parent.horizontalCenter
@@ -91,8 +103,10 @@ Rectangle {
         onSignal_loginStatus: main.showToast(msg);
 
         onSignal_httpUiParSet:httpParCallback(map);
-        onSignal_setIp:deviceconfig.setTcpip(ip)
-
+        onSignal_setIp:{
+            deviceconfig.setTcpip(ip)
+            tooldialog.setver(ver);
+        }
 //        MouseArea{
 //            id:mouse22
 //            anchors.fill: parent
@@ -497,16 +511,16 @@ Rectangle {
         }else if("setdid" === strcmd){
             //tooldialog.getdid("设置成功");
         }else if("getdid" === strcmd){
-            tooldialog.getdid("设置成功:"+smap.uuid);
+            tooldialog.getdid(smap.uuid);
         }else if("setinftemptype" === strcmd){
 
-            tooldialog.getinftempType("设置成功");
+            //tooldialog.getinftempType("设置成功");
         }else if("getinftemptype" === strcmd){
             tooldialog.getinftempType("设置成功" +smap.temptype)
         }else if("setsignature" === strcmd){
-            tooldialog.getsignature("设置成功")
+            //tooldialog.getsignature("设置成功")
         }else if("getsignature" === strcmd){
-            tooldialog.getsignature("设置成功:"+smap.signature)
+            tooldialog.getsignature(smap.signature)
         }else if("getsdcardparam" === strcmd){
             var state = smap.sdstatus
             var freespace = smap.freespace
@@ -515,7 +529,9 @@ Rectangle {
         }else if("setsdcardformat" === strcmd){
             tooldialog.setSdcardFarmat("sdcard 初始化成功")
         }else if("getdevicekey"=== strcmd){
-            tooldialog.getdevicekey(smap.devicekey)
+            tooldialog.setdevicekey(smap.devicekey)
+        }else if("setinftemplevel"===strcmd){
+            tooldialog.setinftemplevel("设置成功");
         }
     }
 

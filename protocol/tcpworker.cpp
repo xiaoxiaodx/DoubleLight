@@ -76,8 +76,7 @@ void TcpWorker::slot_timerConnectSer()
     if(isForceFinish){
         timerConnectSer->stop();
         disconnect(timerConnectSer,&QTimer::timeout,this,&TcpWorker::slot_timerConnectSer);
-        timerConnectSer->deleteLater();
-
+       // timerConnectSer->deleteLater();
     }else{
         if(!isConnected){
 

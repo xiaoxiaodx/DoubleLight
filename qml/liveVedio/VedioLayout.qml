@@ -18,6 +18,7 @@ Rectangle {
         id:tooldialog
         width: 600
         height: 600
+        dim:false
     }
 
     function fun_sendCommonPar(map){

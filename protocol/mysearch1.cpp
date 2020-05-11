@@ -15,7 +15,7 @@ MySearch1::MySearch1(QObject *parent) : QObject(parent)
 MySearch1::~MySearch1()
 {
     qDebug()<<" MySearch1 析构";
-   // s_searchsocket->abort();
+    // s_searchsocket->abort();
 }
 void MySearch1::createSearch()
 {
@@ -23,11 +23,11 @@ void MySearch1::createSearch()
     if(s_searchsocket == nullptr){
         s_searchsocket = new QUdpSocket(this);//udp
         connect(s_searchsocket,SIGNAL(readyRead()),this,SLOT(readResultMsg()));
-//        if( !s_searchsocket->bind(SEARCH_PORT, QUdpSocket::ReuseAddressHint) ) {
-//            qDebug()<<"bind ********** !"<<s_searchsocket->state();
-//        }else{
-//            qDebug()<<"bind 成功" ;
-//        }
+        //        if( !s_searchsocket->bind(SEARCH_PORT, QUdpSocket::ReuseAddressHint) ) {
+        //            qDebug()<<"bind ********** !"<<s_searchsocket->state();
+        //        }else{
+        //            qDebug()<<"bind 成功" ;
+        //        }
     }
     timer.start(1000);
 }
@@ -44,7 +44,7 @@ void MySearch1::startSearch()
 
         s_searchsocket = new QUdpSocket(this);//udp
         if(s_searchsocket->state()!=s_searchsocket->BoundState) {
-             qDebug()<<"bind ********** !"<<s_searchsocket->state();
+            qDebug()<<"bind ********** !"<<s_searchsocket->state();
 
             if( !s_searchsocket->bind(SEARCH_PORT, QUdpSocket::ReuseAddressHint) ) {
                 qDebug()<<"bind ********** !"<<s_searchsocket->state();
@@ -56,7 +56,7 @@ void MySearch1::startSearch()
         }
         //qDebug()<<"startSearch ***2";
         if(1) { //s_searchsocket->joinMulticastGroup(QHostAddress(SEARCH_HOSTADDR))
-           // s_searchsocket->setSocketOption(QAbstractSocket::MulticastLoopbackOption, 0);
+            // s_searchsocket->setSocketOption(QAbstractSocket::MulticastLoopbackOption, 0);
             //设置缓冲区
             s_searchsocket->setSocketOption(QAbstractSocket::ReceiveBufferSizeSocketOption, SOCKET_RECEIVE_BUFFER);
             s_searchsocket->setSocketOption(QAbstractSocket::MulticastTtlOption, 2);
@@ -116,19 +116,22 @@ void MySearch1::readResultMsg()
             if (object.contains("data")) {  // 包含指定的 key
                 QJsonValue value = object.value("data");
                 if ( value.isObject() ) {  // Page 的 value 是对象
-                    QJsonObject obj = value.toObject();
-                    if (obj.contains("ip")) {
-                        QJsonValue value = obj.value("ip");
-                        if (value.isString()) {
-                            QString ip = value.toString();
-                            qDebug() << "ip : " << ip;
+                    //QJsonObject obj = value.toObject();
 
-                            DebugLog::getInstance()->writeLog("ip:"+ip);
 
-                            timer.stop();
-                            emit signal_sendIp(ip);
-                        }
-                    }
+                    //if (obj.contains("ip")) {
+                    QString ip = value.toObject().value("ip").toString();
+                    // if (value.isString()) {
+                    //     QString ip = value.toString();
+                    //    qDebug() << "ip : " << ip;
+                    QString softver = value.toObject().value("softver").toString();
+                    DebugLog::getInstance()->writeLog("ip:"+ip);
+
+                    timer.stop();
+                    emit signal_sendIp(ip,softver);
+                    //  }
+                    //}
+
                 }else {
                     qDebug()<<"value not object ";
                 }

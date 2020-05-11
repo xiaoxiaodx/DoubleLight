@@ -32,6 +32,7 @@ public:
     Q_INVOKABLE void fun_setIraInfo(QVariantMap map);
     Q_INVOKABLE void fun_sendCommonPar(QVariantMap map);
 
+    Q_INVOKABLE void fun_restart();
     explicit XVideo();
     ~XVideo();
 signals:
@@ -40,7 +41,7 @@ signals:
     void signal_disconnentSer();
     void signal_tcpSendAuthentication(QString did,QString name,QString pwd);
     void signal_destoryTcpWork();
-    void signal_setIp(QString ip);
+    void signal_setIp(QString ip,QString ver);
     //qml
     void signal_loginStatus(QString msg);
     void signal_waitingLoad(QString msgload);
@@ -62,7 +63,7 @@ public slots:
     void slot_recH264(char *buff,int len,quint64 time);
 
     void slog_HttpmsgCb(QMap<QString,QVariant>);
-    void recSearchIp(QString ip);
+    void recSearchIp(QString ip,QString ver);
     void slot_tcpConnected();
     void slot_httpConnected();
 
@@ -77,8 +78,6 @@ private:
     void createHttpApi();
 
     void updateUi();
-
-
 
     QString deviceType = "";
     FfmpegCodec *pffmpegCodec = nullptr;

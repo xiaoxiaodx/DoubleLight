@@ -63,7 +63,6 @@ SOURCES += \
     qmlcplus/updateprogressc.cpp \
     qmlcplus/upcontrol.cpp \
     protocol/warntcpserver.cpp \
-    productiontool.cpp \
     qmlcplus/toolutil.cpp
 
 HEADERS += \
@@ -107,7 +106,6 @@ HEADERS += \
     qmlcplus/updateprogressc.h \
     qmlcplus/upcontrol.h \
     protocol/warntcpserver.h \
-    productiontool.h \
     qmlcplus/toolutil.h
 
 RESOURCES += qml.qrc

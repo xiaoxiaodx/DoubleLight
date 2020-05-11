@@ -3,12 +3,12 @@ import QtQuick.Controls 2.5
 import "../simpleControl"
 import QtGraphicalEffects 1.12
 import QtQuick.Dialogs 1.3
-
+import Qt.labs.settings 1.0
 import ToolUtil 1.0
 Popup {
     id: root
-    x: parent.width/2 - root.width/2
-    y: parent.height/2 - root.height/2
+    x: parent.width - root.width -10
+    y: parent.height/2- root.height/2
     modal: true
     focus: true
     //设置窗口关闭方式为按“Esc”键关闭
@@ -24,9 +24,17 @@ Popup {
     signal s_getsdcardparam(var map)
     signal s_setsdcardformat(var map)
     signal s_setinftemplevel(var map)
-
     property int rectW: 330
 
+
+    property bool isOneClickTest: false
+    Settings{
+        id:settings
+
+        property alias filepath: txtPath.text
+        property alias  drif: inputTempDrift.text
+        property alias type: inputType.text
+    }
     ToolUtil{
         id:toolutil
 
@@ -36,14 +44,31 @@ Popup {
             txtPublish.text = pushKey
         }
 
+        onSignal_tip:{
+            if(isSucc){
+                writeDidTip.text = "已存入文件"
+                txtLicenseInfo.text ="已存入文件"
+            }
+            savedid.text = str;
+
+        }
         onSignal_sendLisence:{//lisence
 
-             var map = {
-                 cmd:"setsignature",
-                 signature:lisence
-             }
-             s_setsignature(map)
+            var map = {
+                cmd:"setsignature",
+                signature:lisence
+            }
+            s_setsignature(map)
         }
+
+        Component.onCompleted: {
+            toolutil.readDidFile(settings.filepath);
+        }
+    }
+    Text {
+        id: txtPath
+        visible: false
+        text: qsTr("")
     }
     Rectangle {
         id: rect
@@ -51,17 +76,26 @@ Popup {
         color: "#ffffff"
         radius: 3
         //设置标题栏区域为拖拽区域
+        Text {
+            id: txtver
+            anchors.right: parent.right
+            anchors.top: parent.top
+            anchors.rightMargin: 10
+            anchors.topMargin: 10
+            font.pixelSize: 12
+            text: qsTr("")
+        }
         Rectangle{
             id:rectdid
             width:rectW
             height: 160
             border.width: 1
             border.color: "red"
-            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.left: parent.left
+            anchors.leftMargin: 10
             anchors.top: parent.top
             anchors.topMargin: 10
             Column{
-
                 spacing: 5
                 anchors.left: parent.left
                 anchors.leftMargin: 10
@@ -85,16 +119,7 @@ Popup {
                         anchors.leftMargin: 10
                         anchors.verticalCenter: parent.verticalCenter
 
-                        onClicked: {
-                            var map = {
-                                cmd:"setdid",
-                                uuid:txtDid.text,
-                                lisence:txtlisence.text,
-                                pushlis:txtPublish.text
-                            }
-                            s_setdid(map)
-                            writeDidTip.text = ""
-                        }
+                        onClicked: setDid();
                     }
 
                     Text{
@@ -102,6 +127,7 @@ Popup {
                         anchors.left: btnWriteDid.right
                         anchors.verticalCenter: btnWriteDid.verticalCenter
                         anchors.leftMargin: 10
+                        text: "null"
                     }
                 }
 
@@ -196,12 +222,7 @@ Popup {
                 anchors.verticalCenter: inputTempDrift.verticalCenter
                 text: "设置型号"
                 onClicked: {
-                    txtSetModel.text = ""
-                    var map = {
-                        cmd:"setinftempmodel",
-                        tempmodel:inputTempDrift.text
-                    }
-                    s_setinftempmodel(map)
+                    setinftempmodel();
                 }
             }
 
@@ -246,12 +267,7 @@ Popup {
                 text: "设置模组"
                 onClicked: {
 
-                    txtSetType.text =""
-                    var map = {
-                        cmd:"setinftemptype",
-                        temptype:inputType.text
-                    }
-                    s_setinftemptype(map)
+
                 }
             }
 
@@ -281,12 +297,7 @@ Popup {
                 anchors.top: parent.top
                 anchors.topMargin: 10
                 text: "获取算法 key"
-                onClicked: {
-                    var map = {
-                        cmd:"getdevicekey",
-                    }
-                    s_getdevicekey(map)
-                }
+                onClicked:getdevicekey();
             }
 
             Button{
@@ -298,14 +309,6 @@ Popup {
                 onClicked: {
 
                     toolutil.funStartCmd(txtKeyID.text)
-
-
-
-                   /* var map = {
-                        cmd:"devicekey",
-                        key:txtKeyID.text
-                    }
-                    s_setsignature(map)*/
                 }
             }
 
@@ -338,8 +341,9 @@ Popup {
                 anchors.left: labelLicenseInfo.right
                 anchors.leftMargin: 10
                 anchors.top: labelLicenseInfo.top
+                wrapMode: Text.WordWrap
 
-                text: qsTr("")
+                text: qsTr("null")
             }
 
         }
@@ -356,7 +360,6 @@ Popup {
             border.width: 1
             border.color: "red"
 
-
             Button{
                 id:btnGetSd
                 anchors.left: parent.left
@@ -364,13 +367,7 @@ Popup {
                 anchors.top: parent.top
                 anchors.topMargin: 10
                 text: "获取sdcard信息"
-                onClicked: {
-
-                    var map = {
-                        cmd:"getsdcardparam"
-                    }
-                    s_getsdcardparam(map)
-                }
+                onClicked: sdcardFormat();
             }
 
             Button{
@@ -412,7 +409,7 @@ Popup {
             id:btnsetinftemplevel
             anchors.top: rectSdCard.bottom
             anchors.topMargin: 5
-            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.left: rectdid.left
             text:"设置温度等级"
             onClicked: {
                 var map = {
@@ -423,6 +420,27 @@ Popup {
             }
         }
 
+        Text {
+            id: txtinftemplevel
+            anchors.left: btnsetinftemplevel.right
+            anchors.leftMargin: 10
+            anchors.verticalCenter: btnsetinftemplevel.verticalCenter
+            text: qsTr("")
+        }
+
+        Button{
+            id:btnOneClick
+            anchors.bottom: btnEnsure.top
+            anchors.bottomMargin: 20
+            anchors.horizontalCenter: btnEnsure.horizontalCenter
+            text: qsTr("一键测试")
+            onClicked: {
+                isOneClickTest = true;
+                btnOneClick.enabled = false;
+                setDid();
+            }
+
+        }
 
         Rectangle{
             id:btnEnsure
@@ -441,14 +459,26 @@ Popup {
                 elide: Text.ElideMiddle
                 font.pixelSize: 14
                 color: "#3B84F6"
-                text: qsTr("确定")
+                text: qsTr("保存did lisence")
             }
             MouseArea{
                 anchors.fill: parent
                 onClicked: {
-                    root.close()
+
+                    toolutil.setDidLisence(writeDidTip.text,txtLicenseInfo.text);
+                    //root.close()
                 }
             }
+        }
+
+        Text {
+            id: savedid
+            anchors.top: btnEnsure.bottom
+            anchors.topMargin: 2
+            anchors.horizontalCenter: btnEnsure.horizontalCenter
+            font.pixelSize: 10
+            color: "red"
+            text: qsTr("tips")
         }
 
         Rectangle{
@@ -467,7 +497,7 @@ Popup {
                 elide: Text.ElideMiddle
                 font.pixelSize: 14
                 color: "#909399"
-                text: qsTr("取消")
+                text: qsTr("关闭窗口")
             }
             MouseArea{
                 anchors.fill: parent
@@ -495,46 +525,147 @@ Popup {
         //folder: shortcuts.home
         onAccepted: {
             var str = fileDialog.fileUrl.toString();
-            toolutil.readDidFile(str.replace('file:///',''))
+            var path = str.replace('file:///','');
+            txtPath.text = path
+            toolutil.readDidFile(path)
+
+
         }
         onRejected: {
 
         }
     }
 
+
+    //烧写did
+
+    function setDid(){
+        var map = {
+            cmd:"setdid",
+            uuid:txtDid.text,
+            lisence:txtlisence.text,
+            pushlis:txtPublish.text
+        }
+        s_setdid(map)
+        writeDidTip.text = ""
+    }
+    //设置型号
+    function setinftempmodel(){
+
+        txtSetModel.text = ""
+        var map = {
+            cmd:"setinftempmodel",
+            tempmodel:inputTempDrift.text
+        }
+        s_setinftempmodel(map)
+    }
+
+    //设置模组
+    function setinftemptype(){
+
+        txtSetType.text =""
+        var map = {
+            cmd:"setinftemptype",
+            temptype:inputType.text
+        }
+        s_setinftemptype(map)
+    }
+
+    //获取算法key
+    function getdevicekey(){
+        var map = {
+            cmd:"getdevicekey",
+        }
+        s_getdevicekey(map)
+    }
+    //获取sdcard信息
+    function sdcardgetInfo(){
+        var map = {
+            cmd:"setsdcardformat"
+        }
+        s_setsdcardformat(map)
+    }
+    //sdcard 格式化
+    function sdcardFormat(){
+        var map = {
+            cmd:"setsdcardformat"
+        }
+        s_setsdcardformat(map)
+    }
+    /***********/
+    function setver(ver)
+    {
+        txtver.text = "版本:"+ver
+    }
+
+    //温度层级设置后，设置key
+    function setinftemplevel(str){
+        txtinftemplevel.text = str
+                if(isOneClickTest)
+                    getdevicekey();
+    }
+
+    //did成功后  设置型号
     function getdid(str)
     {
         writeDidTip.text = str;
+        toolutil.deleteFirstDid();
         toolutil.setWriteDidLabel();
+        btnWriteDid.enabled = false;
+
+        if(isOneClickTest)
+            setinftempmodel();
     }
 
+    //型号设置成功后设置模组
     function getinftempmodel(str)
     {
         txtSetModel.text = str;
+        if(isOneClickTest)
+            setinftemptype()
     }
 
-    function getdevicekey(str)
+    function setdevicekey(str)
     {
         txtKeyID.text = str;
+
+        if(isOneClickTest)
+            toolutil.funStartCmd(txtKeyID.text)
+
     }
 
     function getsignature(str)
     {
         txtLicenseInfo.text = str
+
+        if(isOneClickTest)
+            sdcardgetInfo();
     }
 
+    //sdcard 信息获取后,格式化sdcard
     function getsdcardparam(str){
         txtsdinfo.text = str
+        if(isOneClickTest)
+            sdcardFormat()
     }
-
+    //sdcard 格式化后 ，设置层级
     function setSdcardFarmat(str)
     {
         txtFormat.text = str;
+        if(isOneClickTest)
+            setinftemplevel()
     }
 
+    //模组成功后，获取sdcard信息
     function getinftempType(str){
 
         txtSetType.text = str;
+
+        if(isOneClickTest)
+            sdcardgetInfo()
     }
+
+
+
 }
 

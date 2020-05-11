@@ -120,14 +120,11 @@ private:
     int tempImgHeight = 0;
     float warnTemp;
 
-
     bool isStartTempVideo = false;
 
-
-
     QRect testRect;//测试使用
-     QRect testRect1;//测试使用
-      QRect testRect2;//测试使用
+    QRect testRect1;//测试使用
+    QRect testRect2;//测试使用
 };
 
 
