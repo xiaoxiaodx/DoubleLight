@@ -33,6 +33,8 @@ void MySearch1::createSearch()
 }
 void MySearch1::slot_timeout()
 {
+
+
     sendSearch();
 }
 
@@ -164,6 +166,7 @@ void MySearch1::sendSearch()
 
     qDebug() <<"byrearray:"<<byteArray;
 
+    DebugLog::getInstance()->writeLog("sendSearch:"+QString(byteArray));
     if( !s_searchsocket->writeDatagram(byteArray.data(),byteArray.length(), QHostAddress(SEARCH_HOSTADDR), SEARCH_PORT) ) {
         qDebug()<<"write search msg error !";
     }

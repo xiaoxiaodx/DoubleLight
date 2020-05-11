@@ -97,6 +97,8 @@ private:
     void HttpSubscriptionWarn(QMap<QString,QVariant>,QString msgid);
 
     void HttpSetMeasureRect(QVariantMap value);
+    void HttpSetalarmparam(QVariantMap value);
+
 
     void httpSendCommonCmd(QString cmd,QString );
 

@@ -33,7 +33,7 @@ void XVideo::startNormalVideo(float tp)
 {
     DebugLog::getInstance()->writeLog("startNormalVideo ");
     warnTemp = tp;
-  //  createTcpThread();
+   // createTcpThread();
     createSearchIp();
 }
 
@@ -392,8 +392,6 @@ void XVideo::fun_timeSwitch(bool isChecked){
 
 void XVideo::fun_temSet(QVariant mvalue){
     warnTemp = mvalue.toFloat();
-
-
 }
 
 void XVideo::fun_temMin(QVariant mvalue)

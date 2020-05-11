@@ -21,6 +21,8 @@ public:
     Q_INVOKABLE QString funGetCurPath();
     Q_INVOKABLE QString funIsExitCurCapturePath(QString path);
     Q_INVOKABLE QString funIsExitCurRecordPath(QString path);
+    Q_INVOKABLE QString funGetFileName(QString path);
+    Q_INVOKABLE bool funIsExitFile(QString path);
 public:
     explicit ScreenVideo(QObject *parent = nullptr);
 

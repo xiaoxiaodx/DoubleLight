@@ -53,9 +53,9 @@ void CHttpApiDevice::slot_heartimertout(){
     }
 
 
-//    QMap<QString,QVariant> map;
-//    map.insert("cmd","getiradrect");
-//    slot_httpParSet(map);
+    //    QMap<QString,QVariant> map;
+    //    map.insert("cmd","getiradrect");
+    //    slot_httpParSet(map);
 
 
 }
@@ -262,8 +262,8 @@ int CHttpApiDevice::HttpMsgCallBack(char * pData) {
                 callbackMap.insert("tempdriftcaplevelMin",object.value("data").toObject().value("ctrlparamlevel").toObject().value("tempdriftcaplevel").toObject().value("min").toInt());
 
                 callbackMap.insert("tempdriftcaplevelMax",object.value("data").toObject().value("ctrlparamlevel").toObject().value("tempdriftcaplevel").toObject().value("max").toInt());
-                callbackMap.insert("tempcontrolcaplevelMin",object.value("data").toObject().value("ctrlparamlevel").toObject().value("tempdriftcaplevel").toObject().value("min").toInt());
-                callbackMap.insert("tempcontrolcaplevelMax",object.value("data").toObject().value("ctrlparamlevel").toObject().value("tempdriftcaplevel").toObject().value("max").toInt());
+                callbackMap.insert("tempcontrolcaplevelMin",object.value("data").toObject().value("ctrlparamlevel").toObject().value("tempcontrolcaplevel").toObject().value("min").toInt());
+                callbackMap.insert("tempcontrolcaplevelMax",object.value("data").toObject().value("ctrlparamlevel").toObject().value("tempcontrolcaplevel").toObject().value("max").toInt());
 
                 callbackMap.insert("tempdrift",object.value("data").toObject().value("ctrlparam").toObject().value("tempdrift").toInt());
                 callbackMap.insert("tempcontrol",object.value("data").toObject().value("ctrlparam").toObject().value("tempcontrol").toInt());
@@ -299,6 +299,9 @@ int CHttpApiDevice::HttpMsgCallBack(char * pData) {
                 callbackMap.insert("h2",object.value("data").toObject().value("h2").toInt());
 
                 qDebug()<<"rec rect:"<<object.value("data").toObject().value("x").toInt();
+            }else if("getalarmparam" == cmd){
+
+                callbackMap.insert("alarmaudiooutenabled",object.value("data").toObject().value("alarmaudiooutenabled").toInt());
             }
             //            emit signal_MsgReply(cmd);
             //            qDebug()<<"signal_ReadMsg   ";
@@ -484,8 +487,9 @@ bool CHttpApiDevice::send_httpParSet(QMap<QString,QVariant> map)
         destroyWarnService();
         HttpSubscriptionWarn(warnPushMap, msgid);
     }else if(cmd.compare("setmeasurablerange")==0){
-       HttpSetMeasureRect(map);
-
+        HttpSetMeasureRect(map);
+    }else if(cmd.compare("setalarmparam")==0){
+        HttpSetalarmparam(map);
     }else
         httpSendCommonCmd(cmd,msgid);
 
@@ -502,6 +506,30 @@ bool CHttpApiDevice::send_httpParSet(QMap<QString,QVariant> map)
     }*/
 }
 
+void CHttpApiDevice::HttpSetalarmparam(QVariantMap value){
+    JsonMsg_T info;
+    sprintf(info.cmd, "%s", "setalarmparam");
+    sprintf(info.msgID, "%s", value.value("msgid").toString().toLatin1().data());
+    sprintf(info.method, "%s", "request");
+    sprintf(info.ssionID, "%s", "");
+    if(!strlen(this->sessionId)) {
+        qDebug() <<"ssionId error "<<sessionId;
+        return ;
+    }
+    sprintf(info.ssionID, "%s", this->sessionId);
+
+    QJsonObject msgObject;
+    QJsonObject dataObj;
+
+    CjsonMakeHttpHead(&msgObject, &info);
+
+    dataObj.insert("alarmaudiooutenabled",value.value("alarmaudiooutenabled").toInt());
+
+
+    msgObject.insert("data", QJsonValue(dataObj));
+
+    SendRequestMsg(msgObject);
+}
 void CHttpApiDevice::HttpSetMeasureRect(QVariantMap value)
 {
     JsonMsg_T info;
@@ -525,14 +553,14 @@ void CHttpApiDevice::HttpSetMeasureRect(QVariantMap value)
     dataObj.insert("w",value.value("w").toInt());
     dataObj.insert("h",value.value("h").toInt());
 
-//    alarmparamObj.insert("alarmtempEnable", value.value("alarmtempEnable").toInt());
-//    alarmparamObj.insert("alarmtemp", value.value("alarmtemp").toString().toDouble());
+    //    alarmparamObj.insert("alarmtempEnable", value.value("alarmtempEnable").toInt());
+    //    alarmparamObj.insert("alarmtemp", value.value("alarmtemp").toString().toDouble());
 
-//    ctrlparamObj.insert("tempdrift", value.value("tempdrift").toString().toInt());
-//    ctrlparamObj.insert("tempcontrol", value.value("tempcontrol").toString().toInt());
+    //    ctrlparamObj.insert("tempdrift", value.value("tempdrift").toString().toInt());
+    //    ctrlparamObj.insert("tempcontrol", value.value("tempcontrol").toString().toInt());
 
-//    dataObj.insert("alarmparam", QJsonValue(alarmparamObj));
-//    dataObj.insert("ctrlparam", QJsonValue(ctrlparamObj));
+    //    dataObj.insert("alarmparam", QJsonValue(alarmparamObj));
+    //    dataObj.insert("ctrlparam", QJsonValue(ctrlparamObj));
     msgObject.insert("data", QJsonValue(dataObj));
 
     SendRequestMsg(msgObject);
@@ -689,7 +717,7 @@ void CHttpApiDevice::HttpSetIraInfo(QVariantMap value,QString msgid)
 
     dataObj.insert("osdenable",value.value("osdenable").toInt());
 
-    alarmparamObj.insert("alarmtempEnable", value.value("alarmtempEnable").toInt());
+    alarmparamObj.insert("enable", value.value("alarmtempEnable").toInt());
     alarmparamObj.insert("alarmtemp", value.value("alarmtemp").toString().toDouble());
 
     ctrlparamObj.insert("tempdrift", value.value("tempdrift").toString().toInt());

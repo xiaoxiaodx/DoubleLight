@@ -28,6 +28,7 @@ Popup {
     property int exeClose: 0
     property int warnInfoSingleDelete: 1
     property int warnInfoMutipleDelete: 2
+    property int fileupdate: 3
 
     Rectangle {
         id: rect

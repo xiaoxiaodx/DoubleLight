@@ -348,9 +348,19 @@ Rectangle {
         onS_timeSwith:video.fun_timeSwitch(mchecked);//时间使能
         onS_temSet:video.fun_temSet(mvalue);//警报温度设置
         onS_deviceUpdate:{
-            var map ={
 
+            var map ={
                 cmd:"update"
+            }
+            video.fun_sendCommonPar(map)
+        }
+        onS_beerSwith:{
+            var audioEnable = 0;
+            if(mchecked)
+                audioEnable = 1;
+            var map ={
+                cmd:"setalarmparam",
+                alarmaudiooutenabled:audioEnable
             }
             video.fun_sendCommonPar(map)
         }
@@ -369,6 +379,7 @@ Rectangle {
         }
         onS_temMin:video.fun_temMin(mvalue);//温度控制阀
         onS_temOffset:video.fun_temOffset(mvalue);//温漂
+
     }
     //    Connections{
     //        target: videoTemp
@@ -416,18 +427,19 @@ Rectangle {
                 video.fun_sendCommonPar(map);
 
                 if(deviceconfig.getSwitchWarn()){
-
-                    var map ={
+                    var map1 ={
                         cmd:"alarmsubscription",
                         isSubscription:true
                     }
-                    video.fun_sendCommonPar(map)
+                    video.fun_sendCommonPar(map1)
                 }
+
+                map.cmd = "getalarmparam"
+                video.fun_sendCommonPar(map);
+
             }
 
-
             deviceconfig.setSwitchTime(enable)
-
             map.cmd = "getosdparam"
             video.fun_sendCommonPar(map);
             map.cmd = "setcurrenttime"
@@ -452,21 +464,22 @@ Rectangle {
             deviceconfig.tempdriftcapMax = tempdriftcaplevelMax;
             deviceconfig.tempdriftcapMin = tempdriftcaplevelMin;
             deviceconfig.setTemDrift(tempdrift)
-            deviceconfig.setWarnTem(alarmTemp)
+            deviceconfig.setWarnTem(alarmTemp.toFixed(2))
             deviceconfig.setSwitchTime(osdenable)
             deviceconfig.setTempContrl(tempcontrol)
             deviceconfig.setSwitchWarn(alarmtempEnable)
         }else if(strcmd === "pushalarm"){
-
             startWarn(smap.temperature);
         }else if(strcmd === "update"){
-
             deviceconfig.updateDevice(smap.did,smap.url)
             // updateprogress.startupLoad(smap.did,smap.url,deviceconfig.getUpdateFilePath)
-
         }else if("getiradrect" === strcmd){
             s_testRect(smap.x0,smap.y0,smap.w0,smap.h0,smap.x1,smap.y1,smap.w1,smap.h1,smap.x2,smap.y2,smap.w2,smap.h2);
         }else if("alarmsubscription" === strcmd){
+
+        }else if("getalarmparam" === strcmd){
+            var beerenable = smap.alarmaudiooutenabled;
+            deviceconfig.setSwitchBeer(beerenable)
 
         }
     }

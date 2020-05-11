@@ -227,7 +227,7 @@ void XVideoTemp::paint(QPainter *painter)
 
 
     /********************/
-
+    /*
     painter->save();
     painter->setPen(QPen(QBrush(QColor(255,0,255)),2));
 
@@ -252,7 +252,7 @@ void XVideoTemp::paint(QPainter *painter)
 
 
     //qDebug()<<" testRect    "<<testRect<<"  "<<x1<<"    "<<y1<<"    "<<w1<<"    "<<h1;
-    painter->restore();
+    painter->restore();*/
     /********************/
 
 

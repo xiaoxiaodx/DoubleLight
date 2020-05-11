@@ -17,28 +17,42 @@ QString ScreenVideo::funGetCurPath()
     return dir.currentPath();
 }
 
+QString ScreenVideo::funGetFileName(QString path){
+   // QFile file(path);
+
+    QFileInfo fileinfo(path);
+
+    return fileinfo.fileName();
+}
+
+bool ScreenVideo::funIsExitFile(QString path){
+
+    QFile file(path);
+    return file.exists();
+
+}
 
 QString ScreenVideo::funIsExitCurCapturePath(QString path)
 {
 
     QDir dir;
 
-
     if (dir.exists(path))
         return path;
     else
         return dir.currentPath()+"/capture";
+
 }
 
 QString ScreenVideo::funIsExitCurRecordPath(QString path)
 {
     QDir dir;
 
-
     if (dir.exists(path))
         return path;
     else
         return dir.currentPath()+"/record";
+
 }
 //如果还没有创建则新建记录线程，如果创建了则发送参数信息
 void ScreenVideo::funCreateScreenThread(QString capturePath,QString recordPath,int period)
