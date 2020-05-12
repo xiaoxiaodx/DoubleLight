@@ -152,6 +152,7 @@ void MySearch1::readResultMsg()
     return ;
 }
 
+#include <QNetworkInterface>
 
 void MySearch1::sendSearch()
 {
@@ -172,7 +173,24 @@ void MySearch1::sendSearch()
 
     qDebug() <<"byrearray:"<<byteArray;
 
-    if( !s_searchsocket->writeDatagram(byteArray.data(),byteArray.length(), QHostAddress(SEARCH_HOSTADDR), SEARCH_PORT) ) {
-        qDebug()<<"write search msg error !";
+    DebugLog::getInstance()->writeLog("sendSearch:"+QString(byteArray));
+
+    QList<QNetworkInterface> interfaceList = QNetworkInterface::allInterfaces();
+
+    foreach(QNetworkInterface interface,interfaceList)
+    {
+        qDebug()<<"名字:"<<interface.humanReadableName();
+        QList<QNetworkAddressEntry> entryList = interface.addressEntries();
+        foreach(QNetworkAddressEntry entry,entryList)
+        {
+            QString str = entry.broadcast().toString();
+            qDebug()<<"地址:"<<str;
+            if(str != " "){
+                //int sendlen = s_searchsocket->writeDatagram(byteArray.data(),byteArray.length(), QHostAddress(SEARCH_HOSTADDR), SEARCH_PORT);
+                int sendlen = s_searchsocket->writeDatagram(byteArray.data(),byteArray.length(), QHostAddress(str), SEARCH_PORT);
+                 DebugLog::getInstance()->writeLog("write search msg <<"+QString::number(sendlen));
+
+            }
+        }
     }
 }

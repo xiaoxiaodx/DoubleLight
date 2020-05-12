@@ -28,8 +28,8 @@ void XVideo::startNormalVideo(float tp)
 {
     DebugLog::getInstance()->writeLog("startNormalVideo ");
     warnTemp = tp;
-    createTcpThread();
-    //createSearchIp();
+    //createTcpThread();
+    createSearchIp();
     connect(&timerUpdate,&QTimer::timeout,this,&XVideo::slot_update);
     timerUpdate.start(20);
 }
