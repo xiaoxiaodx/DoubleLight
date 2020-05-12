@@ -461,6 +461,8 @@ Rectangle {
                 deviceconfig.curDevTypeStr = "J07-S"
             else if(smap.tempmodel === "J07")
                 deviceconfig.curDevTypeStr = "J07"
+            else if(smap.tempmodel === "J07-I")
+                deviceconfig.curDevTypeStr = "J07-I"
             else
                 return;
 //                map.cmd = "getiradinfo";
@@ -597,7 +599,6 @@ Rectangle {
             rectadmjt.x = rectadmjt.x + dX;
             rectadmjt.y = rectadmjt.y + dY;
         }
-
 
         //video.fun_setRectPar(rectadmjt.x,rectadmjt.y,rectadmjt.width,rectadmjt.height,video.width,video.height)
         console.debug("矩形位置："+rectadmjt.x+" "+rectadmjt.y+" "+rectadmjt.width+" "+rectadmjt.height+" "+video.width+" "+video.height);

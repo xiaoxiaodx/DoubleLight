@@ -10,7 +10,7 @@ class J07Device : public QObject
 {
     Q_OBJECT
 public:
-    explicit J07Device(QString vip="10.67.1.180",QObject *parent = nullptr);
+    explicit J07Device(QString vip="10.67.1.180",int type = -1,QObject *parent = nullptr);
     ~J07Device();
 
     void startRec();
@@ -32,6 +32,8 @@ private:
     QThread *m_readThread = nullptr;
     TcpWorker *worker = nullptr;
     char *rgbBuff = nullptr;
+
+    int m_type = -1;
 };
 
 #endif // J07DEVICE_H

@@ -28,8 +28,8 @@ void XVideo::startNormalVideo(float tp)
 {
     DebugLog::getInstance()->writeLog("startNormalVideo ");
     warnTemp = tp;
-    //createTcpThread();
-    createSearchIp();
+    createTcpThread();
+    //createSearchIp();
     connect(&timerUpdate,&QTimer::timeout,this,&XVideo::slot_update);
     timerUpdate.start(20);
 }
@@ -91,13 +91,10 @@ void XVideo::fun_getInitPar()
     QMap<QString,QVariant> map;
     //    map.insert("cmd","getinftempmodel");
     //    emit signal_httpParSet(map);
-
     //    map.insert("cmd","getosdparam");
     //    emit signal_httpParSet(map);
-
     //    map.insert("cmd","setcurrenttime");
     //    emit signal_httpParSet(map);
-
     //    map.insert("cmd","getiradinfo");
     //    emit signal_httpParSet(map);
 }

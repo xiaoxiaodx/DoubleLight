@@ -45,11 +45,13 @@ void XVideoTemp::startTemperatureVideo(float tp,QVariant type,QVariant par1,QVar
         createShiGan();
     }else if (typeStr.compare("F03")==0){
         //createIRCNet();
-        createJ07(par1.toString());
+        createJ07(par1.toString(),1);
     }else if (typeStr.compare("J07-S")==0){
-        createJ07(par1.toString());
+        createJ07(par1.toString(),1);
     }else if (typeStr.compare("J07")==0){
-        createJ07(par1.toString());
+        createJ07(par1.toString(),1);
+    }else if (typeStr.compare("J07-I")==0){
+        createJ07(par1.toString(),2);
     }else{
         DebugLog::getInstance()->writeLog("------>>> tempVideo type is unknow <<<------");
     }
@@ -59,10 +61,10 @@ void XVideoTemp::startTemperatureVideo(float tp,QVariant type,QVariant par1,QVar
     timerUpdate.start(30);
 }
 
-void XVideoTemp::createJ07(QString ip)
+void XVideoTemp::createJ07(QString ip,int type)
 {
     if(j07device == nullptr){
-        j07device = new J07Device(ip);
+        j07device = new J07Device(ip,type);
         j07device->startRec();
     }
 }
@@ -218,6 +220,10 @@ void XVideoTemp::paint(QPainter *painter)
 
     if(mRenderImginfo.pImg == nullptr)
         return;
+
+
+    //qDebug()<<" testRect ********   ";
+
     QFont font("Microsoft Yahei", 20);
     QPen pen(QBrush(QColor(0,255,0)),1);
     painter->setPen(pen);
@@ -255,7 +261,7 @@ void XVideoTemp::paint(QPainter *painter)
     painter->drawRect(QRectF(x3,y3,w3,h3));
 
 
-    //qDebug()<<" testRect    "<<testRect<<"  "<<x1<<"    "<<y1<<"    "<<w1<<"    "<<h1;
+   // qDebug()<<" testRect    "<<testRect<<"  "<<x1<<"    "<<y1<<"    "<<w1<<"    "<<h1;
     painter->restore();
     /********************/
 

@@ -1,9 +1,10 @@
 #include "j07device.h"
 #include "xvideotemp.h"
 
-J07Device::J07Device(QString ip,QObject *parent) : QObject(parent)
+J07Device::J07Device(QString ip,int type,QObject *parent) : QObject(parent)
 {
     m_ip = ip;
+    m_type = type;
 }
 
 void J07Device::startRec()
@@ -14,7 +15,7 @@ void J07Device::startRec()
 void J07Device::createTcpThread()
 {
     if(worker == nullptr){
-        worker = new TcpWorker(1);
+        worker = new TcpWorker(m_type);
         m_readThread = new QThread;
 
         // connect(worker,&TcpWorker::signal_sendH264,this,&J07Device::slot_recH264,Qt::DirectConnection);
@@ -32,7 +33,7 @@ void J07Device::createTcpThread()
 
 void J07Device::slot_recImg(QImage *img,int len,quint64 time,int resw,int resh){
 
-    //qDebug()<<"slot_recImg";
+    qDebug()<<"slot_recImg";
     if(img != nullptr){
         ImageInfo info;
         info.pImg =img;
@@ -44,7 +45,6 @@ void J07Device::slot_recImg(QImage *img,int len,quint64 time,int resw,int resh){
             if(info.pImg != nullptr)
                 delete info.pImg;
         }
-
         XVideoTemp::mutex.unlock();
     }
 }
