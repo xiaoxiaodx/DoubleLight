@@ -39,14 +39,11 @@ Rectangle {
         anchors.fill: parent
         //hoverEnabled: true
         propagateComposedEvents:true
-
         onClicked: {
-
             click()
             // mouse.accepted = false
         }
         onDoubleClicked:doubleClick(true);
-
     }
 
 //    Text {

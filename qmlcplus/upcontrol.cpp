@@ -1,6 +1,8 @@
 #include "upcontrol.h"
 #include <QHttpPart>
 #include <QHttpMultiPart>
+
+#include "debuglog.h"
 CUpControl::CUpControl(QObject *parent) : QObject(parent)
 {
     accessManager1 = new QNetworkAccessManager(this);
@@ -52,12 +54,13 @@ void CUpControl::replyFinished()
     QVariant statusCode = m_reply->attribute(QNetworkRequest::HttpStatusCodeAttribute);
     if (m_reply->error() == QNetworkReply::NoError)
     {
-
+        DebugLog::getInstance()->writeLog("--->update succ<---");
     }
     else
     {
         QString strError = m_reply->errorString();
         //  qDebug() << "__________" + strError;
+        DebugLog::getInstance()->writeLog("--->update fail<---:"+strError);
     }
 
     // m_reply->deleteLater();

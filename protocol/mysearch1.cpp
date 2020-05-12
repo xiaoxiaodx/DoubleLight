@@ -23,18 +23,11 @@ void MySearch1::createSearch()
     if(s_searchsocket == nullptr){
         s_searchsocket = new QUdpSocket(this);//udp
         connect(s_searchsocket,SIGNAL(readyRead()),this,SLOT(readResultMsg()));
-//        if( !s_searchsocket->bind(SEARCH_PORT, QUdpSocket::ReuseAddressHint) ) {
-//            qDebug()<<"bind ********** !"<<s_searchsocket->state();
-//        }else{
-//            qDebug()<<"bind 成功" ;
-//        }
     }
     timer.start(1000);
 }
 void MySearch1::slot_timeout()
 {
-
-
     sendSearch();
 }
 
@@ -146,6 +139,7 @@ void MySearch1::readResultMsg()
     return ;
 }
 
+#include <QNetworkInterface>
 
 void MySearch1::sendSearch()
 {
@@ -167,7 +161,25 @@ void MySearch1::sendSearch()
     qDebug() <<"byrearray:"<<byteArray;
 
     DebugLog::getInstance()->writeLog("sendSearch:"+QString(byteArray));
-    if( !s_searchsocket->writeDatagram(byteArray.data(),byteArray.length(), QHostAddress(SEARCH_HOSTADDR), SEARCH_PORT) ) {
-        qDebug()<<"write search msg error !";
+
+    QList<QNetworkInterface> interfaceList = QNetworkInterface::allInterfaces();
+
+    foreach(QNetworkInterface interface,interfaceList)
+    {
+        qDebug()<<"名字:"<<interface.humanReadableName();
+        QList<QNetworkAddressEntry> entryList = interface.addressEntries();
+        foreach(QNetworkAddressEntry entry,entryList)
+        {
+            QString str = entry.broadcast().toString();
+            qDebug()<<"地址:"<<str;
+            if(str != " "){
+                //int sendlen = s_searchsocket->writeDatagram(byteArray.data(),byteArray.length(), QHostAddress(SEARCH_HOSTADDR), SEARCH_PORT);
+                int sendlen = s_searchsocket->writeDatagram(byteArray.data(),byteArray.length(), QHostAddress(str), SEARCH_PORT);
+                 DebugLog::getInstance()->writeLog("write search msg <<"+QString::number(sendlen));
+
+            }
+        }
     }
+
+
 }

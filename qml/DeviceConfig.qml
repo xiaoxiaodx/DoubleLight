@@ -1214,6 +1214,8 @@ Rectangle {
             txtSwichWarn.text = "Alarm"
             txtTempMin.text = "Temperature control valve"
             txtTempDrift.text = "Temperature drift setting"
+            txtUpdate.text = "Upgrade"
+            txtUpdateFile.text = "Upgrade"
             break;
         case lKorean:
             txtRecordSet.text = "비디오 설정"
@@ -1229,6 +1231,8 @@ Rectangle {
             txtSwichWarn.text = "알람"
             txtTempMin.text = "최대/최소 온도"
             txtTempDrift.text = "온도변화폭 설정"
+            txtUpdate.text = "업그레이드"
+            txtUpdateFile.text = "업그레이드"
             break;
         case lItaly:
             txtRecordSet.text = "Settaggio Video"
@@ -1244,6 +1248,8 @@ Rectangle {
             txtSwichWarn.text = "Allarme"
             txtTempMin.text = "Max Min Temperatura"
             txtTempDrift.text = "Correzione Temperatura"
+            txtUpdate.text = "aggiornare"
+            txtUpdateFile.text = "aggiornare"
             break;
         case lChinese:
             txtRecordSet.text = "录像设置"
@@ -1260,6 +1266,7 @@ Rectangle {
             txtTempMin.text = "温度控制阀"
             txtTempDrift.text = "温漂设置"
             txtUpdate.text = "升级"
+            txtUpdateFile.text = "设备升级"
             break;
         case lRussian:
             txtRecordSet.text = "Настройка записи"
@@ -1275,6 +1282,8 @@ Rectangle {
             txtSwichWarn.text = "Тревога"
             txtTempMin.text = "Max Min температура"
             txtTempDrift.text = "Коррекция температуры"
+            txtUpdate.text = "обновить"
+            txtUpdateFile.text = "обновить"
             break;
         case lLithuanian:
             txtRecordSet.text = "Vaizdo parametrų nustatymas"
@@ -1290,6 +1299,8 @@ Rectangle {
             txtSwichWarn.text = "Aliarmas"
             txtTempMin.text = "Temperatūros ribų nustatymas"
             txtTempDrift.text = "Temperatūrinio dreifo nustatymas "
+            txtUpdate.text = "patobulinti"
+            txtUpdateFile.text = "patobulinti"
             break;
         }
     }

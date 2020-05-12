@@ -556,7 +556,7 @@ void TcpWorker::parseShiGanRgb1(QByteArray arr,int arrlen,int resw,int resh)
         qDebug()<<" 图片分配内存失败";
         pImg = nullptr;
     }
-    qDebug()<<" parseShiGanRgb1 "<<resw<<"  "<<resh<<"  "<<arrlen;
+   // qDebug()<<" parseShiGanRgb1 "<<resw<<"  "<<resh<<"  "<<arrlen;
     emit signal_sendImg(pImg,arrlen,10,resw,resh);
 
 }

@@ -33,8 +33,8 @@ void XVideo::startNormalVideo(float tp)
 {
     DebugLog::getInstance()->writeLog("startNormalVideo ");
     warnTemp = tp;
-    createTcpThread();
-    //createSearchIp();
+    //createTcpThread();
+    createSearchIp();
 }
 
 void XVideo::createFFmpegDecodec()
