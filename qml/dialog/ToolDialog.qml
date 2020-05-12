@@ -46,11 +46,11 @@ Popup {
 
         onSignal_tip:{
             if(isSucc){
-                writeDidTip.text = "已存入文件"
-                txtLicenseInfo.text ="已存入文件"
+                btnEnsure.enabled = false;
+                //writeDidTip.text = "已存入文件"
+                //txtLicenseInfo.text ="已存入文件"
             }
             savedid.text = str;
-
         }
         onSignal_sendLisence:{//lisence
 
@@ -307,7 +307,6 @@ Popup {
                 anchors.verticalCenter: btnGetdevicekey.verticalCenter
                 text: "烧写licence"
                 onClicked: {
-
                     toolutil.funStartCmd(txtKeyID.text)
                 }
             }
@@ -436,7 +435,6 @@ Popup {
                 btnOneClick.enabled = false;
                 setDid();
             }
-
         }
 
         Rectangle{
@@ -546,62 +544,6 @@ Popup {
         s_setdid(map)
         writeDidTip.text = ""
     }
-    //设置型号
-    function setinftempmodel(){
-
-        txtSetModel.text = ""
-        var map = {
-            cmd:"setinftempmodel",
-            tempmodel:inputTempDrift.text
-        }
-        s_setinftempmodel(map)
-    }
-
-    //设置模组
-    function setinftemptype(){
-
-        txtSetType.text =""
-        var map = {
-            cmd:"setinftemptype",
-            temptype:inputType.text
-        }
-        s_setinftemptype(map)
-    }
-
-    //获取算法key
-    function getdevicekey(){
-        var map = {
-            cmd:"getdevicekey",
-        }
-        s_getdevicekey(map)
-    }
-    //获取sdcard信息
-    function sdcardgetInfo(){
-        var map = {
-            cmd:"getsdcardparam"
-        }
-        s_getsdcardparam(map)
-    }
-    //sdcard 格式化
-    function sdcardFormat(){
-        var map = {
-            cmd:"setsdcardformat"
-        }
-        s_setsdcardformat(map)
-    }
-    /***********/
-    function setver(ver)
-    {
-        txtver.text = "版本:"+ver
-    }
-
-    //温度层级设置后，设置key
-    function setinftemplevel(str){
-        txtinftemplevel.text = str
-                if(isOneClickTest)
-                    getdevicekey();
-    }
-
     //did成功后  设置型号
     function getdid(str)
     {
@@ -614,6 +556,18 @@ Popup {
             setinftempmodel();
     }
 
+
+    //设置型号
+    function setinftempmodel(){
+
+        txtSetModel.text = ""
+        var map = {
+            cmd:"setinftempmodel",
+            tempmodel:inputTempDrift.text
+        }
+        s_setinftempmodel(map)
+    }
+
     //型号设置成功后设置模组
     function getinftempmodel(str)
     {
@@ -621,6 +575,80 @@ Popup {
         if(isOneClickTest)
             setinftemptype()
     }
+
+
+    //设置模组
+    function setinftemptype(){
+
+        txtSetType.text =""
+        var map = {
+            cmd:"setinftemptype",
+            temptype:inputType.text
+        }
+        s_setinftemptype(map)
+    }
+    //模组成功后，获取sdcard信息
+    function getinftempType(str){
+
+        txtSetType.text = str;
+
+        if(isOneClickTest)
+            sdcardgetInfo()
+    }
+
+    //获取sdcard信息
+    function sdcardgetInfo(){
+        var map = {
+            cmd:"getsdcardparam"
+        }
+        s_getsdcardparam(map)
+    }
+
+    //sdcard 信息获取后,格式化sdcard
+    function getsdcardparam(str){
+        txtsdinfo.text = str
+        if(isOneClickTest)
+            sdcardFormat()
+    }
+
+    //sdcard 格式化
+    function sdcardFormat(){
+        var map = {
+            cmd:"setsdcardformat"
+        }
+        s_setsdcardformat(map)
+    }
+
+    //sdcard 格式化后 ，设置层级
+    function setSdcardFarmat(str)
+    {
+        txtFormat.text = str;
+        if(isOneClickTest){
+
+            var map = {
+                cmd:"setinftemplevel",
+                templevel:6
+            }
+            s_setinftemplevel(map)
+        }
+    }
+
+    //温度层级设置后，设置key
+    function setinftemplevel(str){
+        txtinftemplevel.text = str
+        if(isOneClickTest)
+            getdevicekey();
+    }
+
+    //获取算法key
+    function getdevicekey(){
+        var map = {
+            cmd:"getdevicekey",
+        }
+        s_getdevicekey(map)
+    }
+
+
 
     function setdevicekey(str)
     {
@@ -636,40 +664,16 @@ Popup {
         txtLicenseInfo.text = str
 
         btnOneClick.text =" 测试完毕"
-        btnOneClick.color = "red";
+        if(isOneClickTest)
+            toolutil.setDidLisence(writeDidTip.text,str);
     }
 
-    //sdcard 信息获取后,格式化sdcard
-    function getsdcardparam(str){
-        txtsdinfo.text = str
-        if(isOneClickTest)
-            sdcardFormat()
-    }
-    //sdcard 格式化后 ，设置层级
-    function setSdcardFarmat(str)
+
+
+    /***********/
+    function setver(ver)
     {
-        txtFormat.text = str;
-        if(isOneClickTest){
-
-            var map = {
-                cmd:"setinftemplevel",
-                templevel:6
-            }
-            s_setinftemplevel(map)
-        }
-
+        txtver.text = "版本:"+ver
     }
-
-    //模组成功后，获取sdcard信息
-    function getinftempType(str){
-
-        txtSetType.text = str;
-
-        if(isOneClickTest)
-          sdcardgetInfo()
-    }
-
-
-
 }
 

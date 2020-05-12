@@ -13,13 +13,14 @@ void ToolUtil::funStartCmd(QString keystr)
 {
 
 
-    QString cmd = "act_dv300_common.exe "+keystr+" "+keystr+" 5d7073359bb502922d0b0566b8d8a6eb 883a63d3af6569f8997b625bd1162966f92139af";
 
-    //QString cmd = "ping 192.168.1.1";
-    //qDebug()<<"funStartCmd  "<<cmd;
-    /*act_dv300_common.exe 76b627633d6beb09edeae06a7952b2a2 76b627633d6beb09edeae06a7952b2a2 5d7073359bb502922d0b0566b8d8a6eb 883a63d3af6569f8997b625bd1162966f92139af*/
+    if(!isWriteLisence){
 
-    m_Process.start(cmd);
+        QString cmd = "act_dv300_common.exe "+keystr+" "+keystr+" 3e72da83633c1b2bb79ff9c575358c2e 030bafc211d63f922d5ba12377f43393d188ff27";
+        m_Process.start(cmd);
+        isWriteLisence = true;
+    }
+
 
 }
 void ToolUtil::setDidLisence(QString did,QString lisence)
@@ -27,12 +28,12 @@ void ToolUtil::setDidLisence(QString did,QString lisence)
 
     if(did == "" || lisence == "")
     {
-        emit signal_tip(false,"id 或 lisence为空");
+        //emit signal_tip(false,"id 或 lisence为空");
         return;
     }
     if(did == "已存入文件" || lisence == "已存入文件")
     {
-        emit signal_tip(false,"已经存入");
+       // emit signal_tip(false,"已经存入");
         return;
     }
     QFile file("Did_Lisence.txt");
@@ -46,6 +47,8 @@ void ToolUtil::setDidLisence(QString did,QString lisence)
     }
 
 }
+
+#include <QDateTime>
 void ToolUtil::slot_consoleOutput()
 {
     QByteArray qbt = m_Process.readAllStandardOutput();
@@ -64,13 +67,10 @@ void ToolUtil::slot_consoleOutput()
             lisenceIndex += 5;
 
             QString lisenceStr = msg.mid(lisenceIndex,msg.size() - lisenceIndex);
+            QString curdatetime = QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss");
 
-            in<<"Lisence:"<<lisenceStr<<endl;
-
-
-            //QString tmpstr = "1bf55d1bbcf14fa1188535a73cd8c06eea103f8ad6c4bc6a60c8795bafcdb7c35a18b7e1994c50d9f238841997c9f251428d74e2cca3fb6ad2681fe52ba70d96";
+            in<<curdatetime<<":"<<lisenceStr<<endl;
             emit signal_sendLisence(lisenceStr);
-            //emit signal_sendLisence(tmpstr);
         }
 
         file.close();

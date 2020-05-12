@@ -29,6 +29,8 @@ public slots:
 private:
     QProcess  m_Process;
     QString didFilePath;
+
+    bool isWriteLisence = false;
 };
 
 #endif // TOOLUTIL_H

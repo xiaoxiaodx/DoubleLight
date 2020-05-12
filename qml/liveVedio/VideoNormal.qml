@@ -441,9 +441,9 @@ Rectangle {
         }else if(strcmd === "getrecordparam"){
 
         }else if("setinftempmodel" === strcmd){
-            tooldialog.getinftempmodel("设置成功");
+            //tooldialog.getinftempmodel("设置成功");
         }else if(strcmd === "getinftempmodel"){
-            tooldialog.getinftempmodel("设置成功:"+smap.tempmodel);
+
             console.debug(" **************** "+smap.tempmodel)
             var map ={
                 cmd:""
@@ -459,6 +459,10 @@ Rectangle {
                 deviceconfig.curDevTypeStr = "f03"
             else if(smap.tempmodel === "J07-S")
                 deviceconfig.curDevTypeStr = "J07-S"
+            else if(smap.tempmodel === "J07")
+                deviceconfig.curDevTypeStr = "J07"
+            else
+                return;
 //                map.cmd = "getiradinfo";
 //                video.fun_sendCommonPar(map);
 //                if(deviceconfig.getSwitchWarn()){
@@ -474,6 +478,8 @@ Rectangle {
 //            video.fun_sendCommonPar(map);
 //            map.cmd = "setcurrenttime"
 //            video.fun_sendCommonPar(map);
+
+             tooldialog.getinftempmodel("设置成功:"+smap.tempmodel);
             video.fun_setInitPar(deviceconfig.getTcpip(),deviceconfig.getShowParentW(),deviceconfig.getShowParentH(),deviceconfig.getShowRectX(),deviceconfig.getShowRectY(),deviceconfig.getShowRectW(),deviceconfig.getShowRectH())
 
             s_tempmodelSelect(smap.tempmodel);
@@ -509,16 +515,16 @@ Rectangle {
         }else if("getiradrect" === strcmd){
             s_testRect(smap.x0,smap.y0,smap.w0,smap.h0,smap.x1,smap.y1,smap.w1,smap.h1,smap.x2,smap.y2,smap.w2,smap.h2);
         }else if("setdid" === strcmd){
-            //tooldialog.getdid("设置成功");
+
         }else if("getdid" === strcmd){
             tooldialog.getdid(smap.uuid);
         }else if("setinftemptype" === strcmd){
 
-            //tooldialog.getinftempType("设置成功");
+
         }else if("getinftemptype" === strcmd){
             tooldialog.getinftempType("设置成功" +smap.temptype)
         }else if("setsignature" === strcmd){
-            //tooldialog.getsignature("设置成功")
+
         }else if("getsignature" === strcmd){
             tooldialog.getsignature(smap.signature)
         }else if("getsdcardparam" === strcmd){

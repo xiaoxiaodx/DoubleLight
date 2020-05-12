@@ -18,7 +18,6 @@ XVideoTemp::XVideoTemp()
     testRect2.setRect(10,10,100,100);
 }
 
-
 void XVideoTemp::fun_setDxDy(QVariant dx,QVariant dy)
 {
 
