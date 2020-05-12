@@ -15,9 +15,12 @@ void ToolUtil::funStartCmd(QString keystr)
 
     QString cmd = "act_dv300_common.exe "+keystr+" "+keystr+" 5d7073359bb502922d0b0566b8d8a6eb 883a63d3af6569f8997b625bd1162966f92139af";
 
+    //QString cmd = "ping 192.168.1.1";
+    //qDebug()<<"funStartCmd  "<<cmd;
     /*act_dv300_common.exe 76b627633d6beb09edeae06a7952b2a2 76b627633d6beb09edeae06a7952b2a2 5d7073359bb502922d0b0566b8d8a6eb 883a63d3af6569f8997b625bd1162966f92139af*/
 
     m_Process.start(cmd);
+
 }
 void ToolUtil::setDidLisence(QString did,QString lisence)
 {
@@ -64,7 +67,10 @@ void ToolUtil::slot_consoleOutput()
 
             in<<"Lisence:"<<lisenceStr<<endl;
 
+
+            //QString tmpstr = "1bf55d1bbcf14fa1188535a73cd8c06eea103f8ad6c4bc6a60c8795bafcdb7c35a18b7e1994c50d9f238841997c9f251428d74e2cca3fb6ad2681fe52ba70d96";
             emit signal_sendLisence(lisenceStr);
+            //emit signal_sendLisence(tmpstr);
         }
 
         file.close();

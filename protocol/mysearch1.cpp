@@ -23,16 +23,21 @@ void MySearch1::createSearch()
     if(s_searchsocket == nullptr){
         s_searchsocket = new QUdpSocket(this);//udp
         connect(s_searchsocket,SIGNAL(readyRead()),this,SLOT(readResultMsg()));
-        //        if( !s_searchsocket->bind(SEARCH_PORT, QUdpSocket::ReuseAddressHint) ) {
-        //            qDebug()<<"bind ********** !"<<s_searchsocket->state();
-        //        }else{
-        //            qDebug()<<"bind 成功" ;
-        //        }
     }
-    timer.start(1000);
+    if(!timer.isActive())
+        timer.start(1000);
 }
+
 void MySearch1::slot_timeout()
 {
+
+    if(timeoutCount >= 10){
+
+        timeoutCount = 0 ;
+        forceFinishSearch();
+        createSearch();
+    }
+    timeoutCount++;
     sendSearch();
 }
 

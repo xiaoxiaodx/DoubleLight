@@ -266,7 +266,7 @@ Popup {
                 anchors.verticalCenter: inputType.verticalCenter
                 text: "设置模组"
                 onClicked: {
-
+                    setinftemptype()
 
                 }
             }
@@ -367,7 +367,7 @@ Popup {
                 anchors.top: parent.top
                 anchors.topMargin: 10
                 text: "获取sdcard信息"
-                onClicked: sdcardFormat();
+                onClicked: sdcardgetInfo();
             }
 
             Button{
@@ -378,11 +378,8 @@ Popup {
 
                 text: "sd卡格式化"
                 onClicked: {
-                    var map = {
-                        cmd:"setsdcardformat"
-                    }
-                    s_setsdcardformat(map)
 
+                    sdcardFormat();
                 }
             }
 
@@ -581,9 +578,9 @@ Popup {
     //获取sdcard信息
     function sdcardgetInfo(){
         var map = {
-            cmd:"setsdcardformat"
+            cmd:"getsdcardparam"
         }
-        s_setsdcardformat(map)
+        s_getsdcardparam(map)
     }
     //sdcard 格式化
     function sdcardFormat(){
@@ -638,8 +635,8 @@ Popup {
     {
         txtLicenseInfo.text = str
 
-        if(isOneClickTest)
-            sdcardgetInfo();
+        btnOneClick.text =" 测试完毕"
+        btnOneClick.color = "red";
     }
 
     //sdcard 信息获取后,格式化sdcard
@@ -652,8 +649,15 @@ Popup {
     function setSdcardFarmat(str)
     {
         txtFormat.text = str;
-        if(isOneClickTest)
-            setinftemplevel()
+        if(isOneClickTest){
+
+            var map = {
+                cmd:"setinftemplevel",
+                templevel:6
+            }
+            s_setinftemplevel(map)
+        }
+
     }
 
     //模组成功后，获取sdcard信息
@@ -662,7 +666,7 @@ Popup {
         txtSetType.text = str;
 
         if(isOneClickTest)
-            sdcardgetInfo()
+          sdcardgetInfo()
     }
 
 

@@ -26,6 +26,7 @@ public slots:
 private:
     QUdpSocket *s_searchsocket = nullptr;//udp搜索socket
     QTimer timer;
+    int timeoutCount = 0;
 };
 
 #endif // MySearch1_H
