@@ -1259,6 +1259,7 @@ Rectangle {
             txtSwichWarn.text = "报警开关"
             txtTempMin.text = "温度控制阀"
             txtTempDrift.text = "温漂设置"
+            txtUpdate.text = "升级"
             break;
         case lRussian:
             txtRecordSet.text = "Настройка записи"
