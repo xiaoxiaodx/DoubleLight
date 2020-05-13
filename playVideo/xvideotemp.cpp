@@ -38,11 +38,13 @@ void XVideoTemp::startTemperatureVideo(float tp,QVariant type,QVariant par1,QVar
         createShiGan();
     }else if (typeStr.compare("F03")==0){
         //createIRCNet();
-        createJ07(par1.toString());
+        createJ07(par1.toString(),1);
     }else if (typeStr.compare("J07-S")==0){
-        createJ07(par1.toString());
+        createJ07(par1.toString(),1);
     }else if (typeStr.compare("J07")==0){
-        createJ07(par1.toString());
+        createJ07(par1.toString(),1);
+    }else if (typeStr.compare("J07-I")==0){
+        createJ07(par1.toString(),2);
     }else{
         DebugLog::getInstance()->writeLog("------>>> tempVideo type is unknow <<<------");
     }
@@ -52,10 +54,10 @@ void XVideoTemp::startTemperatureVideo(float tp,QVariant type,QVariant par1,QVar
     timerUpdate.start(10);
 }
 
-void XVideoTemp::createJ07(QString ip)
+void XVideoTemp::createJ07(QString ip,int type)
 {
     if(j07device == nullptr){
-        j07device = new J07Device(ip);
+        j07device = new J07Device(ip,type);
         j07device->startRec();
     }
 }

@@ -89,7 +89,7 @@ private:
     void createYouseePull();
     void createShiGan();
     void createIRCNet();
-    void createJ07(QString ip);
+    void createJ07(QString ip,int type);
 
     QTimer timerUpdate;
 

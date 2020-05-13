@@ -125,7 +125,7 @@ void TcpWorker::slot_readData()
 
     //qDebug()<<"slot_readData    "<<
     isHavaData = true;
-   // isConnected = true;
+    // isConnected = true;
 
     readDataBuff.append(tcpSocket->readAll());
 
@@ -324,8 +324,10 @@ void TcpWorker::parseRecevieData()
 
                 if(myType == 0)
                     emit signal_sendH264(readDataBuff.data(),m_streamDateLen,pts,vResW,vResH);
-                else if((myType == 1)){
+                else if(myType == 1){
                     parseShiGanRgb1(readDataBuff,m_streamDateLen,vResW,vResH);
+                }else if(myType == 2){
+                    parseShiGanRgb2(readDataBuff,m_streamDateLen,vResW,vResH);
                 }
 
                 readDataBuff.remove(0,m_streamDateLen);
@@ -556,10 +558,34 @@ void TcpWorker::parseShiGanRgb1(QByteArray arr,int arrlen,int resw,int resh)
         qDebug()<<" 图片分配内存失败";
         pImg = nullptr;
     }
-   // qDebug()<<" parseShiGanRgb1 "<<resw<<"  "<<resh<<"  "<<arrlen;
+    // qDebug()<<" parseShiGanRgb1 "<<resw<<"  "<<resh<<"  "<<arrlen;
     emit signal_sendImg(pImg,arrlen,10,resw,resh);
 
 }
+
+
+void TcpWorker::parseShiGanRgb2(QByteArray arr,int arrlen,int resw,int resh)
+{
+
+
+    qDebug()<<" resw    "<<resw<<"  resh:"<<resh;
+    if(pNetMsgTmp == nullptr)
+        pNetMsgTmp = new unsigned char[resw * resh* 4];
+
+    memcpy(pNetMsgTmp,arr.data(),arrlen);
+
+    QImage *pImg = nullptr;
+    try {
+        pImg =  new QImage(pNetMsgTmp, resw,resh, QImage::Format_RGB32);
+        // 其它代码
+    } catch ( const std::bad_alloc& e ) {
+        qDebug()<<" 图片分配内存失败";
+        pImg = nullptr;
+    }
+    //qDebug()<<" parseShiGanRgb1 "<<resw<<"  "<<resh<<"  "<<arrlen <<"   "<< pImg->width() <<"  "<<pImg->height();
+    emit signal_sendImg(pImg,arrlen,10,resw,resh);
+}
+
 void TcpWorker::parseH264(QByteArray arr,int arrlen)
 {
 
