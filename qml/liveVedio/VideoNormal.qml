@@ -386,32 +386,75 @@ Rectangle {
         onS_setinftemplevel:video.fun_sendCommonPar(map)
 
     }
-    Connections{
-        target: deviceconfig
-        onS_timeSwith:video.fun_timeSwitch(mchecked);//时间使能
-        onS_temSet:video.fun_temSet(mvalue);//警报温度设置
-        onS_deviceUpdate:{
-            var map ={
 
-                cmd:"update"
+    Connections{
+            target: deviceconfig
+            onS_timeSwith:video.fun_timeSwitch(mchecked);//时间使能
+            onS_temSet:video.fun_temSet(mvalue);//警报温度设置
+            onS_deviceUpdate:{
+
+                var map ={
+                    cmd:"update"
+                }
+                video.fun_sendCommonPar(map)
             }
-            video.fun_sendCommonPar(map)
-        }
-        onS_iradInfoSet:video.fun_setIraInfo(mvalue);
-        onS_warnSwith:{
-            var map ={
-                cmd:"",
-                isSubscription:false
+            onS_beerSwith:{
+                var audioEnable = 0;
+                if(mchecked)
+                    audioEnable = 1;
+                var map ={
+                    cmd:"setalarmparam",
+                    alarmaudiooutenabled:audioEnable
+                }
+                video.fun_sendCommonPar(map)
             }
-            map.isSubscription=mchecked
-            if(mchecked)
-                map.cmd="alarmsubscription"
-            else
-                map.cmd="unalarmsubscription"
-            video.fun_sendCommonPar(map)
+
+            onS_sendcommoncmd:video.fun_sendCommonPar(mvalue);
+
+            onS_warnSwith:{
+                var map ={
+                    cmd:"",
+                    isSubscription:false
+                }
+                map.isSubscription=mchecked
+                if(mchecked)
+                    map.cmd="alarmsubscription"
+                else
+                    map.cmd="unalarmsubscription"
+                video.fun_sendCommonPar(map)
+            }
+            onS_temMin:video.fun_temMin(mvalue);//温度控制阀
+            onS_temOffset:video.fun_temOffset(mvalue);//温漂
+
+
         }
-        onS_sendcommoncmd:video.fun_sendCommonPar(mvalue)
-    }
+
+//    Connections{
+//        target: deviceconfig
+//        onS_timeSwith:video.fun_timeSwitch(mchecked);//时间使能
+//        onS_temSet:video.fun_temSet(mvalue);//警报温度设置
+//        onS_deviceUpdate:{
+//            var map ={
+
+//                cmd:"update"
+//            }
+//            video.fun_sendCommonPar(map)
+//        }
+//        onS_iradInfoSet:video.fun_setIraInfo(mvalue);
+//        onS_warnSwith:{
+//            var map ={
+//                cmd:"",
+//                isSubscription:false
+//            }
+//            map.isSubscription=mchecked
+//            if(mchecked)
+//                map.cmd="alarmsubscription"
+//            else
+//                map.cmd="unalarmsubscription"
+//            video.fun_sendCommonPar(map)
+//        }
+//        onS_sendcommoncmd:video.fun_sendCommonPar(mvalue)
+//    }
 
     function funSetDxdY(dx,dy){
 
@@ -543,6 +586,10 @@ Rectangle {
             tooldialog.setdevicekey(smap.devicekey)
         }else if("setinftemplevel"===strcmd){
             tooldialog.setinftemplevel("设置成功");
+        }else if("getalarmparam" === strcmd){
+            var beerenable = smap.alarmaudiooutenabled;
+            deviceconfig.setSwitchBeer(beerenable)
+
         }
     }
 

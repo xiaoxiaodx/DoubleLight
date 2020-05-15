@@ -335,6 +335,8 @@ int CHttpApiDevice::HttpMsgCallBack(char * pData) {
                 callbackMap.insert("totalspace",object.value("data").toObject().value("totalspace").toInt());
             }else if("getdevicekey"==cmd){
                 callbackMap.insert("devicekey",object.value("data").toObject().value("devicekey").toString());
+            }else if("getalarmparam"==cmd){
+                callbackMap.insert("alarmaudiooutenabled",object.value("data").toObject().value("alarmaudiooutenabled").toInt());
             }
             DebugLog::getInstance()->writeLog("callbackMap:"+callbackMap.value("cmd").toString());
             emit signal_ReadMsg(callbackMap);
@@ -891,7 +893,7 @@ void CHttpApiDevice::HttpSetIraInfo(QVariantMap value,QString msgid)
 
     dataObj.insert("osdenable",value.value("osdenable").toInt());
 
-    alarmparamObj.insert("alarmtempEnable", value.value("alarmtempEnable").toInt());
+    alarmparamObj.insert("enable", value.value("alarmtempEnable").toInt());
     alarmparamObj.insert("alarmtemp", value.value("alarmtemp").toString().toDouble());
 
     ctrlparamObj.insert("tempdrift", value.value("tempdrift").toString().toInt());
