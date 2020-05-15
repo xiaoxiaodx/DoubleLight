@@ -33,7 +33,7 @@ void J07Device::createTcpThread()
 
 void J07Device::slot_recImg(QImage *img,int len,quint64 time,int resw,int resh){
 
-    qDebug()<<"slot_recImg";
+   // qDebug()<<"slot_recImg";
     if(img != nullptr){
         ImageInfo info;
         info.pImg =img;
@@ -54,7 +54,7 @@ void J07Device::slot_recImg(QImage *img,int len,quint64 time,int resw,int resh){
 void J07Device::slot_recH264(char* h264Arr,int arrlen,quint64 time,int resw,int resh)
 {
 
-    qDebug()<<QString(__FUNCTION__) <<"***/***    "<<arrlen<< " "<<resw<<"  "<<resh;
+   // qDebug()<<QString(__FUNCTION__) <<"***/***    "<<arrlen<< " "<<resw<<"  "<<resh;
 
     if(rgbBuff == nullptr)
         rgbBuff = new char[resw*resh*4];

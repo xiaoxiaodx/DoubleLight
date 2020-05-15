@@ -259,11 +259,12 @@ int CHttpApiDevice::HttpMsgCallBack(char * pData) {
 
                 callbackMap.insert("alarmtempEnable",object.value("data").toObject().value("alarmparam").toObject().value("enable").toInt());
                 callbackMap.insert("alarmTemp",object.value("data").toObject().value("alarmparam").toObject().value("alarmtemp").toDouble());
-                callbackMap.insert("tempdriftcaplevelMin",object.value("data").toObject().value("ctrlparamlevel").toObject().value("tempdriftcaplevel").toObject().value("min").toInt());
 
+                callbackMap.insert("tempdriftcaplevelMin",object.value("data").toObject().value("ctrlparamlevel").toObject().value("tempdriftcaplevel").toObject().value("min").toInt());
                 callbackMap.insert("tempdriftcaplevelMax",object.value("data").toObject().value("ctrlparamlevel").toObject().value("tempdriftcaplevel").toObject().value("max").toInt());
-                callbackMap.insert("tempcontrolcaplevelMin",object.value("data").toObject().value("ctrlparamlevel").toObject().value("tempdriftcaplevel").toObject().value("min").toInt());
-                callbackMap.insert("tempcontrolcaplevelMax",object.value("data").toObject().value("ctrlparamlevel").toObject().value("tempdriftcaplevel").toObject().value("max").toInt());
+
+                callbackMap.insert("tempcontrolcaplevelMin",object.value("data").toObject().value("ctrlparamlevel").toObject().value("tempcontrolcaplevel").toObject().value("min").toInt());
+                callbackMap.insert("tempcontrolcaplevelMax",object.value("data").toObject().value("ctrlparamlevel").toObject().value("tempcontrolcaplevel").toObject().value("max").toInt());
 
                 callbackMap.insert("tempdrift",object.value("data").toObject().value("ctrlparam").toObject().value("tempdrift").toInt());
                 callbackMap.insert("tempcontrol",object.value("data").toObject().value("ctrlparam").toObject().value("tempcontrol").toInt());
@@ -483,7 +484,7 @@ void CHttpApiDevice::slot_httpParSet(QMap<QString,QVariant> map)
     listMsg.append(map);
 
     if(SendTimer != nullptr && !SendTimer->isActive()){
-        qDebug()<<"**************************************************";
+       // qDebug()<<"**************************************************";
         SendTimer->start(sendertimerInter);
     }
 }
@@ -538,20 +539,6 @@ bool CHttpApiDevice::send_httpParSet(QMap<QString,QVariant> map)
     }else
         httpSendCommonCmd(cmd,msgid);
 
-
-
-
-    /*else if(cmd.compare("getosdparam")==0){
-        httpSendCommonCmd("getosdparam");
-    }else if(cmd.compare("getinftempmodel") ==0){
-        httpSendCommonCmd("getinftempmodel");
-    }else if(cmd.compare("getiradinfo") ==0){
-        httpSendCommonCmd("getiradinfo");
-    }else if(cmd.compare("setiradinfo")==0){
-        HttpSetIraInfo(map);
-    }else if(cmd.compare("keepalive")==0){
-        httpSendCommonCmd("keepalive");
-    }*/
 }
 
 

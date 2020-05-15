@@ -384,6 +384,7 @@ Rectangle {
         onS_getsdcardparam:video.fun_sendCommonPar(map)
         onS_setsdcardformat:video.fun_sendCommonPar(map)
         onS_setinftemplevel:video.fun_sendCommonPar(map)
+
     }
     Connections{
         target: deviceconfig
@@ -409,6 +410,7 @@ Rectangle {
                 map.cmd="unalarmsubscription"
             video.fun_sendCommonPar(map)
         }
+        onS_sendcommoncmd:video.fun_sendCommonPar(mvalue)
     }
 
     function funSetDxdY(dx,dy){
@@ -490,6 +492,7 @@ Rectangle {
             var alarmTemp = smap.alarmTemp;
             var tempdriftcaplevelMin = smap.tempdriftcaplevelMin;
             var tempdriftcaplevelMax = smap.tempdriftcaplevelMax;
+
             var tempcontrolcaplevelMin = smap.tempcontrolcaplevelMin;
             var tempcontrolcaplevelMax = smap.tempcontrolcaplevelMax;
             var tempdrift = smap.tempdrift;
@@ -497,7 +500,7 @@ Rectangle {
             var osdenable = smap.osdenable;
 
             deviceconfig.tempcontrolcapMax = tempcontrolcaplevelMax
-            deviceconfig.tempcontrolcapMin = tempdriftcaplevelMin;
+            deviceconfig.tempcontrolcapMin = tempcontrolcaplevelMin;
             deviceconfig.tempdriftcapMax = tempdriftcaplevelMax;
             deviceconfig.tempdriftcapMin = tempdriftcaplevelMin;
             deviceconfig.setTemDrift(tempdrift)

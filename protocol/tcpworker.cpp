@@ -320,7 +320,7 @@ void TcpWorker::parseRecevieData()
                 //emit signal_writeMediaVideoQueue(readDataBuff.data(),m_streamDateLen,infoV,MediaDataProcess::mMediaVeidoType);
 
 
-                qDebug()<<"s    ****mediaDataTyp "<<mediaDataType<<" myType:"<<myType;
+                //qDebug()<<"s    ****mediaDataTyp "<<mediaDataType<<" myType:"<<myType;
                 quint64 ptsH = 0x00000000ffffffff & infoV.highPts;
                 quint64 ptsL = 0x00000000ffffffff & infoV.lowPts;
                 quint64 pts = ptsH *256 *255*256 + ptsL;
@@ -545,7 +545,7 @@ void TcpWorker::parseShiGanRgb1(QByteArray arr,int arrlen,int resw,int resh)
 {
 
 
-    qDebug()<<" resw    "<<resw<<"  resh:"<<resh;
+    //qDebug()<<" resw    "<<resw<<"  resh:"<<resh;
     if(pNetMsgTmp == nullptr)
         pNetMsgTmp = new unsigned char[resw * resh* 4];
 
@@ -567,7 +567,7 @@ void TcpWorker::parseShiGanRgb2(QByteArray arr,int arrlen,int resw,int resh)
 {
 
 
-    qDebug()<<" resw    "<<resw<<"  resh:"<<resh;
+    //qDebug()<<" resw    "<<resw<<"  resh:"<<resh;
     if(pNetMsgTmp == nullptr)
         pNetMsgTmp = new unsigned char[resw * resh* 4];
 

@@ -78,12 +78,17 @@ Rectangle {
                   contentItem.highlightMoveDuration = 0      //将移动时间设为0
               }
           z:1
+
+          onCurrentIndexChanged: {
+                console.debug("****************"+vedioContent.currentIndex)
+              if(vedioContent.currentIndex === 1)
+                  deviceconfig.getiradInfo();
+          }
+
           VedioLayout{
               id: vedioLayout
               isShowScreen:!isLocker
           }
-
-
 
           DeviceConfig{
               id:deviceconfig
