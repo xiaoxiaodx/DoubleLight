@@ -34,6 +34,13 @@ void TcpWorker::initVariable()
     timerConnectSer = nullptr;
 }
 
+
+void TcpWorker::slot_soceckErr(QAbstractSocket::SocketError socketError)
+{
+
+    qDebug()<<" tcp socket socketError:"<<socketError;
+    qDebug()<<" tcp socket errStr:"<<tcpSocket->errorString();
+}
 void TcpWorker::creatNewTcpConnect(QString ip, int port)
 {
 
@@ -42,13 +49,17 @@ void TcpWorker::creatNewTcpConnect(QString ip, int port)
     this->port = port;
     if(tcpSocket == nullptr){
         tcpSocket = new QTcpSocket;
+
         timerConnectSer = new QTimer;
         connect(tcpSocket,&QTcpSocket::connected,this,&TcpWorker::slot_tcpConnected);
         connect(tcpSocket,&QTcpSocket::readyRead,this,&TcpWorker::slot_readData);
         connect(tcpSocket,&QTcpSocket::disconnected,this,&TcpWorker::slot_tcpDisconnected);
+        //connect(tcpSocket,&QTcpSocket::error,this,&TcpWorker::slot_soceckErr);
+        connect(tcpSocket,SIGNAL(error(QAbstractSocket::SocketError)),this,SLOT(slot_soceckErr(QAbstractSocket::SocketError)));
         connect(timerConnectSer,&QTimer::timeout,this,&TcpWorker::slot_timerConnectSer);
 
-        tcpSocket->setReadBufferSize(1024*1024);
+        //tcpSocket->setReadBufferSize(1024*1024);
+        //tcpSocket->bind(QHostAddress(this->ip),this->port,QAbstractSocket::ReuseAddressHint);
         tcpSocket->connectToHost(this->ip,this->port);
         isForceFinish = false;
         timerConnectSer->start(3000);
@@ -82,7 +93,7 @@ void TcpWorker::slot_timerConnectSer()
         if(!isConnected){
 
             if(tcpSocket != nullptr){
-                DebugLog::getInstance()->writeLog("start reconnect "+QString::number(myType) + this->ip+"  "+QString::number(this->port));
+                DebugLog::getInstance()->writeLog("start reconnect "+QString::number(myType)+" " + this->ip+"  "+QString::number(this->port));
                 //qDebug()<<"开始重连 "<<myType <<"   "<<this->ip<<"  "<<this->port;
                 tcpSocket->abort();
                 readDataBuff.clear();
@@ -657,14 +668,22 @@ void TcpWorker::forceStopParse()
 
 TcpWorker::~TcpWorker()
 {
-    qDebug()<<m_did +  " 析构   tcpWorker";
+    qDebug()<<m_did +  " 析构   tcpWorker:"<<myType;
 
 
     if(tcpSocket != nullptr)
     {
+
+        //   tcpSocket->disconnectFromHost();
         disconnect(tcpSocket,&QTcpSocket::readyRead,this,&TcpWorker::slot_readData);
         disconnect(tcpSocket,&QTcpSocket::disconnected,this,&TcpWorker::slot_tcpDisconnected);
         disconnect(tcpSocket,&QTcpSocket::connected,this,&TcpWorker::slot_tcpConnected);
+        tcpSocket->disconnectFromHost();
+        if (tcpSocket->state() == QAbstractSocket::UnconnectedState ||
+                  tcpSocket->waitForDisconnected(1000))
+        {
+            qDebug()  << "disconnect server";
+        }
         tcpSocket->abort();
         tcpSocket->close();
         tcpSocket == nullptr;

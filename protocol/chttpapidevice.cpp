@@ -3,13 +3,11 @@
 #include <QTimer>
 #include <QTime>
 #include <QCoreApplication>
-
 #include <fcntl.h>
-
 #include "chttpapidevice.h"
-
 #include <debuglog.h>
 
+#define warnPort 50001
 
 CHttpApiDevice::CHttpApiDevice(QString devid, QString ip, unsigned short port, QString usr, QString pas)
 {
@@ -22,21 +20,61 @@ CHttpApiDevice::CHttpApiDevice(QString devid, QString ip, unsigned short port, Q
     sprintf(g_loginInfo.password, "%s", pas.toStdString().c_str());
 
     g_tcpsocket = NULL;
-    timeHttpSocket = NULL;
 
     warnPushMap.insert("ip",read_ip_address());
     warnPushMap.insert("switchSubscription",false);
-    warnPushMap.insert("port",6458);
+    warnPushMap.insert("port",warnPort);
     warnPushMap.insert("isSubscription",false);
+}
+
+void CHttpApiDevice::slot_destoryConnect()
+{
+    qDebug()<<" slot_destoryConnect ";
+    if(g_tcpsocket != NULL){
+         qDebug()<<" slot_destoryConnect 1";
+        if(SendTimer != nullptr){
+
+             qDebug()<<" slot_destoryConnect 2";
+            disconnect(g_tcpsocket, SIGNAL(readyRead()), this, SLOT(slot_ReadMsg()));
+
+            disconnect(SendTimer,&QTimer::timeout,this,&CHttpApiDevice::slot_sendtimerout);
+            disconnect(reconnectTimer,&QTimer::timeout,this,&CHttpApiDevice::slot_heartimertout);
+
+            SendTimer->stop();
+            reconnectTimer->stop();
+
+            listMsg.clear();
+
+            SendTimer->deleteLater();
+            reconnectTimer->deleteLater();
+
+            g_tcpsocket->disconnectFromHost();
+            g_tcpsocket->abort();
+            g_tcpsocket = nullptr;
+
+            SendTimer = nullptr;
+            reconnectTimer = nullptr;
+             qDebug()<<" slot_destoryConnect 5";
+        }
+
+    }
 }
 
 CHttpApiDevice::~CHttpApiDevice()
 {
 
-    DebugLog::getInstance()->writeLog("~CHttpApiDevice");
+
+    qDebug()<<"析构:  CHttpApiDevice  ";
     QMap<QString , QVariant> map;
     map.insert("cmd","loginout");
     send_httpParSet(map);
+
+    slot_destoryConnect();
+    if(warnTcpServer != nullptr){
+        warnTcpServer->destroySer();
+    }
+
+    qDebug()<<"析构:  CHttpApiDevice  结束";
 }
 
 void CHttpApiDevice::slot_heartimertout(){
@@ -52,12 +90,9 @@ void CHttpApiDevice::slot_heartimertout(){
             HttpSubscriptionWarn(warnPushMap, 0);
     }
 
-
-    //    QMap<QString,QVariant> map;
-    //    map.insert("cmd","getiradrect");
-    //    slot_httpParSet(map);
-
-
+    //QMap<QString,QVariant> map;
+    //map.insert("cmd","getiradrect");
+    //slot_httpParSet(map);
 }
 
 void CHttpApiDevice::slot_sendtimerout()
@@ -121,9 +156,10 @@ QString CHttpApiDevice::createMsgId(QString cmd){
     return QString::number(msgId);
 }
 
+
 bool CHttpApiDevice::createConnect(){
 
-    if (g_tcpsocket == NULL)
+    if (g_tcpsocket == nullptr)
     {
         g_tcpsocket = new QTcpSocket;
         //timeHttpSocket = new QTimer;
@@ -186,10 +222,10 @@ int CHttpApiDevice::SendRequestMsg(QJsonObject msg){
     }
     return 0;
 }
+
+
 //http 消息拆包，分发
 int CHttpApiDevice::HttpMsgCallBack(char * pData) {
-
-
 
     QJsonParseError jsonError;
     QJsonDocument doucment = QJsonDocument::fromJson(pData, &jsonError);  // 转化为 JSON 文档
@@ -453,6 +489,8 @@ void CHttpApiDevice::slot_httpParSet(QMap<QString,QVariant> map)
 bool CHttpApiDevice::send_httpParSet(QMap<QString,QVariant> map)
 {
 
+    if(g_tcpsocket == nullptr)
+        return false ;
     qDebug()<<"send_httpParSet  "<<map;
     DebugLog::getInstance()->writeLog("http_sendMsg :"+ map.value("cmd").toString());
 
@@ -473,16 +511,17 @@ bool CHttpApiDevice::send_httpParSet(QMap<QString,QVariant> map)
     }else if(cmd.compare("setiradinfo")==0){
         HttpSetIraInfo(map, msgid);
     }else if(cmd.compare("alarmsubscription")==0){
-        warnPushMap.insert("ip",read_ip_address());
+        QString ip = read_ip_address();
+        warnPushMap.insert("ip",ip);
         warnPushMap.insert("switchSubscription",true);
-        warnPushMap.insert("port",6458);
+        warnPushMap.insert("port",warnPort);
         warnPushMap.insert("isSubscription",true);
-        createWarnService(6458);
+        createWarnService(ip,warnPort);
         HttpSubscriptionWarn(warnPushMap, msgid);
     }else if(cmd.compare("unalarmsubscription")==0){
         warnPushMap.insert("ip",read_ip_address());
         warnPushMap.insert("switchSubscription",false);
-        warnPushMap.insert("port",6458);
+        warnPushMap.insert("port",warnPort);
         warnPushMap.insert("isSubscription",false);
         destroyWarnService();
         HttpSubscriptionWarn(warnPushMap, msgid);
@@ -493,17 +532,6 @@ bool CHttpApiDevice::send_httpParSet(QMap<QString,QVariant> map)
     }else
         httpSendCommonCmd(cmd,msgid);
 
-    /*else if(cmd.compare("getosdparam")==0){
-        httpSendCommonCmd("getosdparam");
-    }else if(cmd.compare("getinftempmodel") ==0){
-        httpSendCommonCmd("getinftempmodel");
-    }else if(cmd.compare("getiradinfo") ==0){
-        httpSendCommonCmd("getiradinfo");
-    }else if(cmd.compare("setiradinfo")==0){
-        HttpSetIraInfo(map);
-    }else if(cmd.compare("keepalive")==0){
-        httpSendCommonCmd("keepalive");
-    }*/
 }
 
 void CHttpApiDevice::HttpSetalarmparam(QVariantMap value){
@@ -569,18 +597,19 @@ void CHttpApiDevice::HttpSetMeasureRect(QVariantMap value)
 void CHttpApiDevice::destroyWarnService()
 {
     if(warnTcpServer != nullptr){
+
+        disconnect(warnTcpServer,&WarnTcpServer::signal_WarnMsg,this,&CHttpApiDevice::slot_WarnMsg);
         warnTcpServer->destroySer();
-        connect(warnTcpServer,&WarnTcpServer::signal_WarnMsg,this,&CHttpApiDevice::slot_WarnMsg);
         delete  warnTcpServer;
         warnTcpServer = nullptr;
     }
 }
 
-void CHttpApiDevice::createWarnService(int port)
+void CHttpApiDevice::createWarnService(QString ip,int port)
 {
     if(warnTcpServer == nullptr){
         warnTcpServer = new WarnTcpServer;
-        warnTcpServer->createSer(port);
+        warnTcpServer->createSer(ip,port);
         connect(warnTcpServer,&WarnTcpServer::signal_WarnMsg,this,&CHttpApiDevice::slot_WarnMsg);
     }
 }
@@ -669,8 +698,19 @@ QString CHttpApiDevice::read_ip_address()
         if (ipAddressesList.at(i) != QHostAddress::LocalHost &&  ipAddressesList.at(i).toIPv4Address())
         {
             QHostAddress hostaddr = ipAddressesList.at(i);
+
             ip_address = hostaddr.toString();
 
+            QStringList iplist = g_ip.split(".");
+
+
+            if(iplist.size() >= 3 && ip_address.contains(iplist[0]) && ip_address.contains(iplist[1]) && ip_address.contains(iplist[2])){
+
+
+                break;
+            }
+
+            /*
             DebugLog::getInstance()->writeLog("get LocalHost:"+QString(ip_address));
             QString isGlobal = hostaddr.isGlobal()?"true":"false";
             QString isLoopback = hostaddr.isLoopback()?"true":"false";
@@ -686,12 +726,12 @@ QString CHttpApiDevice::read_ip_address()
             DebugLog::getInstance()->writeLog("isMulticast:"+isMulticast);
             DebugLog::getInstance()->writeLog("isSiteLocal:"+isSiteLocal);
             DebugLog::getInstance()->writeLog("isUniqueLocalUnicast:"+isUniqueLocalUnicast);
-
-
-            //qDebug()<<ip_address;  //debug
-            //break;
+            */
         }
     }
+
+    DebugLog::getInstance()->writeLog("warn server ip_address:"+ip_address);
+
     if (ip_address.isEmpty())
         ip_address = QHostAddress(QHostAddress::LocalHost).toString();
     return ip_address;

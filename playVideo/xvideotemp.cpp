@@ -25,11 +25,32 @@ void XVideoTemp::fun_recTestRect(int x,int y,int w,int h,int x1,int y1,int w1,in
     testRect1.setRect(x1,y1,w1,h1);
     testRect2.setRect(x2,y2,w2,h2);
 }
+void XVideoTemp::destroyAllFunction()
+{
 
+    finishYouPull();
+
+    if(j07device != nullptr){
+
+        j07device->forceFinish();
+        delete j07device;
+        j07device = nullptr;
+    }
+
+}
 void XVideoTemp::startTemperatureVideo(float tp,QVariant type,QVariant par1,QVariant par2)
 {
     QString typeStr = type.toString();
-    DebugLog::getInstance()->writeLog("startTemperatureVideo :"+typeStr);
+
+    QString curip = par1.toString();
+    DebugLog::getInstance()->writeLog("startTemperatureVideo :"+typeStr + " curip:"+curip + "  m_ip:"+m_ip);
+
+
+    if(m_ip.compare(curip) != 0){
+        destroyAllFunction();
+    }
+    m_ip = curip;
+
     if(typeStr.compare("E03")==0){//384*288
         createYouseePull();
     }else if (typeStr.compare("D04")==0){//
@@ -38,20 +59,21 @@ void XVideoTemp::startTemperatureVideo(float tp,QVariant type,QVariant par1,QVar
         createShiGan();
     }else if (typeStr.compare("F03")==0){
         //createIRCNet();
-        createJ07(par1.toString(),1);
+        createJ07(m_ip,1);
     }else if (typeStr.compare("J07-S")==0){
-        createJ07(par1.toString(),1);
+        createJ07(m_ip,1);
     }else if (typeStr.compare("J07")==0){
-        createJ07(par1.toString(),1);
+        createJ07(m_ip,1);
     }else if (typeStr.compare("J07-I")==0){
-        createJ07(par1.toString(),2);
+        createJ07(m_ip,2);
     }else{
         DebugLog::getInstance()->writeLog("------>>> tempVideo type is unknow <<<------");
     }
     warnTemp = tp;
 
     connect(&timerUpdate,&QTimer::timeout,this,&XVideoTemp::slot_timeout);
-    timerUpdate.start(10);
+    if(!timerUpdate.isActive())
+        timerUpdate.start(20);
 }
 
 void XVideoTemp::createJ07(QString ip,int type)
@@ -336,6 +358,12 @@ XVideoTemp::~XVideoTemp()
     finishYouPull();
     if(mRenderImginfo.pImg != nullptr){
         delete mRenderImginfo.pImg;
+    }
+
+    if(j07device != nullptr){
+
+        j07device->forceFinish();
+        delete j07device;
     }
 
 }

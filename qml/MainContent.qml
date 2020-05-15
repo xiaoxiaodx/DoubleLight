@@ -74,6 +74,13 @@ Rectangle {
           height: parent.height - homeMenu.height
           currentIndex:homeMenu.mCurIndex
           interactive:false
+
+          onCurrentIndexChanged: {
+
+            if(currentIndex === 1){
+                deviceconfig.getiradInfo()
+            }
+          }
           Component.onCompleted:{
                   contentItem.highlightMoveDuration = 0      //将移动时间设为0
               }
@@ -82,8 +89,6 @@ Rectangle {
               id: vedioLayout
               isShowScreen:!isLocker
           }
-
-
 
           DeviceConfig{
               id:deviceconfig

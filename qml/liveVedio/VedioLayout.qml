@@ -123,9 +123,9 @@ Rectangle {
         if(!deviceconfig.getSwitchWarn())
             return;
 
-        if(warnTimer.isDelay1000){
-            warnTimer.isDelay1000 = false;
-            warnTimer.start();
+     //  if(warnTimer.isDelay1000){
+//            warnTimer.isDelay1000 = false;
+//            warnTimer.start();
             //开启动画
             imgWar.startAnimation();
             //开启截图
@@ -137,7 +137,7 @@ Rectangle {
             if(deviceconfig.getSwitchBeer())
                 playWarn.play()
 
-        }
+        //}
 
     }
 

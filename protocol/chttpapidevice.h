@@ -50,7 +50,7 @@ private:
     LoginInfo_T g_loginInfo;//用户信息
     QTcpSocket *g_tcpsocket = nullptr;//http socket
     bool g_httpTcpConnectState;//连接状态
-    QTimer *timeHttpSocket; //定时器重连
+
     char sessionId[32]; //回话id
     QTimer *timeoutCnt; //定时发送命令，
     QString timerEventCmd;//命令
@@ -65,7 +65,7 @@ public slots:
     void slot_msgEvent();
     void slot_httpParSet(QMap<QString,QVariant> map);
     void slot_httpGetInitPar();
-
+    void slot_destoryConnect();
     bool createConnect();
     void slot_sendtimerout();
     void slot_heartimertout();
@@ -103,7 +103,7 @@ private:
     void httpSendCommonCmd(QString cmd,QString );
 
 
-    void createWarnService(int port);
+    void createWarnService(QString ip,int port);
     void destroyWarnService();
 
     QString read_ip_address();
@@ -123,6 +123,7 @@ private:
     QMap<QString,QVariant> warnPushMap;
 
     //QThread *m_warnPushThread= nullptr;
+    QThread *warnTcpServerThread = nullptr;
     WarnTcpServer *warnTcpServer = nullptr;
 
 };

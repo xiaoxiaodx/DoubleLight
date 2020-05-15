@@ -80,7 +80,7 @@ Window {
                                curLanguage===lKorean?"나가시겠습니까?":
                                curLanguage===lItaly?"Uscita Dal Sistema?":
                                curLanguage===lRussian?"Подтвердить выход?":
-                               curLanguage===lLithuanian?"Patvirtinti išėjimą?":""
+                               curLanguage===lLithuanian?"Patvirtinti išėjimą?":"";
 
             askDialog.imgSrc = "qrc:/images/icon_question.png"
             askDialog.curType = askDialog.exeClose

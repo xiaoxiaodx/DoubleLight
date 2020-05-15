@@ -84,20 +84,26 @@ void J07Device::slot_recH264(char* h264Arr,int arrlen,quint64 time,int resw,int 
     XVideoTemp::mutex.unlock();
 }
 
-
-J07Device::~J07Device()
+void J07Device::forceFinish()
 {
-    qDebug()<<" 析构   XVideotemp";
 
-    //析构tcpworker
 
     if(worker != nullptr)
     {
         worker->forceStopParse();
         m_readThread->quit();
+
+        worker = nullptr;
+        m_readThread = nullptr;
+
     }
 
+    deleteLater();
+}
 
+J07Device::~J07Device()
+{
+    qDebug()<<" 析构   J07Device";
 
-
+    //析构tcpworker
 }

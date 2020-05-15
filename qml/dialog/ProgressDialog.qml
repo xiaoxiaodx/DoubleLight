@@ -59,7 +59,7 @@ Popup {
             transparentBorder: true
             horizontalOffset: 4
             verticalOffset: 4
-            color:"#19000000"
+            color:"#19000000";
         }
     }
     function setProgressValue(value)

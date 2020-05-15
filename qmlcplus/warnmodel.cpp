@@ -292,7 +292,7 @@ bool WarnModel::funScreenShoot(QString path,QQuickWindow *quic,int capx,int capy
 {
 
     QString datestr = QDate::currentDate().toString("yyyyMMdd");
-   // qDebug()<<"*********:"<<path<<" "<<datestr<<"   "<<curDate;
+    qDebug()<<"*********:"<<path<<" "<<datestr<<"   "<<curDate;
 
     QImage img= quic->grabWindow();
 

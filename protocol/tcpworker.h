@@ -15,7 +15,7 @@
 #include "common1.h"
 #include <QFile>
 #include <QMutex>
-
+#include <QAbstractSocket>
 #define MAX_AUDIO_FRAME_SIZE 192000
 #include "shigan.h"
 //typedef enum
@@ -105,7 +105,7 @@ public slots:
     void slot_tcpSendAuthentication(QString did,QString name,QString pwd);
     void slot_tcpRecAuthentication(QString did,QString name,QString pwd);
 
-
+    void slot_soceckErr(QAbstractSocket::SocketError socketError);
     void creatNewTcpConnect(QString ip,int port);
 
 private:

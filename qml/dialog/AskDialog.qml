@@ -152,7 +152,7 @@ Popup {
             txtCancel.text = "Отмена"
             txtEnsure.text = "Подтвердить"
             break;
-        case lChinese:
+        case lLithuanian:
             txtCancel.text = "Taip"
             txtEnsure.text = "Ne"
             break;

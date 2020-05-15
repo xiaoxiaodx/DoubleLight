@@ -7,7 +7,7 @@ CONFIG += c++11
 # deprecated API to know how to port your code away from it.
 DEFINES += QT_DEPRECATED_WARNINGS
 # �汾��Ϣ
-VERSION = 1.1.0.8
+VERSION = 2.0.1
 # ͼ
 RC_ICONS = myicon6.ico
 TARGET=TTM-S

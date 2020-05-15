@@ -27,8 +27,9 @@ Rectangle {
     signal s_temImage(var mvalue);
 
 
+    property bool isCreate: false
 
-    signal s_iradInfoSet(var mvalue);
+    signal s_sendcommoncmd(var mvalue);
     signal s_deviceUpdate()
 
     property int fontSize: 14
@@ -59,6 +60,29 @@ Rectangle {
         property alias switchScreenShot:swichScreenShot.checked
         property alias switchBeer:swichBeer.checked
         property alias switchRecord:swichRecord.checked
+
+
+
+
+        //   if(swithTime.checked)
+        //        osdenableV = 1
+        //    else
+        //        osdenableV = 0
+        //    var alarmtempEnableV;
+
+        //    if(swichWarn.checked)
+        //        alarmtempEnableV = 1;
+        //    else
+        //        alarmtempEnableV = 0;
+        //        var map ={
+        //            osdenable:osdenableV,
+        //            alarmtempEnable:alarmtempEnableV,
+        //            alarmtemp:inputTem.text,
+        //            tempdrift:inputTempDrift.text,
+        //            tempcontrol:inputTempMin.text,
+        //            cmd:"setiradinfo"
+        //        }
+
 
         property alias updateFilePath:inputUpdatePath.text
 
@@ -113,6 +137,7 @@ Rectangle {
             anchors.fill: parent
         }
 
+        Component.onCompleted: isCreate = true;
         Rectangle {
             id: rect
             anchors.verticalCenter: parent.verticalCenter
@@ -120,9 +145,6 @@ Rectangle {
             width: parent.width -40
             height: parent.height -40
             color: "#F8FAFD"
-
-
-
 
             Text {
                 id: labelTime
@@ -166,8 +188,8 @@ Rectangle {
                 anchors.topMargin: 20
                 onCheckedChanged: {
 
-                    s_timeSwith(checked)
-                    iradInfoSet();
+                    //s_timeSwith(checked)
+
                 }
             }
 
@@ -230,7 +252,7 @@ Rectangle {
                     isReadOnly:true
                     onTextChanged: {
                         s_temOffset(inputTempDrift.text);
-                        iradInfoSet();
+
                     }
                 }
                 Image {
@@ -282,15 +304,15 @@ Rectangle {
                 }
             }
 
-            Text {
-                id: txtTemp
-                text: qsTr(" ℃")
-                color: fontColor
-                font.pixelSize: fontSize
-                anchors.verticalCenter: rectTempDrift.verticalCenter
-                anchors.left: rectTempDrift.right
-                anchors.topMargin: 6
-            }
+            //            Text {
+            //                id: txtTemp
+            //                text: qsTr(" ℃")
+            //                color: fontColor
+            //                font.pixelSize: fontSize
+            //                anchors.verticalCenter: rectTempDrift.verticalCenter
+            //                anchors.left: rectTempDrift.right
+            //                anchors.topMargin: 6
+            //            }
 
             ////////////
             Text {
@@ -348,7 +370,6 @@ Rectangle {
                             s_temMin("32");
 
 
-                        iradInfoSet();
                     }
                 }
 
@@ -401,17 +422,17 @@ Rectangle {
 
             }
 
-            Text {
-                id: txtTemp1
+            //            Text {
+            //                id: txtTemp1
 
-                text: qsTr(" ℃")
-                color: fontColor
-                font.pixelSize: fontSize
-                anchors.verticalCenter: rectTempMin.verticalCenter
-                anchors.left: rectTempMin.right
-                anchors.topMargin: 6
+            //                text: qsTr(" ℃")
+            //                color: fontColor
+            //                font.pixelSize: fontSize
+            //                anchors.verticalCenter: rectTempMin.verticalCenter
+            //                anchors.left: rectTempMin.right
+            //                anchors.topMargin: 6
 
-            }
+            //            }
 
 
             Text {
@@ -434,8 +455,8 @@ Rectangle {
                 anchors.top: line2.bottom
                 anchors.topMargin: 125
                 onCheckedChanged:{
-                    iradInfoSet();
-                    s_warnSwith(checked)
+
+                    // s_warnSwith(checked)
                 }
             }
             Text {
@@ -465,7 +486,7 @@ Rectangle {
                 text: "38"
                 color: "#F8FAFD"
                 onTextChanged: {
-                    iradInfoSet();
+
                     s_temSet(inputTem.text)
                 }
             }
@@ -585,7 +606,7 @@ Rectangle {
                 anchors.topMargin:218
                 onCheckedChanged:{
 
-                    s_beerSwith(checked)
+                    //s_beerSwith(checked)
                 }
             }
 
@@ -694,8 +715,6 @@ Rectangle {
                     }
                 }
             }
-
-
 
             Text {
                 id: txtImageSet
@@ -881,33 +900,34 @@ Rectangle {
 
 
 
-            //                Rectangle{
-            //                    id:btnSave
-            //                    width: txtSave.width +24
-            //                    height: 28
-            //                    color: "#3B84F6"
-            //                    radius: 2
-            //                    anchors.left: txtUpdateFile.left
-            //                    anchors.top: txtUpdateFile.bottom
-            //                    anchors.topMargin: 100
-            //                    Text {
-            //                        id: txtSave
-            //                        anchors.horizontalCenter: parent.horizontalCenter
-            //                        anchors.verticalCenter: parent.verticalCenter
-            //                        elide: Text.ElideMiddle
-            //                        font.pixelSize: 14
-            //                        color: "#ffffff"
-            //                        text: qsTr("保存")
-            //                    }
-            //                    MouseArea{
-            //                        anchors.fill: parent
-            //                        onClicked: {
-            //                           iradInfoSet();
-            //                        }
-            //                        onPressed: btnSave.color = "#81C3FF"
-            //                        onReleased: btnSave.color = "#3B84F6"
-            //                    }
-            //                }
+            Rectangle{
+                id:btnSave
+                width: txtSave.width +24
+                height: 28
+                color: "#3B84F6"
+                radius: 2
+                anchors.left: parent.left
+                anchors.leftMargin: 20
+                anchors.bottom: parent.bottom
+                anchors.bottomMargin: 20
+                Text {
+                    id: txtSave
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    anchors.verticalCenter: parent.verticalCenter
+                    elide: Text.ElideMiddle
+                    font.pixelSize: 14
+                    color: "#ffffff"
+                    text: qsTr("设置")
+                }
+                MouseArea{
+                    anchors.fill: parent
+                    onClicked: {
+                        iradInfoSet();
+                    }
+                    onPressed: btnSave.color = "#81C3FF"
+                    onReleased: btnSave.color = "#3B84F6"
+                }
+            }
         }
 
     }
@@ -927,7 +947,7 @@ Rectangle {
         target: askDialog
         onS_CurTypeMsg:{
             if(askDialog.fileupdate === type){
-               s_deviceUpdate();
+                s_deviceUpdate();
             }
         }
     }
@@ -987,6 +1007,19 @@ Rectangle {
     //            ctrlparamObj.insert("tempcontrol", value.value("tempcontrol").toInt());
     //            dataObj.insert("alarmparam", QJsonValue(alarmparamObj));
     //            dataObj.insert("ctrlparam", QJsonValue(ctrlparamObj));
+
+    function getiradInfo(){
+        var map ={
+            cmd:"getiradinfo"
+        }
+        s_sendcommoncmd(map);
+
+        map.cmd = "getalarmparam"
+        s_sendcommoncmd(map);
+
+    }
+
+    //参数修改设置 全在此函数
     function iradInfoSet(){
 
         var osdenableV;
@@ -1009,7 +1042,12 @@ Rectangle {
             tempcontrol:inputTempMin.text,
             cmd:"setiradinfo"
         }
-        s_iradInfoSet(map);
+        s_sendcommoncmd(map);
+
+
+        s_beerSwith(swichBeer.checked)
+        s_warnSwith(swichWarn.checked)
+        s_timeSwith(swithTime.checked)
     }
 
     function getUpdateFilePath(){
@@ -1216,6 +1254,7 @@ Rectangle {
             txtTempDrift.text = "Temperature drift setting"
             txtUpdate.text = "Upgrade"
             txtUpdateFile.text = "Upgrade"
+            txtSave.text = "Settings"
             break;
         case lKorean:
             txtRecordSet.text = "비디오 설정"
@@ -1233,6 +1272,7 @@ Rectangle {
             txtTempDrift.text = "온도변화폭 설정"
             txtUpdate.text = "업그레이드"
             txtUpdateFile.text = "업그레이드"
+            txtSave.text = "설정"
             break;
         case lItaly:
             txtRecordSet.text = "Settaggio Video"
@@ -1250,6 +1290,7 @@ Rectangle {
             txtTempDrift.text = "Correzione Temperatura"
             txtUpdate.text = "aggiornare"
             txtUpdateFile.text = "aggiornare"
+            txtSave.text = "Settaggio"
             break;
         case lChinese:
             txtRecordSet.text = "录像设置"
@@ -1267,6 +1308,7 @@ Rectangle {
             txtTempDrift.text = "温漂设置"
             txtUpdate.text = "升级"
             txtUpdateFile.text = "设备升级"
+            txtSave.text = "设置"
             break;
         case lRussian:
             txtRecordSet.text = "Настройка записи"
@@ -1284,6 +1326,7 @@ Rectangle {
             txtTempDrift.text = "Коррекция температуры"
             txtUpdate.text = "обновить"
             txtUpdateFile.text = "обновить"
+            txtSave.text = "Настройка"
             break;
         case lLithuanian:
             txtRecordSet.text = "Vaizdo parametrų nustatymas"
@@ -1301,6 +1344,7 @@ Rectangle {
             txtTempDrift.text = "Temperatūrinio dreifo nustatymas "
             txtUpdate.text = "patobulinti"
             txtUpdateFile.text = "patobulinti"
+            txtSave.text = "nustatymas"
             break;
         }
     }

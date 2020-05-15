@@ -13,13 +13,12 @@ public:
     ~J07Device();
 
     void startRec();
+    void forceFinish();
 signals:
     //tcp
     void signal_connentSer(QString ip,int port);
     void signal_disconnentSer();
     void signal_tcpSendAuthentication(QString did,QString name,QString pwd);
-    void signal_destoryTcpWork();
-
 public slots:
     void slot_recH264(char *buff,int len,quint64 time,int resw,int resh);
     void slot_recImg(QImage *img,int len,quint64 time,int resw,int resh);

@@ -15,24 +15,26 @@ Rectangle {
         property alias curLindex: cmb.currentIndex
     }
 
+    signal s_startSearchDevice();
+    signal s_connectDevice(var str);
     Rectangle{
         width: parent.width - rectLanguage.width -20
         height: parent.height
         color: "#00ffffff"
-//        Image {
-//            id: btnImg
-//            anchors.left: parent.left
-//            anchors.leftMargin: 40
-////            anchors.topMargin: 10
-//            anchors.verticalCenter: parent.verticalCenter
-////            anchors.bottom: parent.bottom
-////            anchors.bottomMargin: 10
-////            width: parent.height - 26
-////           parent.height - 26
-//            width: 160
-//            height: 50
-//            source: "qrc:/images/logo6.png"
-//        }
+        //        Image {
+        //            id: btnImg
+        //            anchors.left: parent.left
+        //            anchors.leftMargin: 40
+        ////            anchors.topMargin: 10
+        //            anchors.verticalCenter: parent.verticalCenter
+        ////            anchors.bottom: parent.bottom
+        ////            anchors.bottomMargin: 10
+        ////            width: parent.height - 26
+        ////           parent.height - 26
+        //            width: 160
+        //            height: 50
+        //            source: "qrc:/images/logo6.png"
+        //        }
 
         Text {
             id: btnImg
@@ -65,11 +67,8 @@ Rectangle {
                 tabbarBtn.barModel.append({txtStr:qsTr("设备配置")})//,imgSrc:"qrc:/images/homemenuClose.png",imgSrcEnter:"qrc:/images/homemenuClose.png"})
                 tabbarBtn.barModel.append({txtStr:qsTr("告警管理")})//,imgSrc:"qrc:/images/homemenuClose.png",imgSrcEnter:"qrc:/images/homemenuClose.png"})
 
-                //setLanguage(curLanguage)
-
-                 main.curLanguage = setting1.curLindex
-                 main.s_setLanguage(setting1.curLindex);
-                // setLanguage(curLanguage)
+                main.curLanguage = setting1.curLindex
+                main.s_setLanguage(setting1.curLindex);
 
             }
 
@@ -99,6 +98,93 @@ Rectangle {
                 }
             }
         }
+    }
+
+    ListModel{
+        id:deivcemodel
+    }
+
+    Rectangle{
+        id:rectDevicelist
+        width: imgconnect.width + cmbdevicelist.width
+        height: 24
+        color: "#00ffffff"
+        anchors.right: rectLanguage.left
+        anchors.rightMargin: 40
+        anchors.verticalCenter: parent.verticalCenter
+        border.width: 1
+        border.color: "white"
+        MyComBox{
+            id:cmbdevicelist
+            width:200
+            height: 24
+            anchors.left: parent.left
+            anchors.verticalCenter: parent.verticalCenter
+            contentBg: "#00FFFFFF"
+            itemColorBgNor:"#ffffff"
+            itemColorBgHoverd: "#E7EAF1"
+            contenleft:10
+            //indicatorImgSrc:"qrc:/images/language_down.png"
+            //indicatorW: 11
+            //indicatorH: 7
+            itemLeftMargin:0
+            itemTopMargin:0
+            currentIndex:0
+            model: deivcemodel
+        }
+//        Image {
+//            id: imgstate
+//            width: 6
+//            height: 6
+//            anchors.left: parent.left
+//            anchors.leftMargin: 8
+//            anchors.verticalCenter: parent.verticalCenter
+//            source: "qrc:/images/state_fail.png"
+//        }
+        Image {
+            id: imgflush
+            width: 12
+            height: 12
+            anchors.right: cmbdevicelist.right
+            anchors.rightMargin: 8
+            anchors.verticalCenter: parent.verticalCenter
+            source: "qrc:/images/deviceFlush.png"
+            MouseArea{
+                anchors.fill: parent
+                hoverEnabled: true
+                onEntered:imgflush.source = "qrc:/images/deviceFlush_h.png"
+                onExited: imgflush.source = "qrc:/images/deviceFlush.png"
+                onClicked:{
+
+                    deivcemodel.clear();
+                    s_startSearchDevice();
+                }
+            }
+        }
+        Image {
+            id: imgconnect
+            width: 24
+            height: 24
+            anchors.verticalCenter: parent.verticalCenter
+            anchors.right: parent.right
+            source: "qrc:/images/deviceconnect.png"
+            MouseArea{
+                anchors.fill: parent
+                hoverEnabled: true
+                onEntered:imgconnect.source = "qrc:/images/deviceconnect_h.png"
+                onExited: imgconnect.source = "qrc:/images/deviceconnect.png"
+                onClicked: s_connectDevice(cmbdevicelist.currentText)
+            }
+        }
+    }
+
+    Rectangle{
+        id:line1
+        width: 2
+        height: 18
+        anchors.right: rectLanguage.left
+        anchors.rightMargin: 20
+        anchors.verticalCenter: parent.verticalCenter
     }
 
     Rectangle{
@@ -142,7 +228,6 @@ Rectangle {
                 ListElement{showStr:"Lithuanian"}
             }
 
-            //{["showStr":"简体中文" "showStr":"English","Italian","Korean"]}
             onCurrentIndexChanged:{
                 console.debug("**********************" + cmb.currentIndex)
                 curLanguage = cmb.currentIndex
@@ -199,6 +284,18 @@ Rectangle {
     Connections{
         target: main
         onS_setLanguage:setLanguage(typeL);
+    }
+
+    function setDeviceConnectState(state){
+//        if(state)
+//            imgstate.source ="qrc:/images/state_succ.png"
+//        else
+//            imgstate.source ="qrc:/images/state_fail.png"
+
+    }
+    function addDeviceInfo(str){
+
+        deivcemodel.append({showStr:str});
     }
 
     function setLanguage(type){

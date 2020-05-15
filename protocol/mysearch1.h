@@ -14,7 +14,7 @@ public:
 
     void createSearch();
 signals:
-    void signal_sendIp(QString ip);
+    void signal_sendDeviceinfo(QVariantMap info);
 public slots:
     void startSearch();
     void forceFinishSearch();
@@ -22,10 +22,9 @@ public slots:
     void resetSearch();
     void readResultMsg();//udp数据回调
 
-    void slot_timeout();
 private:
     QUdpSocket *s_searchsocket = nullptr;//udp搜索socket
-    QTimer timer;
+
 };
 
 #endif // MySearch1_H

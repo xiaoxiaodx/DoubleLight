@@ -11,7 +11,7 @@ class WarnTcpServer : public QObject
 public:
     explicit WarnTcpServer(QObject *parent = nullptr);
 
-    void createSer(int port);
+    void createSer(QString ip,int port);
     void destroySer();
 signals:
     void signal_WarnMsg(QMap<QString,QVariant>);

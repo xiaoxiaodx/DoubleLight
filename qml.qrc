@@ -95,5 +95,13 @@
         <file>images/logo5.png</file>
         <file>images/logo6.png</file>
         <file>qml/dialog/ProgressDialog.qml</file>
+        <file>images/connect_fail.png</file>
+        <file>images/connect_succ.png</file>
+        <file>images/deviceFlush.png</file>
+        <file>images/deviceFlush_h.png</file>
+        <file>images/state_fail.png</file>
+        <file>images/state_succ.png</file>
+        <file>images/deviceconnect.png</file>
+        <file>images/deviceconnect_h.png</file>
     </qresource>
 </RCC>

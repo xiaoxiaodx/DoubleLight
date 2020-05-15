@@ -21,7 +21,8 @@ class XVideo : public QQuickPaintedItem
     Q_OBJECT
 public:
 
-    Q_INVOKABLE void startNormalVideo(float tp);
+    Q_INVOKABLE void funStartSearch();
+    Q_INVOKABLE void startNormalVideo(float tp,QString deviceip);
     Q_INVOKABLE void fun_timeSwitch(bool isChecked);
     Q_INVOKABLE void fun_temSet(QVariant mvalue);
     Q_INVOKABLE void fun_getInitPar();
@@ -32,7 +33,6 @@ public:
     Q_INVOKABLE void fun_setInitPar(QString ip,int parentW,int parentH,int x,int y,int w,int h);
     Q_INVOKABLE void fun_setIraInfo(QVariantMap map);
     Q_INVOKABLE void fun_sendCommonPar(QVariantMap map);
-
     Q_INVOKABLE void fun_temMin(QVariant mvalue);
     Q_INVOKABLE void fun_temOffset(QVariant mvalue);
 
@@ -58,19 +58,23 @@ signals:
     void signal_getInitPar();
     void signal_createHttp();
 
+    void signal_destroyHttp();
+
     //http 搜索
     void signal_resetSearch();
     void signal_finishSearch();
 
-
+    void signal_connected(bool istrue,QString ip);
 
 public slots:
     void slot_recH264(char *buff,int len,quint64 time);
 
     void slog_HttpmsgCb(QMap<QString,QVariant>);
-    void recSearchIp(QString ip);
+    void recSearchDeviceinfo(QVariantMap info);
     void slot_tcpConnected();
     void slot_httpConnected();
+
+    void slot_timeoutUpdate();
 protected:
     //  QSGNode* updatePaintNode(QSGNode *old, UpdatePaintNodeData *);
     void paint(QPainter *painter);
@@ -79,6 +83,8 @@ private:
     void createTcpThread();
     void createFFmpegDecodec();
     void createHttpApi();
+
+    void destroyAllFunction();
 
     void updateUi();
 
@@ -96,11 +102,11 @@ private:
     bool isFirstData = false;
 
     MySearch1 *psearch = nullptr;
-   // QThread *searchThread = nullptr;
+    // QThread *searchThread = nullptr;
 
     QString m_ip = "192.168.173.188";
-   // QString m_ip ="192.168.173.101";
-   //QString m_ip ="192.168.1.188";
+    // QString m_ip ="192.168.173.101";
+    //QString m_ip ="192.168.1.188";
 
     QThread *httpThread = nullptr;
     CHttpApiDevice *httpDevice = nullptr;
@@ -108,9 +114,12 @@ private:
     QThread *m_readThread = nullptr;
     TcpWorker *worker = nullptr;
 
+    QTimer timerUpdate;
 
     QVariantList listRectInfo;
 
+
+    QList<QVariantMap > listdeivceinfo;
     float warnTemp ;
 
     qreal showRectX = 128;

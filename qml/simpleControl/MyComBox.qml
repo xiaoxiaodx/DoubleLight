@@ -14,6 +14,7 @@ ComboBox {
     property int contentFontSize: 16
     property string contentFontColor: "#ffffff"
     property string contentBg: "#999999"
+    property int contenleft: 10
 
     //指示器属性
     property alias indicatorImgSrc: imgIndiator.source
@@ -88,7 +89,7 @@ ComboBox {
     }*/
 
     contentItem: Text {
-        leftPadding: 10
+        leftPadding: contenleft
         rightPadding: control.indicator.width + control.spacing
         text: control.displayText
         color: contentFontColor

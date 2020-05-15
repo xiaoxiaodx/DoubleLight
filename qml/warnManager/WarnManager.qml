@@ -111,7 +111,7 @@ Rectangle {
                                        curLanguage===lKorean?"삭제하시겠습니까?":
                                        curLanguage===lItaly?"Cancella Tutta la Selezione?":
                                        curLanguage===lRussian?"Вы уверены, что хотите удалить информацию?":
-                                       curLanguage===lLithuanian?"Patvirtinti ištrynimą?":""
+                                       curLanguage===lLithuanian?"Patvirtinti ištrynimą?":"";
 
                     askDialog.imgSrc = "qrc:/images/ico_warn.png"
                     askDialog.curType = askDialog.warnInfoMutipleDelete

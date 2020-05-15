@@ -9,10 +9,9 @@ XVideo::XVideo()
 {
     qDebug()<<"XVideo "<<"  "<<QThread::currentThreadId() ;
 
-
     pRenderImginfo.pImg = nullptr;
 
-    //createSearchIp();
+    connect(&timerUpdate,&QTimer::timeout,this,&XVideo::slot_timeoutUpdate);
 }
 
 
@@ -28,13 +27,112 @@ void XVideo::fun_setInitPar(QString ip,int parentW,int parentH,int x,int y,int w
 
     qDebug()<<" fun_setInitPar  "<<showRectX<<" "<<showRectY;
 }
+void XVideo::funStartSearch()
+{
+    listdeivceinfo.clear();
+    createSearchIp();
+}
 
-void XVideo::startNormalVideo(float tp)
+void XVideo::slot_timeoutUpdate(){
+
+    //qDebug()<<"tcp 流线程 fun_setListRect:"<<QThread::currentThreadId()<<"    "<<var.toList();
+    if(mMutex.tryLock()){
+
+        if(listBuffImg.size()>0){
+            if(pRenderImginfo.pImg != nullptr){
+                delete pRenderImginfo.pImg;
+                pRenderImginfo.pImg = nullptr;
+            }
+            QImage *img = listBuffImg.takeFirst();
+            pRenderImginfo.pImg = img;
+        }
+        mMutex.unlock();
+    }
+
+    if(pRenderImginfo.pImg == nullptr)
+        return;
+
+    //如果不增加这句代码 ，则会出现视频不会第一时间显示，而是显示灰色图像
+    if(!isFirstData){
+        emit signal_loginStatus("start rec stream ");
+        isFirstData = true;
+    }
+
+    update();
+}
+
+void XVideo::startNormalVideo(float tp,QString deviceinfo)
 {
     DebugLog::getInstance()->writeLog("startNormalVideo ");
-    warnTemp = tp;
-    //createTcpThread();
-    createSearchIp();
+    for (int i=0;i<listdeivceinfo.size();i++) {
+
+        QVariantMap map = listdeivceinfo.at(i);
+        if(deviceinfo.compare(map.value("uuid").toString())==0){
+            QString curip = map.value("ip").toString();
+
+            if(m_ip.compare(curip)!=0){
+
+                destroyAllFunction();
+            }
+            m_ip = curip;
+            warnTemp = tp;
+            createTcpThread();
+        }
+    }
+}
+
+
+void XVideo::destroyAllFunction()
+{
+    //关闭更新定时器
+    if(timerUpdate.isActive())
+        timerUpdate.stop();
+
+    //结束流线程
+    if(worker != nullptr)
+    {
+        worker->forceStopParse();
+        m_readThread->quit();
+        if(m_readThread->wait(2000)){
+
+            //清空缓存
+            mMutex.lock();
+            for(int i=0;i<listBuffImg.size();i++){
+                QImage *img = listBuffImg.at(i);
+                if(!img->isNull() || img!= nullptr)
+                    delete img;
+            }
+            listBuffImg.clear();
+            mMutex.unlock();
+
+            if(pRenderImginfo.pImg != nullptr){
+                delete pRenderImginfo.pImg;
+                pRenderImginfo.pImg = nullptr;
+            }
+            worker = nullptr;
+            m_readThread = nullptr;
+            qDebug()<<"tcp线程结束成功";
+        }else
+            qDebug()<<"tcp线程结束失败";
+
+    }
+
+
+    if(pffmpegCodec != nullptr){
+        pffmpegCodec = nullptr;
+    }
+
+    if(httpDevice != nullptr){
+
+        emit signal_destroyHttp();
+        httpThread->quit();
+        if(httpThread->wait(2000)){
+            qDebug()<<"http线程结束成功";
+        }else
+            qDebug()<<"http线程结束失败";
+        httpThread = nullptr;
+        httpDevice =nullptr;
+    }
 }
 
 void XVideo::createFFmpegDecodec()
@@ -99,6 +197,11 @@ void XVideo::createTcpThread()
 
 void XVideo::slot_tcpConnected()
 {
+
+
+   if(!timerUpdate.isActive())
+       timerUpdate.start();
+    emit signal_connected(true,m_ip);
     createHttpApi();
 }
 
@@ -111,6 +214,7 @@ void XVideo::createHttpApi(){
         connect(this, &XVideo::signal_getInitPar,httpDevice,&CHttpApiDevice::slot_httpGetInitPar);
         connect(this, &XVideo::signal_httpParSet,httpDevice,&CHttpApiDevice::slot_httpParSet);
         connect(this, &XVideo::signal_createHttp,httpDevice,&CHttpApiDevice::createConnect);
+        connect(this, &XVideo::signal_destroyHttp,httpDevice,&CHttpApiDevice::slot_destoryConnect);
         connect(httpDevice, &CHttpApiDevice::signal_httpConnected,this,&XVideo::slot_httpConnected);
 
         connect(httpThread, &QThread::finished,httpDevice,&CHttpApiDevice::deleteLater);
@@ -143,30 +247,22 @@ void XVideo::createSearchIp()
 {
     if(psearch == nullptr){
         psearch = new MySearch1;
-        psearch->createSearch();
-        //        searchThread = new QThread;
-        connect(psearch,&MySearch1::signal_sendIp,this,&XVideo::recSearchIp);
-        //        connect(this,&XVideo::signal_resetSearch,psearch,&MySearch1::resetSearch);
-        //        connect(this,&XVideo::signal_finishSearch,psearch,&MySearch1::forceFinishSearch);
-        //        connect(searchThread,&QThread::finished,searchThread,&MySearch1::deleteLater);
-        //        connect(searchThread,&QThread::finished,psearch,&MySearch1::deleteLater);
-        //        psearch->moveToThread(searchThread);
-        //        searchThread->start();
+
+
+        connect(psearch,&MySearch1::signal_sendDeviceinfo,this,&XVideo::recSearchDeviceinfo);
+
     }
-    //emit signal_resetSearch();
+  psearch->createSearch();
 }
 
-void XVideo::recSearchIp(QString ip)
+void XVideo::recSearchDeviceinfo(QVariantMap info)
 {
 
-    DebugLog::getInstance()->writeLog("my recSearchIp:"+ip);
-    //qDebug()<<"my recSearchIp:"<<ip;
-    m_ip = ip;//ip;//"192.168.1.101";
-    createTcpThread();
-    QMap<QString,QVariant> map;
-    map.insert("cmd","getip");
-    map.insert("ip",m_ip);
-    emit signal_httpUiParSet(QVariant::fromValue(map));
+    info.insert("cmd","deviceinfo");
+
+    listdeivceinfo.append(info);
+
+    emit signal_httpUiParSet(info);
 }
 
 void XVideo::updateUi()
@@ -299,10 +395,8 @@ void XVideo::fun_setRectPar(int sx,int sy,int sw,int sh,int pw,int ph){
 //tcpworker 线程
 void XVideo::slot_recH264(char* h264Arr,int arrlen,quint64 time)
 {
-
     // qDebug()<<QString(__FUNCTION__) + " "+QString::number(__LINE__)<<"  "<<QThread::currentThreadId() ;
     createFFmpegDecodec();
-
     if(pffmpegCodec != nullptr){
 
         QImage *Img = nullptr;
@@ -318,33 +412,33 @@ void XVideo::slot_recH264(char* h264Arr,int arrlen,quint64 time)
                 mMutex.unlock();
             }
         }
-
     }
 }
+
 //由红外控制ui更新
 void XVideo::fun_setListRect(QVariant var){
-    //qDebug()<<"tcp 流线程 fun_setListRect:"<<QThread::currentThreadId()<<"    "<<var.toList();
-    if(mMutex.tryLock()){
+//    //qDebug()<<"tcp 流线程 fun_setListRect:"<<QThread::currentThreadId()<<"    "<<var.toList();
+//    if(mMutex.tryLock()){
 
-        if(listBuffImg.size()>0){
-            if(pRenderImginfo.pImg != nullptr){
-                delete pRenderImginfo.pImg;
-                pRenderImginfo.pImg = nullptr;
-            }
-            QImage *img = listBuffImg.takeFirst();
-            pRenderImginfo.pImg = img;
-        }
-        mMutex.unlock();
-    }
+//        if(listBuffImg.size()>0){
+//            if(pRenderImginfo.pImg != nullptr){
+//                delete pRenderImginfo.pImg;
+//                pRenderImginfo.pImg = nullptr;
+//            }
+//            QImage *img = listBuffImg.takeFirst();
+//            pRenderImginfo.pImg = img;
+//        }
+//        mMutex.unlock();
+//    }
 
-    if(pRenderImginfo.pImg == nullptr)
-        return;
+//    if(pRenderImginfo.pImg == nullptr)
+//        return;
 
-    //如果不增加这句代码 ，则会出现视频不会第一时间显示，而是显示灰色图像
-    if(!isFirstData){
-        emit signal_loginStatus("Get the stream successfully");
-        isFirstData = true;
-    }
+//    //如果不增加这句代码 ，则会出现视频不会第一时间显示，而是显示灰色图像
+//    if(!isFirstData){
+//        emit signal_loginStatus("Get the stream successfully");
+//        isFirstData = true;
+//    }
 
     pRenderImginfo.listRect.clear();
     if(var.toList().size() > 0){
@@ -355,7 +449,7 @@ void XVideo::fun_setListRect(QVariant var){
         }
     }
 
-    update();
+
 }
 
 void XVideo::fun_initRedFrame(int w,int h){
@@ -363,6 +457,7 @@ void XVideo::fun_initRedFrame(int w,int h){
 
     tempImgResW = w;
     tempImgResH = h;
+
     //    if(w == 384 && h==288){
     //        showRectX = 65;
     //        showRectY = 41;
@@ -370,7 +465,6 @@ void XVideo::fun_initRedFrame(int w,int h){
     //        showRectH = 327;
     //        showParentW = 494;
     //        showParentH = 369;
-
     //    }else if(w == 160 && h==120){
     //        showRectX = 192;
     //        showRectY = 107;
@@ -402,12 +496,6 @@ void XVideo::fun_temOffset(QVariant mvalue)
 {
 
 }
-
-
-//void XVideo::fun_temMin()
-//{
-
-//}
 
 XVideo::~XVideo()
 {

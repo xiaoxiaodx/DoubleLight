@@ -70,14 +70,18 @@ Rectangle {
         anchors.verticalCenter: mPlayRect.verticalCenter
 
         Component.onCompleted:{
-            video.fun_setInitPar(deviceconfig.getTcpip(),deviceconfig.getShowParentW(),deviceconfig.getShowParentH(),deviceconfig.getShowRectX(),deviceconfig.getShowRectY(),deviceconfig.getShowRectW(),deviceconfig.getShowRectH())
-            video.startNormalVideo(deviceconfig.getWarnTem())
+            //video.fun_setInitPar(deviceconfig.getTcpip(),deviceconfig.getShowParentW(),deviceconfig.getShowParentH(),deviceconfig.getShowRectX(),deviceconfig.getShowRectY(),deviceconfig.getShowRectW(),deviceconfig.getShowRectH())
+           // video.startNormalVideo(deviceconfig.getWarnTem())
         }
 
         onSignal_loginStatus: main.showToast(msg);
 
         onSignal_httpUiParSet:httpParCallback(map);
 
+        onSignal_connected:{
+            deviceconfig.setTcpip(ip)
+            homeMenu.setDeviceConnectState(istrue)
+        }
 //                MouseArea{
 //                    id:mouse22
 //                    anchors.fill: parent
@@ -361,7 +365,9 @@ Rectangle {
             }
             video.fun_sendCommonPar(map)
         }
-        onS_iradInfoSet:video.fun_setIraInfo(mvalue);
+
+        onS_sendcommoncmd:video.fun_sendCommonPar(mvalue);
+
         onS_warnSwith:{
             var map ={
                 cmd:"",
@@ -377,11 +383,23 @@ Rectangle {
         onS_temMin:video.fun_temMin(mvalue);//温度控制阀
         onS_temOffset:video.fun_temOffset(mvalue);//温漂
 
+
     }
     //    Connections{
     //        target: videoTemp
     //        onS_sendList:video.fun_setListRect(vmap)
     //    }
+
+    Connections{
+        target: homeMenu
+        onS_startSearchDevice:{
+            video.funStartSearch();
+        }
+        onS_connectDevice:{
+
+            video.startNormalVideo(deviceconfig.getWarnTem(),str)
+        }
+    }
 
     function funsetlistRect(map){
         video.fun_setListRect(map)
@@ -401,15 +419,16 @@ Rectangle {
 
         }else if(strcmd === "getrecordparam"){
 
-        }else if(strcmd === "getip"){
-            deviceconfig.setTcpip(smap.ip)
+        }else if(strcmd === "deviceinfo"){
+            //deviceconfig.setTcpip(smap.ip)
+            homeMenu.addDeviceInfo(smap.uuid)
         }else if(strcmd === "getinftempmodel"){
 
             console.debug(" **************** "+smap.tempmodel)
             var map ={
                 cmd:""
             }
-            var enable = smap.timeenable;
+            //var enable = smap.timeenable;
             if(smap.tempmodel === "D04")
                 deviceconfig.curDevTypeStr = "d04"
             else if(smap.tempmodel === "D06")
@@ -420,8 +439,6 @@ Rectangle {
                 deviceconfig.curDevTypeStr = "f03"
             else if(smap.tempmodel === "J07-S" || smap.tempmodel === "J07"){
                 deviceconfig.curDevTypeStr = "J07-S"
-                map.cmd = "getiradinfo";
-                video.fun_sendCommonPar(map);
 
                 if(deviceconfig.getSwitchWarn()){
                     var map1 ={
@@ -431,14 +448,14 @@ Rectangle {
                     video.fun_sendCommonPar(map1)
                 }
 
-                map.cmd = "getalarmparam"
-                video.fun_sendCommonPar(map);
+//                map.cmd = "getalarmparam"
+//                video.fun_sendCommonPar(map);
 
             }
 
-            deviceconfig.setSwitchTime(enable)
-            map.cmd = "getosdparam"
-            video.fun_sendCommonPar(map);
+            //deviceconfig.setSwitchTime(enable)
+//            map.cmd = "getosdparam"
+//            video.fun_sendCommonPar(map);
             map.cmd = "setcurrenttime"
             video.fun_sendCommonPar(map);
 
@@ -480,6 +497,7 @@ Rectangle {
 
         }
     }
+
 
     function updateDate(){
         video.fun_updateDate();
