@@ -7,15 +7,15 @@ CONFIG += c++11
 # deprecated API to know how to port your code away from it.
 DEFINES += QT_DEPRECATED_WARNINGS
 # �汾��Ϣ
-VERSION = 2.0.1
+VERSION = 2.0.2
 # ͼ
-RC_ICONS = myicon6.ico
-TARGET=TTM-S
+RC_ICONS = myicon10.ico
+TARGET=KANATASAFE
 # ��˾����
-QMAKE_TARGET_COMPANY = "�����Ƽ�"
+QMAKE_TARGET_COMPANY = " "
 
 # ��Ʒ����
-QMAKE_TARGET_PRODUCT = "����ƽ̨"
+QMAKE_TARGET_PRODUCT = " "
 
 # �ļ�˵��
 QMAKE_TARGET_DESCRIPTION = "Qt Creator based on Qt 5.12.2 (MINGW 2020, 64 bit)"

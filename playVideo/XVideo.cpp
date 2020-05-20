@@ -64,21 +64,24 @@ void XVideo::slot_timeoutUpdate(){
 void XVideo::startNormalVideo(float tp,QString deviceinfo)
 {
     DebugLog::getInstance()->writeLog("startNormalVideo ");
-    for (int i=0;i<listdeivceinfo.size();i++) {
+//    for (int i=0;i<listdeivceinfo.size();i++) {
 
-        QVariantMap map = listdeivceinfo.at(i);
-        if(deviceinfo.compare(map.value("uuid").toString())==0){
-            QString curip = map.value("ip").toString();
+//        QVariantMap map = listdeivceinfo.at(i);
+//        if(deviceinfo.compare(map.value("uuid").toString())==0){
+//            QString curip = map.value("ip").toString();
 
-            if(m_ip.compare(curip)!=0){
+//            if(m_ip.compare(curip)!=0){
 
-                destroyAllFunction();
-            }
-            m_ip = curip;
-            warnTemp = tp;
-            createTcpThread();
-        }
-    }
+//                destroyAllFunction();
+//            }
+//            m_ip = curip;
+//            warnTemp = tp;
+//            createTcpThread();
+//        }
+//    }
+                m_ip = deviceinfo;
+                warnTemp = tp;
+                createTcpThread();
 }
 
 

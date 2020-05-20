@@ -20,8 +20,8 @@ int main(int argc, char *argv[])
          return -42;
     QFont font("Microsoft Yahei");
     app.setFont(font);
-    app.setOrganizationName("GaoZhi"); //1
-    app.setOrganizationDomain("gaozhi.com"); //2
+    app.setOrganizationName("GaoZhi1"); //1
+    app.setOrganizationDomain("gaozhi1.com"); //2
     app.setApplicationName("DoubleLight"); //3
 
     QQmlApplicationEngine engine;

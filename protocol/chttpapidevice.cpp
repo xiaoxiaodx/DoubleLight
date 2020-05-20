@@ -30,11 +30,20 @@ CHttpApiDevice::CHttpApiDevice(QString devid, QString ip, unsigned short port, Q
 void CHttpApiDevice::slot_destoryConnect()
 {
     qDebug()<<" slot_destoryConnect ";
+
+
+    warnPushMap.insert("isSubscription",false);
+    HttpSubscriptionWarn(warnPushMap, 0);
+
+    QMap<QString , QVariant> map;
+    map.insert("cmd","loginout");
+    send_httpParSet(map);
+
     if(g_tcpsocket != NULL){
-         qDebug()<<" slot_destoryConnect 1";
+        qDebug()<<" slot_destoryConnect 1";
         if(SendTimer != nullptr){
 
-             qDebug()<<" slot_destoryConnect 2";
+            qDebug()<<" slot_destoryConnect 2";
             disconnect(g_tcpsocket, SIGNAL(readyRead()), this, SLOT(slot_ReadMsg()));
 
             disconnect(SendTimer,&QTimer::timeout,this,&CHttpApiDevice::slot_sendtimerout);
@@ -54,7 +63,7 @@ void CHttpApiDevice::slot_destoryConnect()
 
             SendTimer = nullptr;
             reconnectTimer = nullptr;
-             qDebug()<<" slot_destoryConnect 5";
+            qDebug()<<" slot_destoryConnect 5";
         }
 
     }
@@ -62,13 +71,6 @@ void CHttpApiDevice::slot_destoryConnect()
 
 CHttpApiDevice::~CHttpApiDevice()
 {
-
-
-    qDebug()<<"析构:  CHttpApiDevice  ";
-    QMap<QString , QVariant> map;
-    map.insert("cmd","loginout");
-    send_httpParSet(map);
-
     slot_destoryConnect();
     if(warnTcpServer != nullptr){
         warnTcpServer->destroySer();

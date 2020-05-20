@@ -21,32 +21,32 @@ Rectangle {
         width: parent.width - rectLanguage.width -20
         height: parent.height
         color: "#00ffffff"
-        //        Image {
-        //            id: btnImg
-        //            anchors.left: parent.left
-        //            anchors.leftMargin: 40
-        ////            anchors.topMargin: 10
-        //            anchors.verticalCenter: parent.verticalCenter
-        ////            anchors.bottom: parent.bottom
-        ////            anchors.bottomMargin: 10
-        ////            width: parent.height - 26
-        ////           parent.height - 26
-        //            width: 160
-        //            height: 50
-        //            source: "qrc:/images/logo6.png"
-        //        }
+                Image {
+                    id: btnImg
+                    anchors.left: parent.left
+                    anchors.leftMargin: 40
+        //            anchors.topMargin: 10
+                    anchors.verticalCenter: parent.verticalCenter
+        //            anchors.bottom: parent.bottom
+        //            anchors.bottomMargin: 10
+        //            width: parent.height - 26
+        //           parent.height - 26
+                    width: 160
+                    height: 50
+                    source: "qrc:/images/logo8.png"
+                }
 
-        Text {
-            id: btnImg
-            anchors.left: parent.left
-            anchors.leftMargin: 40
-            anchors.verticalCenter: parent.verticalCenter
+//        Text {
+//            id: btnImg
+//            anchors.left: parent.left
+//            anchors.leftMargin: 40
+//            anchors.verticalCenter: parent.verticalCenter
 
-            color: "white"
-            font.pixelSize: 30
-            font.bold: true
-            text: ""
-        }
+//            color: "white"
+//            font.pixelSize: 30
+//            font.bold: true
+//            text: ""
+//        }
         QmlTabBarButtonH{
             id:tabbarBtn
             height: parent.height
@@ -106,7 +106,7 @@ Rectangle {
 
     Rectangle{
         id:rectDevicelist
-        width: imgconnect.width + cmbdevicelist.width
+        width: imgconnect.width + inputip.width
         height: 24
         color: "#00ffffff"
         anchors.right: rectLanguage.left
@@ -114,33 +114,22 @@ Rectangle {
         anchors.verticalCenter: parent.verticalCenter
         border.width: 1
         border.color: "white"
-        MyComBox{
-            id:cmbdevicelist
-            width:200
+        LineEdit {
+            id: inputip
+            width:150
             height: 24
             anchors.left: parent.left
-            anchors.verticalCenter: parent.verticalCenter
-            contentBg: "#00FFFFFF"
-            itemColorBgNor:"#ffffff"
-            itemColorBgHoverd: "#E7EAF1"
-            contenleft:10
-            //indicatorImgSrc:"qrc:/images/language_down.png"
-            //indicatorW: 11
-            //indicatorH: 7
-            itemLeftMargin:0
-            itemTopMargin:0
-            currentIndex:0
-            model: deivcemodel
+            anchors.bottom: parent.bottom
+            border.width: 0
+            inputLimite:Qt.ImhDigitsOnly
+            font.pixelSize: fontSize
+            placeholderText: ""
+            isNeedDoubleClickEdit: false
+            textLeftPadding:10
+            txtColor: Qt.rgba(0,0,0,0.65)
+            text: "0"
+            color: "#F8FAFD"
         }
-//        Image {
-//            id: imgstate
-//            width: 6
-//            height: 6
-//            anchors.left: parent.left
-//            anchors.leftMargin: 8
-//            anchors.verticalCenter: parent.verticalCenter
-//            source: "qrc:/images/state_fail.png"
-//        }
         Image {
             id: imgflush
             width: 12
@@ -173,7 +162,7 @@ Rectangle {
                 hoverEnabled: true
                 onEntered:imgconnect.source = "qrc:/images/deviceconnect_h.png"
                 onExited: imgconnect.source = "qrc:/images/deviceconnect.png"
-                onClicked: s_connectDevice(cmbdevicelist.currentText)
+                onClicked: s_connectDevice(inputip.text)
             }
         }
     }
@@ -210,6 +199,7 @@ Rectangle {
             anchors.left: imgl.right
             anchors.rightMargin: 10
             anchors.verticalCenter: parent.verticalCenter
+            enabled: false
             contentBg: "#00FFFFFF"
             itemColorBgNor:"#ffffff"
             itemColorBgHoverd: "#E7EAF1"

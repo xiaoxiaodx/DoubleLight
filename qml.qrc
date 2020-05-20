@@ -103,5 +103,6 @@
         <file>images/state_succ.png</file>
         <file>images/deviceconnect.png</file>
         <file>images/deviceconnect_h.png</file>
+        <file>images/logo8.png</file>
     </qresource>
 </RCC>
