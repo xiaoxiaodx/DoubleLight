@@ -9,8 +9,8 @@ DEFINES += QT_DEPRECATED_WARNINGS
 # �汾��Ϣ
 VERSION = 2.0.1
 # ͼ
-RC_ICONS = myicon11.ico
-TARGET=KANATASAFE
+RC_ICONS = KANATASAFE.ico
+TARGET=Techware_Systems
 # ��˾����
 QMAKE_TARGET_COMPANY = " "
 

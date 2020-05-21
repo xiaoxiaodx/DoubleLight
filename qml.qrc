@@ -107,5 +107,6 @@
         <file>images/select.png</file>
         <file>images/unselect.png</file>
         <file>qml/simpleControl/SimpleCheckedButton.qml</file>
+        <file>images/logo10.jpg</file>
     </qresource>
 </RCC>

@@ -33,7 +33,7 @@ Rectangle {
         //           parent.height - 26
                     width: 160
                     height: 50
-                    source: "qrc:/images/logo8.png"
+                    source: "qrc:/images/logo10.jpg"
                 }
 
 //        Text {
