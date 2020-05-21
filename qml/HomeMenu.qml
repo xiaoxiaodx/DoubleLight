@@ -21,32 +21,32 @@ Rectangle {
         width: parent.width - rectLanguage.width -20
         height: parent.height
         color: "#00ffffff"
-        //        Image {
-        //            id: btnImg
-        //            anchors.left: parent.left
-        //            anchors.leftMargin: 40
-        ////            anchors.topMargin: 10
-        //            anchors.verticalCenter: parent.verticalCenter
-        ////            anchors.bottom: parent.bottom
-        ////            anchors.bottomMargin: 10
-        ////            width: parent.height - 26
-        ////           parent.height - 26
-        //            width: 160
-        //            height: 50
-        //            source: "qrc:/images/logo6.png"
-        //        }
+                Image {
+                    id: btnImg
+                    anchors.left: parent.left
+                    anchors.leftMargin: 40
+        //            anchors.topMargin: 10
+                    anchors.verticalCenter: parent.verticalCenter
+        //            anchors.bottom: parent.bottom
+        //            anchors.bottomMargin: 10
+        //            width: parent.height - 26
+        //           parent.height - 26
+                    width: 160
+                    height: 50
+                    source: "qrc:/images/logo8.png"
+                }
 
-        Text {
-            id: btnImg
-            anchors.left: parent.left
-            anchors.leftMargin: 40
-            anchors.verticalCenter: parent.verticalCenter
+//        Text {
+//            id: btnImg
+//            anchors.left: parent.left
+//            anchors.leftMargin: 40
+//            anchors.verticalCenter: parent.verticalCenter
 
-            color: "white"
-            font.pixelSize: 30
-            font.bold: true
-            text: ""
-        }
+//            color: "white"
+//            font.pixelSize: 30
+//            font.bold: true
+//            text: ""
+//        }
         QmlTabBarButtonH{
             id:tabbarBtn
             height: parent.height
@@ -219,6 +219,7 @@ Rectangle {
             itemLeftMargin:-12
             itemTopMargin:0
             currentIndex:1
+          //  enabled: false
             model: ListModel{
                 ListElement{showStr:"简体中文"}
                 ListElement{showStr:"English"}
