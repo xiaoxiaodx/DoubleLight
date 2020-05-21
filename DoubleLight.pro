@@ -9,7 +9,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 # �汾��Ϣ
 VERSION = 2.0.1
 # ͼ
-RC_ICONS = myicon10.ico
+RC_ICONS = myicon11.ico
 TARGET=KANATASAFE
 # ��˾����
 QMAKE_TARGET_COMPANY = " "
@@ -159,3 +159,5 @@ LIBS += -lWs2_32
 #IRC
 INCLUDEPATH += $$PWD/thirdLib/irc/include
 LIBS += $$PWD/thirdLib/irc/IRNetSDK64.lib
+
+DISTFILES +=

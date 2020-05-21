@@ -5,6 +5,7 @@ import QtQuick.Dialogs 1.3
 import Qt.labs.settings 1.0
 import "simpleControl"
 import UpdateProgressC 1.0
+import QtQuick.Controls 1.4
 import "dialog"
 Rectangle {
     id: root
@@ -572,9 +573,11 @@ Rectangle {
                         onPressed: {
                             imgScreenShotPath.source = "qrc:/images/fileopen.png"
                         }
+
                         onReleased: {
                             imgScreenShotPath.source = "qrc:/images/file.png"
                         }
+
                         onClicked: {
                             fileDialog.folder = "file:///"+inputScreenShotPath.text
                             fileDialog.pathname = "screenShotPath";
@@ -610,6 +613,48 @@ Rectangle {
                 }
             }
 
+            Text {
+                id: txtencodetype
+                text: qsTr("编码方式")
+                font.pixelSize: fontSize
+                color: fontColor
+                anchors.right: checkh264.left
+                anchors.rightMargin: 20
+                anchors.verticalCenter: checkh264.verticalCenter
+
+            }
+
+            ExclusiveGroup { id: buttonGroup }
+            SimpleCheckedButton{
+                id:checkh264
+                exclusiveGroup:buttonGroup
+                txtFont.pixelSize: fontSize
+                txtColor: fontColor
+                imgW: 12
+                imgH: 12
+                imgSrc: "qrc:/images/unselect.png"
+                imgCheckSrc: "qrc:/images/select.png"
+                anchors.left: line2.left
+                anchors.leftMargin: parSetFirstAlignLine
+                anchors.top: line2.bottom
+                anchors.topMargin:263
+                text: "H264"
+            }
+
+            SimpleCheckedButton{
+                id:checkh265
+                exclusiveGroup:buttonGroup
+                txtFont.pixelSize: fontSize
+                txtColor: fontColor
+                imgW: 12
+                imgH: 12
+                imgSrc: "qrc:/images/unselect.png"
+                imgCheckSrc: "qrc:/images/select.png"
+                anchors.left: checkh264.right
+                anchors.leftMargin: 20
+                anchors.verticalCenter: checkh264.verticalCenter
+                text: "H265"
+            }
 
             Text {
                 id: txtRecordSet
@@ -627,10 +672,9 @@ Rectangle {
                 height: 1
                 color: "#e2e2e2"
                 anchors.top: parent.top
-                anchors.topMargin: 485
+                anchors.topMargin: 540
                 anchors.horizontalCenter: parent.horizontalCenter
             }
-
 
             Text {
                 id: txtSwichRecord
@@ -800,7 +844,7 @@ Rectangle {
                 //visible: curDevTypeStr==="f03"
                 color: "#e2e2e2"
                 anchors.top: parent.top
-                anchors.topMargin: 627
+                anchors.topMargin: 647
                 anchors.horizontalCenter: parent.horizontalCenter
             }
 
@@ -909,7 +953,7 @@ Rectangle {
                 anchors.left: parent.left
                 anchors.leftMargin: 20
                 anchors.bottom: parent.bottom
-                anchors.bottomMargin: 20
+                anchors.bottomMargin: 10
                 Text {
                     id: txtSave
                     anchors.horizontalCenter: parent.horizontalCenter

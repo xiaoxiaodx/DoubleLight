@@ -104,5 +104,8 @@
         <file>images/deviceconnect.png</file>
         <file>images/deviceconnect_h.png</file>
         <file>images/logo8.png</file>
+        <file>images/select.png</file>
+        <file>images/unselect.png</file>
+        <file>qml/simpleControl/SimpleCheckedButton.qml</file>
     </qresource>
 </RCC>
