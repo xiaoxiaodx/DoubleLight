@@ -184,7 +184,7 @@ Rectangle {
         switch(type){
         case lEnglish:
             txtCancel.text = "no"
-            txtEnsure.text = "yes "
+            txtEnsure.text = "yes"
             break;
         case lKorean:
             txtCancel.text = "취소"
@@ -205,6 +205,32 @@ Rectangle {
         case lLithuanian:
             txtCancel.text = "Ne"
             txtEnsure.text = "Taip"
+            break;
+        case ltuerqi:
+            txtCancel.text = "İptal"
+            txtEnsure.text = "Onayla"
+            break;
+        case ltuerqi1:
+            txtCancel.text = "İptal"
+            txtEnsure.text = "Onayla"
+            break;
+        case lputaoya:
+            txtCancel.text = "no"
+            txtEnsure.text = "yes"
+            break;
+        case lxibanya:
+            txtCancel.text = "no"
+            txtEnsure.text = "yes"
+            break;
+        case lfayu:
+            txtCancel.text = "no"
+            txtEnsure.text = "yes"
+            break;
+        case lniboer:
+//            txtCancel.text = "रद्ध गर्नुहोस"
+//            txtEnsure.text = "निश्चित गर्नुहोस"
+            txtCancel.text = "no"
+                        txtEnsure.text = "yes"
             break;
         }
     }

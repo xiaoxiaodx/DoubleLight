@@ -614,49 +614,6 @@ Rectangle {
             }
 
             Text {
-                id: txtencodetype
-                text: qsTr("编码方式")
-                font.pixelSize: fontSize
-                color: fontColor
-                anchors.right: checkh264.left
-                anchors.rightMargin: 20
-                anchors.verticalCenter: checkh264.verticalCenter
-
-            }
-
-            ExclusiveGroup { id: buttonGroup }
-            SimpleCheckedButton{
-                id:checkh264
-                exclusiveGroup:buttonGroup
-                txtFont.pixelSize: fontSize
-                txtColor: fontColor
-                imgW: 12
-                imgH: 12
-                imgSrc: "qrc:/images/unselect.png"
-                imgCheckSrc: "qrc:/images/select.png"
-                anchors.left: line2.left
-                anchors.leftMargin: parSetFirstAlignLine
-                anchors.top: line2.bottom
-                anchors.topMargin:263
-                text: "H264"
-            }
-
-            SimpleCheckedButton{
-                id:checkh265
-                exclusiveGroup:buttonGroup
-                txtFont.pixelSize: fontSize
-                txtColor: fontColor
-                imgW: 12
-                imgH: 12
-                imgSrc: "qrc:/images/unselect.png"
-                imgCheckSrc: "qrc:/images/select.png"
-                anchors.left: checkh264.right
-                anchors.leftMargin: 20
-                anchors.verticalCenter: checkh264.verticalCenter
-                text: "H265"
-            }
-
-            Text {
                 id: txtRecordSet
                 text: qsTr("录像设置")
                 color: fontColor
@@ -672,7 +629,7 @@ Rectangle {
                 height: 1
                 color: "#e2e2e2"
                 anchors.top: parent.top
-                anchors.topMargin: 540
+                anchors.topMargin: 480
                 anchors.horizontalCenter: parent.horizontalCenter
             }
 
@@ -1389,6 +1346,114 @@ Rectangle {
             txtUpdate.text = "patobulinti"
             txtUpdateFile.text = "patobulinti"
             txtSave.text = "nustatymas"
+            break;
+        case ltuerqi:
+            txtRecordSet.text = "Video ayarları"
+            txtRecortPath.text = "Depolama yolu"
+            txtScreenShotPath.text = "Depolama yolu"
+            txtWarnTemSet.text = "Alarm Sıcaklığı"
+            labelSwitchTime.text = "Zaman OSD'si"
+            labelTime.text = "时间显示"
+            txtparset.text = "Parametre ayarı"
+            txtSwichBeer.text = "Buzzer"
+            txtSwichRecord.text = "Video"
+            txtSwichScreenShot.text = "Snapshot"
+            txtSwichWarn.text = "Alarm (anahtar)"
+            txtTempMin.text = "Max Min Sıcaklık"
+            txtTempDrift.text = "Sıcaklık sapması ayarı"
+            txtUpdate.text = "升级"
+            txtUpdateFile.text = "设备升级"
+            txtSave.text = "设置"
+            break;
+        case ltuerqi1:
+            txtRecordSet.text = "Video Ayarları"
+            txtRecortPath.text = "Depolama Yöntemi"
+            txtScreenShotPath.text = "Depolama Yöntemi"
+            txtWarnTemSet.text = "Sıcaklık Alarmı"
+            labelSwitchTime.text = "Ekranda Gösterim "
+            labelTime.text = "时间显示"
+            txtparset.text = "Parametre Ayarları"
+            txtSwichBeer.text = "Siren"
+            txtSwichRecord.text = "Video"
+            txtSwichScreenShot.text = "Ekran Resmi"
+            txtSwichWarn.text = "Alarm (anahtar)"
+            txtTempMin.text = "Max Min Sıcaklık"
+            txtTempDrift.text = "Sıcaklık Sapma Ayarı"
+            txtUpdate.text = "升级"
+            txtUpdateFile.text = "设备升级"
+            txtSave.text = "设置"
+            break;
+        case lputaoya:
+            txtRecordSet.text = "configurações de vídeo"
+            txtRecortPath.text = "rota de armazenamento"
+            txtScreenShotPath.text = "caminho de armazenamento"
+            txtWarnTemSet.text = "Alarme de temperatura"
+            labelSwitchTime.text = "Tempo OSD"
+            labelTime.text = "时间显示"
+            txtparset.text = "Configuração de parâmetro"
+            txtSwichBeer.text = "campainha"
+            txtSwichRecord.text = "Vídeo"
+            txtSwichScreenShot.text = "Instantâneo"
+            txtSwichWarn.text = "Alarme (switch)"
+            txtTempMin.text = "válvula de controle de temperatura"
+            txtTempDrift.text = "configuração deriva de temperatura"
+            txtUpdate.text = "Upgrade"
+            txtUpdateFile.text = "Upgrade"
+            txtSave.text = "Confirm"
+            break;
+        case lxibanya:
+            txtRecordSet.text = "Ajustes de video"
+            txtRecortPath.text = "ruta de almacenamiento"
+            txtScreenShotPath.text = "ruta de almacenamiento"
+            txtWarnTemSet.text = "alarma de temperatura"
+            labelSwitchTime.text = "tiempo OSD"
+            labelTime.text = "时间显示"
+            txtparset.text = "Ajuste de parámetros"
+            txtSwichBeer.text = "Zumbador"
+            txtSwichRecord.text = "Vídeo"
+            txtSwichScreenShot.text = "Instantánea"
+            txtSwichWarn.text = "Alarma (interruptor)"
+            txtTempMin.text = "válvula de control de temperatura"
+            txtTempDrift.text = "ajuste de la deriva térmica"
+            txtUpdate.text = "Upgrade"
+            txtUpdateFile.text = "Upgrade"
+            txtSave.text = "Confirm"
+            break;
+        case lfayu:
+            txtRecordSet.text = "Paramètres vidéo"
+            txtRecortPath.text = "Chemin de stockage vidéo"
+            txtScreenShotPath.text = "Chemin de stockage photo"
+            txtWarnTemSet.text = "Température d'alarme"
+            labelSwitchTime.text = "Heure OSD"
+            labelTime.text = "时间显示"
+            txtparset.text = "Réglage des paramètres"
+            txtSwichBeer.text = "Avertisseur sonore"
+            txtSwichRecord.text = "Vidéo"
+            txtSwichScreenShot.text = "Instantané"
+            txtSwichWarn.text = "Alarme(interrupteur)"
+            txtTempMin.text = "Température max/min"
+            txtTempDrift.text = "Correction de la température"
+            txtUpdate.text = "升级"
+            txtUpdateFile.text = "设备升级"
+            txtSave.text = "设置"
+            break;
+        case lniboer:
+            txtRecordSet.text = "भिडियो सेटिंग "
+            txtRecortPath.text = "स्टोर गर्ने ठाउँ"
+            txtScreenShotPath.text = "स्टोर गर्ने ठाउँ"
+            txtWarnTemSet.text = "तापक्रम अलार्म"
+            labelSwitchTime.text = "स्क्रिनमा प्रदर्शन गर्नुहोस्"
+            labelTime.text = "时间显示"
+            txtparset.text = "प्यारामिटर सेटिंग"
+            txtSwichBeer.text = "घन्टी"
+            txtSwichRecord.text = "भिडियो"
+            txtSwichScreenShot.text = "स्क्रीनशट"
+            txtSwichWarn.text = "अलार्म (स्विच)"
+            txtTempMin.text = "अधिकतम न्यूनतम तापक्रम"
+            txtTempDrift.text = "तापक्रम विचलन सेटिंग"
+            txtUpdate.text = "अपग्रेड गर्नुहोस"
+            txtUpdateFile.text = "अपग्रेड गर्नुहोस"
+            txtSave.text = "निश्चित गर्नुहोस "
             break;
         }
     }

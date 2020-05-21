@@ -33,7 +33,7 @@ Rectangle {
         //           parent.height - 26
                     width: 160
                     height: 50
-                    source: "qrc:/images/logo10.jpg"
+                    source: "qrc:/images/logo12.png"
                 }
 
 //        Text {
@@ -227,6 +227,16 @@ Rectangle {
                 ListElement{showStr:"Korean"}
                 ListElement{showStr:"Russian"}
                 ListElement{showStr:"Lithuanian"}
+
+                ListElement{showStr:"Türkçe"}//土耳其
+                ListElement{showStr:"Türk dili"}//土耳其语
+                ListElement{showStr:"Português"}//葡萄牙
+                ListElement{showStr:"Español"}//西班牙
+                ListElement{showStr:"Française"}//法语
+                ListElement{showStr:"नेपाली"}//尼泊尔文
+
+
+
             }
 
             onCurrentIndexChanged:{
@@ -333,6 +343,36 @@ Rectangle {
             tabbarBtn.barModel.get(index++).txtStr =  "Pagrindinis vaizdas"
             tabbarBtn.barModel.get(index++).txtStr =  "Įrenginio konfiguracija"
             tabbarBtn.barModel.get(index++).txtStr =  "Aliarminis pranešimas"
+            break;
+        case ltuerqi:
+            tabbarBtn.barModel.get(index++).txtStr =  "Genel Önizleme"
+            tabbarBtn.barModel.get(index++).txtStr =  "Cihaz yapılandırması"
+            tabbarBtn.barModel.get(index++).txtStr =  "Alarm"
+            break;
+        case ltuerqi1:
+            tabbarBtn.barModel.get(index++).txtStr =  "Önizleme"
+            tabbarBtn.barModel.get(index++).txtStr =  "Cihaz yapılandırması"
+            tabbarBtn.barModel.get(index++).txtStr =  "Alarm"
+            break;
+        case lputaoya:
+            tabbarBtn.barModel.get(index++).txtStr =  "visualização principal"
+            tabbarBtn.barModel.get(index++).txtStr =  "Configuração do dispositivo"
+            tabbarBtn.barModel.get(index++).txtStr =  "Alarme"
+            break;
+        case lxibanya:
+            tabbarBtn.barModel.get(index++).txtStr =  "Visualización principal"
+            tabbarBtn.barModel.get(index++).txtStr =  "Configuración del dispositivo"
+            tabbarBtn.barModel.get(index++).txtStr =  "Alarma"
+            break;
+        case lfayu:
+            tabbarBtn.barModel.get(index++).txtStr =  "Aperçu principal"
+            tabbarBtn.barModel.get(index++).txtStr =  "Configuration de l'appareil"
+            tabbarBtn.barModel.get(index++).txtStr =  "Alarme"
+            break;
+        case lniboer:
+            tabbarBtn.barModel.get(index++).txtStr =  "मुख्य अबलोकन कक्ष"
+            tabbarBtn.barModel.get(index++).txtStr =  "यन्त्र कन्फिगरेसन"
+            tabbarBtn.barModel.get(index++).txtStr =  "अलार्म"
             break;
         }
     }

@@ -38,6 +38,7 @@ Window {
 
     property int windowSizeState: 1 //1：正常，0最小化，2最大化
 
+
     property int curLanguage: 1
     property int lChinese: 0
     property int lEnglish: 1
@@ -45,6 +46,12 @@ Window {
     property int lKorean: 3
     property int lRussian: 4
     property int lLithuanian: 5
+    property int ltuerqi: 6
+    property int ltuerqi1: 7
+    property int lputaoya: 8
+    property int lxibanya: 9
+    property int lfayu: 10
+    property int lniboer: 11
 
 
     signal s_setLanguage(var typeL);
@@ -80,7 +87,13 @@ Window {
                                curLanguage===lKorean?"나가시겠습니까?":
                                curLanguage===lItaly?"Uscita Dal Sistema?":
                                curLanguage===lRussian?"Подтвердить выход?":
-                               curLanguage===lLithuanian?"Patvirtinti išėjimą?":"";
+                               curLanguage===lLithuanian?"Patvirtinti išėjimą?":
+                                curLanguage=== ltuerqi?"Çıkış için onayla?":
+                                           curLanguage===ltuerqi1?"Onayla ve çık ?":
+                                           curLanguage===lputaoya?"Confirmar para sair?":
+                                           curLanguage===lxibanya?"Confirmar salida?":
+                                           curLanguage===lfayu?"Confirmer pour quitter?":
+                                           curLanguage===lniboer?"बाहिर निस्कने हो?":"";
 
             askDialog.imgSrc = "qrc:/images/icon_question.png"
             askDialog.curType = askDialog.exeClose

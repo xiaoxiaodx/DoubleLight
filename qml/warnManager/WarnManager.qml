@@ -111,7 +111,13 @@ Rectangle {
                                        curLanguage===lKorean?"삭제하시겠습니까?":
                                        curLanguage===lItaly?"Cancella Tutta la Selezione?":
                                        curLanguage===lRussian?"Вы уверены, что хотите удалить информацию?":
-                                       curLanguage===lLithuanian?"Patvirtinti ištrynimą?":"";
+                                       curLanguage===lLithuanian?"Patvirtinti ištrynimą?":
+                                                                  curLanguage === ltuerqi?"Kapı Bilgileri?":
+                                                                  curLanguage === ltuerqi1?"Tüm Seçimleri Sil?":
+                                                                  curLanguage === lputaoya?"Confirme a exclusão?":
+                                                                  curLanguage === lxibanya?"Confirmar para eliminar?":
+                                                                  curLanguage === lfayu?"Confirmer la suppression?":
+                                                                  curLanguage === lniboer?"साँचै मेट्ने हो ?":""
 
                     askDialog.imgSrc = "qrc:/images/ico_warn.png"
                     askDialog.curType = askDialog.warnInfoMutipleDelete
@@ -382,7 +388,13 @@ Rectangle {
                          curLanguage === lKorean?"삭제":
                          curLanguage === lItaly?"Cancella":
                          curLanguage === lRussian?"Удалить":
-                         curLanguage === lLithuanian?"Išvalyti":""
+                         curLanguage === lLithuanian?"Išvalyti":
+                            curLanguage === ltuerqi?"删除":
+                                             ltuerqi1 === curLanguage?"Sil":
+                                             lputaoya === curLanguage?"Sil":
+                                             lxibanya === curLanguage?"Eliminar":
+                                             lfayu === curLanguage?"Supprimer":
+                                             lniboer === curLanguage?"मेट्नुहोस् ":""
                     MouseArea{
                         anchors.fill: parent
                         onClicked: {
@@ -396,7 +408,14 @@ Rectangle {
                                                curLanguage===lKorean?"삭제 정보를 확인합니까?":
                                                curLanguage === lItaly?"Cancello L’Informazione?":
                                                curLanguage === lRussian?"Вы уверены, что хотите удалить информацию?":
-                                               curLanguage === lLithuanian?"Patvirtinti ištrynimą?":""
+                                               curLanguage === lLithuanian?"Patvirtinti ištrynimą?":
+                                               curLanguage === ltuerqi?"Kapı Bilgileri?":
+                                               curLanguage === ltuerqi1?"Tüm Seçimleri Sil?":
+                                               curLanguage === lputaoya?"Confirme a exclusão?":
+                                               curLanguage === lxibanya?"Confirmar para eliminar?":
+                                               curLanguage === lfayu?"Confirmer la suppression?":
+                                               curLanguage === lniboer?"साँचै मेट्ने हो ?":""
+
                             askDialog.imgSrc = "qrc:/images/ico_warn.png"
                             askDialog.curType = askDialog.warnInfoSingleDelete
                             askDialog.open();
@@ -583,6 +602,60 @@ Rectangle {
             txtWarnTime.text = "Laikas"
             txtWarnTemp.text = "Tampartūra"
             warnImg.text = "Nuotrauka"
+            //deletetxt.text = "删除"
+            break;
+        case ltuerqi:
+            textitle.text = "Etkinlik listesi";
+            txtBatchDelete.text = "Toplu olarak sil"
+            txtDo.text = "İşlem"
+            txtWarnTime.text = "Zaman"
+            txtWarnTemp.text = "Sıcaklıklar"
+            warnImg.text = "Snapshot"
+            //deletetxt.text = "删除"
+            break;
+        case ltuerqi1:
+            textitle.text = "Etkinlik Listesi";
+            txtBatchDelete.text = "Toplu olarak Sil"
+            txtDo.text = "İşlem"
+            txtWarnTime.text = "Zaman"
+            txtWarnTemp.text = "Sıcaklık"
+            warnImg.text = "Ekran Görüntüsü"
+            //deletetxt.text = "删除"
+            break;
+        case lputaoya:
+            textitle.text = "lista de registro";
+            txtBatchDelete.text = "Excluir em lote"
+            txtDo.text = "Operar"
+            txtWarnTime.text = "Tempo"
+            txtWarnTemp.text = "Temperatura"
+            warnImg.text = "Instantâneo"
+            //deletetxt.text = "删除"
+            break;
+        case lxibanya:
+            textitle.text = "lista de registro";
+            txtBatchDelete.text = "Eliminar por lotes"
+            txtDo.text = "Funcionar"
+            txtWarnTime.text = "Hora"
+            txtWarnTemp.text = "Temperatura"
+            warnImg.text = "Instantánea"
+            //deletetxt.text = "删除"
+            break;
+        case lfayu:
+            textitle.text = "Liste des journaux";
+            txtBatchDelete.text = "Supprimer en lot"
+            txtDo.text = "Fonctionnement"
+            txtWarnTime.text = "Heure alarme"
+            txtWarnTemp.text = "Température"
+            warnImg.text = "Instantané"
+            //deletetxt.text = "删除"
+            break;
+        case lniboer:
+            textitle.text = "लग विवरण ";
+            txtBatchDelete.text = "एकैचोटी मेट्नुहोस् "
+            txtDo.text = "चलाउनुहोस"
+            txtWarnTime.text = "समय"
+            txtWarnTemp.text = "तापक्रम"
+            warnImg.text = "स्न्यापशट"
             //deletetxt.text = "删除"
             break;
         }

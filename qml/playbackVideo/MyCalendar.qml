@@ -580,6 +580,31 @@ Popup {
             txtCancel.text = "Отмена"
             txtEnsure.text = "Подтвердить"
             break;
+        case ltuerqi:
+            txtCancel.text = "İptal"
+            txtEnsure.text = "Onayla"
+            break;
+        case ltuerqi1:
+            txtCancel.text = "İptal"
+            txtEnsure.text = "Onayla"
+            break;
+        case lputaoya:
+            txtCancel.text = "Cancelar"
+            txtEnsure.text = "confirme"
+            break;
+        case lxibanya:
+            txtCancel.text = "Cancelar"
+            txtEnsure.text = "Confirmar"
+            break;
+        case lfayu:
+            txtCancel.text = "Annuler"
+            txtEnsure.text = "Confirmer"
+            break;
+        case lniboer:
+            txtCancel.text = "रद्ध गर्नुहोस"
+            txtEnsure.text = "निश्चित गर्नुहोस"
+            break;
+
         }
     }
 
