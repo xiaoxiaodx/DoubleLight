@@ -8,9 +8,9 @@ CONFIG += c++11
 DEFINES += QT_DEPRECATED_WARNINGS
 # �汾��Ϣ
 VERSION = 2.0.1
-# ͼ
-RC_ICONS = myicon14.ico
-TARGET=FoxCam
+#
+RC_ICONS = myicon6.ico
+TARGET=TTM-S
 # ��˾����
 QMAKE_TARGET_COMPANY = " "
 
