@@ -36,6 +36,7 @@ public:
     Q_INVOKABLE void fun_temMin(QVariant mvalue);
     Q_INVOKABLE void fun_temOffset(QVariant mvalue);
 
+
     explicit XVideo();
     ~XVideo();
 
@@ -68,6 +69,7 @@ signals:
 
 public slots:
     void slot_recH264(char *buff,int len,quint64 time);
+    void slot_recH265(char *buff,int len,quint64 time);
 
     void slog_HttpmsgCb(QMap<QString,QVariant>);
     void recSearchDeviceinfo(QVariantMap info);
@@ -81,7 +83,7 @@ protected:
 private:
     void createSearchIp();
     void createTcpThread();
-    void createFFmpegDecodec();
+    FfmpegCodec *createFFmpegDecodec(QString type);
     void createHttpApi();
 
     void destroyAllFunction();
@@ -89,7 +91,9 @@ private:
     void updateUi();
 
     QString deviceType = "";
-    FfmpegCodec *pffmpegCodec = nullptr;
+    QMutex ffmpegMutex;
+    FfmpegCodec *pffmpegCodecH264 = nullptr;
+    FfmpegCodec *pffmpegCodecH265 = nullptr;
 
     QMutex buffMutex;
     ImageInfo pRenderImginfo ;

@@ -98,6 +98,8 @@ private:
 
     void HttpSetMeasureRect(QVariantMap value);
     void HttpSetalarmparam(QVariantMap value);
+    void HttpSetVideoEncode(QVariantMap value);
+    void HttpGetVideoEncode(QVariantMap value);
 
 
     void httpSendCommonCmd(QString cmd,QString );
@@ -125,6 +127,20 @@ private:
     //QThread *m_warnPushThread= nullptr;
     QThread *warnTcpServerThread = nullptr;
     WarnTcpServer *warnTcpServer = nullptr;
+
+
+    //视频参数
+//    int chn = 0;
+//    int framerate;
+//    int bitrate ;
+//    int quality ;
+//    QString cvbrmode;
+//    QString "h264",
+//    "h264profile" : "baseline",
+//    "resolution" : {
+//        "width" : 1920,
+//    "height" : 1080
+//    }
 
 };
 

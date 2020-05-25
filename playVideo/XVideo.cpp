@@ -118,10 +118,12 @@ void XVideo::destroyAllFunction()
     }
 
 
-    if(pffmpegCodec != nullptr){
-        pffmpegCodec = nullptr;
+    if(pffmpegCodecH264 != nullptr){
+        pffmpegCodecH264 = nullptr;
     }
-
+    if(pffmpegCodecH265 != nullptr){
+        pffmpegCodecH265 = nullptr;
+    }
     if(httpDevice != nullptr){
 
         emit signal_destroyHttp();
@@ -135,18 +137,21 @@ void XVideo::destroyAllFunction()
     }
 }
 
-void XVideo::createFFmpegDecodec()
+FfmpegCodec * XVideo::createFFmpegDecodec(QString type)
 {
-    if(pffmpegCodec == nullptr)
-    {
-        pffmpegCodec = new FfmpegCodec;
-        pffmpegCodec->vNakedStreamDecodeInit(AV_CODEC_ID_H264);
-        pffmpegCodec->aNakedStreamDecodeInit(AV_CODEC_ID_PCM_ALAW,AV_SAMPLE_FMT_S16,8000,1);
-        pffmpegCodec->resetSample(AV_CH_LAYOUT_MONO,AV_CH_LAYOUT_MONO,8000,44100,AV_SAMPLE_FMT_S16,AV_SAMPLE_FMT_S16,160);
 
-        if(m_readThread != nullptr)
-            connect(m_readThread,&QThread::finished,pffmpegCodec,&FfmpegCodec::deleteLater);
-    }
+    FfmpegCodec  *pffmpegCodec = new FfmpegCodec;
+    if(type.compare("h264")==0)
+        pffmpegCodec->vNakedStreamDecodeInit(AV_CODEC_ID_H264);
+    else if(type.compare("h265")==0)
+        pffmpegCodec->vNakedStreamDecodeInit(AV_CODEC_ID_H265);
+
+    pffmpegCodec->aNakedStreamDecodeInit(AV_CODEC_ID_PCM_ALAW,AV_SAMPLE_FMT_S16,8000,1);
+    pffmpegCodec->resetSample(AV_CH_LAYOUT_MONO,AV_CH_LAYOUT_MONO,8000,44100,AV_SAMPLE_FMT_S16,AV_SAMPLE_FMT_S16,160);
+
+    if(m_readThread != nullptr)
+        connect(m_readThread,&QThread::finished,pffmpegCodec,&FfmpegCodec::deleteLater);
+    return pffmpegCodec;
 }
 
 void XVideo::fun_sendCommonPar(QVariantMap map)
@@ -160,19 +165,7 @@ void XVideo::fun_setIraInfo(QVariantMap map)
 
 void XVideo::fun_getInitPar()
 {
-    qDebug()<<"fun_getInitPar";
-    QMap<QString,QVariant> map;
-    //    map.insert("cmd","getinftempmodel");
-    //    emit signal_httpParSet(map);
 
-    //    map.insert("cmd","getosdparam");
-    //    emit signal_httpParSet(map);
-
-    //    map.insert("cmd","setcurrenttime");
-    //    emit signal_httpParSet(map);
-
-    //    map.insert("cmd","getiradinfo");
-    //    emit signal_httpParSet(map);
 }
 
 
@@ -183,6 +176,7 @@ void XVideo::createTcpThread()
         m_readThread = new QThread;
 
         connect(worker,&TcpWorker::signal_sendH264,this,&XVideo::slot_recH264,Qt::DirectConnection);
+        connect(worker,&TcpWorker::signal_sendH265,this,&XVideo::slot_recH265,Qt::DirectConnection);
         connect(this,&XVideo::signal_connentSer,worker,&TcpWorker::creatNewTcpConnect);
         connect(worker,&TcpWorker::signal_connected,this,&XVideo::slot_tcpConnected);
 
@@ -199,8 +193,8 @@ void XVideo::slot_tcpConnected()
 {
 
 
-   if(!timerUpdate.isActive())
-       timerUpdate.start();
+    if(!timerUpdate.isActive())
+        timerUpdate.start();
     emit signal_connected(true,m_ip);
     createHttpApi();
 }
@@ -252,7 +246,7 @@ void XVideo::createSearchIp()
         connect(psearch,&MySearch1::signal_sendDeviceinfo,this,&XVideo::recSearchDeviceinfo);
 
     }
-  psearch->createSearch();
+    psearch->createSearch();
 }
 
 void XVideo::recSearchDeviceinfo(QVariantMap info)
@@ -392,16 +386,43 @@ void XVideo::fun_setRectPar(int sx,int sy,int sw,int sh,int pw,int ph){
     DebugLog::getInstance()->writeLog(pos4);
 }
 
+
+
 //tcpworker 线程
 void XVideo::slot_recH264(char* h264Arr,int arrlen,quint64 time)
 {
-    // qDebug()<<QString(__FUNCTION__) + " "+QString::number(__LINE__)<<"  "<<QThread::currentThreadId() ;
-    createFFmpegDecodec();
-    if(pffmpegCodec != nullptr){
+
+    if(pffmpegCodecH264 == nullptr)
+       pffmpegCodecH264 = createFFmpegDecodec("h264");
+
+
+    if(pffmpegCodecH264 != nullptr){
 
         QImage *Img = nullptr;
-        if(pffmpegCodec != nullptr){
-            Img = pffmpegCodec->decodeVFrame((unsigned char*)h264Arr,arrlen);
+        if(pffmpegCodecH264 != nullptr){
+            Img = pffmpegCodecH264->decodeVFrame((unsigned char*)h264Arr,arrlen);
+            if (Img != nullptr )
+            {
+                mMutex.lock();
+                if(listBuffImg.size() < maxBuffLen)
+                    listBuffImg.append(Img);
+                else
+                    delete Img;
+                mMutex.unlock();
+            }
+        }
+    }
+}
+
+void XVideo::slot_recH265(char* h264Arr,int arrlen,quint64 time)
+{
+    if(pffmpegCodecH265 == nullptr)
+     pffmpegCodecH265 = createFFmpegDecodec("h265");
+    if(pffmpegCodecH265 != nullptr){
+
+        QImage *Img = nullptr;
+        if(pffmpegCodecH265 != nullptr){
+            Img = pffmpegCodecH265->decodeVFrame((unsigned char*)h264Arr,arrlen);
             if (Img != nullptr )
             {
                 mMutex.lock();
@@ -417,28 +438,28 @@ void XVideo::slot_recH264(char* h264Arr,int arrlen,quint64 time)
 
 //由红外控制ui更新
 void XVideo::fun_setListRect(QVariant var){
-//    //qDebug()<<"tcp 流线程 fun_setListRect:"<<QThread::currentThreadId()<<"    "<<var.toList();
-//    if(mMutex.tryLock()){
+    //    //qDebug()<<"tcp 流线程 fun_setListRect:"<<QThread::currentThreadId()<<"    "<<var.toList();
+    //    if(mMutex.tryLock()){
 
-//        if(listBuffImg.size()>0){
-//            if(pRenderImginfo.pImg != nullptr){
-//                delete pRenderImginfo.pImg;
-//                pRenderImginfo.pImg = nullptr;
-//            }
-//            QImage *img = listBuffImg.takeFirst();
-//            pRenderImginfo.pImg = img;
-//        }
-//        mMutex.unlock();
-//    }
+    //        if(listBuffImg.size()>0){
+    //            if(pRenderImginfo.pImg != nullptr){
+    //                delete pRenderImginfo.pImg;
+    //                pRenderImginfo.pImg = nullptr;
+    //            }
+    //            QImage *img = listBuffImg.takeFirst();
+    //            pRenderImginfo.pImg = img;
+    //        }
+    //        mMutex.unlock();
+    //    }
 
-//    if(pRenderImginfo.pImg == nullptr)
-//        return;
+    //    if(pRenderImginfo.pImg == nullptr)
+    //        return;
 
-//    //如果不增加这句代码 ，则会出现视频不会第一时间显示，而是显示灰色图像
-//    if(!isFirstData){
-//        emit signal_loginStatus("Get the stream successfully");
-//        isFirstData = true;
-//    }
+    //    //如果不增加这句代码 ，则会出现视频不会第一时间显示，而是显示灰色图像
+    //    if(!isFirstData){
+    //        emit signal_loginStatus("Get the stream successfully");
+    //        isFirstData = true;
+    //    }
 
     pRenderImginfo.listRect.clear();
     if(var.toList().size() > 0){
@@ -509,8 +530,10 @@ XVideo::~XVideo()
         m_readThread->quit();
     }
 
-    if(pffmpegCodec != nullptr)
-        pffmpegCodec->deleteLater();
+    if(pffmpegCodecH264 != nullptr)
+        pffmpegCodecH264->deleteLater();
+    if(pffmpegCodecH265 != nullptr)
+        pffmpegCodecH265->deleteLater();
 
     if(httpDevice != nullptr){
 

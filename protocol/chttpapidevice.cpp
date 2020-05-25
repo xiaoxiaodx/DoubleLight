@@ -31,10 +31,10 @@ void CHttpApiDevice::slot_destoryConnect()
 {
     qDebug()<<" slot_destoryConnect ";
     if(g_tcpsocket != NULL){
-         qDebug()<<" slot_destoryConnect 1";
+        qDebug()<<" slot_destoryConnect 1";
         if(SendTimer != nullptr){
 
-             qDebug()<<" slot_destoryConnect 2";
+            qDebug()<<" slot_destoryConnect 2";
             disconnect(g_tcpsocket, SIGNAL(readyRead()), this, SLOT(slot_ReadMsg()));
 
             disconnect(SendTimer,&QTimer::timeout,this,&CHttpApiDevice::slot_sendtimerout);
@@ -54,7 +54,7 @@ void CHttpApiDevice::slot_destoryConnect()
 
             SendTimer = nullptr;
             reconnectTimer = nullptr;
-             qDebug()<<" slot_destoryConnect 5";
+            qDebug()<<" slot_destoryConnect 5";
         }
 
     }
@@ -338,9 +338,10 @@ int CHttpApiDevice::HttpMsgCallBack(char * pData) {
             }else if("getalarmparam" == cmd){
 
                 callbackMap.insert("alarmaudiooutenabled",object.value("data").toObject().value("alarmaudiooutenabled").toInt());
+            }else if("getvideoencodeparam" == cmd){
+
+                callbackMap.insert("encoding",object.value("data").toObject().value("encoding").toString());
             }
-            //            emit signal_MsgReply(cmd);
-            //            qDebug()<<"signal_ReadMsg   ";
 
             DebugLog::getInstance()->writeLog("callbackMap:"+callbackMap.value("cmd").toString());
             emit signal_ReadMsg(callbackMap);
@@ -529,10 +530,68 @@ bool CHttpApiDevice::send_httpParSet(QMap<QString,QVariant> map)
         HttpSetMeasureRect(map);
     }else if(cmd.compare("setalarmparam")==0){
         HttpSetalarmparam(map);
+    }else if(cmd.compare("setvideoencodeparam")==0){
+        HttpSetVideoEncode(map);
+    }else if(cmd.compare("getvideoencodeparam")==0){
+        HttpGetVideoEncode(map);
     }else
         httpSendCommonCmd(cmd,msgid);
 
 }
+
+void CHttpApiDevice::HttpGetVideoEncode(QVariantMap value){
+
+    JsonMsg_T info;
+    sprintf(info.cmd, "%s", "getvideoencodeparam");
+    sprintf(info.msgID, "%s", value.value("msgid").toString().toLatin1().data());
+    sprintf(info.method, "%s", "request");
+    sprintf(info.ssionID, "%s", "");
+
+    if(!strlen(this->sessionId)) {
+        qDebug() <<"ssionId error "<<sessionId;
+        return ;
+    }
+
+    sprintf(info.ssionID, "%s", this->sessionId);
+
+    QJsonObject msgObject;
+    QJsonObject dataObj;
+
+    CjsonMakeHttpHead(&msgObject, &info);
+
+    dataObj.insert("chn",0);
+    msgObject.insert("data", QJsonValue(dataObj));
+
+    SendRequestMsg(msgObject);
+}
+
+void CHttpApiDevice::HttpSetVideoEncode(QVariantMap value)
+{
+    JsonMsg_T info;
+    sprintf(info.cmd, "%s", "setvideoencodeparam");
+    sprintf(info.msgID, "%s", value.value("msgid").toString().toLatin1().data());
+    sprintf(info.method, "%s", "request");
+    sprintf(info.ssionID, "%s", "");
+
+    if(!strlen(this->sessionId)) {
+        qDebug() <<"ssionId error "<<sessionId;
+        return ;
+    }
+
+    sprintf(info.ssionID, "%s", this->sessionId);
+
+    QJsonObject msgObject;
+    QJsonObject dataObj;
+
+    CjsonMakeHttpHead(&msgObject, &info);
+
+    dataObj.insert("chn",0);
+    dataObj.insert("encoding",value.value("encoding").toString());
+    msgObject.insert("data", QJsonValue(dataObj));
+
+    SendRequestMsg(msgObject);
+}
+
 
 void CHttpApiDevice::HttpSetalarmparam(QVariantMap value){
     JsonMsg_T info;
@@ -558,6 +617,7 @@ void CHttpApiDevice::HttpSetalarmparam(QVariantMap value){
 
     SendRequestMsg(msgObject);
 }
+
 void CHttpApiDevice::HttpSetMeasureRect(QVariantMap value)
 {
     JsonMsg_T info;

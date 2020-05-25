@@ -354,6 +354,58 @@ void TcpWorker::parseRecevieData()
                 continue;
             }
         }
+        if(mediaDataType == MediaType_H265)
+        {
+            needlen = 28;
+
+            if(!isSaveVideoInfo)
+            {
+                if(readDataBuff.length() >= needlen)
+                {
+                    m_streamDateLen = saveVideoInfo(readDataBuff);
+                    isSaveVideoInfo = true;
+                    if(m_streamDateLen > videoFrameMaxLen || m_streamDateLen <0)
+                    {
+                        qDebug()<<"视频帧数据长度异常:"<<m_streamDateLen;
+                        resetAVFlag();
+                        continue;
+                    }
+                }else
+                    continue;
+            }
+
+            needlen = m_streamDateLen;
+
+            if(readDataBuff.length()>=needlen)
+            {
+
+                //emit signal_writeMediaVideoQueue(readDataBuff.data(),m_streamDateLen,infoV,MediaDataProcess::mMediaVeidoType);
+
+                quint64 ptsH = 0x00000000ffffffff & infoV.highPts;
+                quint64 ptsL = 0x00000000ffffffff & infoV.lowPts;
+                quint64 pts = ptsH *256 *255*256 + ptsL;
+
+               // if(myType == 0)
+                    emit signal_sendH265(readDataBuff.data(),m_streamDateLen,pts,vResW,vResH);
+//                else if(myType == 1){
+//                    parseShiGanRgb1(readDataBuff,m_streamDateLen,vResW,vResH);
+//                }else if(myType == 2){
+//                    parseShiGanRgb2(readDataBuff,m_streamDateLen,vResW,vResH);
+//                }
+
+                readDataBuff.remove(0,m_streamDateLen);
+                resetAVFlag();
+
+                needlen = 2;
+
+
+                continue;
+
+            }else{
+
+                continue;
+            }
+        }
         else if(mediaDataType == MediaType_RGB)
         {
             needlen = 28;

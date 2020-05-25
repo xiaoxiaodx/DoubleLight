@@ -9,8 +9,8 @@ DEFINES += QT_DEPRECATED_WARNINGS
 # �汾��Ϣ
 VERSION = 2.0.1
 # ͼ
-RC_ICONS = KANATASAFE.ico
-TARGET=Techware_Systems
+RC_ICONS = myicon11.ico
+TARGET=VMukti_VMS
 # ��˾����
 QMAKE_TARGET_COMPANY = " "
 
@@ -82,7 +82,6 @@ HEADERS += \
     protocol/chttpapidevice.h \
     protocol/mysearch1.h \
     protocol/tcpworker.h \
-    util/common.h \
     playVideo/xvideotemp.h \
     recordVideo/captureScreen/writeh264.h \
     qmlcplus/warnmodeldata.h \

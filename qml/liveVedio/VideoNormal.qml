@@ -456,6 +456,9 @@ Rectangle {
             //deviceconfig.setSwitchTime(enable)
 //            map.cmd = "getosdparam"
 //            video.fun_sendCommonPar(map);
+
+            deviceconfig.getiradInfo();
+
             map.cmd = "setcurrenttime"
             video.fun_sendCommonPar(map);
 
@@ -495,6 +498,15 @@ Rectangle {
             var beerenable = smap.alarmaudiooutenabled;
             deviceconfig.setSwitchBeer(beerenable)
 
+        }else if("getvideoencodeparam"=== strcmd){
+
+            console.debug("*****************"  +smap.encoding )
+            deviceconfig.setVideoType(smap.encoding)
+
+        }else if("setvideoencodeparam"=== strcmd){//设置成功
+            //在重新获取
+            map.cmd = "getvideoencodeparam"
+            video.fun_sendCommonPar(map);
         }
     }
 

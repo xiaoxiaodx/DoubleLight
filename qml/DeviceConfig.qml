@@ -1061,6 +1061,8 @@ Rectangle {
         map.cmd = "getalarmparam"
         s_sendcommoncmd(map);
 
+        map.cmd = "getvideoencodeparam"
+        s_sendcommoncmd(map);
     }
 
     //参数修改设置 全在此函数
@@ -1089,9 +1091,22 @@ Rectangle {
         s_sendcommoncmd(map);
 
 
+        var typeStr;
+        if(checkh264.checked)
+            typeStr = "h264"
+        if(checkh265.checked)
+            typeStr = "h265"
+        var map1 = {
+            cmd:"setvideoencodeparam",
+            encoding:typeStr
+        }
+        s_sendcommoncmd(map1);
+
         s_beerSwith(swichBeer.checked)
         s_warnSwith(swichWarn.checked)
         s_timeSwith(swithTime.checked)
+
+
     }
 
     function getUpdateFilePath(){
@@ -1270,6 +1285,22 @@ Rectangle {
         }else if(curDevTypeStr === "d06"){
             return setting.d06showParentH
         }
+    }
+
+    function setVideoType(typeStr){
+
+        if(typeStr === "h264")
+            checkh264.checked = true;
+        else if(typeStr === "h265")
+            checkh265.checked = true;
+    }
+
+    function getVideoType(){
+
+        if(checkh264.checked)
+            return "h264"
+        if(checkh265.checked)
+            return "h265"
     }
 
 

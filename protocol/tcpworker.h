@@ -90,6 +90,7 @@ signals:
 
     //void signal_sendImg(QImage *pimg);
     void signal_sendH264(char* vH264Arr,int arrLen,long long pts,int resw,int resh);
+    void signal_sendH265(char* vH264Arr,int arrLen,long long pts,int resw,int resh);
     void signal_connected();
     void signal_sendImg(QImage *img,int len,quint64 time,int resw,int resh);
 
