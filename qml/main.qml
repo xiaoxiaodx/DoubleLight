@@ -55,6 +55,14 @@ Window {
         console.debug("visibly change "+visibility)
     }
 
+
+    ListModel{
+        id:pushwarnmodel
+        property int numberOfPeople : 0
+        property int numberOfNormalPeople: 0
+        property int numberOfAbnormalTemperaturePeople: 0
+        property int numberOfNoMaskPeople: 0
+    }
     MainContent{
         id:maincontent
         width: parent.width

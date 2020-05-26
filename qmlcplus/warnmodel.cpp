@@ -102,7 +102,7 @@ void WarnModel::removeAll()
 
         WarnModelData *date = m_listWarn.takeFirst();
 
-//        QFile::remove(date->absolutePath());
+        //        QFile::remove(date->absolutePath());
         if(date != nullptr || date != NULL || date)
             delete  date;
 
@@ -134,7 +134,7 @@ void WarnModel::funDeleteIndex(int index)
     if(file.open(QIODevice::WriteOnly)){
         for (int i=m_listWarn.size()-1;i>=0;i--) {
             WarnModelData *modelData = m_listWarn.at(i);
-            QString imgInfoStr = modelData->absolutePath()+" "+modelData->warnTemp()+" "+modelData->imgName()+".png";
+            QString imgInfoStr = modelData->absolutePath()+" "+modelData->warnTemp()+" "+modelData->imgName()+".jpeg";
             QTextStream out(&file);
             out <<imgInfoStr << "\n";
         }
@@ -174,7 +174,7 @@ void WarnModel::funFlushWarnInfo(QString capturePath,QString logFileName)//这�
             QString absolutepath = strlist[0];
             QString fileName = strlist[2];
             QString temp = strlist[1];
-            QString datetime = fileName.remove(".png");
+            QString datetime = fileName.remove(".jpeg");
             QStringList datetStr = datetime.split("_");
             if(datetStr.size() != 2){
                 DebugLog::getInstance()->writeLog("对日期和时间区分时数据异常"+datetStr.size());
@@ -279,7 +279,7 @@ void WarnModel::funDeleteSelect(){
     if(file.open(QIODevice::WriteOnly)){
         for (int i=m_listWarn.size()-1;i>=0;i--) {
             WarnModelData *modelData = m_listWarn.at(i);
-            QString imgInfoStr = modelData->absolutePath()+" "+modelData->warnTemp()+" "+modelData->imgName()+".png";
+            QString imgInfoStr = modelData->absolutePath()+" "+modelData->warnTemp()+" "+modelData->imgName()+".jpeg";
             QTextStream out(&file);
             out <<imgInfoStr << "\n";
         }
@@ -287,6 +287,116 @@ void WarnModel::funDeleteSelect(){
     }
 }
 
+void WarnModel::funProcessPushAlarm(QString path,QVariantMap map)
+{
+
+    //    callbackMap.insert("cmd",cmd);
+    //    callbackMap.insert("msgid",msgid);
+    //    callbackMap.insert("alarmtype",object.value("data").toObject().value("alarmtype").toInt());
+    //    callbackMap.insert("year",object.value("data").toObject().value("alarmtime").toObject().value("year").toInt());
+    //    callbackMap.insert("mouth",object.value("data").toObject().value("alarmtime").toObject().value("month").toInt());
+    //    callbackMap.insert("day",object.value("data").toObject().value("alarmtime").toObject().value("day").toInt());
+    //    callbackMap.insert("hour",object.value("data").toObject().value("alarmtime").toObject().value("hour").toInt());
+    //    callbackMap.insert("min",object.value("data").toObject().value("alarmtime").toObject().value("min").toInt());
+    //    callbackMap.insert("sec",object.value("data").toObject().value("alarmtime").toObject().value("sec").toInt());
+    //    callbackMap.insert("temperature",object.value("data").toObject().value("temperature").toString().toFloat());
+
+
+    QDate tmpDate(map.value("year").toInt(),map.value("month").toInt(),map.value("day").toInt());
+    QTime tmptime(map.value("hour").toInt(),map.value("min").toInt(),map.value("sec").toInt());
+    float warnTemp = map.value("temperature").toFloat();
+    int alarmtype = map.value("alarmtype").toInt();
+    QString imgData = map.value("imagedata").toString();
+
+
+
+    QString datestr = tmpDate.toString("yyyyMMdd");
+
+
+
+    QByteArray imgArrBase64 = imgData.toLatin1();
+    QByteArray imgArr = QByteArray::fromBase64(imgArrBase64);
+
+
+    QDateTime curDateTime(tmpDate,tmptime);
+
+    QString  curDatetimeStr = curDateTime.toString("yyyyMMdd_hhmmss");
+
+    QString desFileDir = path+"/image";
+
+    QString imgAbsolutePath = path+"/image/"+curDatetimeStr+".jpeg";
+
+    QDir dir;
+    if (!dir.exists(desFileDir)){
+        bool res = dir.mkpath(desFileDir);
+        if(res)
+            DebugLog::getInstance()->writeLog("slot_screenShot create new dir is succ");
+        else
+            DebugLog::getInstance()->writeLog("slot_screenShot create new dir is fail");
+    }
+
+    //创建相对路径
+    if(!QDir::setCurrent(desFileDir)){
+        DebugLog::getInstance()->writeLog("slot_screenShot set relative dir is false");
+        return;
+    }
+
+
+    QFile file(imgAbsolutePath);
+    if(file.open(QIODevice::WriteOnly)){
+        file.write(imgArr,imgArr.length());
+        file.close();
+
+        emit signal_sendWarnMsg(alarmtype,imgAbsolutePath,curDateTime.toString("yyyy-MM-dd hh:mm:ss"),warnTemp);
+        if(alarmtype != 80){//不是超温告警  不记录log信息
+            return;
+
+        }
+
+        //存报警图片信息
+        /*  告警名录下 建立一个日志文件夹 一个图片文件夹，
+                    日志文件夹下放30个日志文件，一个日志文件代表一天，
+                    图片文件夹下放入告警抓拍图片
+                */
+        QString warnLogAbsolutePath = path + "/log";
+        QString warnLogAbsoluteFileName = warnLogAbsolutePath + "/"+curDateTime.date().toString("yyyyMMdd")+".log";
+        if(!dir.exists(warnLogAbsolutePath)){
+            bool res = dir.mkpath(warnLogAbsolutePath);
+            if(res)
+                DebugLog::getInstance()->writeLog("slot_screenShot create new log dir is succ");
+            else
+                DebugLog::getInstance()->writeLog("slot_screenShot create new log dir is fail");
+        }
+
+        /*  抓拍是一种频繁的操作 ，为了优化性能，
+            在抓拍时往文件尾写数据，因为抓拍时间都是顺序后延的
+            同时往数据模型前添加数据
+        */
+        QFile imgInfofile(warnLogAbsoluteFileName);
+        if(imgInfofile.open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Append)){
+            QString tempStr = QString::number(warnTemp,'f',2);
+            QString imgInfoStr = imgAbsolutePath+" "+tempStr+" "+curDatetimeStr+".jpeg";
+            QTextStream out(&imgInfofile);
+            out <<imgInfoStr << "\n";
+            imgInfofile.close();
+
+            QString date = curDateTime.toString("yyyy-MM-dd");
+            QString time = curDateTime.toString("hh:mm:ss");
+
+            //是当前日期才加入列表日志
+            if(curDate.compare(datestr)==0){
+                beginInsertRows(QModelIndex(),0,0);
+                m_listWarn.insert(0,new WarnModelData(curSelect,date+" "+time,tempStr,curDatetimeStr,imgAbsolutePath));
+                endInsertRows();
+            }
+
+        }else {
+            DebugLog::getInstance()->writeLog("slot_screenShot open log file is fail");
+            return ;
+        }
+
+    }
+}
 
 bool WarnModel::funScreenShoot(QString path,QQuickWindow *quic,int capx,int capy,int capw,int caph,float warnTemp)
 {
@@ -311,7 +421,7 @@ bool WarnModel::funScreenShoot(QString path,QQuickWindow *quic,int capx,int capy
 
     QString desFileDir = path+"/image";
 
-    QString imgAbsolutePath = path+"/image/"+curDatetimeStr+".png";
+    QString imgAbsolutePath = path+"/image/"+curDatetimeStr+".jpeg";
 
     QDir dir;
     if (!dir.exists(desFileDir)){
@@ -329,7 +439,7 @@ bool WarnModel::funScreenShoot(QString path,QQuickWindow *quic,int capx,int capy
     }
 
 
-    if(!img1.save(curDatetimeStr+".png","PNG")){
+    if(!img1.save(curDatetimeStr+".jpeg","JPEG")){
         DebugLog::getInstance()->writeLog("scrennshot save fail");
         return false;
     }else{
@@ -355,7 +465,7 @@ bool WarnModel::funScreenShoot(QString path,QQuickWindow *quic,int capx,int capy
         QFile imgInfofile(warnLogAbsoluteFileName);
         if(imgInfofile.open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Append)){
             QString tempStr = QString::number(warnTemp,'f',2);
-            QString imgInfoStr = imgAbsolutePath+" "+tempStr+" "+curDatetimeStr+".png";
+            QString imgInfoStr = imgAbsolutePath+" "+tempStr+" "+curDatetimeStr+".jpeg";
             QTextStream out(&imgInfofile);
             out <<imgInfoStr << "\n";
             imgInfofile.close();

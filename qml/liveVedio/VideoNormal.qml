@@ -487,7 +487,7 @@ Rectangle {
                 startWarn(smap.temperature);
             else{
 
-                deviceModel.funProcessPushAlarm(smap);
+                warnmodel.funProcessPushAlarm(smap);
 
             }
 

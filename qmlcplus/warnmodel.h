@@ -26,6 +26,7 @@ public:
     Q_INVOKABLE void funSetInitSelectFalse();//将数据初始化选中属性修改为false
     Q_INVOKABLE void funDeleteSelect();
 
+    Q_INVOKABLE void funProcessPushAlarm(QString path,QVariantMap map);
     //截屏
     Q_INVOKABLE bool funScreenShoot(QString path,QQuickWindow *quic,int capx,int capy,int capw,int caph,float warnTemp);
 
@@ -36,7 +37,8 @@ public:
                  int role = Qt::EditRole) override;
     Qt::ItemFlags flags(const QModelIndex& index) const override;
     virtual QHash<int, QByteArray> roleNames() const override;
-
+signals:
+    void signal_sendWarnMsg(int type,QString path,QString time,float tempvalue);
 private:
     void removeIndex(int index);
     void removeAll();

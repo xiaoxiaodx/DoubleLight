@@ -25,6 +25,17 @@ Rectangle {
     WarnModel{
         id:warnmodel
         // Component.objectName: warnmodel.funFlushWarnInfo(deviceconfig.getScrennShotPath(),curDateStr);
+
+        onSignal_sendWarnMsg:{
+
+            switch(type){
+            case 80:
+                break;
+            }
+
+
+            pushwarnmodel.append({warnTime:time,absolutePath:path,warnTemp:tempvalue})
+        }
     }
 
     function screenShot(path,object,mx,my,mw,mh,temp){

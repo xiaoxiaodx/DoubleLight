@@ -20,7 +20,6 @@ class XVideo : public QQuickPaintedItem
 {
     Q_OBJECT
 public:
-
     Q_INVOKABLE void funStartSearch();
     Q_INVOKABLE void startNormalVideo(float tp,QString deviceip);
     Q_INVOKABLE void fun_timeSwitch(bool isChecked);
@@ -35,7 +34,6 @@ public:
     Q_INVOKABLE void fun_sendCommonPar(QVariantMap map);
     Q_INVOKABLE void fun_temMin(QVariant mvalue);
     Q_INVOKABLE void fun_temOffset(QVariant mvalue);
-
 
     explicit XVideo();
     ~XVideo();
@@ -122,9 +120,8 @@ private:
 
     QVariantList listRectInfo;
 
-
     QList<QVariantMap > listdeivceinfo;
-    float warnTemp ;
+    float warnTemp;
 
     qreal showRectX = 128;
     qreal showRectY = 84;

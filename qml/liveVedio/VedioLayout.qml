@@ -17,7 +17,7 @@ Rectangle {
 
         id: rowlayout
         width: parent.width
-        height: parent.height - mhomeStateBar.height
+        height: parent.height - mhomeStateBar.height - rectlistwarninfo.height
         spacing: 0
 
         VideoNormal{
@@ -62,8 +62,128 @@ Rectangle {
         property int preWidth: 120
         width: parent.width
         height: 217
+        anchors.top: rowlayout.bottom
         color: "#000000"
         z:1
+        Rectangle{
+            id:statisticsPeople
+            width: parent.width
+            height: 37
+            color: "#000000"
+            Rectangle{
+                id:rectnumerTotal
+                width: txtnumberOfPeople.width + 24 + name.width
+                height: parent.height - 10
+                anchors.verticalCenter: parent.verticalCenter
+                anchors.left: parent.left
+                anchors.leftMargin: 10
+                color: "#cc193548"
+                Text {
+                    id: name
+                    text: qsTr("总通行：")
+                    color:"white"
+                    font.pixelSize: 12
+                    anchors.left: parent.left
+                    anchors.leftMargin: 12
+                    anchors.verticalCenter: parent.verticalCenter
+                }
+                Text {
+                    id: txtnumberOfPeople
+                    text: pushwarnmodel.numberOfPeople
+                    anchors.left: name.right
+                    anchors.leftMargin: 2
+                    anchors.verticalCenter: parent.verticalCenter
+                    font.pixelSize: 12
+                    color: "#3B84F6"
+                }
+            }
+
+            Rectangle{
+                id:rectnumerNormal
+                width: txtnumberOfNormalPeople.width + 24 +name1.width
+                height: parent.height - 10
+                anchors.verticalCenter: parent.verticalCenter
+                anchors.left: rectnumerTotal.right
+                anchors.leftMargin: 10
+                color: "#cc193548"
+                Text {
+                    id: name1
+                    text: qsTr("正常：")
+                    color:"white"
+                    font.pixelSize: 12
+                    anchors.left: parent.left
+                    anchors.leftMargin: 12
+                    anchors.verticalCenter: parent.verticalCenter
+                }
+                Text {
+                    id: txtnumberOfNormalPeople
+                    text: pushwarnmodel.numberOfNormalPeople
+                    anchors.left: name1.right
+                    anchors.leftMargin: 2
+                    anchors.verticalCenter: parent.verticalCenter
+                    color: "#179B0E"
+                    font.pixelSize: 12
+                }
+            }
+
+            Rectangle{
+                id:rectnumberOfAbnormalTemperaturePeople
+                width: txtnumberOfAbnormalTemperaturePeople.width + 24 +name2.width
+                height: parent.height - 10
+                anchors.verticalCenter: parent.verticalCenter
+                anchors.left: rectnumerNormal.right
+                anchors.leftMargin: 10
+                color: "#cc193548"
+                Text {
+                    id: name2
+                    text: qsTr("异常：")
+                    color:"white"
+                    font.pixelSize: 12
+                    anchors.left: parent.left
+                    anchors.leftMargin: 12
+                    anchors.verticalCenter: parent.verticalCenter
+                }
+                Text {
+                    id: txtnumberOfAbnormalTemperaturePeople
+                    text: pushwarnmodel.numberOfAbnormalTemperaturePeople
+                    anchors.left: name2.right
+                    anchors.leftMargin: 2
+                    anchors.verticalCenter: parent.verticalCenter
+                    font.pixelSize: 12
+                    color: "#FA3F00"
+                }
+            }
+
+            Rectangle{
+                id:rectnomask
+                width: txtnumberOfAbnormalTemperaturePeople.width + 24 +name3.width
+                height: parent.height - 10
+                anchors.verticalCenter: parent.verticalCenter
+                anchors.left: rectnumberOfAbnormalTemperaturePeople.right
+                anchors.leftMargin: 10
+                color: "#cc193548"
+                Text {
+                    id: name3
+                    text: qsTr("未带口罩：")
+                    color:"white"
+                    font.pixelSize: 12
+                    anchors.left: parent.left
+                    anchors.leftMargin: 12
+                    anchors.verticalCenter: parent.verticalCenter
+                }
+                Text {
+                    id: txtnumberOfNoMaskPeople
+                    text: pushwarnmodel.numberOfNoMaskPeople
+                    anchors.left: name3.right
+                    anchors.leftMargin: 2
+                    anchors.verticalCenter: parent.verticalCenter
+                    font.pixelSize: 12
+                    color: "#EF9D36"
+                }
+            }
+        }
+
+
         ListView{
             width: parent.width
             height: parent.height
@@ -88,7 +208,6 @@ Rectangle {
                         width: parent.width
                         height: 38
                         anchors.bottom: parent.bottom
-
 
                         Text {
                             id:txttemp
@@ -220,6 +339,8 @@ Rectangle {
                 currentIndex = lockPreIndex
         }
     }
+
+
 
     HomeStates{
         id:mhomeStateBar
