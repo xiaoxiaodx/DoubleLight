@@ -314,7 +314,8 @@ Popup {
             return year + " "+getRussianMouth(month);
         case lLithuanian:
             return year + " "+getLithuanianMouth(month);
-
+        case lniboer:
+            return year + " " +getEnglishMouth(month);
 
         }
 
@@ -452,6 +453,8 @@ Popup {
             return getRussianWeekly(week);
         case lLithuanian:
             return getLithuanianWeekly(week);
+        case lniboer:
+            return getNiboerWeekly(week);
         }
 
     }
@@ -473,6 +476,7 @@ Popup {
             return "周日";
         }
     }
+
     function getItalyWeekly(value){
         switch(value){
         case 1:
@@ -549,6 +553,31 @@ Popup {
         }
     }
 
+    function getNiboerWeekly(value){
+        switch(value){
+        case 1:
+            return "सोम";
+        case 2:
+            return "मंगल";
+        case 3:
+            return "बुध";
+        case 4:
+            return "बिहि";
+        case 5:
+            return "शुक्र";
+        case 6:
+            return "शनि";
+        case 7:
+            return "आइत";
+        }
+    }
+
+//    property int ltuerqi: 6
+//    property int ltuerqi1: 7
+//    property int lputaoya: 8
+//    property int lxibanya: 9
+//    property int lfayu: 10
+//    property int lniboer: 11
 
     Connections{
         target: main

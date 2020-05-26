@@ -525,7 +525,6 @@ Rectangle {
                     onClicked: imgpop.close();
                 }
             }
-
         }
     }
 

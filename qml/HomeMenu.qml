@@ -36,7 +36,6 @@ Rectangle {
         //                    height: 50
         //                    source: "qrc:/images/logo12.png"
         //                }
-
         Text {
             id: btnImg
             anchors.left: parent.left
@@ -69,7 +68,6 @@ Rectangle {
 
                 main.curLanguage = setting1.curLindex
                 main.s_setLanguage(setting1.curLindex);
-
             }
 
         }

@@ -119,7 +119,6 @@ Rectangle {
 
     function startWarn(warntemp){
 
-
         if(!deviceconfig.getSwitchWarn())
             return;
 
@@ -132,11 +131,9 @@ Rectangle {
             if(deviceconfig.getSwitchScreenShot())
                 warnmanger.screenShot(deviceconfig.getScrennShotPath(),main,0 ,68,main.width,main.height-68,warntemp)
 
-
             //开启声音
             if(deviceconfig.getSwitchBeer())
                 playWarn.play()
-
         //}
 
     }
