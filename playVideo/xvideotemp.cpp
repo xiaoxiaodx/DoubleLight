@@ -61,11 +61,13 @@ void XVideoTemp::startTemperatureVideo(float tp,QVariant type,QVariant par1,QVar
         //createIRCNet();
         createJ07(m_ip,1);
     }else if (typeStr.compare("J07-S")==0){
-        createJ07(m_ip,1);
+        createJ07(m_ip,1);//rg
     }else if (typeStr.compare("J07")==0){
-        createJ07(m_ip,1);
+        createJ07(m_ip,1);//ARGB32
     }else if (typeStr.compare("J07-I")==0){
-        createJ07(m_ip,2);
+        createJ07(m_ip,2);//rgb32
+    }else if (typeStr.compare("J07-T")==0){
+        createJ07(m_ip,3);//rgb8888
     }else{
         DebugLog::getInstance()->writeLog("------>>> tempVideo type is unknow <<<------");
     }

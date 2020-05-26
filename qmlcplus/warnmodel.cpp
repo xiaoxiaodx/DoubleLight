@@ -287,6 +287,12 @@ void WarnModel::funDeleteSelect(){
     }
 }
 
+void WarnModel::funProcessPushAlarm(QVariantMap map)
+{
+
+
+
+}
 
 bool WarnModel::funScreenShoot(QString path,QQuickWindow *quic,int capx,int capy,int capw,int caph,float warnTemp)
 {
