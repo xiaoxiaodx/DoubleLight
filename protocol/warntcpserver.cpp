@@ -99,8 +99,10 @@ void WarnTcpServer::slot_newConnect(){
 
 void WarnTcpServer::slot_readByte()
 {
-    QByteArray msgdata=cliSocket->readAll();
+    //QByteArray msgdata=cliSocket->readAll();
 
+
+    msgdata.append(cliSocket->readAll());
     qDebug()<<" slot_ReadMsg    msgdata1    "<<QString(msgdata);
 
     HttpMsgCallBack(msgdata.data());
@@ -111,8 +113,11 @@ void WarnTcpServer::slot_readByte()
 int WarnTcpServer::HttpMsgCallBack(char * pData) {
 
     QJsonParseError jsonError;
+
+
+    qDebug()<<"报警推送";
     QJsonDocument doucment = QJsonDocument::fromJson(pData, &jsonError);  // 转化为 JSON 文档
-    if (!doucment.isNull() && (jsonError.error == QJsonParseError::NoError)) {  // 解析未发生错误
+    if (!doucment.isNull() && (jsonError.error == QJsonParseError::NoError)){  // 解析未发生错误
         if (doucment.isObject()) { // JSON 文档为对象
 
             QJsonObject object = doucment.object();  // 转化为对象
@@ -139,8 +144,12 @@ int WarnTcpServer::HttpMsgCallBack(char * pData) {
 
         } else {
             qDebug()<<"not is document !";
+
         }
-    }else {
-        qDebug()<<"parse error ";
+
+        msgdata.clear();
+
+    } else {
+        qDebug()<<"parse error "<<jsonError.error;
     }
 }

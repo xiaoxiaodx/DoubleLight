@@ -475,7 +475,10 @@ Rectangle {
         }
     }
 
+    function funProcessPushAlarm(map){
 
+        warnmodel.funProcessPushAlarm(deviceconfig.getScrennShotPath(),map);
+    }
 
     Popup {
         id: imgpop
@@ -521,7 +524,6 @@ Rectangle {
         }
     }
 
-
     Connections{
         target: askDialog
         onS_CurTypeMsg:{
@@ -533,11 +535,12 @@ Rectangle {
         }
     }
 
-
     Connections{
         target: main
         onS_setLanguage:setLanguage(typeL);
     }
+
+
 
     function setLanguage(type){
 

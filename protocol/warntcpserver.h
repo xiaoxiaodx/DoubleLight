@@ -24,6 +24,8 @@ private:
     QTcpServer *tcpServer = nullptr;
     QTcpSocket *cliSocket = nullptr;
     QString parseStr = "";
+
+    QByteArray msgdata;
 };
 
 #endif // WARNTCPSERVER_H
