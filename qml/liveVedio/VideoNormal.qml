@@ -382,9 +382,8 @@ Rectangle {
         }
         onS_temMin:video.fun_temMin(mvalue);//温度控制阀
         onS_temOffset:video.fun_temOffset(mvalue);//温漂
-
-
     }
+
     //    Connections{
     //        target: videoTemp
     //        onS_sendList:video.fun_setListRect(vmap)
@@ -447,12 +446,9 @@ Rectangle {
                     }
                     video.fun_sendCommonPar(map1)
                 }
-
 //                map.cmd = "getalarmparam"
 //                video.fun_sendCommonPar(map);
-
             }
-
             //deviceconfig.setSwitchTime(enable)
 //            map.cmd = "getosdparam"
 //            video.fun_sendCommonPar(map);
@@ -486,7 +482,15 @@ Rectangle {
             deviceconfig.setTempContrl(tempcontrol)
             deviceconfig.setSwitchWarn(alarmtempEnable)
         }else if(strcmd === "pushalarm"){
-            startWarn(smap.temperature);
+
+            if(smap.imagedata === undefined)//老版本没有这个字段
+                startWarn(smap.temperature);
+            else{
+
+                deviceModel.funProcessPushAlarm(smap);
+
+            }
+
         }else if(strcmd === "update"){
             deviceconfig.updateDevice(smap.did,smap.url)
             // updateprogress.startupLoad(smap.did,smap.url,deviceconfig.getUpdateFilePath)

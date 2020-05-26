@@ -16,7 +16,6 @@ Rectangle {
     border.color: mIsSelected?"#98C5FF":"#252525"
     border.width: 3
 
-
     MouseArea{
         anchors.fill: parent
         //hoverEnabled: true
@@ -26,7 +25,6 @@ Rectangle {
            // mouse.accepted = false
         }
         onDoubleClicked:doubleClick(true);
-
     }
 
 //    Text {
@@ -40,11 +38,8 @@ Rectangle {
 
     XVideoTemp{
         id:video
-
-
         property real whradia: /*0.5625*/ 0.75
         property real hwradia: /*1.778 */ 1.333
-
 
         width:(mPlayRect.width*whradia>mPlayRect.height?mPlayRect.height*hwradia:mPlayRect.width) -6
         height: (mPlayRect.width*whradia>mPlayRect.height?mPlayRect.height:mPlayRect.width*whradia) -6
@@ -53,7 +48,6 @@ Rectangle {
        // height: 156
         anchors.horizontalCenter: mPlayRect.horizontalCenter
         anchors.verticalCenter: mPlayRect.verticalCenter
-
 
         //Component.onCompleted:video.startTemperatureVideo(deviceconfig.getWarnTem(),"D04");
 
@@ -72,8 +66,6 @@ Rectangle {
 
 //                var x1 = mouse.x / kx;
 //                var y1 = mouse.y / ky;
-
-
 //                pos1.text ="pos:"+ x1 +"    "+y1
 //            }
 //        }

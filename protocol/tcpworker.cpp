@@ -607,31 +607,7 @@ void TcpWorker::parseShiGanRgb(QByteArray arr,int arrlen)
 void TcpWorker::parseShiGanRgb1(QByteArray arr,int arrlen,int resw,int resh)
 {
 
-
-    if(pNetMsgTmp == nullptr)
-        pNetMsgTmp = new unsigned char[resw * resh* 4];
-
-    memcpy(pNetMsgTmp,arr.data(),arrlen);
-
-    QImage *pImg = nullptr;
-    try {
-        pImg =  new QImage(pNetMsgTmp, resw,resh, QImage::Format_RGBA8888);
-        // 其它代码
-    } catch ( const std::bad_alloc& e ) {
-        qDebug()<<" 图片分配内存失败";
-        pImg = nullptr;
-    }
-    // qDebug()<<" parseShiGanRgb1 "<<resw<<"  "<<resh<<"  "<<arrlen;
-    emit signal_sendImg(pImg,arrlen,10,resw,resh);
-
-}
-
-
-void TcpWorker::parseShiGanRgb2(QByteArray arr,int arrlen,int resw,int resh)
-{
-
-
-    qDebug()<<" resw    "<<resw<<"  resh:"<<resh;
+    //qDebug()<<"parseShiGanRgb1   "<<arr.length()<<"  "<<arrlen;
     if(pNetMsgTmp == nullptr)
         pNetMsgTmp = new unsigned char[resw * resh* 4];
 
@@ -640,6 +616,30 @@ void TcpWorker::parseShiGanRgb2(QByteArray arr,int arrlen,int resw,int resh)
     QImage *pImg = nullptr;
     try {
         pImg =  new QImage(pNetMsgTmp, resw,resh, QImage::Format_RGB32);
+        // 其它代码
+    } catch ( const std::bad_alloc& e ) {
+        qDebug()<<" 图片分配内存失败";
+        pImg = nullptr;
+    }
+    // qDebug()<<" parseShiGanRgb1 "<<resw<<"  "<<resh<<"  "<<arrlen;
+    emit signal_sendImg(pImg,arrlen,10,resw,resh);
+}
+
+
+void TcpWorker::parseShiGanRgb2(QByteArray arr,int arrlen,int resw,int resh)
+{
+    //qDebug()<<"parseShiGanRgb2   "<<arr.length()<<"  "<<arrlen;
+
+
+    if(pNetMsgTmp == nullptr)
+        pNetMsgTmp = new unsigned char[resw * resh* 4];
+
+    memcpy(pNetMsgTmp,arr.data(),arrlen);
+
+    QImage *pImg = nullptr;
+    try {
+
+        pImg =  new QImage(pNetMsgTmp, resw,resh, QImage::Format_ARGB32);
         // 其它代码
     } catch ( const std::bad_alloc& e ) {
         qDebug()<<" 图片分配内存失败";

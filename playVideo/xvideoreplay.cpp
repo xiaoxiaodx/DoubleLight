@@ -128,9 +128,6 @@ void XVideoReplay::funPlayTimeChange(QString relativePath,QString date,QTime pla
                 yuvArr = yuvfile->readAll();
         timer.start(40);
     }
-
-
-
 }
 
 QString XVideoReplay::findPlayFile(QString relativePath,QString date,QTime time){

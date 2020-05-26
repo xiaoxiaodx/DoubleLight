@@ -119,7 +119,6 @@ int WarnTcpServer::HttpMsgCallBack(char * pData) {
             QString cmd = object.value("cmd").toString();
             QString msgid = object.value("msgid").toString();
 
-
             QMap <QString,QVariant> callbackMap;
             if("pushalarm" == cmd){
                 callbackMap.insert("cmd",cmd);
@@ -132,6 +131,8 @@ int WarnTcpServer::HttpMsgCallBack(char * pData) {
                 callbackMap.insert("min",object.value("data").toObject().value("alarmtime").toObject().value("min").toInt());
                 callbackMap.insert("sec",object.value("data").toObject().value("alarmtime").toObject().value("sec").toInt());
                 callbackMap.insert("temperature",object.value("data").toObject().value("temperature").toString().toFloat());
+                if(object.value("data").toObject().contains("imagedata"))
+                    callbackMap.insert("imagedata",object.value("data").toObject().value("imagedata").toString());
             }
 
             emit signal_WarnMsg(callbackMap);

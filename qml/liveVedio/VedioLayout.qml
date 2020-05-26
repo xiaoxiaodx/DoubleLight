@@ -56,6 +56,66 @@ Rectangle {
         }
     }
 
+    Rectangle{
+        id:rectlistwarninfo
+        property int preHeight: 160
+        property int preWidth: 120
+        width: parent.width
+        height: 217
+        color: "#000000"
+        z:1
+        ListView{
+            width: parent.width
+            height: parent.height
+            orientation:ListView.Horizontal
+            model: pushwarnmodel
+            delegate: Rectangle{
+                width: preWidth + 10
+                height: preHeight + 20
+                color: "#202020"
+                Rectangle{
+
+                    width: preWidth
+                    height: preHeight
+                    anchors.horizontalCenter: parent.width
+                    anchors.verticalCenter: parent.height
+                    Image {
+                        anchors.fill: parent
+                        source: "file:///"+ model.absolutePath
+                    }
+                    Rectangle{
+                        color: "#cc193548"
+                        width: parent.width
+                        height: 38
+                        anchors.bottom: parent.bottom
+
+
+                        Text {
+                            id:txttemp
+                            anchors.horizontalCenter: parent.horizontalCenter
+                            anchors.top: parent.top
+                            anchors.topMargin: 2
+                            font.pixelSize: 14
+                            color: "#FA3F00"
+                            text: model.warnTemp
+                        }
+                        Text {
+                            anchors.horizontalCenter: parent.horizontalCenter
+                            anchors.top: txttemp.bottom
+                            anchors.topMargin: 5
+                            font.pixelSize: 8
+                            color: "#ffffff"
+                            text: model.warnTime
+                        }
+                    }
+                }
+            }
+        }
+
+        layer.enabled: true
+    }
+
+
     Image{
         id:imgWar
         width: 58
