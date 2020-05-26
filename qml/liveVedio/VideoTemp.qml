@@ -116,7 +116,6 @@ Rectangle {
     function tempParCallback(smap){
 
         var cmdType = smap.parType;
-
         if(cmdType === "temp"){
             var num = parseFloat(deviceconfig.getWarnTem()).toFixed(2)
             var tempV = smap.tempValue;
@@ -129,7 +128,6 @@ Rectangle {
             video.fun_recTestRect(smap.x,smap.y,smap.w,smap.h);
         }
     }
-
 
     function updateDate(){
         video.fun_updateDate();

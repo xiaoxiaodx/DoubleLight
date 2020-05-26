@@ -152,7 +152,6 @@ Rectangle {
                 }
             }
 
-
             Text {
                 id: txtEnsure
                 anchors.bottom: parent.bottom
@@ -227,10 +226,8 @@ Rectangle {
             txtEnsure.text = "yes"
             break;
         case lniboer:
-//            txtCancel.text = "रद्ध गर्नुहोस"
-//            txtEnsure.text = "निश्चित गर्नुहोस"
-            txtCancel.text = "no"
-                        txtEnsure.text = "yes"
+            txtCancel.text = "रद्द"
+            txtEnsure.text = "निश्चित"
             break;
         }
     }

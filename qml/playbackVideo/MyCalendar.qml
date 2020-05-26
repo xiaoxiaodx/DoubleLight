@@ -547,8 +547,9 @@ Popup {
         case 7:
             return "Sk.";
         }
-
     }
+
+
     Connections{
         target: main
         onS_setLanguage:setLanguage(typeL);
@@ -601,12 +602,9 @@ Popup {
             txtEnsure.text = "Confirmer"
             break;
         case lniboer:
-            txtCancel.text = "रद्ध गर्नुहोस"
-            txtEnsure.text = "निश्चित गर्नुहोस"
+            txtCancel.text = "रद्द"
+            txtEnsure.text = "निश्चित"
             break;
-
         }
     }
-
-
 }

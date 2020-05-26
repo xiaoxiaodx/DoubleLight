@@ -624,7 +624,6 @@ void TcpWorker::parseH264(QByteArray arr,int arrlen)
 
 }
 
-
 int TcpWorker::byteArr2Int(QByteArray arr)
 {
 

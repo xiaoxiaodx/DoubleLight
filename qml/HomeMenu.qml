@@ -1,6 +1,7 @@
 import QtQuick 2.0
 import "../qml/simpleControl"
 import Qt.labs.settings 1.0
+
 Rectangle {
 
 
@@ -21,20 +22,20 @@ Rectangle {
         width: parent.width - rectLanguage.width -20
         height: parent.height
         color: "#00ffffff"
-//                Image {
-//                    id: btnImg
-//                    anchors.left: parent.left
-//                    anchors.leftMargin: 40
-//        //            anchors.topMargin: 10
-//                    anchors.verticalCenter: parent.verticalCenter
-//        //            anchors.bottom: parent.bottom
-//        //            anchors.bottomMargin: 10
-//        //            width: parent.height - 26
-//        //           parent.height - 26
-//                    width: 160
-//                    height: 50
-//                    source: "qrc:/images/logo12.png"
-//                }
+        //                Image {
+        //                    id: btnImg
+        //                    anchors.left: parent.left
+        //                    anchors.leftMargin: 40
+        //        //            anchors.topMargin: 10
+        //                    anchors.verticalCenter: parent.verticalCenter
+        //        //            anchors.bottom: parent.bottom
+        //        //            anchors.bottomMargin: 10
+        //        //            width: parent.height - 26
+        //        //           parent.height - 26
+        //                    width: 160
+        //                    height: 50
+        //                    source: "qrc:/images/logo12.png"
+        //                }
 
         Text {
             id: btnImg
@@ -131,15 +132,15 @@ Rectangle {
             currentIndex:0
             model: deivcemodel
         }
-//        Image {
-//            id: imgstate
-//            width: 6
-//            height: 6
-//            anchors.left: parent.left
-//            anchors.leftMargin: 8
-//            anchors.verticalCenter: parent.verticalCenter
-//            source: "qrc:/images/state_fail.png"
-//        }
+        //        Image {
+        //            id: imgstate
+        //            width: 6
+        //            height: 6
+        //            anchors.left: parent.left
+        //            anchors.leftMargin: 8
+        //            anchors.verticalCenter: parent.verticalCenter
+        //            source: "qrc:/images/state_fail.png"
+        //        }
         Image {
             id: imgflush
             width: 12
@@ -218,7 +219,7 @@ Rectangle {
             itemLeftMargin:-12
             itemTopMargin:0
             currentIndex:1
-          //  enabled: false
+            //  enabled: false
             model: ListModel{
                 ListElement{showStr:"简体中文"}
                 ListElement{showStr:"English"}
@@ -233,9 +234,6 @@ Rectangle {
                 ListElement{showStr:"Español"}//西班牙
                 ListElement{showStr:"Française"}//法语
                 ListElement{showStr:"नेपाली"}//尼泊尔文
-
-
-
             }
 
             onCurrentIndexChanged:{
@@ -297,10 +295,10 @@ Rectangle {
     }
 
     function setDeviceConnectState(state){
-//        if(state)
-//            imgstate.source ="qrc:/images/state_succ.png"
-//        else
-//            imgstate.source ="qrc:/images/state_fail.png"
+        //        if(state)
+        //            imgstate.source ="qrc:/images/state_succ.png"
+        //        else
+        //            imgstate.source ="qrc:/images/state_fail.png"
 
     }
     function addDeviceInfo(str){

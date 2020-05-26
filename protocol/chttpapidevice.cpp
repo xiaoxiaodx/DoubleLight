@@ -787,6 +787,7 @@ void CHttpApiDevice::HttpSetIraInfo(QVariantMap value,QString msgid)
 ////    msgObject.insert("data", QJsonValue(dataObj));
 //    SendRequestMsg(msgObject);
 //}
+#include <QTimeZone>
 void CHttpApiDevice::HttpSetDate(QString msgid)
 {
     JsonMsg_T info ={"setcurrenttime","request","","012345"};
@@ -801,9 +802,17 @@ void CHttpApiDevice::HttpSetDate(QString msgid)
     QJsonObject dataObj;
     QDateTime dateT = QDateTime::currentDateTime();
 
-
     CjsonMakeHttpHead(&msgObject, &info);
-    dataObj.insert("utc", dateT.toUTC().toString("yyyy-MM-ddThh:mm:ssZ"));//设置utc时间，格式："2000-10-10T03:39:44Z"
+
+    QTimeZone currentZone = dateT.timeZone();
+    QString timezoneStr = currentZone.displayName(QTimeZone::StandardTime,QTimeZone::OffsetName);
+    QString timezone = timezoneStr.remove("UTC");
+    qDebug()<<"时区:"<<timezoneStr<<" "<<timezone;
+
+    dataObj.insert("localtime", dateT.toString("yyyy-MM-ddThh:mm:ssZ"));//设置utc时间，格式："2000-10-10T03:39:44Z"
+    dataObj.insert("timezone",timezone);
+
+    msgObject.insert("data", QJsonValue(dataObj));
     msgObject.insert("data", QJsonValue(dataObj));
     SendRequestMsg(msgObject);
 }
@@ -828,7 +837,9 @@ void CHttpApiDevice::HttpSetOsdParam(int osdTimeEnable,QString msgid){
     dataObj.insert("time", QJsonValue(timeObj));
     msgObject.insert("data", QJsonValue(dataObj));
     SendRequestMsg(msgObject);
+
 }
+
 
 void CHttpApiDevice::HttpGetMotiondetectParam(){
 
