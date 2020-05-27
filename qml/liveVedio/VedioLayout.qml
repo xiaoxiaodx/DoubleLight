@@ -367,6 +367,42 @@ Rectangle {
         }
     }
 
+    Connections{
+        target: main
+        onS_setLanguage:setLanguage(typeL);
+    }
 
+
+    function setLanguage(type){
+
+        console.debug("setLanguage "+type)
+        var index = 0;
+        switch(type){
+        case lEnglish:
+            name3.text =  "Amount："
+            name2.text =  "Normal："
+            name1.text = "Alarm："
+            name.text = "No mask："
+            break;
+        case lKorean:
+
+            break;
+        case lItaly:
+
+            break;
+        case lChinese:
+            name3.text =  "未带口罩："
+            name2.text =  "异常："
+            name1.text = "正常："
+            name.text = "总通行："
+            break;
+        case lRussian:
+
+            break;
+        case lLithuanian:
+
+            break;
+        }
+    }
 
 }

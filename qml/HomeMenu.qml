@@ -12,6 +12,7 @@ Rectangle {
 
     Settings {
         id:setting1
+        fileName: "config.ini"
         property alias curLindex: cmb.currentIndex
     }
 

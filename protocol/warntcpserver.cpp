@@ -92,14 +92,14 @@ void WarnTcpServer::slot_newConnect(){
 
 
     cliSocket = tcpServer->nextPendingConnection();
-  //  cliSocket->bind(cliSocket->peerPort(),QAbstractSocket::ReuseAddressHint);
+    //  cliSocket->bind(cliSocket->peerPort(),QAbstractSocket::ReuseAddressHint);
     connect(cliSocket,&QTcpSocket::readyRead,this,&WarnTcpServer::slot_readByte);
     //get client's ip and port
 
-//    QString cli_ip = cliSocket->peerAddress().toString();
-//    quint16 cli_port = cliSocket->peerPort();
-//    QString temp = QString("[%1:%2 connect success]").arg(cli_ip).arg(cli_port);
-//    qDebug() << temp;
+    //    QString cli_ip = cliSocket->peerAddress().toString();
+    //    quint16 cli_port = cliSocket->peerPort();
+    //    QString temp = QString("[%1:%2 connect success]").arg(cli_ip).arg(cli_port);
+    //    qDebug() << temp;
 }
 
 void WarnTcpServer::slot_readByte()
@@ -107,15 +107,97 @@ void WarnTcpServer::slot_readByte()
     QByteArray msgdata1=cliSocket->readAll();
 
 
-   // msgdata.append(cliSocket->readAll());
+    // msgdata.append(cliSocket->readAll());
     qDebug()<<" slot_ReadMsg    msgdata1    "<<msgdata1.length();
-    qDebug()<<" slot_ReadMsg    msgdata1    "<<QString(msgdata1);
+    qDebug()<<" slot_ReadMsg    msgdata1    "<<msgdata1.toHex();
 
     HttpMsgCallBack(msgdata1);
 }
 
+
+
+
+typedef struct _SuitProtocolMsgHead_T{
+    unsigned char sysncHead0;
+    unsigned char sysncHead1;
+    unsigned char cmd;
+    unsigned char staty0;
+    unsigned int msgLen;
+}SuitProtocolMsgHead_T;
+
+typedef struct _PushFaceAlarmMsg_T
+{
+    E_ALARMTYPE  alarmType;
+    Time_T alarmTime;
+    float temperature;
+    int datalen;
+}PushFaceAlarmMsg_T;
+
 #include <QJsonParseError>
 #include <QJsonObject>
+
+void WarnTcpServer::HttpMsgCallBack1(QByteArray arr)
+{
+
+    msgdata.append(arr);
+    int needlen = 8;
+
+    while(msgdata.length() >= needlen)
+    {
+
+        if(!isFindHead)
+        {
+
+            if(msgdata.at(0) == D_SYNCDATA_HEAD0 && msgdata.at(1)==D_SYNCDATA_HEAD1)
+            {
+
+                qDebug()<<"find head ";
+                isFindHead = true;
+
+                int i1 = msgdata.at(4) & 0x000000ff;
+                int i2 = msgdata.at(5) & 0x000000ff;
+                int i3 = msgdata.at(6) & 0x000000ff;
+                int i4 = msgdata.at(7) & 0x000000ff;
+
+                needlen = i1+ i2*256 + i3*256*256 + i4*256*256*256;
+                msgdata.remove(0,8);
+            }else {
+                msgdata.remove(0,1);
+                continue;
+            }
+        }
+
+
+        QMap <QString,QVariant> callbackMap;
+
+
+        PushFaceAlarmMsg_T *faceAlarm = (PushFaceAlarmMsg_T*)msgdata.data();
+
+        qDebug()<<"faceAlarm->datalen"<<faceAlarm->datalen;
+
+        callbackMap.insert("alarmtype",faceAlarm->alarmType);
+        callbackMap.insert("year",faceAlarm->alarmTime.curTime.year);
+        callbackMap.insert("month",faceAlarm->alarmTime.curTime.month);
+        callbackMap.insert("day",faceAlarm->alarmTime.curTime.day);
+        callbackMap.insert("hour",faceAlarm->alarmTime.curTime.hour);
+        callbackMap.insert("min",faceAlarm->alarmTime.curTime.min);
+        callbackMap.insert("sec",faceAlarm->alarmTime.curTime.sec);
+        callbackMap.insert("temperature",faceAlarm->temperature);
+
+        QByteArray imgarr;
+        imgarr = msgdata.mid(44,faceAlarm->datalen);
+
+        callbackMap.insert("imagedata",imgarr);
+
+        emit signal_WarnMsg(callbackMap);
+
+        msgdata.remove(0,needlen);
+
+        isFindHead = false;
+        needlen = 8;
+    }
+}
+
 int WarnTcpServer::HttpMsgCallBack(QByteArray arr) {
 
     QJsonParseError jsonError;
@@ -165,7 +247,6 @@ int WarnTcpServer::HttpMsgCallBack(QByteArray arr) {
             }
 
             emit signal_WarnMsg(callbackMap);
-
         } else {
             qDebug()<<"not is document !";
 
