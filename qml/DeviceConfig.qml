@@ -88,7 +88,7 @@ Rectangle {
         property alias updateFilePath:inputUpdatePath.text
 
         //irc 图像选择
-        property alias ircImgColorType: cmbImgSelect.currentIndex
+       // property alias ircImgColorType: cmbImgSelect.currentIndex
 
         property string tcpip:"192.168.1.188"
         property bool isOpenAdjustRect: true
@@ -782,50 +782,50 @@ Rectangle {
                 anchors.horizontalCenter: parent.horizontalCenter
             }
 
-            Text {
-                id: txtImageSelect
-                font.pixelSize: fontSize
-                text: qsTr("图像选择")
-                color: fontColor
-                visible: curDevTypeStr==="f03"
-                anchors.right: cmbImgSelect.left
-                anchors.rightMargin: 20
-                anchors.verticalCenter: cmbImgSelect.verticalCenter
-            }
+//            Text {
+//                id: txtImageSelect
+//                font.pixelSize: fontSize
+//                text: qsTr("图像选择")
+//                color: fontColor
+//                visible: curDevTypeStr==="f03"
+//                anchors.right: cmbImgSelect.left
+//                anchors.rightMargin: 20
+//                anchors.verticalCenter: cmbImgSelect.verticalCenter
+//            }
 
-            MyComBox{
-                id:cmbImgSelect
-                width:88
-                height: 28
-                visible: curDevTypeStr==="f03"
-                anchors.left: line4.left
-                anchors.leftMargin: parSetFirstAlignLine
-                anchors.top: line4.bottom
-                anchors.topMargin: 20
-                contentBg: "#ffffff"
-                itemColorBgNor:"#FFFFFF"
-                itemColorBgHoverd: "#E7EAF1"
-                indicatorImgSrc:"qrc:/images/imgTypeSelect.png"
-                indicatorW: 9
-                indicatorH: 5
-                itemLeftMargin:0
-                itemTopMargin:0
-                itemFontColor: "#5A5E66"
-                contentFontColor: "#a6000000"
-                contentFontSize: fontSize
-                bordColor:"#DEDFE3"
-                mRadius:2
-                model: ListModel{
-                    ListElement{showStr:"黑白"}
-                    ListElement{showStr:"彩色"}
-                }
-                onCurrentIndexChanged: {
+//            MyComBox{
+//                id:cmbImgSelect
+//                width:88
+//                height: 28
+//                visible: curDevTypeStr==="f03"
+//                anchors.left: line4.left
+//                anchors.leftMargin: parSetFirstAlignLine
+//                anchors.top: line4.bottom
+//                anchors.topMargin: 20
+//                contentBg: "#ffffff"
+//                itemColorBgNor:"#FFFFFF"
+//                itemColorBgHoverd: "#E7EAF1"
+//                indicatorImgSrc:"qrc:/images/imgTypeSelect.png"
+//                indicatorW: 9
+//                indicatorH: 5
+//                itemLeftMargin:0
+//                itemTopMargin:0
+//                itemFontColor: "#5A5E66"
+//                contentFontColor: "#a6000000"
+//                contentFontSize: fontSize
+//                bordColor:"#DEDFE3"
+//                mRadius:2
+//                model: ListModel{
+//                    ListElement{showStr:"黑白"}
+//                    ListElement{showStr:"彩色"}
+//                }
+//                onCurrentIndexChanged: {
 
-                    //                    curLanguage = currentIndex
-                    //                    main.s_setLanguage(currentIndex);
-                    s_temImage(currentIndex);
-                }
-            }
+//                    //                    curLanguage = currentIndex
+//                    //                    main.s_setLanguage(currentIndex);
+//                    s_temImage(currentIndex);
+//                }
+//            }
 
             Text {
                 id: txtUpdateFile
