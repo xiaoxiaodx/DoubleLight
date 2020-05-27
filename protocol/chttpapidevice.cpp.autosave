@@ -350,7 +350,7 @@ int CHttpApiDevice::HttpMsgCallBack(char * pData) {
                 callbackMap.insert("hue",object.value("data").toObject().value("hue").toInt());
                 callbackMap.insert("sharpness",object.value("data").toObject().value("sharpness").toInt());
                 callbackMap.insert("wdr",object.value("data").toObject().value("wdr").toInt());
-
+                
             }
             //            emit signal_MsgReply(cmd);
             //            qDebug()<<"signal_ReadMsg   ";

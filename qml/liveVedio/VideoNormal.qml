@@ -472,6 +472,7 @@ Rectangle {
             var tempdrift = smap.tempdrift;
             var tempcontrol = smap.tempcontrol;
             var osdenable = smap.osdenable;
+            var tempdisplay = smap.tempdisplay;
 
             deviceconfig.tempcontrolcapMax = tempcontrolcaplevelMax
             deviceconfig.tempcontrolcapMin = tempcontrolcaplevelMin;
@@ -482,6 +483,7 @@ Rectangle {
             deviceconfig.setSwitchTime(osdenable)
             deviceconfig.setTempContrl(tempcontrol)
             deviceconfig.setSwitchWarn(alarmtempEnable)
+
         }else if(strcmd === "pushalarm"){
             startWarn(smap.temperature);
         }else if(strcmd === "update"){
@@ -494,6 +496,8 @@ Rectangle {
         }else if("getalarmparam" === strcmd){
             var beerenable = smap.alarmaudiooutenabled;
             deviceconfig.setSwitchBeer(beerenable)
+        }else if("getimagparam" === strcmd){
+
 
         }
     }

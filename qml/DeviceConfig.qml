@@ -45,6 +45,15 @@ Rectangle {
     property int tempdriftcapMin: -2
     property int tempcontrolcapMax: 6
     property int tempcontrolcapMin: 0
+
+
+    property int imagparammirror: -1
+    property int imagparamflip: -1
+    property int imagparambrightness: -1
+    property int imagparamcolorsaturation:-1
+    property int imagparamcontrast: -1
+    property int imagparamhue: -1
+
     Settings {
         id:setting
 
@@ -210,7 +219,7 @@ Rectangle {
                 height: 1
                 color: "#e2e2e2"
                 anchors.top: parent.top
-                anchors.topMargin: 187
+                anchors.topMargin: 167
                 anchors.horizontalCenter: parent.horizontalCenter
             }
 
@@ -253,7 +262,6 @@ Rectangle {
                     isReadOnly:true
                     onTextChanged: {
                         s_temOffset(inputTempDrift.text);
-
                     }
                 }
                 Image {
@@ -314,7 +322,6 @@ Rectangle {
             //                anchors.left: rectTempDrift.right
             //                anchors.topMargin: 6
             //            }
-
             ////////////
             Text {
                 id: txtTempMin
@@ -324,7 +331,6 @@ Rectangle {
                 anchors.right: rectTempMin.left
                 anchors.rightMargin: 20
                 anchors.verticalCenter: rectTempMin.verticalCenter
-
             }
 
             Rectangle{
@@ -460,6 +466,7 @@ Rectangle {
                     // s_warnSwith(checked)
                 }
             }
+
             Text {
                 id: txtWarnTemSet
                 text: qsTr("告警温度设置")
@@ -468,8 +475,8 @@ Rectangle {
                 anchors.right: inputTem.left
                 anchors.rightMargin: 20
                 anchors.verticalCenter: swichWarn.verticalCenter
-
             }
+
             LineEdit {
                 id: inputTem
                 width: 88
@@ -487,7 +494,6 @@ Rectangle {
                 text: "38"
                 color: "#F8FAFD"
                 onTextChanged: {
-
                     s_temSet(inputTem.text)
                 }
             }
@@ -586,7 +592,6 @@ Rectangle {
                         }
                     }
                 }
-
             }
 
             Text {
@@ -597,8 +602,8 @@ Rectangle {
                 anchors.right: swichBeer.left
                 anchors.rightMargin: 20
                 anchors.verticalCenter: swichBeer.verticalCenter
-
             }
+
             SimpleSwich{
                 id:swichBeer
                 width: 30
@@ -608,9 +613,68 @@ Rectangle {
                 anchors.top: line2.bottom
                 anchors.topMargin:218
                 onCheckedChanged:{
-
                     //s_beerSwith(checked)
                 }
+            }
+
+            Text {
+                id: txtKuandongtai
+                text: qsTr("宽动态")
+                font.pixelSize: fontSize
+                color: fontColor
+                anchors.right: swichKuandongtai.left
+                anchors.rightMargin: 20
+                anchors.verticalCenter: swichKuandongtai.verticalCenter
+            }
+
+            SimpleSwich{
+                id:swichKuandongtai
+                width: 30
+                height: 15
+                anchors.left: line2.left
+                anchors.leftMargin: parSetFirstAlignLine
+                anchors.top: line2.bottom
+                anchors.topMargin:265
+            }
+
+            Text {
+                id: labelResolution
+                text: qsTr("温标选择")
+                font.pixelSize: fontSize
+                color: fontColor
+                anchors.right: cmbTempTypeSelect.left
+                anchors.rightMargin: 20
+                anchors.verticalCenter: cmbTempTypeSelect.verticalCenter
+            }
+
+            ListModel{
+                id:reTempTypeSelectModel
+                ListElement{showStr:"℃"}
+                ListElement{showStr:"℉"}
+            }
+
+            MyComBox{
+                id:cmbTempTypeSelect
+                width:88
+                height: 28
+                anchors.left: line2.left
+                anchors.leftMargin: parSetSecondAlignLine
+                anchors.verticalCenter: swichKuandongtai.verticalCenter
+                contentBg: "#ffffff"
+                itemColorBgNor:"#FFFFFF"
+                itemColorBgHoverd: "#E7EAF1"
+                indicatorImgSrc:"qrc:/images/imgTypeSelect.png"
+                indicatorW: 9
+                indicatorH: 5
+                itemLeftMargin:0
+                itemTopMargin:0
+                itemFontColor: "#5A5E66"
+                contentFontColor: "#a6000000"
+                contentFontSize: fontSize
+                bordColor:"#DEDFE3"
+                mRadius:2
+                model: reTempTypeSelectModel
+
             }
 
             Text {
@@ -629,7 +693,7 @@ Rectangle {
                 height: 1
                 color: "#e2e2e2"
                 anchors.top: parent.top
-                anchors.topMargin: 480
+                anchors.topMargin: 530
                 anchors.horizontalCenter: parent.horizontalCenter
             }
 
@@ -689,8 +753,8 @@ Rectangle {
                     txtColor: Qt.rgba(0,0,0,0.65)
                     color: "#F8FAFD"
                     //onTextChanged: s_recordPathSet(inputRecordPath.text)
-
                 }
+
                 Image {
                     id: imgRecordPath
                     width: 16
@@ -777,10 +841,9 @@ Rectangle {
                     ListElement{showStr:"彩色"}
                 }
                 onCurrentIndexChanged: {
-
                     //                    curLanguage = currentIndex
                     //                    main.s_setLanguage(currentIndex);
-                    s_temImage(currentIndex);
+                    //s_temImage(currentIndex);
                 }
             }
 
@@ -794,6 +857,7 @@ Rectangle {
                 anchors.left: line5.left
                 anchors.bottomMargin: 20
             }
+
             Rectangle{
                 id:line5
                 width:parent.width - 20*2
@@ -1041,10 +1105,22 @@ Rectangle {
             alarmtemp:inputTem.text,
             tempdrift:inputTempDrift.text,
             tempcontrol:inputTempMin.text,
+            tempdisplay:cmbTempTypeSelect.currentIndex,
             cmd:"setiradinfo"
         }
         s_sendcommoncmd(map);
 
+        var map1 ={
+            cmd:setimagparam,
+            wdr:swichKuandongtai?1:0,
+            mirror:imagparammirror,
+            flip:imagparamflip,
+            brightness:imagparambrightness,
+            colorsaturation:imagparamcolorsaturation,
+            contrast:imagparamcontrast,
+            hue:imagparamhue
+        }
+        s_sendcommoncmd(map1);
 
         s_beerSwith(swichBeer.checked)
         s_warnSwith(swichWarn.checked)
@@ -1087,6 +1163,11 @@ Rectangle {
     function setSwitchWarn(mvalue)
     {
         swichWarn.checked = mvalue
+    }
+
+    function setSwitchTempdisplay(mvalue)
+    {
+        cmbTempTypeSelect.currentIndex = mvalue
     }
 
     function getSwitchTime(){
