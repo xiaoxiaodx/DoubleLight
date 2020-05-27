@@ -130,7 +130,7 @@ int WarnTcpServer::HttpMsgCallBack(char * pData) {
                 callbackMap.insert("msgid",msgid);
                 callbackMap.insert("alarmtype",object.value("data").toObject().value("alarmtype").toInt());
                 callbackMap.insert("year",object.value("data").toObject().value("alarmtime").toObject().value("year").toInt());
-                callbackMap.insert("mouth",object.value("data").toObject().value("alarmtime").toObject().value("month").toInt());
+                callbackMap.insert("month",object.value("data").toObject().value("alarmtime").toObject().value("month").toInt());
                 callbackMap.insert("day",object.value("data").toObject().value("alarmtime").toObject().value("day").toInt());
                 callbackMap.insert("hour",object.value("data").toObject().value("alarmtime").toObject().value("hour").toInt());
                 callbackMap.insert("min",object.value("data").toObject().value("alarmtime").toObject().value("min").toInt());

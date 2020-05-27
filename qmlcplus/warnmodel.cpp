@@ -302,6 +302,7 @@ void WarnModel::funProcessPushAlarm(QString path,QVariantMap map)
     //    callbackMap.insert("temperature",object.value("data").toObject().value("temperature").toString().toFloat());
 
 
+    qDebug()<<"funProcessPushAlarm********  "<<map.value("year").toInt() <<"    "<<map.value("month").toInt()<<"    "<<map.value("day").toInt();
     QDate tmpDate(map.value("year").toInt(),map.value("month").toInt(),map.value("day").toInt());
     QTime tmptime(map.value("hour").toInt(),map.value("min").toInt(),map.value("sec").toInt());
     float warnTemp = map.value("temperature").toFloat();
@@ -326,6 +327,8 @@ void WarnModel::funProcessPushAlarm(QString path,QVariantMap map)
 
     QString imgAbsolutePath = path+"/image/"+curDatetimeStr+".jpeg";
 
+    qDebug()<<" tmpDate "<<tmpDate<<"   tmptime"<<tmptime;
+
     QDir dir;
     if (!dir.exists(desFileDir)){
         bool res = dir.mkpath(desFileDir);
@@ -345,13 +348,16 @@ void WarnModel::funProcessPushAlarm(QString path,QVariantMap map)
     QFile file(imgAbsolutePath);
     if(file.open(QIODevice::WriteOnly)){
         file.write(imgArr,imgArr.length());
+
+        qDebug()<<"funProcessPushAlarm******** 文件打开:"+imgAbsolutePath;
         file.close();
 
         emit signal_sendWarnMsg(alarmtype,imgAbsolutePath,curDateTime.toString("yyyy-MM-dd hh:mm:ss"),warnTemp);
-        if(alarmtype != 80){//不是超温告警  不记录log信息
-            return;
+//        if(alarmtype != 80){//不是超温告警  不记录log信息
 
-        }
+//            return;
+
+//        }
 
         //存报警图片信息
         /*  告警名录下 建立一个日志文件夹 一个图片文件夹，

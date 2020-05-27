@@ -28,13 +28,11 @@ Rectangle {
 
         onSignal_sendWarnMsg:{
 
-            switch(type){
-            case 80:
-                break;
-            }
+
+            console.debug("**************** onSignal_sendWarnMsg "+path )
 
 
-            pushwarnmodel.append({warnTime:time,absolutePath:path,warnTemp:tempvalue})
+            pushwarnmodel.append({"warnTime":time,"absolutePath":path,"warnTemp":tempvalue.toFixed(2)})
         }
     }
 

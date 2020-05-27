@@ -185,30 +185,32 @@ Rectangle {
 
 
         ListView{
-            width: parent.width
-            height: parent.height
+            width: rectlistwarninfo.width
+            height: rectlistwarninfo.height - statisticsPeople.height
+            anchors.top: statisticsPeople.bottom
             orientation:ListView.Horizontal
             model: pushwarnmodel
             delegate: Rectangle{
-                width: preWidth + 10
-                height: preHeight + 20
+                width: rectlistwarninfo.preWidth + 10
+                height: rectlistwarninfo.preHeight + 20
                 color: "#202020"
                 Rectangle{
-
-                    width: preWidth
-                    height: preHeight
-                    anchors.horizontalCenter: parent.width
-                    anchors.verticalCenter: parent.height
+                    width: rectlistwarninfo.preWidth
+                    height: rectlistwarninfo.preHeight
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    anchors.verticalCenter: parent.verticalCenter
                     Image {
                         anchors.fill: parent
-                        source: "file:///"+ model.absolutePath
+                        source: "file:///"+absolutePath
+
+                        //source: "qrc:/images/arrow_low.png"
+                        //source: "file:///"+"F:/work/doubleLight/build-DoubleLight-Desktop_Qt_5_12_2_MinGW_64_bit-Release/image/111.png"
                     }
                     Rectangle{
                         color: "#cc193548"
                         width: parent.width
                         height: 38
                         anchors.bottom: parent.bottom
-
                         Text {
                             id:txttemp
                             anchors.horizontalCenter: parent.horizontalCenter
@@ -216,7 +218,7 @@ Rectangle {
                             anchors.topMargin: 2
                             font.pixelSize: 14
                             color: "#FA3F00"
-                            text: model.warnTemp
+                            text: warnTemp
                         }
                         Text {
                             anchors.horizontalCenter: parent.horizontalCenter
@@ -224,7 +226,7 @@ Rectangle {
                             anchors.topMargin: 5
                             font.pixelSize: 8
                             color: "#ffffff"
-                            text: model.warnTime
+                            text: warnTime
                         }
                     }
                 }
