@@ -1455,6 +1455,24 @@ Rectangle {
             txtUpdateFile.text = "अपग्रेड गर्नुहोस"
             txtSave.text = "निश्चित गर्नुहोस "
             break;
+        case lKhmer:
+            txtRecordSet.text = "ការកំណត់វីដេអូ"
+            txtRecortPath.text = "កន្លែងផ្ទុកទិន្នន័យ"
+            txtScreenShotPath.text = "កន្លែងផ្ទុកទិន្នន័យ"
+            txtWarnTemSet.text = "កំណត់សីតុណ្ហភាពដែលត្រូវរោទ៍"
+            labelSwitchTime.text = "បង្ហាញពេលវេលា"
+            labelTime.text = "បង្ហាញពេលវេលា"
+            txtparset.text = "ការកំណត់ប៉ារ៉ាម៉ែត្រ"
+            txtSwichBeer.text = "បិទបើកកុងតាក់"
+            txtSwichRecord.text = "វីដេអូ"
+            txtSwichScreenShot.text = "ថតរូប"
+            txtSwichWarn.text = "ប្តូរសម្លេងរោទ៍"
+            txtTempMin.text = "សន្ទះគ្រប់គ្រងសីតុណ្ហភាព"
+            txtTempDrift.text = "ការកំណត់លំហូរសីតុណ្ហភាព"
+            txtUpdate.text = "Upgrade"
+            txtUpdateFile.text = "Upgrade"
+            txtSave.text = "ការកំណត់ប៉ារ៉ាម៉ែត្រ"
+            break;
         }
     }
 }

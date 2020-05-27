@@ -661,13 +661,12 @@ Rectangle {
             //deletetxt.text = "删除"
             break;
         case lEnglish:
-            textitle.text = "Log list";
+            textitle.text = "Log listកំណត់ហេតុការចូលប្រើប្រាស់ឧបករណ៍";
             txtBatchDelete.text = "Batch Remove"
             txtDo.text = "Operation"
             txtWarnTime.text = "Alarm Time"
             txtWarnTemp.text = "Alarm Temperature"
             warnImg.text = "lKhmer"
-            //deletetxt.text = "Remove"
             break;
         }
     }
