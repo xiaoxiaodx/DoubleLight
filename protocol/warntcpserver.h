@@ -11,6 +11,7 @@ class WarnTcpServer : public QObject
 public:
     explicit WarnTcpServer(QObject *parent = nullptr);
 
+    ~WarnTcpServer();
     void createSer(QString ip,int port);
     void destroySer();
 signals:
@@ -20,7 +21,7 @@ public slots:
     void slot_newConnect();
     void slot_readByte();
 private:
-    int HttpMsgCallBack(char * pData);
+    int HttpMsgCallBack(QByteArray arr);
     QTcpServer *tcpServer = nullptr;
     QTcpSocket *cliSocket = nullptr;
     QString parseStr = "";

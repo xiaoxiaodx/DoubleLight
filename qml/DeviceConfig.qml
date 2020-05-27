@@ -1330,6 +1330,7 @@ Rectangle {
             txtUpdate.text = "Upgrade"
             txtUpdateFile.text = "Upgrade"
             txtSave.text = "Settings"
+            txtencodetype.text = "Encoding Style"
             break;
         case lKorean:
             txtRecordSet.text = "비디오 설정"
@@ -1384,6 +1385,7 @@ Rectangle {
             txtUpdate.text = "升级"
             txtUpdateFile.text = "设备升级"
             txtSave.text = "设置"
+            txtencodetype.text = "编码方式"
             break;
         case lRussian:
             txtRecordSet.text = "Настройка записи"

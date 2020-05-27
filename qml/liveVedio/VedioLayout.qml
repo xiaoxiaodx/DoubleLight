@@ -61,7 +61,7 @@ Rectangle {
         property int preHeight: 160
         property int preWidth: 120
         width: parent.width
-        height: 217
+        height: rectlistwarninfo.preHeight + 57
         anchors.top: rowlayout.bottom
         color: "#000000"
         z:1
@@ -200,7 +200,10 @@ Rectangle {
                     anchors.horizontalCenter: parent.horizontalCenter
                     anchors.verticalCenter: parent.verticalCenter
                     Image {
-                        anchors.fill: parent
+                        id:warnimg
+                        width: parent.width
+                        height: parent.width
+
                         source: "file:///"+absolutePath
 
                         //source: "qrc:/images/arrow_low.png"
@@ -209,8 +212,8 @@ Rectangle {
                     Rectangle{
                         color: "#cc193548"
                         width: parent.width
-                        height: 38
-                        anchors.bottom: parent.bottom
+                        height: parent.height-warnimg.height
+                        anchors.top: warnimg.bottom
                         Text {
                             id:txttemp
                             anchors.horizontalCenter: parent.horizontalCenter
@@ -223,7 +226,7 @@ Rectangle {
                         Text {
                             anchors.horizontalCenter: parent.horizontalCenter
                             anchors.top: txttemp.bottom
-                            anchors.topMargin: 5
+                            anchors.topMargin: 3
                             font.pixelSize: 8
                             color: "#ffffff"
                             text: warnTime

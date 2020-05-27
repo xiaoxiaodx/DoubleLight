@@ -29,10 +29,25 @@ Rectangle {
         onSignal_sendWarnMsg:{
 
 
-            console.debug("**************** onSignal_sendWarnMsg "+path )
+            switch(type){
+
+            case 80:
+                pushwarnmodel.numberOfAbnormalTemperaturePeople ++
+                break;
+            case 81:
+                pushwarnmodel.numberOfNormalPeople++
+                break;
+
+            case 82:
+                pushwarnmodel.numberOfNoMaskPeople++
+                break;
+            }
+
+            pushwarnmodel.numberOfPeople ++ ;
 
 
-            pushwarnmodel.append({"warnTime":time,"absolutePath":path,"warnTemp":tempvalue.toFixed(2)})
+            pushwarnmodel.insert(0,{"warnTime":time,"absolutePath":path,"warnTemp":tempvalue.toFixed(2)})
+            //pushwarnmodel.append({"warnTime":time,"absolutePath":path,"warnTemp":tempvalue.toFixed(2)})
         }
     }
 

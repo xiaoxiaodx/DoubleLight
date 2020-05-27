@@ -8,6 +8,11 @@ WarnTcpServer::WarnTcpServer(QObject *parent) : QObject(parent)
 
 }
 
+WarnTcpServer::~WarnTcpServer(){
+
+    destroySer();
+}
+
 void WarnTcpServer::destroySer()
 {
 
@@ -99,24 +104,43 @@ void WarnTcpServer::slot_newConnect(){
 
 void WarnTcpServer::slot_readByte()
 {
-    //QByteArray msgdata=cliSocket->readAll();
+    QByteArray msgdata1=cliSocket->readAll();
 
 
-    msgdata.append(cliSocket->readAll());
-    qDebug()<<" slot_ReadMsg    msgdata1    "<<QString(msgdata);
+   // msgdata.append(cliSocket->readAll());
+    qDebug()<<" slot_ReadMsg    msgdata1    "<<msgdata1.length();
+    qDebug()<<" slot_ReadMsg    msgdata1    "<<QString(msgdata1);
 
-    HttpMsgCallBack(msgdata.data());
+    HttpMsgCallBack(msgdata1);
 }
 
 #include <QJsonParseError>
 #include <QJsonObject>
-int WarnTcpServer::HttpMsgCallBack(char * pData) {
+int WarnTcpServer::HttpMsgCallBack(QByteArray arr) {
 
     QJsonParseError jsonError;
 
+    msgdata.append(arr);
 
-    qDebug()<<"报警推送";
-    QJsonDocument doucment = QJsonDocument::fromJson(pData, &jsonError);  // 转化为 JSON 文档
+    QString tmpJsonStr = QString(msgdata);
+
+    QByteArray jsonArr;
+    QString startFlagStr = "--boundarydonotcrossstart";
+    QString endFlagStr = "--boundarydonotcrossend";
+    if(tmpJsonStr.contains("--boundarydonotcrossstart") && tmpJsonStr.contains("--boundarydonotcrossend")){
+
+        int frameStart = tmpJsonStr.indexOf(startFlagStr);
+        int jsonStart = frameStart + startFlagStr.length();
+        int jsonEnd = tmpJsonStr.indexOf(endFlagStr);
+
+        int frameEndlen = jsonEnd + endFlagStr.length();
+
+        jsonArr = msgdata.mid(jsonStart,jsonEnd-jsonStart);
+        msgdata.remove(0,frameEndlen);
+    }else
+        return 1;
+
+    QJsonDocument doucment = QJsonDocument::fromJson(jsonArr.data(), &jsonError);  // 转化为 JSON 文档
     if (!doucment.isNull() && (jsonError.error == QJsonParseError::NoError)){  // 解析未发生错误
         if (doucment.isObject()) { // JSON 文档为对象
 

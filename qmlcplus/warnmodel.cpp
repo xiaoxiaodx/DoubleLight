@@ -349,7 +349,7 @@ void WarnModel::funProcessPushAlarm(QString path,QVariantMap map)
     if(file.open(QIODevice::WriteOnly)){
         file.write(imgArr,imgArr.length());
 
-        qDebug()<<"funProcessPushAlarm******** 文件打开:"+imgAbsolutePath;
+        qDebug()<<"funProcessPushAlarm******** file open:"+imgAbsolutePath;
         file.close();
 
         emit signal_sendWarnMsg(alarmtype,imgAbsolutePath,curDateTime.toString("yyyy-MM-dd hh:mm:ss"),warnTemp);
