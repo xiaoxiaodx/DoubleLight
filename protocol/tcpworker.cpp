@@ -599,23 +599,35 @@ void TcpWorker::parseShiGanRgb2(QByteArray arr,int arrlen,int resw,int resh)
     emit signal_sendImg(pImg,arrlen,10,resw,resh);
 }
 
-
+#include <QFile>
 void TcpWorker::parseShiGanRgb3(QByteArray arr,int arrlen,int resw,int resh)
 {
-    qDebug()<<" resw    "<<resw<<"  resh:"<<resh;
+    qDebug()<<" resw    "<<resw<<"  resh:"<<resh <<arrlen;
     if(pNetMsgTmp == nullptr)
-        pNetMsgTmp = new unsigned char[resw * resh* 4];
+        pNetMsgTmp = new unsigned char[resw * resh* 2];
 
     memcpy(pNetMsgTmp,arr.data(),arrlen);
 
-    QImage *pImg = nullptr;
-    try {
-        pImg =  new QImage(pNetMsgTmp, resw,resh, QImage::Format_RGB888);
-        // 其它代码
-    } catch ( const std::bad_alloc& e ) {
-        qDebug()<<" 图片分配内存失败";
-        pImg = nullptr;
+
+    if(ffmpegConvert == nullptr){
+        ffmpegConvert = new FfmpegConvert;
+        ffmpegConvert->initYuv422ToRgb32(resw,resh);
+
+        QFile file("yuv422.yuv");
+        if(file.open(QIODevice::WriteOnly))
+            file.write((char*)pNetMsgTmp,arrlen);
     }
+
+    QImage *pImg = ffmpegConvert->yuv422ToRgb32((char*)pNetMsgTmp,resw,resh);
+
+//    QImage *pImg = nullptr;
+//    try {
+//        pImg =  new QImage(pNetMsgTmp, resw,resh, QImage::Format_RGB888);
+//        // 其它代码
+//    } catch ( const std::bad_alloc& e ) {
+//        qDebug()<<" 图片分配内存失败";
+//        pImg = nullptr;
+//    }
     emit signal_sendImg(pImg,arrlen,10,resw,resh);
 }
 

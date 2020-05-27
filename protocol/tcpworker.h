@@ -75,6 +75,9 @@
 #define MSG_HEAR_LEN		23
 #define MAX_MSG_BUF_LEN		(1024*1024)
 
+
+#include "ffmpegconvert.h"
+
 class TcpWorker : public QObject
 {
     Q_OBJECT
@@ -174,6 +177,7 @@ private:
     int myType=0;
 
 
+    FfmpegConvert *ffmpegConvert = nullptr;
 };
 
 #endif // TCPWORKER_H

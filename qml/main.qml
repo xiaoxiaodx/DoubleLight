@@ -52,7 +52,7 @@ Window {
     property int lxibanya: 9
     property int lfayu: 10
     property int lniboer: 11
-
+    property int lKhmer:12
 
     signal s_setLanguage(var typeL);
 

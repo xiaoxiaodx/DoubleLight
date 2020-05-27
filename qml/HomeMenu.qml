@@ -232,6 +232,7 @@ Rectangle {
                 ListElement{showStr:"Español"}//西班牙
                 ListElement{showStr:"Française"}//法语
                 ListElement{showStr:"नेपाली"}//尼泊尔文
+                ListElement{showStr:"Khmer"}//高棉
             }
 
             onCurrentIndexChanged:{
@@ -274,8 +275,8 @@ Rectangle {
             imgSourseNormal: "qrc:/images/win_max.png"
             imgSoursePress: "qrc:/images/win_max_p.png"
             onClick:swinMax()
-
         }
+
         QmlImageButton{
             width: 20
             height: 20
@@ -368,6 +369,11 @@ Rectangle {
             tabbarBtn.barModel.get(index++).txtStr =  "मुख्य अबलोकन कक्ष"
             tabbarBtn.barModel.get(index++).txtStr =  "यन्त्र कन्फिगरेसन"
             tabbarBtn.barModel.get(index++).txtStr =  "अलार्म"
+            break;
+        case lKhmer:
+            tabbarBtn.barModel.get(index++).txtStr =  "ផ្ទាំងមុខ"
+            tabbarBtn.barModel.get(index++).txtStr =  "ការកំណត់រចនាសម្ព័ន្ធឧបករណ៍"
+            tabbarBtn.barModel.get(index++).txtStr =  "សម្លេងរោទ៍"
             break;
         }
     }

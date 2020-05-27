@@ -122,6 +122,9 @@ private:
     QRect testRect2;//测试使用
 
     QString m_ip = "";
+
+
+
 };
 
 
