@@ -474,6 +474,7 @@ Rectangle {
             var osdenable = smap.osdenable;
             var tempdisplay = smap.tempdisplay;
 
+            deviceconfig.setSwitchTempdisplay(tempdisplay);
             deviceconfig.tempcontrolcapMax = tempcontrolcaplevelMax
             deviceconfig.tempcontrolcapMin = tempcontrolcaplevelMin;
             deviceconfig.tempdriftcapMax = tempdriftcaplevelMax;
@@ -483,6 +484,7 @@ Rectangle {
             deviceconfig.setSwitchTime(osdenable)
             deviceconfig.setTempContrl(tempcontrol)
             deviceconfig.setSwitchWarn(alarmtempEnable)
+
 
         }else if(strcmd === "pushalarm"){
             startWarn(smap.temperature);
@@ -497,8 +499,15 @@ Rectangle {
             var beerenable = smap.alarmaudiooutenabled;
             deviceconfig.setSwitchBeer(beerenable)
         }else if("getimagparam" === strcmd){
+            deviceconfig.imagparamflip = smap.flip
+            deviceconfig.imagparambrightness = smap.brightness
+            deviceconfig.imagparamcolorsaturation =smap.colorsaturation
+            deviceconfig.imagparamcontrast = smap.contrast
+            deviceconfig.imagparamhue = smap.hue
+            deviceconfig.imagparammirror = smap.mirror
+            deviceconfig.imagparamsharpness = smap.sharpness
 
-
+            deviceconfig.setWdr(smap.wdr);
         }
     }
 

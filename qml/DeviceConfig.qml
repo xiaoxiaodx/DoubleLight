@@ -53,6 +53,7 @@ Rectangle {
     property int imagparamcolorsaturation:-1
     property int imagparamcontrast: -1
     property int imagparamhue: -1
+    property int imagparamsharpness: -1
 
     Settings {
         id:setting
@@ -494,18 +495,19 @@ Rectangle {
                 text: "38"
                 color: "#F8FAFD"
                 onTextChanged: {
-                    s_temSet(inputTem.text)
+                    //s_temSet(inputTem.text)
                 }
             }
 
             Text {
                 id: txtTem1
-                text: qsTr("℃")
+                text: cmbTempTypeSelect.currentIndex === 0 ?qsTr("℃"):qsTr("℉")
                 font.pixelSize: fontSize
                 color: fontColor
                 anchors.left: inputTem.right
                 anchors.leftMargin: 6
                 anchors.verticalCenter: inputTem.verticalCenter
+
             }
 
             Text {
@@ -675,6 +677,26 @@ Rectangle {
                 mRadius:2
                 model: reTempTypeSelectModel
 
+                onCurrentIndexChanged: {
+
+                    if(cmbTempTypeSelect.currentIndex === 1){
+                       // (F（华氏知度）-32)÷1.8
+
+                        console.debug("*********    "+inputTem.text)
+                        var tempStr = inputTem.text
+                        console.debug("*********    "+tempStr)
+                        var tempS = parseFloat(tempStr);
+                        console.debug("*********    "+tempS)
+                        var tempH = tempS*1.8+32
+                        console.debug("*********    "+tempH)
+                        inputTem.text = tempH.toFixed(2)
+                    }else {
+                        var tempStr1 = inputTem.text
+                        var tempH1 = parseFloat(tempStr1);
+                        var tempS1 = (tempH1 - 32)/1.8
+                        inputTem.text = tempS1.toFixed(2)
+                    }
+                }
             }
 
             Text {
@@ -956,7 +978,6 @@ Rectangle {
                             askDialog.open();
                         }
 
-
                     }
                     onPressed: btnUpdate.color = "#81C3FF"
                     onReleased: btnUpdate.color = "#3B84F6"
@@ -1074,19 +1095,18 @@ Rectangle {
     //            dataObj.insert("ctrlparam", QJsonValue(ctrlparamObj));
 
     function getiradInfo(){
-        var map ={
-            cmd:"getiradinfo"
-        }
+        var map ={cmd:"getiradinfo"}
         s_sendcommoncmd(map);
 
         map.cmd = "getalarmparam"
         s_sendcommoncmd(map);
 
+        map.cmd = "getimagparam"
+        s_sendcommoncmd(map);
     }
 
     //参数修改设置 全在此函数
     function iradInfoSet(){
-
         var osdenableV;
         if(swithTime.checked)
             osdenableV = 1
@@ -1099,6 +1119,8 @@ Rectangle {
         else
             alarmtempEnableV = 0;
 
+
+
         var map ={
             osdenable:osdenableV,
             alarmtempEnable:alarmtempEnableV,
@@ -1106,19 +1128,19 @@ Rectangle {
             tempdrift:inputTempDrift.text,
             tempcontrol:inputTempMin.text,
             tempdisplay:cmbTempTypeSelect.currentIndex,
-            cmd:"setiradinfo"
-        }
+            cmd:"setiradinfo"}
         s_sendcommoncmd(map);
 
         var map1 ={
-            cmd:setimagparam,
-            wdr:swichKuandongtai?1:0,
+            cmd:"setimagparam",
+            wdr:swichKuandongtai.checked?1:0,
             mirror:imagparammirror,
             flip:imagparamflip,
             brightness:imagparambrightness,
             colorsaturation:imagparamcolorsaturation,
             contrast:imagparamcontrast,
-            hue:imagparamhue
+            hue:imagparamhue,
+            sharpness:imagparamsharpness
         }
         s_sendcommoncmd(map1);
 
@@ -1201,6 +1223,9 @@ Rectangle {
         setting.isOpenAdjustRect = value
     }
 
+    function setWdr(value){
+        swichKuandongtai.checked = value
+    }
     function setRedRect(pw,ph,rx,ry,rw,rh){
 
         if(curDevTypeStr === "e03"){
@@ -1276,6 +1301,7 @@ Rectangle {
             return setting.d06showRectW
         }
     }
+
     function getShowRectH(){
         if(curDevTypeStr === "e03"){
             return setting.e03showRectH
@@ -1287,6 +1313,7 @@ Rectangle {
             return setting.d06showRectH
         }
     }
+
     function getShowParentW(){
         if(curDevTypeStr === "e03"){
             return setting.e03showParentW
@@ -1298,6 +1325,7 @@ Rectangle {
             return setting.d06showParentW
         }
     }
+
     function getShowParentH(){
         if(curDevTypeStr === "e03"){
             return setting.e03showParentH

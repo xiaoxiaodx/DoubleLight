@@ -110,9 +110,10 @@ void CHttpApiDevice::slot_sendtimerout()
         else
             map.insert("sendCount",1);
         //如果一条消息发送了多次则默认网络异常，则重新开始创建连接
-        if(sendcount > 20){
+        if(sendcount > 30){
             map.insert("sendCount",0);
             createConnect();
+            DebugLog::getInstance()->writeLog("reconect http");
         }
         if(sendcount % 4 == 0){
             emit signal_sendMag(map);
@@ -303,8 +304,9 @@ int CHttpApiDevice::HttpMsgCallBack(char * pData) {
 
                 callbackMap.insert("tempdrift",object.value("data").toObject().value("ctrlparam").toObject().value("tempdrift").toInt());
                 callbackMap.insert("tempcontrol",object.value("data").toObject().value("ctrlparam").toObject().value("tempcontrol").toInt());
+                callbackMap.insert("tempdisplay",object.value("data").toObject().value("ctrlparam").toObject().value("tempdisplay").toInt());
                 callbackMap.insert("osdenable",object.value("data").toObject().value("osdenable").toInt());
-                callbackMap.insert("osdenable",object.value("data").toObject().value("tempdisplay").toInt());
+
 
             }else if("pushalarm" == cmd){
                 callbackMap.insert("alarmtype",object.value("data").toObject().value("alarmtype").toInt());
@@ -803,13 +805,13 @@ void CHttpApiDevice::HttpSetIraInfo(QVariantMap value,QString msgid)
 
 
     dataObj.insert("osdenable",value.value("osdenable").toInt());
-    dataObj.insert("tempdisplay",value.value("tempdisplay").toInt());
 
     alarmparamObj.insert("enable", value.value("alarmtempEnable").toInt());
     alarmparamObj.insert("alarmtemp", value.value("alarmtemp").toString().toDouble());
 
     ctrlparamObj.insert("tempdrift", value.value("tempdrift").toString().toInt());
     ctrlparamObj.insert("tempcontrol", value.value("tempcontrol").toString().toInt());
+    ctrlparamObj.insert("tempdisplay", value.value("tempdisplay").toString().toInt());
 
     dataObj.insert("alarmparam", QJsonValue(alarmparamObj));
     dataObj.insert("ctrlparam", QJsonValue(ctrlparamObj));
