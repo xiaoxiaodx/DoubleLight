@@ -1088,6 +1088,8 @@ Rectangle {
             tempcontrol:inputTempMin.text,
             cmd:"setiradinfo"
         }
+
+
         s_sendcommoncmd(map);
 
 
