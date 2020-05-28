@@ -33,7 +33,8 @@ Rectangle {
     signal s_sendcommoncmd(var mvalue);
     signal s_deviceUpdate()
 
-    property int fontSize: 14
+    property int fontSize: curLanguage ===lKhmer?25:14
+    property int lineeditfontSize: 14
     property color fontColor: "#333333"
 
     property string curDevTypeStr:"E03"
@@ -54,6 +55,8 @@ Rectangle {
     property int imagparamcontrast: -1
     property int imagparamhue: -1
     property int imagparamsharpness: -1
+    property int imagparamwdr: -1
+    property bool wdrisChange: false
 
     Settings {
         id:setting
@@ -253,7 +256,7 @@ Rectangle {
                     anchors.verticalCenter: rectTempDrift.verticalCenter
                     border.width: 0
                     inputLimite:Qt.ImhDigitsOnly
-                    font.pixelSize: fontSize
+                    font.pixelSize: lineeditfontSize
                     placeholderText: ""
                     isNeedDoubleClickEdit: false
                     textLeftPadding:0
@@ -353,7 +356,7 @@ Rectangle {
                     anchors.verticalCenter: rectTempMin.verticalCenter
                     border.width: 0
                     inputLimite:Qt.ImhDigitsOnly
-                    font.pixelSize: fontSize
+                    font.pixelSize: lineeditfontSize
                     placeholderText: ""
                     isNeedDoubleClickEdit: false
                     textLeftPadding:0
@@ -487,7 +490,7 @@ Rectangle {
                 anchors.verticalCenter:swichWarn.verticalCenter
                 border.width: 1
                 border.color: "#DEDFE3"
-                font.pixelSize: fontSize
+                font.pixelSize: lineeditfontSize
                 placeholderText: ""
                 isNeedDoubleClickEdit: false
                 textLeftPadding:0
@@ -502,7 +505,7 @@ Rectangle {
             Text {
                 id: txtTem1
                 text: cmbTempTypeSelect.currentIndex === 0 ?qsTr("℃"):qsTr("℉")
-                font.pixelSize: fontSize
+                font.pixelSize: lineeditfontSize
                 color: fontColor
                 anchors.left: inputTem.right
                 anchors.leftMargin: 6
@@ -556,11 +559,10 @@ Rectangle {
                     height: rectScreenShotPath.height -2
                     anchors.left: parent.left
                     anchors.leftMargin: 2
-
                     anchors.verticalCenter: rectScreenShotPath.verticalCenter
                     border.width: 0
                     text:screenv.funGetCurPath()
-                    font.pixelSize: fontSize
+                    font.pixelSize: lineeditfontSize
                     placeholderText: ""
                     isNeedDoubleClickEdit: false
                     textLeftPadding:0
@@ -621,7 +623,7 @@ Rectangle {
 
             Text {
                 id: txtKuandongtai
-                text: qsTr("宽动态")
+                text: qsTr("WDR")
                 font.pixelSize: fontSize
                 color: fontColor
                 anchors.right: swichKuandongtai.left
@@ -672,7 +674,7 @@ Rectangle {
                 itemTopMargin:0
                 itemFontColor: "#5A5E66"
                 contentFontColor: "#a6000000"
-                contentFontSize: fontSize
+                contentFontSize: lineeditfontSize
                 bordColor:"#DEDFE3"
                 mRadius:2
                 model: reTempTypeSelectModel
@@ -768,7 +770,7 @@ Rectangle {
                     anchors.verticalCenter: rectRecordPath.verticalCenter
                     border.width: 0
                     text: screenv.funGetCurPath()
-                    font.pixelSize: fontSize
+                    font.pixelSize: lineeditfontSize
                     placeholderText: ""
                     isNeedDoubleClickEdit: false
                     textLeftPadding:0
@@ -911,7 +913,7 @@ Rectangle {
                     anchors.verticalCenter: rectUpdatePath.verticalCenter
                     border.width: 0
                     text: ""//screenv.funGetCurPath()
-                    font.pixelSize: fontSize
+                    font.pixelSize: lineeditfontSize
                     placeholderText: ""
                     isNeedDoubleClickEdit: false
                     textLeftPadding:0
@@ -1120,7 +1122,6 @@ Rectangle {
             alarmtempEnableV = 0;
 
 
-
         var map ={
             osdenable:osdenableV,
             alarmtempEnable:alarmtempEnableV,
@@ -1129,7 +1130,16 @@ Rectangle {
             tempcontrol:inputTempMin.text,
             tempdisplay:cmbTempTypeSelect.currentIndex,
             cmd:"setiradinfo"}
+
         s_sendcommoncmd(map);
+
+
+        var kuandongt = swichKuandongtai.checked?1:0
+
+        if(imagparamwdr !== kuandongt)
+            wdrisChange = true
+        else
+            wdrisChange = false
 
         var map1 ={
             cmd:"setimagparam",
@@ -1142,6 +1152,8 @@ Rectangle {
             hue:imagparamhue,
             sharpness:imagparamsharpness
         }
+
+
         s_sendcommoncmd(map1);
 
         s_beerSwith(swichBeer.checked)
@@ -1224,6 +1236,7 @@ Rectangle {
     }
 
     function setWdr(value){
+        imagparamwdr = value
         swichKuandongtai.checked = value
     }
     function setRedRect(pw,ph,rx,ry,rw,rh){
@@ -1365,6 +1378,7 @@ Rectangle {
             txtUpdate.text = "Upgrade"
             txtUpdateFile.text = "Upgrade"
             txtSave.text = "Settings"
+            labelResolution.text = "Standard"
             break;
         case lKorean:
             txtRecordSet.text = "비디오 설정"
@@ -1383,6 +1397,7 @@ Rectangle {
             txtUpdate.text = "업그레이드"
             txtUpdateFile.text = "업그레이드"
             txtSave.text = "설정"
+            labelResolution.text = "표준"
             break;
         case lItaly:
             txtRecordSet.text = "Settaggio Video"
@@ -1401,6 +1416,7 @@ Rectangle {
             txtUpdate.text = "aggiornare"
             txtUpdateFile.text = "aggiornare"
             txtSave.text = "Settaggio"
+            labelResolution.text = "Standard"
             break;
         case lChinese:
             txtRecordSet.text = "录像设置"
@@ -1419,6 +1435,7 @@ Rectangle {
             txtUpdate.text = "升级"
             txtUpdateFile.text = "设备升级"
             txtSave.text = "设置"
+            labelResolution.text = "温标选择"
             break;
         case lRussian:
             txtRecordSet.text = "Настройка записи"
@@ -1437,6 +1454,7 @@ Rectangle {
             txtUpdate.text = "обновить"
             txtUpdateFile.text = "обновить"
             txtSave.text = "Настройка"
+            labelResolution.text = "стандарт"
             break;
         case lLithuanian:
             txtRecordSet.text = "Vaizdo parametrų nustatymas"
@@ -1455,6 +1473,7 @@ Rectangle {
             txtUpdate.text = "patobulinti"
             txtUpdateFile.text = "patobulinti"
             txtSave.text = "nustatymas"
+            labelResolution.text = "Standartinis"
             break;
         case ltuerqi:
             txtRecordSet.text = "Video ayarları"
@@ -1470,9 +1489,10 @@ Rectangle {
             txtSwichWarn.text = "Alarm (anahtar)"
             txtTempMin.text = "Max Min Sıcaklık"
             txtTempDrift.text = "Sıcaklık sapması ayarı"
-            txtUpdate.text = "升级"
-            txtUpdateFile.text = "设备升级"
-            txtSave.text = "设置"
+            txtUpdate.text = "Yükselt"
+            txtUpdateFile.text = "Yükselt"
+            txtSave.text = "Ayarlar"
+            labelResolution.text = "Standart"
             break;
         case ltuerqi1:
             txtRecordSet.text = "Video Ayarları"
@@ -1488,9 +1508,10 @@ Rectangle {
             txtSwichWarn.text = "Alarm (anahtar)"
             txtTempMin.text = "Max Min Sıcaklık"
             txtTempDrift.text = "Sıcaklık Sapma Ayarı"
-            txtUpdate.text = "升级"
-            txtUpdateFile.text = "设备升级"
-            txtSave.text = "设置"
+            txtUpdate.text = "Yükselt"
+            txtUpdateFile.text = "Yükselt"
+            txtSave.text = "Ayarlar"
+            labelResolution.text = "Standart"
             break;
         case lputaoya:
             txtRecordSet.text = "configurações de vídeo"
@@ -1506,9 +1527,10 @@ Rectangle {
             txtSwichWarn.text = "Alarme (switch)"
             txtTempMin.text = "válvula de controle de temperatura"
             txtTempDrift.text = "configuração deriva de temperatura"
-            txtUpdate.text = "Upgrade"
-            txtUpdateFile.text = "Upgrade"
-            txtSave.text = "Confirm"
+            txtUpdate.text = "Melhoria"
+            txtUpdateFile.text = "Melhoria"
+            txtSave.text = "Definições"
+            labelResolution.text = "Padrão"
             break;
         case lxibanya:
             txtRecordSet.text = "Ajustes de video"
@@ -1524,9 +1546,10 @@ Rectangle {
             txtSwichWarn.text = "Alarma (interruptor)"
             txtTempMin.text = "válvula de control de temperatura"
             txtTempDrift.text = "ajuste de la deriva térmica"
-            txtUpdate.text = "Upgrade"
-            txtUpdateFile.text = "Upgrade"
-            txtSave.text = "Confirm"
+            txtUpdate.text = "Potenciar"
+            txtUpdateFile.text = "Potenciar"
+            txtSave.text = "Configuraciones"
+            labelResolution.text = "Estándar"
             break;
         case lfayu:
             txtRecordSet.text = "Paramètres vidéo"
@@ -1542,9 +1565,10 @@ Rectangle {
             txtSwichWarn.text = "Alarme(interrupteur)"
             txtTempMin.text = "Température max/min"
             txtTempDrift.text = "Correction de la température"
-            txtUpdate.text = "升级"
-            txtUpdateFile.text = "设备升级"
-            txtSave.text = "设置"
+            txtUpdate.text = "Améliorer"
+            txtUpdateFile.text = "Améliorer"
+            txtSave.text = "Réglages"
+            labelResolution.text = "la norme"
             break;
         case lniboer:
             txtRecordSet.text = "भिडियो सेटिंग "
@@ -1563,6 +1587,7 @@ Rectangle {
             txtUpdate.text = "अपग्रेड गर्नुहोस"
             txtUpdateFile.text = "अपग्रेड गर्नुहोस"
             txtSave.text = "निश्चित गर्नुहोस "
+            labelResolution.text = "मानक"
             break;
         case lKhmer:
             txtRecordSet.text = "ការកំណត់វីដេអូ"
@@ -1578,9 +1603,10 @@ Rectangle {
             txtSwichWarn.text = "ប្តូរសម្លេងរោទ៍"
             txtTempMin.text = "សន្ទះគ្រប់គ្រងសីតុណ្ហភាព"
             txtTempDrift.text = "ការកំណត់លំហូរសីតុណ្ហភាព"
-            txtUpdate.text = "Upgrade"
-            txtUpdateFile.text = "Upgrade"
+            txtUpdate.text = "ធ្វើឱ្យប្រសើរឡើង"
+            txtUpdateFile.text = "ធ្វើឱ្យប្រសើរឡើង"
             txtSave.text = "ការកំណត់ប៉ារ៉ាម៉ែត្រ"
+            labelResolution.text = "ស្តង់ដារ"
             break;
         }
     }

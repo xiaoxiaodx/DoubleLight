@@ -159,7 +159,7 @@ QString CHttpApiDevice::createMsgId(QString cmd){
 
 
 bool CHttpApiDevice::createConnect(){
-
+    listMsg.clear();
     if (g_tcpsocket == nullptr)
     {
         g_tcpsocket = new QTcpSocket;

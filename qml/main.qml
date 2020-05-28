@@ -240,13 +240,15 @@ Window {
 
     AskDialog{
         id:askDialog
-
         onS_CurTypeMsg: {
 
             if(askDialog.exeClose === type)
                 Qt.quit();
         }
+    }
 
+    MsgDialog{
+        id:msgdialog
     }
 
     Loader{

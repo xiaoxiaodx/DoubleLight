@@ -110,5 +110,7 @@
         <file>images/logo10.jpg</file>
         <file>images/logo11.png</file>
         <file>images/logo12.png</file>
+        <file>qml/dialog/MsgDialog.qml</file>
+        <file>images/icon_msg.png</file>
     </qresource>
 </RCC>
