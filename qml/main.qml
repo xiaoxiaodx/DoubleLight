@@ -93,8 +93,8 @@ Window {
                                            curLanguage===lputaoya?"Confirmar para sair?":
                                            curLanguage===lxibanya?"Confirmar salida?":
                                            curLanguage===lfayu?"Confirmer pour quitter?":
-                                           curLanguage===lniboer?"बाहिर निस्कने हो?":"";
-
+                                           curLanguage===lniboer?"बाहिर निस्कने हो?":
+                                            curLanguage===lKhmer?"យល់ព្រមចាកចេញ?":"";
             askDialog.imgSrc = "qrc:/images/icon_question.png"
             askDialog.curType = askDialog.exeClose
             askDialog.open();

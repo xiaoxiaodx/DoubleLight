@@ -11,6 +11,10 @@ Rectangle {
     signal swinMax();
     signal swinClose();
 
+
+
+
+
     Settings {
         id:setting1
         property alias curLindex: cmb.currentIndex
@@ -57,7 +61,9 @@ Rectangle {
             textColor: "white"
             textSelectColor:"white"
             txtLeftMargin:7
-            textSize:18
+           // textSize:18
+
+            textSize:curLanguage ===lKhmer?36:18
             Component.onCompleted: {
 
                 console.debug("curLanguagev     11:"+curLanguage)

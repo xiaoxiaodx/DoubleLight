@@ -10,8 +10,8 @@ Rectangle {
     property int warnTempHeaderLeftMargin: 304
     property int warnImgHeaderLeftMargin: 478
     property int deleteHeaderLeftMargin: 771
-    property int fontSize: 14
-
+    property int fontSize: lKhmer===curLanguage?28:14
+    property int titlefontSize: lKhmer===curLanguage?36:18
     property int listviewClickIndex: -1
     property bool isAllSelect: false
 
@@ -62,7 +62,7 @@ Rectangle {
             anchors.top: parent.top
             anchors.leftMargin: 60
             anchors.topMargin: 35
-            font.pixelSize: 18
+            font.pixelSize: lKhmer===curLanguage?36:18
             z:2
             text: qsTr("日志列表")
         }
@@ -158,7 +158,7 @@ Rectangle {
                 anchors.left: imgdate.right
                 anchors.leftMargin: 10
                 anchors.verticalCenter: parent.verticalCenter
-                font.pixelSize: fontSize
+                font.pixelSize: 14
                 color: "#909399"
                 text:Qt.formatDate(calendar.getCurrentData(),"yyyy-MM-dd")
             }
@@ -207,7 +207,7 @@ Rectangle {
                 anchors.left: imgtime.right
                 anchors.leftMargin: 10
                 anchors.verticalCenter: parent.verticalCenter
-                font.pixelSize: fontSize
+                font.pixelSize: 14
                 color: "#909399"
                 text: qsTr("00:00:00")
             }
@@ -337,7 +337,7 @@ Rectangle {
                     anchors.verticalCenter: parent.verticalCenter
                     anchors.left: parent.left
                     anchors.leftMargin: warnTimeHeaderLeftMargin
-                    font.pixelSize: fontSize
+                    font.pixelSize: 14
                     text: model.warnTime;
                 }
                 Text {
@@ -345,7 +345,7 @@ Rectangle {
                     anchors.verticalCenter: parent.verticalCenter
                     anchors.left: parent.left
                     anchors.leftMargin: warnTempHeaderLeftMargin
-                    font.pixelSize: fontSize
+                    font.pixelSize: 14
                     text: model.warnTemp;
                 }
 
@@ -363,7 +363,7 @@ Rectangle {
                     anchors.left: captureImg.right
                     anchors.leftMargin: 7
                     anchors.verticalCenter: parent.verticalCenter
-                    font.pixelSize: fontSize
+                    font.pixelSize: 14
                     color: index === warnList.currentIndex?"#3B84F6":"#333333"
                     text: model.imgName;
                     MouseArea{
@@ -660,13 +660,13 @@ Rectangle {
             warnImg.text = "स्न्यापशट"
             //deletetxt.text = "删除"
             break;
-        case lEnglish:
+        case lKhmer:
             textitle.text = "កំណត់ហេតុការចូលប្រើប្រាស់ឧបករណ៍";
-            txtBatchDelete.text = "Batch Remove"
-            txtDo.text = "Operation"
-            txtWarnTime.text = "Alarm Time"
-            txtWarnTemp.text = "Alarm Temperature"
-            warnImg.text = "lKhmer"
+            txtBatchDelete.text = "លុបចោលទាំងអស់"
+            txtDo.text = "ប្រតិបត្តិការ"
+            txtWarnTime.text = "ពេល"
+            txtWarnTemp.text = "សីតុណ្ហភាព"
+            warnImg.text = "ថតរូប"
             break;
         }
     }

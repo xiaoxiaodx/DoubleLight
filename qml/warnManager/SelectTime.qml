@@ -229,6 +229,10 @@ Rectangle {
             txtCancel.text = "रद्द"
             txtEnsure.text = "निश्चित"
             break;
+        case lKhmer:
+            txtCancel.text = "បាទ/ចាស"
+            txtEnsure.text = "ទេ"
+            break;
         }
     }
 }

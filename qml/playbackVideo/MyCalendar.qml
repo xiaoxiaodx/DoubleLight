@@ -634,6 +634,10 @@ Popup {
             txtCancel.text = "रद्द"
             txtEnsure.text = "निश्चित"
             break;
+        case lKhmer:
+            txtCancel.text = "បោះបង់"
+            txtEnsure.text = "យល់ព្រម"
+            break;
         }
     }
 }

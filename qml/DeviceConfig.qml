@@ -33,7 +33,7 @@ Rectangle {
     signal s_sendcommoncmd(var mvalue);
     signal s_deviceUpdate()
 
-    property int fontSize: curLanguage ===lKhmer?25:14
+    property int fontSize: curLanguage ===lKhmer?28:14
     property int lineeditfontSize: 14
     property color fontColor: "#333333"
 
@@ -562,7 +562,7 @@ Rectangle {
                     anchors.verticalCenter: rectScreenShotPath.verticalCenter
                     border.width: 0
                     text:screenv.funGetCurPath()
-                    font.pixelSize: lineeditfontSize
+                    font.pixelSize:fontSize
                     placeholderText: ""
                     isNeedDoubleClickEdit: false
                     textLeftPadding:0
@@ -624,7 +624,7 @@ Rectangle {
             Text {
                 id: txtKuandongtai
                 text: qsTr("WDR")
-                font.pixelSize: fontSize
+                font.pixelSize: lineeditfontSize
                 color: fontColor
                 anchors.right: swichKuandongtai.left
                 anchors.rightMargin: 20
@@ -766,11 +766,10 @@ Rectangle {
                     height: rectRecordPath.height -2
                     anchors.left: parent.left
                     anchors.leftMargin: 2
-
                     anchors.verticalCenter: rectRecordPath.verticalCenter
                     border.width: 0
                     text: screenv.funGetCurPath()
-                    font.pixelSize: lineeditfontSize
+                    font.pixelSize: fontSize
                     placeholderText: ""
                     isNeedDoubleClickEdit: false
                     textLeftPadding:0
@@ -962,7 +961,7 @@ Rectangle {
                     anchors.horizontalCenter: parent.horizontalCenter
                     anchors.verticalCenter: parent.verticalCenter
                     elide: Text.ElideMiddle
-                    font.pixelSize: 14
+                    font.pixelSize: fontSize
                     color: "#ffffff"
                     text: qsTr("升级")
                 }
@@ -1003,7 +1002,7 @@ Rectangle {
                     anchors.horizontalCenter: parent.horizontalCenter
                     anchors.verticalCenter: parent.verticalCenter
                     elide: Text.ElideMiddle
-                    font.pixelSize: 14
+                    font.pixelSize: fontSize
                     color: "#ffffff"
                     text: qsTr("设置")
                 }
