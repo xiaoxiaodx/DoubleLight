@@ -379,10 +379,10 @@ Rectangle {
         var index = 0;
         switch(type){
         case lEnglish:
-            name3.text =  "Amount："
-            name2.text =  "Normal："
-            name1.text = "Alarm："
-            name.text = "No mask："
+            name3.text =  "No mask："
+            name2.text =  "Alarm："
+            name1.text = "Normal："
+            name.text = "Amount："
             break;
         case lKorean:
 

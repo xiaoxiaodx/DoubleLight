@@ -142,6 +142,8 @@ private:
 //    "height" : 1080
 //    }
 
+    bool isForceFinish = false;
+
 };
 
 #endif

@@ -71,7 +71,6 @@ void XVideo::startNormalVideo(float tp,QString deviceinfo)
             QString curip = map.value("ip").toString();
 
             if(m_ip.compare(curip)!=0){
-
                 destroyAllFunction();
             }
             m_ip = curip;
@@ -87,6 +86,19 @@ void XVideo::destroyAllFunction()
     //关闭更新定时器
     if(timerUpdate.isActive())
         timerUpdate.stop();
+
+
+    if(httpDevice != nullptr){
+
+        emit signal_destroyHttp();
+        httpThread->quit();
+        if(httpThread->wait(2000)){
+            qDebug()<<"http线程结束成功";
+        }else
+            qDebug()<<"http线程结束失败";
+        httpThread = nullptr;
+        httpDevice =nullptr;
+    }
 
     //结束流线程
     if(worker != nullptr)
@@ -124,17 +136,7 @@ void XVideo::destroyAllFunction()
     if(pffmpegCodecH265 != nullptr){
         pffmpegCodecH265 = nullptr;
     }
-    if(httpDevice != nullptr){
 
-        emit signal_destroyHttp();
-        httpThread->quit();
-        if(httpThread->wait(2000)){
-            qDebug()<<"http线程结束成功";
-        }else
-            qDebug()<<"http线程结束失败";
-        httpThread = nullptr;
-        httpDevice =nullptr;
-    }
 }
 
 FfmpegCodec * XVideo::createFFmpegDecodec(QString type)
@@ -191,8 +193,6 @@ void XVideo::createTcpThread()
 
 void XVideo::slot_tcpConnected()
 {
-
-
     if(!timerUpdate.isActive())
         timerUpdate.start();
     emit signal_connected(true,m_ip);
@@ -201,7 +201,10 @@ void XVideo::slot_tcpConnected()
 
 void XVideo::createHttpApi(){
 
+
     if(httpDevice == nullptr){
+
+        qDebug()<<" createHttpApi   "<<m_ip;
         httpThread = new QThread;
         httpDevice = new CHttpApiDevice("INEW-004122-JWGWM", m_ip,8564, "admin", "admin");
         connect(httpDevice, &CHttpApiDevice::signal_ReadMsg, this, &XVideo::slog_HttpmsgCb);
@@ -218,9 +221,9 @@ void XVideo::createHttpApi(){
         httpThread->start();
 
         emit signal_createHttp();
-        // emit signal_getInitPar();
-        //fun_getInitPar();
-    }
+
+    }else
+        emit signal_createHttp();
 }
 //获取型号后在获取其他参数
 void XVideo::slot_httpConnected()

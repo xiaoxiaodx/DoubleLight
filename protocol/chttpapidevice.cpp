@@ -29,17 +29,21 @@ CHttpApiDevice::CHttpApiDevice(QString devid, QString ip, unsigned short port, Q
 
 void CHttpApiDevice::slot_destoryConnect()
 {
+    isForceFinish = true;
     qDebug()<<" slot_destoryConnect ";
     if(g_tcpsocket != NULL){
-        qDebug()<<" slot_destoryConnect 1";
+        QMap<QString , QVariant> map;
+        map.insert("cmd","loginout");
+        send_httpParSet(map);
         if(SendTimer != nullptr){
 
             qDebug()<<" slot_destoryConnect 2";
             disconnect(g_tcpsocket, SIGNAL(readyRead()), this, SLOT(slot_ReadMsg()));
-
             disconnect(SendTimer,&QTimer::timeout,this,&CHttpApiDevice::slot_sendtimerout);
             disconnect(reconnectTimer,&QTimer::timeout,this,&CHttpApiDevice::slot_heartimertout);
 
+
+            listMsg.clear();
             SendTimer->stop();
             reconnectTimer->stop();
 
@@ -54,6 +58,7 @@ void CHttpApiDevice::slot_destoryConnect()
 
             SendTimer = nullptr;
             reconnectTimer = nullptr;
+
             qDebug()<<" slot_destoryConnect 5";
         }
 
@@ -98,6 +103,9 @@ void CHttpApiDevice::slot_heartimertout(){
 void CHttpApiDevice::slot_sendtimerout()
 {
     //QMutexLocker locker(&m_msgMutex);
+
+    if(isForceFinish)
+        return;
     qDebug()<<"slot_sendtimerout    "<<listMsg.size();
     if(listMsg.size() <= 0){
         SendTimer->stop();
@@ -265,7 +273,14 @@ int CHttpApiDevice::HttpMsgCallBack(char * pData) {
                     }
                 } else {
                     DebugLog::getInstance()->writeLog("get sessionID fail");
+
+                    DebugLog::getInstance()->writeLog(">>>>>>>>>>>http login fail <<<<<<<<<<<<<<");
+
                     qDebug()<<"not find data ";
+
+                    QMap<QString,QVariant> map;
+                    map.insert("cmd","login");
+                    slot_httpParSet(map);
 
                 }
 
@@ -443,11 +458,9 @@ void CHttpApiDevice::slot_Connected() {
 
 void CHttpApiDevice::slot_disconnected() {
     qDebug()<<"disconnect ";
-
 }
 void CHttpApiDevice::slot_connectServer() {
     qDebug()<<"time out  ";
-
 }
 
 
@@ -492,7 +505,7 @@ bool CHttpApiDevice::send_httpParSet(QMap<QString,QVariant> map)
 
     if(g_tcpsocket == nullptr)
         return false ;
-    qDebug()<<"send_httpParSet  "<<map;
+    qDebug()<<"send_httpParSet  "<<g_ip<<"  map:"<<map;
     DebugLog::getInstance()->writeLog("http_sendMsg :"+ map.value("cmd").toString());
 
     QString cmd = map.value("cmd").toString();

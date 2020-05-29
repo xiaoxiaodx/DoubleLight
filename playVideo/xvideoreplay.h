@@ -42,9 +42,7 @@ private:
     QList<yuvInfo> listYuv;
     FFmpegReplay freplay;
     QFile *yuvfile;
-
     QTimer timer;
-
 
     QString findPlayFile(QString file,QString date,QTime time);
     QString curFilePath = "";//当前播放文件属于哪一天

@@ -395,7 +395,6 @@ Rectangle {
             video.funStartSearch();
         }
         onS_connectDevice:{
-
             video.startNormalVideo(deviceconfig.getWarnTem(),str)
         }
     }
@@ -446,12 +445,8 @@ Rectangle {
                     }
                     video.fun_sendCommonPar(map1)
                 }
-//                map.cmd = "getalarmparam"
-//                video.fun_sendCommonPar(map);
             }
-            //deviceconfig.setSwitchTime(enable)
-//            map.cmd = "getosdparam"
-//            video.fun_sendCommonPar(map);
+
 
             deviceconfig.getiradInfo();
 
