@@ -11,10 +11,6 @@ Rectangle {
     signal swinMax();
     signal swinClose();
 
-
-
-
-
     Settings {
         id:setting1
         property alias curLindex: cmb.currentIndex
@@ -61,9 +57,7 @@ Rectangle {
             textColor: "white"
             textSelectColor:"white"
             txtLeftMargin:7
-           // textSize:18
-
-            textSize:curLanguage ===lKhmer?36:18
+            textSize:18
             Component.onCompleted: {
 
                 console.debug("curLanguagev     11:"+curLanguage)
@@ -227,18 +221,17 @@ Rectangle {
             model: ListModel{
                 ListElement{showStr:"简体中文"}
                 ListElement{showStr:"English"}
-                ListElement{showStr:"Italian"}
-                ListElement{showStr:"Korean"}
+                //ListElement{showStr:"Italian"}
+                //ListElement{showStr:"Korean"}
                 ListElement{showStr:"Russian"}
-                ListElement{showStr:"Lithuanian"}
-
+               // ListElement{showStr:"Lithuanian"}
                 ListElement{showStr:"Türkçe"}//土耳其
-                ListElement{showStr:"Türk dili"}//土耳其语
-                ListElement{showStr:"Português"}//葡萄牙
+                //ListElement{showStr:"Türk dili"}//土耳其语
+               // ListElement{showStr:"Português"}//葡萄牙
                 ListElement{showStr:"Español"}//西班牙
                 ListElement{showStr:"Française"}//法语
-                ListElement{showStr:"नेपाली"}//尼泊尔文
-                ListElement{showStr:"Khmer"}//高棉
+                //ListElement{showStr:"नेपाली"}//尼泊尔文
+                //ListElement{showStr:"Khmer"}//高棉
             }
 
             onCurrentIndexChanged:{
@@ -304,15 +297,13 @@ Rectangle {
         //            imgstate.source ="qrc:/images/state_succ.png"
         //        else
         //            imgstate.source ="qrc:/images/state_fail.png"
-
     }
+    
     function addDeviceInfo(str){
-
         deivcemodel.append({showStr:str});
     }
 
     function setLanguage(type){
-
         console.debug("setLanguage "+type)
         var index = 0;
         switch(type){

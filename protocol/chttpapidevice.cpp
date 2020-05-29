@@ -181,6 +181,8 @@ bool CHttpApiDevice::createConnect(){
         g_tcpsocket->disconnectFromHost();
         g_tcpsocket->abort();
     }
+
+
     g_tcpsocket->connectToHost(this->g_ip,this->g_port);
 
     if(g_tcpsocket->waitForConnected(1000)){//setcurrenttime
@@ -258,6 +260,19 @@ int CHttpApiDevice::HttpMsgCallBack(char * pData) {
                                 sprintf(this->sessionId, "%s", ssionId.toStdString().c_str());
                                 DebugLog::getInstance()->writeLog("get sessionID succ");
                                 qDebug() << "登录成功   sessionid : " << sessionId;
+
+
+                                QMap<QString,QVariant> map;
+                                map.insert("cmd","getiradinfo");
+
+                                slot_httpParSet(map);
+                                map.insert("cmd","getalarmparam");
+
+                                slot_httpParSet(map);
+                                map.insert("cmd","getimagparam");
+
+                                slot_httpParSet(map);
+
                                 return 0;
                             }
                         }
@@ -448,11 +463,16 @@ void CHttpApiDevice::slot_ReadMsg() {
 }
 void CHttpApiDevice::slot_Connected() {
 
+
     emit signal_httpConnected();
     QMap<QString,QVariant> map;
     map.insert("cmd","login");
     slot_httpParSet(map);
     qDebug()<<"connetc success !";
+
+
+
+
 }
 
 void CHttpApiDevice::slot_disconnected() {
@@ -493,12 +513,18 @@ void CHttpApiDevice::LogoutDevice(QString msgid){
 void CHttpApiDevice::slot_httpParSet(QMap<QString,QVariant> map)
 {
 
-    QString msgid = createMsgId(map.value("cmd").toString());
-    map.insert("msgid",msgid);
-    listMsg.append(map);
+    if(g_tcpsocket != nullptr && g_tcpsocket->isWritable()){
 
-    if(SendTimer != nullptr && !SendTimer->isActive())
-        SendTimer->start(sendertimerInter);
+
+        QString msgid = createMsgId(map.value("cmd").toString());
+        map.insert("msgid",msgid);
+        listMsg.append(map);
+
+        if(SendTimer != nullptr && !SendTimer->isActive())
+            SendTimer->start(sendertimerInter);
+    }
+
+
 }
 
 bool CHttpApiDevice::send_httpParSet(QMap<QString,QVariant> map)

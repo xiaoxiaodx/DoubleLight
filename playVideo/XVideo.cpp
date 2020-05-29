@@ -226,6 +226,8 @@ void XVideo::createHttpApi(){
         emit signal_createHttp();
         // emit signal_getInitPar();
         //fun_getInitPar();
+    }else {
+        emit signal_createHttp();
     }
 }
 //获取型号后在获取其他参数

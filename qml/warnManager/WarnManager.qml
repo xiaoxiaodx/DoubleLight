@@ -390,7 +390,7 @@ Rectangle {
                          curLanguage === lItaly?"Cancella":
                          curLanguage === lRussian?"Удалить":
                          curLanguage === lLithuanian?"Išvalyti":
-                            curLanguage === ltuerqi?"删除":
+                            curLanguage === ltuerqi?"Sil":
                                              ltuerqi1 === curLanguage?"Sil":
                                              lputaoya === curLanguage?"Sil":
                                              lxibanya === curLanguage?"Eliminar":

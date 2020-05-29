@@ -193,6 +193,7 @@ private:
     void HttpSetalarmparam(QVariantMap value);
     void HttpSetimagparam(QVariantMap value);
 
+
     void httpSendCommonCmd(QString cmd,QString );
 
 
@@ -210,7 +211,7 @@ private:
     int reconnectTimerCount = 0 ;
     int reconnectInter = 200;
 
-    int sendertimerInter = 100;
+    int sendertimerInter = 200;
 
     QString parseStr = "";
     QMap<QString,QVariant> warnPushMap;

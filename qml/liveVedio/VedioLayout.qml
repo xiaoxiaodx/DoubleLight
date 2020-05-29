@@ -165,19 +165,15 @@ Rectangle {
         anchors.bottom: parent.bottom
     }
 
-
-
-    Timer{
-        id:updateTimer
-        repeat:true
-        interval: 1800000;
-        Component.onCompleted: updateTimer.start();
-        onTriggered: {
-            videoTemp.updateDate();
-            videoNormal.updateDate();
-        }
-    }
-
-
+//    Timer{
+//        id:updateTimer
+//        repeat:true
+//        interval: 1800000;
+//        Component.onCompleted: updateTimer.start();
+//        onTriggered: {
+//            videoTemp.updateDate();
+//            videoNormal.updateDate();
+//        }
+//    }
 
 }

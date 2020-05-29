@@ -53,6 +53,7 @@ Popup {
             anchors.left: img.right
             anchors.leftMargin: 16
             anchors.verticalCenter: img.verticalCenter
+            font.pixelSize:14
             text: qsTr("text")
         }
 
@@ -102,56 +103,56 @@ Popup {
     function setLanguage(type){
         switch(type){
         case lEnglish:
-            txtCancel.text = "Cancel"
+            //txtCancel.text = "Cancel"
             txtEnsure.text = "Confirm "
             break;
         case lKorean:
-            txtCancel.text = "취소"
+            //txtCancel.text = "취소"
             txtEnsure.text = "확인"
             break;
         case lItaly:
-            txtCancel.text = "Annullato"
+            //txtCancel.text = "Annullato"
             txtEnsure.text = "Confermare"
             break;
         case lChinese:
-            txtCancel.text = "取消"
+           // txtCancel.text = "取消"
             txtEnsure.text = "确定"
             break;
         case lRussian:
-            txtCancel.text = "Отмена"
+           // txtCancel.text = "Отмена"
             txtEnsure.text = "Подтвердить"
             break;
         case lLithuanian:
-            txtCancel.text = "Taip"
+           // txtCancel.text = "Taip"
             txtEnsure.text = "Ne"
 
             break;
         case ltuerqi:
-            txtCancel.text = "İptal"
+           // txtCancel.text = "İptal"
             txtEnsure.text = "Onayla"
             break;
         case ltuerqi1:
-            txtCancel.text = "İptal"
+           // txtCancel.text = "İptal"
             txtEnsure.text = "Onayla"
             break;
         case lputaoya:
-            txtCancel.text = "Cancelar"
-            txtEnsure.text = "confirme"
+           // txtCancel.text = "Cancelar"
+            txtEnsure.text = "Confirme"
             break;
         case lxibanya:
-            txtCancel.text = "Cancelar"
+           // txtCancel.text = "Cancelar"
             txtEnsure.text = "Confirmar"
             break;
         case lfayu:
-            txtCancel.text = "Annuler"
+            //txtCancel.text = "Annuler"
             txtEnsure.text = "Confirmer"
             break;
         case lniboer:
-            txtCancel.text = "रद्ध गर्नुहोस"
+           // txtCancel.text = "रद्ध गर्नुहोस"
             txtEnsure.text = "निश्चित गर्नुहोस"
             break;
         case lKhmer:
-            txtCancel.text = "បោះបង់"
+          //  txtCancel.text = "បោះបង់"
             txtEnsure.text = "យល់ព្រម"
             break;
         }

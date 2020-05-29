@@ -447,15 +447,8 @@ Rectangle {
                     }
                     video.fun_sendCommonPar(map1)
                 }
-
-//                map.cmd = "getalarmparam"
-//                video.fun_sendCommonPar(map);
-
             }
 
-            //deviceconfig.setSwitchTime(enable)
-//            map.cmd = "getosdparam"
-//            video.fun_sendCommonPar(map);
             map.cmd = "setcurrenttime"
             video.fun_sendCommonPar(map);
 
@@ -511,69 +504,54 @@ Rectangle {
 
         }else if("setimagparam" === strcmd){
             if(deviceconfig.wdrisChange){
-                msgdialog.width = 427
+                msgdialog.width = 500
                 msgdialog.height = 176
-
-//                property int lChinese: 0
-//                property int lEnglish: 1
-//                property int lItaly: 2
-//                property int lKorean: 3
-//                property int lRussian: 4
-//                property int lLithuanian: 5
-//                property int ltuerqi: 6
-//                property int ltuerqi1: 7
-//                property int lputaoya: 8
-//                property int lxibanya: 9
-//                property int lfayu: 10
-//                property int lniboer: 11
-//                property int lKhmer:12
                 var txtstr ;
                 switch(curLanguage)
                 {
                 case lChinese:
                     txtstr = "wdr设置成功，设备将会重启"
-                    break
+                    break;
                 case lEnglish:
                     txtstr = "Camera will restart after setting"
-                    break
+                    break;
                 case lItaly:
                     txtstr = "La fotocamera si riavvierà dopo l'impostazione"
-                    break
+                    break;
                 case lKorean:
                      txtstr = "설정 후 카메라가 다시 시작됩니다"
-                    break
+                    break;
                 case lRussian:
                      txtstr = "Камера перезагрузится после настройки"
-                    break
+                    break;
                 case lLithuanian:
                      txtstr = "Nustačius fotoaparatą, jis paleis iš naujo"
-                    break
+                    break;
                 case ltuerqi:
                      txtstr = "Kamera ayarlandıktan sonra yeniden başlatılacak"
-                    break
+                    break;
                 case ltuerqi1:
                      txtstr = "Kamera ayarlandıktan sonra yeniden başlatılacak"
-                    break
+                    break;
                 case lputaoya:
                      txtstr = "A câmera será reiniciada após a configuração"
-                    break
+                    break;
                 case lxibanya:
                      txtstr = "La cámara se reiniciará después de configurar"
-                    break
+                    break;
                 case lfayu:
                      txtstr = "La caméra redémarrera après le réglage"
-                    break
+                    break;
                 case lniboer:
                      txtstr = "क्यामेरा सेटिंग पछि रिस्टार्ट हुनेछ"
-                    break
+                    break;
                 case lKhmer:
                      txtstr = "កាមេរ៉ានឹងចាប់ផ្តើមឡើងវិញបន្ទាប់ពីកំណត់"
-                    break
-
+                    break;
 
                 }
 
-                msgdialog.msgStr = curLanguage === lChinese?"wdr设置成功，设备将会重启":"Camera will restart after setting";
+                msgdialog.msgStr = txtstr;
                 msgdialog.open();
             }
         }
