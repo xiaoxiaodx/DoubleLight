@@ -109,7 +109,7 @@ void WarnTcpServer::slot_readByte()
 
     // msgdata.append(cliSocket->readAll());
     qDebug()<<" slot_ReadMsg    msgdata1    "<<msgdata1.length();
-    qDebug()<<" slot_ReadMsg    msgdata1    "<<msgdata1.toHex();
+    qDebug()<<" slot_ReadMsg    msgdata1    "<<QString(msgdata1);
 
     HttpMsgCallBack(msgdata1);
 }
@@ -209,6 +209,8 @@ int WarnTcpServer::HttpMsgCallBack(QByteArray arr) {
     QByteArray jsonArr;
     QString startFlagStr = "--boundarydonotcrossstart";
     QString endFlagStr = "--boundarydonotcrossend";
+
+
     if(tmpJsonStr.contains("--boundarydonotcrossstart") && tmpJsonStr.contains("--boundarydonotcrossend")){
 
         int frameStart = tmpJsonStr.indexOf(startFlagStr);

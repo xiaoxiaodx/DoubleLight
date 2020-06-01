@@ -504,7 +504,10 @@ Rectangle {
 
         }else if("setvideoencodeparam"=== strcmd){//设置成功
             //在重新获取
-            map.cmd = "getvideoencodeparam"
+
+            var map ={
+                cmd:"getvideoencodeparam"
+            }
             video.fun_sendCommonPar(map);
         }
     }

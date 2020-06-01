@@ -29,6 +29,8 @@ Rectangle {
         onSignal_sendWarnMsg:{
 
 
+
+            console.debug("push warn :" +time +"    "+type +"   "+  path +"   "+ tempvalue.toFixed(2))
             switch(type){
 
             case 80:
@@ -44,10 +46,7 @@ Rectangle {
             }
 
             pushwarnmodel.numberOfPeople ++ ;
-
-
-            pushwarnmodel.insert(0,{"warnTime":time,"absolutePath":path,"warnTemp":tempvalue.toFixed(2)})
-            //pushwarnmodel.append({"warnTime":time,"absolutePath":path,"warnTemp":tempvalue.toFixed(2)})
+            pushwarnmodel.insert(0,{"warnTime":time,"absolutePath":path,"warnTemp":tempvalue.toFixed(2),"temptype":type})
         }
     }
 

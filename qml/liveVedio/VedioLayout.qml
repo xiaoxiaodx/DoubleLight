@@ -220,7 +220,7 @@ Rectangle {
                             anchors.top: parent.top
                             anchors.topMargin: 2
                             font.pixelSize: 14
-                            color: "#FA3F00"
+                            color: temptype===80?"#FA3F00":(temptype===81?"#179B0E":(temptype===82?"#EF9D36":"#FFFFFF"))
                             text: warnTemp
                         }
                         Text {
