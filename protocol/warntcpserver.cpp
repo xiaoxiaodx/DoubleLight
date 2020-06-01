@@ -119,7 +119,6 @@ int WarnTcpServer::HttpMsgCallBack(char * pData) {
             QString cmd = object.value("cmd").toString();
             QString msgid = object.value("msgid").toString();
 
-
             QMap <QString,QVariant> callbackMap;
             if("pushalarm" == cmd){
                 callbackMap.insert("cmd",cmd);

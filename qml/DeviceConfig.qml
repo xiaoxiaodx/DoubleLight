@@ -144,879 +144,901 @@ Rectangle {
 
 
 
+
+
     Rectangle{
         width: parent.width
         height: parent.height - mDeviceStateBar.height
+
+        color: "#DFE1E6"
         MouseArea{
             anchors.fill: parent
         }
 
         Component.onCompleted: isCreate = true;
-        Rectangle {
-            id: rect
-            anchors.verticalCenter: parent.verticalCenter
-            anchors.horizontalCenter: parent.horizontalCenter
-            width: parent.width -40
+
+        Rectangle{
+
+            width: parent.width-40
             height: parent.height -40
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.verticalCenter: parent.verticalCenter
             color: "#F8FAFD"
-
-            Text {
-                id: labelTime
-                font.pixelSize: fontSize
-                color: fontColor
-                text: qsTr("时间显示")
-                anchors.bottom: line1.top
-                anchors.left: line1.left
-                anchors.bottomMargin: 20
-
-            }
-
-            Rectangle{
-                id:line1
-                width: parent.width - 20*2
-                height: 1
-                color: "#e2e2e2"
-                anchors.top: parent.top
-                anchors.topMargin: 62
+        ScrollView{
+            id:scroll
+//            width: parent.width-40
+//            height: parent.height -40
+//            anchors.horizontalCenter: parent.horizontalCenter
+//            anchors.verticalCenter: parent.verticalCenter
+            anchors.fill: parent
+            Rectangle {
+                id: rect
+                anchors.verticalCenter: parent.verticalCenter
                 anchors.horizontalCenter: parent.horizontalCenter
+                width: parent.width
+                height: 1080
+                color: "#F8FAFD"
 
-            }
-
-            Text {
-                id: labelSwitchTime
-                text: qsTr("时间开关")
-                font.pixelSize: fontSize
-                color: fontColor
-                anchors.right: swithTime.left
-                anchors.rightMargin: 20
-                anchors.verticalCenter: swithTime.verticalCenter
-            }
-
-            SimpleSwich{
-                id:swithTime
-                width: 30
-                height: 15
-                anchors.left: line1.left
-                anchors.leftMargin: parSetFirstAlignLine
-                anchors.top: line1.bottom
-                anchors.topMargin: 20
-                onCheckedChanged: {
-
-                    //s_timeSwith(checked)
+                Text {
+                    id: labelTime
+                    font.pixelSize: fontSize
+                    color: fontColor
+                    text: qsTr("时间显示")
+                    anchors.bottom: line1.top
+                    anchors.left: line1.left
+                    anchors.bottomMargin: 20
 
                 }
-            }
 
-            Text {
-                id: txtparset
-                font.pixelSize: fontSize
-                color: fontColor
-                text: qsTr("参数设置")
+                Rectangle{
+                    id:line1
+                    width: parent.width - 20*2
+                    height: 1
+                    color: "#e2e2e2"
+                    anchors.top: parent.top
+                    anchors.topMargin: 62
+                    anchors.horizontalCenter: parent.horizontalCenter
 
-                anchors.bottom: line2.top
-                anchors.left: line2.left
-                anchors.bottomMargin: 20
-            }
-            Rectangle{
-                id:line2
-                width:parent.width - 20*2
-                height: 1
-                color: "#e2e2e2"
-                anchors.top: parent.top
-                anchors.topMargin: 167
-                anchors.horizontalCenter: parent.horizontalCenter
-            }
+                }
 
-            Text {
-                id: txtTempDrift
-                text: qsTr("温漂设置")
-                color: fontColor
-                font.pixelSize: fontSize
-                anchors.right: rectTempDrift.left
-                anchors.rightMargin: 20
-                anchors.verticalCenter: rectTempDrift.verticalCenter
-            }
+                Text {
+                    id: labelSwitchTime
+                    text: qsTr("时间开关")
+                    font.pixelSize: fontSize
+                    color: fontColor
+                    anchors.right: swithTime.left
+                    anchors.rightMargin: 20
+                    anchors.verticalCenter: swithTime.verticalCenter
+                }
 
-            Rectangle{
-                id:rectTempDrift
-                color: "#D6D8DB"
-                width: 88
-                height: 32
-                radius: 4
-                anchors.left: line2.left
-                anchors.leftMargin: parSetFirstAlignLine
-                anchors.top: line2.bottom
-                anchors.topMargin: 20
-                LineEdit {
-                    id: inputTempDrift
-                    width: rectTempDrift.width  - 22
-                    height: rectTempDrift.height -2
-                    anchors.left: parent.left
-                    anchors.leftMargin: 1
+                SimpleSwich{
+                    id:swithTime
+                    width: 30
+                    height: 15
+                    anchors.left: line1.left
+                    anchors.leftMargin: parSetFirstAlignLine
+                    anchors.top: line1.bottom
+                    anchors.topMargin: 20
+                    onCheckedChanged: {
+
+                        //s_timeSwith(checked)
+
+                    }
+                }
+
+                Text {
+                    id: txtparset
+                    font.pixelSize: fontSize
+                    color: fontColor
+                    text: qsTr("参数设置")
+
+                    anchors.bottom: line2.top
+                    anchors.left: line2.left
+                    anchors.bottomMargin: 20
+                }
+                Rectangle{
+                    id:line2
+                    width:parent.width - 20*2
+                    height: 1
+                    color: "#e2e2e2"
+                    anchors.top: parent.top
+                    anchors.topMargin: 167
+                    anchors.horizontalCenter: parent.horizontalCenter
+                }
+
+                Text {
+                    id: txtTempDrift
+                    text: qsTr("温漂设置")
+                    color: fontColor
+                    font.pixelSize: fontSize
+                    anchors.right: rectTempDrift.left
+                    anchors.rightMargin: 20
                     anchors.verticalCenter: rectTempDrift.verticalCenter
-                    border.width: 0
-                    inputLimite:Qt.ImhDigitsOnly
-                    font.pixelSize: lineeditfontSize
-                    placeholderText: ""
-                    isNeedDoubleClickEdit: false
-                    textLeftPadding:0
-                    txtColor: Qt.rgba(0,0,0,0.65)
-                    text: "0"
-                    color: "#F8FAFD"
-                    isReadOnly:true
-                    onTextChanged: {
-                        s_temOffset(inputTempDrift.text);
-                    }
                 }
-                Image {
-                    id: imgValueUp
-                    width: 20
-                    height: 15
-                    source: "qrc:/images/arrow_up.png"
-                    anchors.right: parent.right
-                    anchors.rightMargin: 1
-                    anchors.top: parent.top
-                    anchors.topMargin: 1
-                    MouseArea{
-                        anchors.fill: parent
-                        onPressed: {
-                            imgValueUp.source="qrc:/images/arrow_up_p.png"
-                            var num = parseInt(inputTempDrift.text)
-                            if(num >= tempdriftcapMax)
-                                return
 
-                            inputTempDrift.text = ""+(Number(num)+Number(1))
-
+                Rectangle{
+                    id:rectTempDrift
+                    color: "#D6D8DB"
+                    width: 88
+                    height: 32
+                    radius: 4
+                    anchors.left: line2.left
+                    anchors.leftMargin: parSetFirstAlignLine
+                    anchors.top: line2.bottom
+                    anchors.topMargin: 20
+                    LineEdit {
+                        id: inputTempDrift
+                        width: rectTempDrift.width  - 22
+                        height: rectTempDrift.height -2
+                        anchors.left: parent.left
+                        anchors.leftMargin: 1
+                        anchors.verticalCenter: rectTempDrift.verticalCenter
+                        border.width: 0
+                        inputLimite:Qt.ImhDigitsOnly
+                        font.pixelSize: lineeditfontSize
+                        placeholderText: ""
+                        isNeedDoubleClickEdit: false
+                        textLeftPadding:0
+                        txtColor: Qt.rgba(0,0,0,0.65)
+                        text: "0"
+                        color: "#F8FAFD"
+                        isReadOnly:true
+                        onTextChanged: {
+                            s_temOffset(inputTempDrift.text);
                         }
-                        onReleased: imgValueUp.source="qrc:/images/arrow_up.png"
                     }
-                }
-                Image {
-                    id: imgValuedown
-                    width: 20
-                    height: 15
-                    source: "qrc:/images/arrow_low.png"
-                    anchors.right: imgValueUp.right
-                    anchors.top: imgValueUp.bottom
-                    anchors.topMargin: 1
-                    MouseArea{
-                        anchors.fill: parent
+                    Image {
+                        id: imgValueUp
+                        width: 20
+                        height: 15
+                        source: "qrc:/images/arrow_up.png"
+                        anchors.right: parent.right
+                        anchors.rightMargin: 1
+                        anchors.top: parent.top
+                        anchors.topMargin: 1
+                        MouseArea{
+                            anchors.fill: parent
+                            onPressed: {
+                                imgValueUp.source="qrc:/images/arrow_up_p.png"
+                                var num = parseInt(inputTempDrift.text)
+                                if(num >= tempdriftcapMax)
+                                    return
 
-                        onPressed: {
+                                inputTempDrift.text = ""+(Number(num)+Number(1))
 
-                            imgValuedown.source="qrc:/images/arrow_low_p.png"
-                            var num = parseInt(inputTempDrift.text)
-
-                            if(num <= tempdriftcapMin)
-                                return
-
-                            inputTempDrift.text = ""+(Number(num)-Number(1))
+                            }
+                            onReleased: imgValueUp.source="qrc:/images/arrow_up.png"
                         }
-                        onReleased: imgValuedown.source="qrc:/images/arrow_low.png"
+                    }
+                    Image {
+                        id: imgValuedown
+                        width: 20
+                        height: 15
+                        source: "qrc:/images/arrow_low.png"
+                        anchors.right: imgValueUp.right
+                        anchors.top: imgValueUp.bottom
+                        anchors.topMargin: 1
+                        MouseArea{
+                            anchors.fill: parent
+
+                            onPressed: {
+
+                                imgValuedown.source="qrc:/images/arrow_low_p.png"
+                                var num = parseInt(inputTempDrift.text)
+
+                                if(num <= tempdriftcapMin)
+                                    return
+
+                                inputTempDrift.text = ""+(Number(num)-Number(1))
+                            }
+                            onReleased: imgValuedown.source="qrc:/images/arrow_low.png"
+                        }
                     }
                 }
-            }
 
-            //            Text {
-            //                id: txtTemp
-            //                text: qsTr(" ℃")
-            //                color: fontColor
-            //                font.pixelSize: fontSize
-            //                anchors.verticalCenter: rectTempDrift.verticalCenter
-            //                anchors.left: rectTempDrift.right
-            //                anchors.topMargin: 6
-            //            }
-            ////////////
-            Text {
-                id: txtTempMin
-                text: qsTr("温度控制阀")
-                color: fontColor
-                font.pixelSize: fontSize
-                anchors.right: rectTempMin.left
-                anchors.rightMargin: 20
-                anchors.verticalCenter: rectTempMin.verticalCenter
-            }
-
-            Rectangle{
-                id:rectTempMin
-                color: "#D6D8DB"
-                width: 88
-                height: 32
-                radius: 4
-                anchors.left: line2.left
-                anchors.top:line2.bottom
-                anchors.topMargin: 73
-                anchors.leftMargin: parSetFirstAlignLine
-                LineEdit {
-                    id: inputTempMin
-                    width: rectTempMin.width  - 22
-                    height: rectTempMin.height -2
-                    anchors.left: parent.left
-                    anchors.leftMargin: 1
+                //            Text {
+                //                id: txtTemp
+                //                text: qsTr(" ℃")
+                //                color: fontColor
+                //                font.pixelSize: fontSize
+                //                anchors.verticalCenter: rectTempDrift.verticalCenter
+                //                anchors.left: rectTempDrift.right
+                //                anchors.topMargin: 6
+                //            }
+                ////////////
+                Text {
+                    id: txtTempMin
+                    text: qsTr("温度控制阀")
+                    color: fontColor
+                    font.pixelSize: fontSize
+                    anchors.right: rectTempMin.left
+                    anchors.rightMargin: 20
                     anchors.verticalCenter: rectTempMin.verticalCenter
-                    border.width: 0
-                    inputLimite:Qt.ImhDigitsOnly
+                }
+
+                Rectangle{
+                    id:rectTempMin
+                    color: "#D6D8DB"
+                    width: 88
+                    height: 32
+                    radius: 4
+                    anchors.left: line2.left
+                    anchors.top:line2.bottom
+                    anchors.topMargin: 73
+                    anchors.leftMargin: parSetFirstAlignLine
+                    LineEdit {
+                        id: inputTempMin
+                        width: rectTempMin.width  - 22
+                        height: rectTempMin.height -2
+                        anchors.left: parent.left
+                        anchors.leftMargin: 1
+                        anchors.verticalCenter: rectTempMin.verticalCenter
+                        border.width: 0
+                        inputLimite:Qt.ImhDigitsOnly
+                        font.pixelSize: lineeditfontSize
+                        placeholderText: ""
+                        isNeedDoubleClickEdit: false
+                        textLeftPadding:0
+                        txtColor: Qt.rgba(0,0,0,0.65)
+                        text: "4"
+                        isReadOnly:true
+                        color: "#F8FAFD"
+                        onTextChanged: {
+
+                            var tempv ;
+                            if(inputTempMin.text === "1")
+                                s_temMin("21");
+                            else if(inputTempMin.text === "2")
+                                s_temMin("24");
+                            else if(inputTempMin.text === "3")
+                                s_temMin("26");
+                            else if(inputTempMin.text === "4")
+                                s_temMin("28");
+                            else if(inputTempMin.text === "5")
+                                s_temMin("30");
+                            else if(inputTempMin.text === "6")
+                                s_temMin("32");
+
+
+                        }
+                    }
+
+                    Image {
+                        id: imgValueMinUp
+                        width: 20
+                        height: 15
+                        source: "qrc:/images/arrow_up.png"
+                        anchors.right: parent.right
+                        anchors.rightMargin: 1
+                        anchors.top: parent.top
+                        anchors.topMargin: 1
+                        MouseArea{
+                            anchors.fill: parent
+                            onPressed: {
+                                imgValueMinUp.source="qrc:/images/arrow_up_p.png"
+                                var num = parseInt(inputTempMin.text)
+                                if(num >= tempcontrolcapMax)
+                                    return
+
+                                inputTempMin.text = ""+(Number(num)+Number(1))
+                            }
+                            onReleased: imgValueMinUp.source="qrc:/images/arrow_up.png"
+                        }
+                    }
+                    Image {
+                        id: imgValueMindown
+                        width: 20
+                        height: 15
+                        source: "qrc:/images/arrow_low.png"
+                        anchors.right: imgValueMinUp.right
+                        anchors.top: imgValueMinUp.bottom
+                        anchors.topMargin: 1
+                        MouseArea{
+                            anchors.fill: parent
+
+                            onPressed: {
+
+                                imgValueMindown.source="qrc:/images/arrow_low_p.png"
+                                var num = parseInt(inputTempMin.text)
+
+                                if(num <= tempcontrolcapMin)
+                                    return
+
+                                inputTempMin.text = ""+(Number(num)-Number(1))
+                            }
+                            onReleased: imgValueMindown.source="qrc:/images/arrow_low.png"
+                        }
+                    }
+
+                }
+
+                //            Text {
+                //                id: txtTemp1
+
+                //                text: qsTr(" ℃")
+                //                color: fontColor
+                //                font.pixelSize: fontSize
+                //                anchors.verticalCenter: rectTempMin.verticalCenter
+                //                anchors.left: rectTempMin.right
+                //                anchors.topMargin: 6
+
+                //            }
+
+
+                Text {
+                    id: txtSwichWarn
+                    text: qsTr("报警开关")
+                    font.pixelSize: fontSize
+                    color: fontColor
+                    anchors.right: swichWarn.left
+                    anchors.rightMargin: 20
+                    anchors.verticalCenter: swichWarn.verticalCenter
+
+                }
+
+                SimpleSwich{
+                    id:swichWarn
+                    width: 30
+                    height: 15
+                    anchors.left: line2.left
+                    anchors.leftMargin: parSetFirstAlignLine
+                    anchors.top: line2.bottom
+                    anchors.topMargin: 125
+                    onCheckedChanged:{
+
+                        // s_warnSwith(checked)
+                    }
+                }
+
+                Text {
+                    id: txtWarnTemSet
+                    text: qsTr("告警温度设置")
+                    color: fontColor
+                    font.pixelSize: fontSize
+                    anchors.right: inputTem.left
+                    anchors.rightMargin: 20
+                    anchors.verticalCenter: swichWarn.verticalCenter
+                }
+
+                LineEdit {
+                    id: inputTem
+                    width: 88
+                    height: 28
+                    anchors.left: line2.left
+                    anchors.leftMargin: parSetSecondAlignLine
+                    anchors.verticalCenter:swichWarn.verticalCenter
+                    border.width: 1
+                    border.color: "#DEDFE3"
                     font.pixelSize: lineeditfontSize
                     placeholderText: ""
                     isNeedDoubleClickEdit: false
                     textLeftPadding:0
                     txtColor: Qt.rgba(0,0,0,0.65)
-                    text: "4"
-                    isReadOnly:true
+                    text: "38"
                     color: "#F8FAFD"
                     onTextChanged: {
-
-                        var tempv ;
-                        if(inputTempMin.text === "1")
-                            s_temMin("21");
-                        else if(inputTempMin.text === "2")
-                            s_temMin("24");
-                        else if(inputTempMin.text === "3")
-                            s_temMin("26");
-                        else if(inputTempMin.text === "4")
-                            s_temMin("28");
-                        else if(inputTempMin.text === "5")
-                            s_temMin("30");
-                        else if(inputTempMin.text === "6")
-                            s_temMin("32");
-
-
+                        //s_temSet(inputTem.text)
                     }
                 }
 
-                Image {
-                    id: imgValueMinUp
-                    width: 20
-                    height: 15
-                    source: "qrc:/images/arrow_up.png"
-                    anchors.right: parent.right
-                    anchors.rightMargin: 1
-                    anchors.top: parent.top
-                    anchors.topMargin: 1
-                    MouseArea{
-                        anchors.fill: parent
-                        onPressed: {
-                            imgValueMinUp.source="qrc:/images/arrow_up_p.png"
-                            var num = parseInt(inputTempMin.text)
-                            if(num >= tempcontrolcapMax)
-                                return
-
-                            inputTempMin.text = ""+(Number(num)+Number(1))
-                        }
-                        onReleased: imgValueMinUp.source="qrc:/images/arrow_up.png"
-                    }
-                }
-                Image {
-                    id: imgValueMindown
-                    width: 20
-                    height: 15
-                    source: "qrc:/images/arrow_low.png"
-                    anchors.right: imgValueMinUp.right
-                    anchors.top: imgValueMinUp.bottom
-                    anchors.topMargin: 1
-                    MouseArea{
-                        anchors.fill: parent
-
-                        onPressed: {
-
-                            imgValueMindown.source="qrc:/images/arrow_low_p.png"
-                            var num = parseInt(inputTempMin.text)
-
-                            if(num <= tempcontrolcapMin)
-                                return
-
-                            inputTempMin.text = ""+(Number(num)-Number(1))
-                        }
-                        onReleased: imgValueMindown.source="qrc:/images/arrow_low.png"
-                    }
-                }
-
-            }
-
-            //            Text {
-            //                id: txtTemp1
-
-            //                text: qsTr(" ℃")
-            //                color: fontColor
-            //                font.pixelSize: fontSize
-            //                anchors.verticalCenter: rectTempMin.verticalCenter
-            //                anchors.left: rectTempMin.right
-            //                anchors.topMargin: 6
-
-            //            }
-
-
-            Text {
-                id: txtSwichWarn
-                text: qsTr("报警开关")
-                font.pixelSize: fontSize
-                color: fontColor
-                anchors.right: swichWarn.left
-                anchors.rightMargin: 20
-                anchors.verticalCenter: swichWarn.verticalCenter
-
-            }
-
-            SimpleSwich{
-                id:swichWarn
-                width: 30
-                height: 15
-                anchors.left: line2.left
-                anchors.leftMargin: parSetFirstAlignLine
-                anchors.top: line2.bottom
-                anchors.topMargin: 125
-                onCheckedChanged:{
-
-                    // s_warnSwith(checked)
-                }
-            }
-
-            Text {
-                id: txtWarnTemSet
-                text: qsTr("告警温度设置")
-                color: fontColor
-                font.pixelSize: fontSize
-                anchors.right: inputTem.left
-                anchors.rightMargin: 20
-                anchors.verticalCenter: swichWarn.verticalCenter
-            }
-
-            LineEdit {
-                id: inputTem
-                width: 88
-                height: 28
-                anchors.left: line2.left
-                anchors.leftMargin: parSetSecondAlignLine
-                anchors.verticalCenter:swichWarn.verticalCenter
-                border.width: 1
-                border.color: "#DEDFE3"
-                font.pixelSize: lineeditfontSize
-                placeholderText: ""
-                isNeedDoubleClickEdit: false
-                textLeftPadding:0
-                txtColor: Qt.rgba(0,0,0,0.65)
-                text: "38"
-                color: "#F8FAFD"
-                onTextChanged: {
-                    //s_temSet(inputTem.text)
-                }
-            }
-
-            Text {
-                id: txtTem1
-                text: cmbTempTypeSelect.currentIndex === 0 ?qsTr("℃"):qsTr("℉")
-                font.pixelSize: lineeditfontSize
-                color: fontColor
-                anchors.left: inputTem.right
-                anchors.leftMargin: 6
-                anchors.verticalCenter: inputTem.verticalCenter
-
-            }
-
-            Text {
-                id: txtSwichScreenShot
-                text: qsTr("抓拍开关")
-                font.pixelSize: fontSize
-                color: fontColor
-                anchors.right: swichScreenShot.left
-                anchors.rightMargin: 20
-                anchors.verticalCenter: swichScreenShot.verticalCenter
-            }
-            SimpleSwich{
-                id:swichScreenShot
-                width: 30
-                height: 15
-                anchors.left: line2.left
-                anchors.leftMargin: parSetFirstAlignLine
-                anchors.top: line2.bottom
-                anchors.topMargin: 172
-                onCheckedChanged: s_screenShotSwith(checked)
-            }
-
-            Text {
-                id: txtScreenShotPath
-                text: qsTr("抓拍存储路径")
-                font.pixelSize: fontSize
-                color: fontColor
-                anchors.right: rectScreenShotPath.left
-                anchors.rightMargin: 20
-                anchors.verticalCenter: swichScreenShot.verticalCenter
-            }
-            Rectangle{
-
-                id:rectScreenShotPath
-                color: "#F8FAFD"
-                border.color: "#DEDFE3"
-                border.width: 1
-                width: 200
-                height: 28
-                anchors.left: line2.left
-                anchors.leftMargin: parSetSecondAlignLine
-                anchors.verticalCenter: swichScreenShot.verticalCenter
-                LineEdit {
-                    id: inputScreenShotPath
-                    width: rectScreenShotPath.width - imgScreenShotPath.width - 22
-                    height: rectScreenShotPath.height -2
-                    anchors.left: parent.left
-                    anchors.leftMargin: 2
-                    anchors.verticalCenter: rectScreenShotPath.verticalCenter
-                    border.width: 0
-                    text:screenv.funGetCurPath()
-                    font.pixelSize:fontSize
-                    placeholderText: ""
-                    isNeedDoubleClickEdit: false
-                    textLeftPadding:0
-                    txtColor: Qt.rgba(0,0,0,0.65)
-                    color: "#F8FAFD"
-                    //onTextChanged: s_screenShotPathSet(inputScreenShotPath.text)
-                }
-                Image {
-                    id: imgScreenShotPath
-                    width: 16
-                    height: 13
-                    source: "qrc:/images/file.png"
-                    anchors.right: parent.right
-                    anchors.rightMargin: 10
-                    anchors.verticalCenter: parent.verticalCenter
-                    MouseArea{
-                        anchors.fill: parent
-                        onPressed: {
-                            imgScreenShotPath.source = "qrc:/images/fileopen.png"
-                        }
-
-                        onReleased: {
-                            imgScreenShotPath.source = "qrc:/images/file.png"
-                        }
-
-                        onClicked: {
-                            fileDialog.folder = "file:///"+inputScreenShotPath.text
-                            fileDialog.pathname = "screenShotPath";
-                            fileDialog.setSelectFolder(true)
-                            fileDialog.open()
-                        }
-                    }
-                }
-            }
-
-            Text {
-                id: txtSwichBeer
-                text: qsTr("蜂鸣开关")
-                font.pixelSize: fontSize
-                color: fontColor
-                anchors.right: swichBeer.left
-                anchors.rightMargin: 20
-                anchors.verticalCenter: swichBeer.verticalCenter
-            }
-
-            SimpleSwich{
-                id:swichBeer
-                width: 30
-                height: 15
-                anchors.left: line2.left
-                anchors.leftMargin: parSetFirstAlignLine
-                anchors.top: line2.bottom
-                anchors.topMargin:218
-                onCheckedChanged:{
-                    //s_beerSwith(checked)
-                }
-            }
-
-            Text {
-                id: txtKuandongtai
-                text: qsTr("WDR")
-                font.pixelSize: lineeditfontSize
-                color: fontColor
-                anchors.right: swichKuandongtai.left
-                anchors.rightMargin: 20
-                anchors.verticalCenter: swichKuandongtai.verticalCenter
-            }
-
-            SimpleSwich{
-                id:swichKuandongtai
-                width: 30
-                height: 15
-                anchors.left: line2.left
-                anchors.leftMargin: parSetFirstAlignLine
-                anchors.top: line2.bottom
-                anchors.topMargin:265
-            }
-
-            Text {
-                id: labelResolution
-                text: qsTr("温标选择")
-                font.pixelSize: fontSize
-                color: fontColor
-                anchors.right: cmbTempTypeSelect.left
-                anchors.rightMargin: 20
-                anchors.verticalCenter: cmbTempTypeSelect.verticalCenter
-            }
-
-            ListModel{
-                id:reTempTypeSelectModel
-                ListElement{showStr:"℃"}
-                ListElement{showStr:"℉"}
-            }
-
-            MyComBox{
-                id:cmbTempTypeSelect
-                width:88
-                height: 28
-                anchors.left: line2.left
-                anchors.leftMargin: parSetSecondAlignLine
-                anchors.verticalCenter: swichKuandongtai.verticalCenter
-                contentBg: "#ffffff"
-                itemColorBgNor:"#FFFFFF"
-                itemColorBgHoverd: "#E7EAF1"
-                indicatorImgSrc:"qrc:/images/imgTypeSelect.png"
-                indicatorW: 9
-                indicatorH: 5
-                itemLeftMargin:0
-                itemTopMargin:0
-                itemFontColor: "#5A5E66"
-                contentFontColor: "#a6000000"
-                contentFontSize: lineeditfontSize
-                bordColor:"#DEDFE3"
-                mRadius:2
-                model: reTempTypeSelectModel
-
-                onCurrentIndexChanged: {
-
-                    if(cmbTempTypeSelect.currentIndex === 1){
-                       // (F（华氏知度）-32)÷1.8
-
-                        console.debug("*********    "+inputTem.text)
-                        var tempStr = inputTem.text
-                        console.debug("*********    "+tempStr)
-                        var tempS = parseFloat(tempStr);
-                        console.debug("*********    "+tempS)
-                        var tempH = tempS*1.8+32
-                        console.debug("*********    "+tempH)
-                        inputTem.text = tempH.toFixed(2)
-                    }else {
-                        var tempStr1 = inputTem.text
-                        var tempH1 = parseFloat(tempStr1);
-                        var tempS1 = (tempH1 - 32)/1.8
-                        inputTem.text = tempS1.toFixed(2)
-                    }
-                }
-            }
-
-            Text {
-                id: txtRecordSet
-                text: qsTr("录像设置")
-                color: fontColor
-                font.pixelSize: fontSize
-                anchors.bottom: line3.top
-                anchors.left: line3.left
-                anchors.bottomMargin: 20
-            }
-
-            Rectangle{
-                id:line3
-                width: parent.width - 20*2
-                height: 1
-                color: "#e2e2e2"
-                anchors.top: parent.top
-                anchors.topMargin: 530
-                anchors.horizontalCenter: parent.horizontalCenter
-            }
-
-            Text {
-                id: txtSwichRecord
-                text: qsTr("录像开关")
-                color: fontColor
-                font.pixelSize: fontSize
-                anchors.verticalCenter: swichRecord.verticalCenter
-                anchors.right: swichRecord.left
-                anchors.rightMargin: 20
-            }
-            SimpleSwich{
-                id:swichRecord
-                width: 30
-                height: 15
-                anchors.left: line3.left
-                anchors.leftMargin: parSetFirstAlignLine
-                anchors.top: line3.bottom
-                anchors.topMargin: 27
-                onCheckedChanged: s_recordSwith(checked)
-            }
-
-            Text {
-                id: txtRecortPath
-                text: qsTr("录像存储路径")
-                color: fontColor
-                font.pixelSize: fontSize
-                anchors.right: rectRecordPath.left
-                anchors.rightMargin: 20
-                anchors.verticalCenter: swichRecord.verticalCenter
-            }
-            Rectangle{
-                id:rectRecordPath
-                color: "#F8FAFD"
-                border.color: "#DEDFE3"
-                border.width: 1
-                width: 200
-                height: 28
-                anchors.left: line3.left
-                anchors.leftMargin: parSetSecondAlignLine
-                anchors.verticalCenter: swichRecord.verticalCenter
-                LineEdit {
-                    id: inputRecordPath
-                    width: rectRecordPath.width - imgRecordPath.width - 22
-                    height: rectRecordPath.height -2
-                    anchors.left: parent.left
-                    anchors.leftMargin: 2
-                    anchors.verticalCenter: rectRecordPath.verticalCenter
-                    border.width: 0
-                    text: screenv.funGetCurPath()
-                    font.pixelSize: fontSize
-                    placeholderText: ""
-                    isNeedDoubleClickEdit: false
-                    textLeftPadding:0
-                    txtColor: Qt.rgba(0,0,0,0.65)
-                    color: "#F8FAFD"
-                    //onTextChanged: s_recordPathSet(inputRecordPath.text)
-                }
-
-                Image {
-                    id: imgRecordPath
-                    width: 16
-                    height: 13
-                    source: "qrc:/images/file.png"
-                    anchors.right: parent.right
-                    anchors.rightMargin: 10
-                    anchors.verticalCenter: parent.verticalCenter
-                    MouseArea{
-                        anchors.fill: parent
-                        onPressed: {
-                            imgRecordPath.source = "qrc:/images/fileopen.png"
-                        }
-                        onReleased: {
-                            imgRecordPath.source = "qrc:/images/file.png"
-                        }
-                        onClicked: {
-                            fileDialog.folder = "file:///"+inputRecordPath.text
-                            fileDialog.pathname = "recordPath";
-                            fileDialog.setSelectFolder(true)
-                            fileDialog.open()
-                        }
-                    }
-                }
-            }
-
-            Text {
-                id: txtImageSet
-                font.pixelSize: fontSize
-                text: qsTr("图像设置")
-                color: fontColor
-                visible: curDevTypeStr==="f03"
-                anchors.bottom: line4.top
-                anchors.left: line4.left
-                anchors.bottomMargin: 20
-
-            }
-            Rectangle{
-                id:line4
-                width:parent.width - 20*2
-                height: 1
-                visible: curDevTypeStr==="f03"
-                color: "#e2e2e2"
-                anchors.top: parent.top
-                anchors.topMargin: 764
-                anchors.horizontalCenter: parent.horizontalCenter
-            }
-
-            Text {
-                id: txtImageSelect
-                font.pixelSize: fontSize
-                text: qsTr("图像选择")
-                color: fontColor
-                visible: curDevTypeStr==="f03"
-                anchors.right: cmbImgSelect.left
-                anchors.rightMargin: 20
-                anchors.verticalCenter: cmbImgSelect.verticalCenter
-            }
-
-            MyComBox{
-                id:cmbImgSelect
-                width:88
-                height: 28
-                visible: curDevTypeStr==="f03"
-                anchors.left: line4.left
-                anchors.leftMargin: parSetFirstAlignLine
-                anchors.top: line4.bottom
-                anchors.topMargin: 20
-                contentBg: "#ffffff"
-                itemColorBgNor:"#FFFFFF"
-                itemColorBgHoverd: "#E7EAF1"
-                indicatorImgSrc:"qrc:/images/imgTypeSelect.png"
-                indicatorW: 9
-                indicatorH: 5
-                itemLeftMargin:0
-                itemTopMargin:0
-                itemFontColor: "#5A5E66"
-                contentFontColor: "#a6000000"
-                contentFontSize: fontSize
-                bordColor:"#DEDFE3"
-                mRadius:2
-                model: ListModel{
-                    ListElement{showStr:"黑白"}
-                    ListElement{showStr:"彩色"}
-                }
-                onCurrentIndexChanged: {
-                    //                    curLanguage = currentIndex
-                    //                    main.s_setLanguage(currentIndex);
-                    //s_temImage(currentIndex);
-                }
-            }
-
-            Text {
-                id: txtUpdateFile
-                font.pixelSize: fontSize
-                text: qsTr("设备升级")
-                color: fontColor
-                //  visible: curDevTypeStr==="f03"
-                anchors.bottom: line5.top
-                anchors.left: line5.left
-                anchors.bottomMargin: 20
-            }
-
-            Rectangle{
-                id:line5
-                width:parent.width - 20*2
-                height: 1
-                //visible: curDevTypeStr==="f03"
-                color: "#e2e2e2"
-                anchors.top: parent.top
-                anchors.topMargin: 647
-                anchors.horizontalCenter: parent.horizontalCenter
-            }
-
-            Rectangle{
-                id:rectUpdatePath
-                color: "#F8FAFD"
-                border.color: "#DEDFE3"
-                border.width: 1
-                width: 200
-                height: 28
-                anchors.left: line5.left
-                anchors.leftMargin: 48
-                anchors.top: line5.bottom
-                anchors.topMargin: 20
-                LineEdit {
-                    id: inputUpdatePath
-                    width: rectUpdatePath.width - imgRecordPath.width - 22
-                    height: rectUpdatePath.height -2
-                    anchors.left: parent.left
-                    anchors.leftMargin: 2
-                    anchors.verticalCenter: rectUpdatePath.verticalCenter
-                    border.width: 0
-                    text: ""//screenv.funGetCurPath()
+                Text {
+                    id: txtTem1
+                    text: cmbTempTypeSelect.currentIndex === 0 ?qsTr("℃"):qsTr("℉")
                     font.pixelSize: lineeditfontSize
-                    placeholderText: ""
-                    isNeedDoubleClickEdit: false
-                    textLeftPadding:0
-                    txtColor: Qt.rgba(0,0,0,0.65)
-                    color: "#F8FAFD"
-                    //onTextChanged: s_recordPathSet(inputRecordPath.text)
+                    color: fontColor
+                    anchors.left: inputTem.right
+                    anchors.leftMargin: 6
+                    anchors.verticalCenter: inputTem.verticalCenter
+
                 }
 
-                Image {
-                    id: imgUpdatePath
-                    width: 16
-                    height: 13
-                    source: "qrc:/images/file.png"
-                    anchors.right: parent.right
-                    anchors.rightMargin: 10
-                    anchors.verticalCenter: parent.verticalCenter
+                Text {
+                    id: txtSwichScreenShot
+                    text: qsTr("抓拍开关")
+                    font.pixelSize: fontSize
+                    color: fontColor
+                    anchors.right: swichScreenShot.left
+                    anchors.rightMargin: 20
+                    anchors.verticalCenter: swichScreenShot.verticalCenter
+                }
+                SimpleSwich{
+                    id:swichScreenShot
+                    width: 30
+                    height: 15
+                    anchors.left: line2.left
+                    anchors.leftMargin: parSetFirstAlignLine
+                    anchors.top: line2.bottom
+                    anchors.topMargin: 172
+                    onCheckedChanged: s_screenShotSwith(checked)
+                }
+
+                Text {
+                    id: txtScreenShotPath
+                    text: qsTr("抓拍存储路径")
+                    font.pixelSize: fontSize
+                    color: fontColor
+                    anchors.right: rectScreenShotPath.left
+                    anchors.rightMargin: 20
+                    anchors.verticalCenter: swichScreenShot.verticalCenter
+                }
+                Rectangle{
+
+                    id:rectScreenShotPath
+                    color: "#F8FAFD"
+                    border.color: "#DEDFE3"
+                    border.width: 1
+                    width: 200
+                    height: 28
+                    anchors.left: line2.left
+                    anchors.leftMargin: parSetSecondAlignLine
+                    anchors.verticalCenter: swichScreenShot.verticalCenter
+                    LineEdit {
+                        id: inputScreenShotPath
+                        width: rectScreenShotPath.width - imgScreenShotPath.width - 22
+                        height: rectScreenShotPath.height -2
+                        anchors.left: parent.left
+                        anchors.leftMargin: 2
+                        anchors.verticalCenter: rectScreenShotPath.verticalCenter
+                        border.width: 0
+                        text:screenv.funGetCurPath()
+                        font.pixelSize:fontSize
+                        placeholderText: ""
+                        isNeedDoubleClickEdit: false
+                        textLeftPadding:0
+                        txtColor: Qt.rgba(0,0,0,0.65)
+                        color: "#F8FAFD"
+                        //onTextChanged: s_screenShotPathSet(inputScreenShotPath.text)
+                    }
+                    Image {
+                        id: imgScreenShotPath
+                        width: 16
+                        height: 13
+                        source: "qrc:/images/file.png"
+                        anchors.right: parent.right
+                        anchors.rightMargin: 10
+                        anchors.verticalCenter: parent.verticalCenter
+                        MouseArea{
+                            anchors.fill: parent
+                            onPressed: {
+                                imgScreenShotPath.source = "qrc:/images/fileopen.png"
+                            }
+
+                            onReleased: {
+                                imgScreenShotPath.source = "qrc:/images/file.png"
+                            }
+
+                            onClicked: {
+                                fileDialog.folder = "file:///"+inputScreenShotPath.text
+                                fileDialog.pathname = "screenShotPath";
+                                fileDialog.setSelectFolder(true)
+                                fileDialog.open()
+                            }
+                        }
+                    }
+                }
+
+                Text {
+                    id: txtSwichBeer
+                    text: qsTr("蜂鸣开关")
+                    font.pixelSize: fontSize
+                    color: fontColor
+                    anchors.right: swichBeer.left
+                    anchors.rightMargin: 20
+                    anchors.verticalCenter: swichBeer.verticalCenter
+                }
+
+                SimpleSwich{
+                    id:swichBeer
+                    width: 30
+                    height: 15
+                    anchors.left: line2.left
+                    anchors.leftMargin: parSetFirstAlignLine
+                    anchors.top: line2.bottom
+                    anchors.topMargin:218
+                    onCheckedChanged:{
+                        //s_beerSwith(checked)
+                    }
+                }
+
+                Text {
+                    id: txtKuandongtai
+                    text: qsTr("WDR")
+                    font.pixelSize: lineeditfontSize
+                    color: fontColor
+                    anchors.right: swichKuandongtai.left
+                    anchors.rightMargin: 20
+                    anchors.verticalCenter: swichKuandongtai.verticalCenter
+                }
+
+                SimpleSwich{
+                    id:swichKuandongtai
+                    width: 30
+                    height: 15
+                    anchors.left: line2.left
+                    anchors.leftMargin: parSetFirstAlignLine
+                    anchors.top: line2.bottom
+                    anchors.topMargin:265
+                }
+
+                Text {
+                    id: labelResolution
+                    text: qsTr("温标选择")
+                    font.pixelSize: fontSize
+                    color: fontColor
+                    anchors.right: cmbTempTypeSelect.left
+                    anchors.rightMargin: 20
+                    anchors.verticalCenter: cmbTempTypeSelect.verticalCenter
+                }
+
+                ListModel{
+                    id:reTempTypeSelectModel
+                    ListElement{showStr:"℃"}
+                    ListElement{showStr:"℉"}
+                }
+
+                MyComBox{
+                    id:cmbTempTypeSelect
+                    width:88
+                    height: 28
+                    anchors.left: line2.left
+                    anchors.leftMargin: parSetSecondAlignLine
+                    anchors.verticalCenter: swichKuandongtai.verticalCenter
+                    contentBg: "#ffffff"
+                    itemColorBgNor:"#FFFFFF"
+                    itemColorBgHoverd: "#E7EAF1"
+                    indicatorImgSrc:"qrc:/images/imgTypeSelect.png"
+                    indicatorW: 9
+                    indicatorH: 5
+                    itemLeftMargin:0
+                    itemTopMargin:0
+                    itemFontColor: "#5A5E66"
+                    contentFontColor: "#a6000000"
+                    contentFontSize: lineeditfontSize
+                    bordColor:"#DEDFE3"
+                    mRadius:2
+                    model: reTempTypeSelectModel
+
+                    onCurrentIndexChanged: {
+
+                        if(cmbTempTypeSelect.currentIndex === 1){
+                            // (F（华氏知度）-32)÷1.8
+
+                            console.debug("*********    "+inputTem.text)
+                            var tempStr = inputTem.text
+                            console.debug("*********    "+tempStr)
+                            var tempS = parseFloat(tempStr);
+                            console.debug("*********    "+tempS)
+                            var tempH = tempS*1.8+32
+                            console.debug("*********    "+tempH)
+                            inputTem.text = tempH.toFixed(2)
+                        }else {
+                            var tempStr1 = inputTem.text
+                            var tempH1 = parseFloat(tempStr1);
+                            var tempS1 = (tempH1 - 32)/1.8
+                            inputTem.text = tempS1.toFixed(2)
+                        }
+                    }
+                }
+
+                Text {
+                    id: txtRecordSet
+                    text: qsTr("录像设置")
+                    color: fontColor
+                    font.pixelSize: fontSize
+                    anchors.bottom: line3.top
+                    anchors.left: line3.left
+                    anchors.bottomMargin: 20
+                }
+
+                Rectangle{
+                    id:line3
+                    width: parent.width - 20*2
+                    height: 1
+                    color: "#e2e2e2"
+                    anchors.top: parent.top
+                    anchors.topMargin: 530
+                    anchors.horizontalCenter: parent.horizontalCenter
+                }
+
+                Text {
+                    id: txtSwichRecord
+                    text: qsTr("录像开关")
+                    color: fontColor
+                    font.pixelSize: fontSize
+                    anchors.verticalCenter: swichRecord.verticalCenter
+                    anchors.right: swichRecord.left
+                    anchors.rightMargin: 20
+                }
+                SimpleSwich{
+                    id:swichRecord
+                    width: 30
+                    height: 15
+                    anchors.left: line3.left
+                    anchors.leftMargin: parSetFirstAlignLine
+                    anchors.top: line3.bottom
+                    anchors.topMargin: 27
+                    onCheckedChanged: s_recordSwith(checked)
+                }
+
+                Text {
+                    id: txtRecortPath
+                    text: qsTr("录像存储路径")
+                    color: fontColor
+                    font.pixelSize: fontSize
+                    anchors.right: rectRecordPath.left
+                    anchors.rightMargin: 20
+                    anchors.verticalCenter: swichRecord.verticalCenter
+                }
+                Rectangle{
+                    id:rectRecordPath
+                    color: "#F8FAFD"
+                    border.color: "#DEDFE3"
+                    border.width: 1
+                    width: 200
+                    height: 28
+                    anchors.left: line3.left
+                    anchors.leftMargin: parSetSecondAlignLine
+                    anchors.verticalCenter: swichRecord.verticalCenter
+                    LineEdit {
+                        id: inputRecordPath
+                        width: rectRecordPath.width - imgRecordPath.width - 22
+                        height: rectRecordPath.height -2
+                        anchors.left: parent.left
+                        anchors.leftMargin: 2
+                        anchors.verticalCenter: rectRecordPath.verticalCenter
+                        border.width: 0
+                        text: screenv.funGetCurPath()
+                        font.pixelSize: fontSize
+                        placeholderText: ""
+                        isNeedDoubleClickEdit: false
+                        textLeftPadding:0
+                        txtColor: Qt.rgba(0,0,0,0.65)
+                        color: "#F8FAFD"
+                        //onTextChanged: s_recordPathSet(inputRecordPath.text)
+                    }
+
+                    Image {
+                        id: imgRecordPath
+                        width: 16
+                        height: 13
+                        source: "qrc:/images/file.png"
+                        anchors.right: parent.right
+                        anchors.rightMargin: 10
+                        anchors.verticalCenter: parent.verticalCenter
+                        MouseArea{
+                            anchors.fill: parent
+                            onPressed: {
+                                imgRecordPath.source = "qrc:/images/fileopen.png"
+                            }
+                            onReleased: {
+                                imgRecordPath.source = "qrc:/images/file.png"
+                            }
+                            onClicked: {
+                                fileDialog.folder = "file:///"+inputRecordPath.text
+                                fileDialog.pathname = "recordPath";
+                                fileDialog.setSelectFolder(true)
+                                fileDialog.open()
+                            }
+                        }
+                    }
+                }
+
+                Text {
+                    id: txtImageSet
+                    font.pixelSize: fontSize
+                    text: qsTr("图像设置")
+                    color: fontColor
+                    visible: true//curDevTypeStr==="J07"
+                    anchors.bottom: line4.top
+                    anchors.left: line4.left
+                    anchors.bottomMargin: 20
+
+                }
+                Rectangle{
+                    id:line4
+                    width:parent.width - 20*2
+                    height: 1
+                    visible: true//curDevTypeStr==="J07"
+                    color: "#e2e2e2"
+                    anchors.top: parent.top
+                    anchors.topMargin: 764
+                    anchors.horizontalCenter: parent.horizontalCenter
+                }
+
+                Text {
+                    id: txtImageSelect
+                    font.pixelSize: fontSize
+                    text: qsTr("图像选择")
+                    color: fontColor
+                    visible: true//curDevTypeStr==="J07"
+                    anchors.right: cmbImgSelect.left
+                    anchors.rightMargin: 20
+                    anchors.verticalCenter: cmbImgSelect.verticalCenter
+                }
+
+                MyComBox{
+                    id:cmbImgSelect
+                    width:88
+                    height: 28
+                    visible: true//curDevTypeStr==="J07"
+                    anchors.left: line4.left
+                    anchors.leftMargin: parSetFirstAlignLine
+                    anchors.top: line4.bottom
+                    anchors.topMargin: 20
+                    contentBg: "#ffffff"
+                    itemColorBgNor:"#FFFFFF"
+                    itemColorBgHoverd: "#E7EAF1"
+                    indicatorImgSrc:"qrc:/images/imgTypeSelect.png"
+                    indicatorW: 9
+                    indicatorH: 5
+                    itemLeftMargin:0
+                    itemTopMargin:0
+                    itemFontColor: "#5A5E66"
+                    contentFontColor: "#a6000000"
+                    contentFontSize: fontSize
+                    bordColor:"#DEDFE3"
+                    mRadius:2
+                    model: ListModel{
+                        ListElement{showStr:"黑白"}
+                        ListElement{showStr:"彩色"}
+                    }
+                    onCurrentIndexChanged: {
+                        //                    curLanguage = currentIndex
+                        //                    main.s_setLanguage(currentIndex);
+                        //s_temImage(currentIndex);
+                    }
+                }
+
+                Text {
+                    id: txtUpdateFile
+                    font.pixelSize: fontSize
+                    text: qsTr("设备升级")
+                    color: fontColor
+                    //  visible: curDevTypeStr==="f03"
+                    anchors.bottom: line5.top
+                    anchors.left: line5.left
+                    anchors.bottomMargin: 20
+                }
+
+                Rectangle{
+                    id:line5
+                    width:parent.width - 20*2
+                    height: 1
+                    //visible: curDevTypeStr==="f03"
+                    color: "#e2e2e2"
+                    anchors.top: parent.top
+                    anchors.topMargin: 647
+                    anchors.horizontalCenter: parent.horizontalCenter
+                }
+
+                Rectangle{
+                    id:rectUpdatePath
+                    color: "#F8FAFD"
+                    border.color: "#DEDFE3"
+                    border.width: 1
+                    width: 200
+                    height: 28
+                    anchors.left: line5.left
+                    anchors.leftMargin: 48
+                    anchors.top: line5.bottom
+                    anchors.topMargin: 20
+                    LineEdit {
+                        id: inputUpdatePath
+                        width: rectUpdatePath.width - imgRecordPath.width - 22
+                        height: rectUpdatePath.height -2
+                        anchors.left: parent.left
+                        anchors.leftMargin: 2
+                        anchors.verticalCenter: rectUpdatePath.verticalCenter
+                        border.width: 0
+                        text: ""//screenv.funGetCurPath()
+                        font.pixelSize: lineeditfontSize
+                        placeholderText: ""
+                        isNeedDoubleClickEdit: false
+                        textLeftPadding:0
+                        txtColor: Qt.rgba(0,0,0,0.65)
+                        color: "#F8FAFD"
+                        //onTextChanged: s_recordPathSet(inputRecordPath.text)
+                    }
+
+                    Image {
+                        id: imgUpdatePath
+                        width: 16
+                        height: 13
+                        source: "qrc:/images/file.png"
+                        anchors.right: parent.right
+                        anchors.rightMargin: 10
+                        anchors.verticalCenter: parent.verticalCenter
+                        MouseArea{
+                            anchors.fill: parent
+                            onPressed: {
+                                imgUpdatePath.source = "qrc:/images/fileopen.png"
+                            }
+                            onReleased: {
+                                imgUpdatePath.source = "qrc:/images/file.png"
+                            }
+                            onClicked: {
+                                fileDialog.folder = "file:///"+inputUpdatePath.text
+                                fileDialog.pathname = "updatePath";
+                                fileDialog.setSelectFolder(false)
+                                fileDialog.open()
+                            }
+                        }
+                    }
+                }
+
+                Rectangle{
+                    id:btnUpdate
+                    width: txtUpdate.width +24
+                    height: 28
+                    color: "#3B84F6"
+                    radius: 2
+                    anchors.left: rectUpdatePath.right
+                    anchors.leftMargin: 20
+                    anchors.verticalCenter: rectUpdatePath.verticalCenter
+                    Text {
+                        id: txtUpdate
+                        anchors.horizontalCenter: parent.horizontalCenter
+                        anchors.verticalCenter: parent.verticalCenter
+                        elide: Text.ElideMiddle
+                        font.pixelSize: fontSize
+                        color: "#ffffff"
+                        text: qsTr("升级")
+                    }
                     MouseArea{
                         anchors.fill: parent
-                        onPressed: {
-                            imgUpdatePath.source = "qrc:/images/fileopen.png"
-                        }
-                        onReleased: {
-                            imgUpdatePath.source = "qrc:/images/file.png"
-                        }
                         onClicked: {
-                            fileDialog.folder = "file:///"+inputUpdatePath.text
-                            fileDialog.pathname = "updatePath";
-                            fileDialog.setSelectFolder(false)
-                            fileDialog.open()
+
+
+                            if(screenv.funIsExitFile(inputUpdatePath.text)){
+                                askDialog.askStr = screenv.funGetFileName(inputUpdatePath.text)
+                                askDialog.curType = askDialog.fileupdate
+                                askDialog.imgSrc = "qrc:/images/icon_question.png"
+                                askDialog.width = 340
+                                askDialog.height = 176
+                                askDialog.open();
+                            }
+
                         }
+                        onPressed: btnUpdate.color = "#81C3FF"
+                        onReleased: btnUpdate.color = "#3B84F6"
                     }
                 }
-            }
-
-            Rectangle{
-                id:btnUpdate
-                width: txtUpdate.width +24
-                height: 28
-                color: "#3B84F6"
-                radius: 2
-                anchors.left: rectUpdatePath.right
-                anchors.leftMargin: 20
-                anchors.verticalCenter: rectUpdatePath.verticalCenter
-                Text {
-                    id: txtUpdate
-                    anchors.horizontalCenter: parent.horizontalCenter
-                    anchors.verticalCenter: parent.verticalCenter
-                    elide: Text.ElideMiddle
-                    font.pixelSize: fontSize
-                    color: "#ffffff"
-                    text: qsTr("升级")
-                }
-                MouseArea{
-                    anchors.fill: parent
-                    onClicked: {
 
 
-                        if(screenv.funIsExitFile(inputUpdatePath.text)){
-                            askDialog.askStr = screenv.funGetFileName(inputUpdatePath.text)
-                            askDialog.curType = askDialog.fileupdate
-                            askDialog.imgSrc = "qrc:/images/icon_question.png"
-                            askDialog.width = 340
-                            askDialog.height = 176
-                            askDialog.open();
+
+                Rectangle{
+                    id:btnSave
+                    width: txtSave.width +24
+                    height: 28
+                    color: "#3B84F6"
+                    radius: 2
+                    anchors.left: parent.left
+                    anchors.leftMargin: 20
+                    anchors.bottom: parent.bottom
+                    anchors.bottomMargin: 10
+                    Text {
+                        id: txtSave
+                        anchors.horizontalCenter: parent.horizontalCenter
+                        anchors.verticalCenter: parent.verticalCenter
+                        elide: Text.ElideMiddle
+                        font.pixelSize: fontSize
+                        color: "#ffffff"
+                        text: qsTr("设置")
+                    }
+                    MouseArea{
+                        anchors.fill: parent
+                        onClicked: {
+                            iradInfoSet();
                         }
-
+                        onPressed: btnSave.color = "#81C3FF"
+                        onReleased: btnSave.color = "#3B84F6"
                     }
-                    onPressed: btnUpdate.color = "#81C3FF"
-                    onReleased: btnUpdate.color = "#3B84F6"
-                }
-            }
-
-
-
-            Rectangle{
-                id:btnSave
-                width: txtSave.width +24
-                height: 28
-                color: "#3B84F6"
-                radius: 2
-                anchors.left: parent.left
-                anchors.leftMargin: 20
-                anchors.bottom: parent.bottom
-                anchors.bottomMargin: 10
-                Text {
-                    id: txtSave
-                    anchors.horizontalCenter: parent.horizontalCenter
-                    anchors.verticalCenter: parent.verticalCenter
-                    elide: Text.ElideMiddle
-                    font.pixelSize: fontSize
-                    color: "#ffffff"
-                    text: qsTr("设置")
-                }
-                MouseArea{
-                    anchors.fill: parent
-                    onClicked: {
-                        iradInfoSet();
-                    }
-                    onPressed: btnSave.color = "#81C3FF"
-                    onReleased: btnSave.color = "#3B84F6"
                 }
             }
         }
 
+
+        }
     }
 
     Rectangle{
