@@ -8,8 +8,8 @@ Popup {
     x: parent.width/2 - root.width/2
     y: parent.height/2 - root.height/2
     property alias msgStr: txt.text
-//    width: 380
-//    height: 253
+    //    width: 380
+    //    height: 253
     modal: true
     focus: true
     //设置窗口关闭方式为按“Esc”键关闭
@@ -37,52 +37,71 @@ Popup {
         radius: 3
 
         //设置标题栏区域为拖拽区域
-        Image {
-            id: img
-            width: 22
-            height: 22
-            anchors.left: parent.left
-            anchors.leftMargin: 20
-            anchors.top: parent.top
-            anchors.topMargin: 20
-            source: "qrc:/images/icon_msg.png"
-        }
-
-        Text {
-            id: txt
-            anchors.left: img.right
-            anchors.leftMargin: 16
-            anchors.verticalCenter: img.verticalCenter
-            font.pixelSize:14
-            text: qsTr("text")
-        }
-
         Rectangle{
-            id:btnEnsure
-            width: txtEnsure.width +24
-            height: 34
-            border.width: 1
-            border.color: "#3B84F6"
-            anchors.bottom: parent.bottom
-            anchors.right: parent.right
-            anchors.rightMargin: 20
-            anchors.bottomMargin: 20
-            Text {
-                id: txtEnsure
-                anchors.horizontalCenter: parent.horizontalCenter
-                anchors.verticalCenter: parent.verticalCenter
-                elide: Text.ElideMiddle
-                font.pixelSize: 14
-                color: "#3B84F6"
-                text: qsTr("确定")
+
+            width: img.width + 16 + txt.width
+            height: img.height>txt.height?img.height:txt.height
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.verticalCenter: parent.verticalCenter
+
+            Image {
+                id: img
+                width: 22
+                height: 22
+                source: "qrc:/images/icon_msg.png"
+
             }
+
+            Text {
+                id: txt
+                anchors.left: img.right
+                anchors.leftMargin: 16
+                anchors.verticalCenter: img.verticalCenter
+                font.pixelSize:14
+                text: qsTr("text")
+            }
+        }
+
+        Image {
+            id: img11
+            width: 18
+            height: 18
+            anchors.right: parent.right
+            anchors.rightMargin: 5
+            anchors.top: parent.top
+            anchors.topMargin: 5
+            source: "qrc:/images/msgclose.png"
             MouseArea{
                 anchors.fill: parent
-                onClicked: {
-                    close();
-                }
+                onClicked: root.close();
             }
         }
+        //        Rectangle{
+        //            id:btnEnsure
+        //            width: txtEnsure.width +24
+        //            height: 34
+        //            border.width: 1
+        //            border.color: "#3B84F6"
+        //            anchors.bottom: parent.bottom
+        //            anchors.right: parent.right
+        //            anchors.rightMargin: 20
+        //            anchors.bottomMargin: 20
+        //            Text {
+        //                id: txtEnsure
+        //                anchors.horizontalCenter: parent.horizontalCenter
+        //                anchors.verticalCenter: parent.verticalCenter
+        //                elide: Text.ElideMiddle
+        //                font.pixelSize: 14
+        //                color: "#3B84F6"
+        //                text: qsTr("确定")
+        //            }
+        //            MouseArea{
+        //                anchors.fill: parent
+        //                onClicked: {
+        //                    close();
+        //                }
+        //            }
+        //        }
 
 
         layer.enabled: true
@@ -101,61 +120,61 @@ Popup {
     }
 
     function setLanguage(type){
-        switch(type){
-        case lEnglish:
-            //txtCancel.text = "Cancel"
-            txtEnsure.text = "Confirm "
-            break;
-        case lKorean:
-            //txtCancel.text = "취소"
-            txtEnsure.text = "확인"
-            break;
-        case lItaly:
-            //txtCancel.text = "Annullato"
-            txtEnsure.text = "Confermare"
-            break;
-        case lChinese:
-           // txtCancel.text = "取消"
-            txtEnsure.text = "确定"
-            break;
-        case lRussian:
-           // txtCancel.text = "Отмена"
-            txtEnsure.text = "Подтвердить"
-            break;
-        case lLithuanian:
-           // txtCancel.text = "Taip"
-            txtEnsure.text = "Ne"
+        //        switch(type){
+        //        case lEnglish:
+        //            //txtCancel.text = "Cancel"
+        //            txtEnsure.text = "Confirm "
+        //            break;
+        //        case lKorean:
+        //            //txtCancel.text = "취소"
+        //            txtEnsure.text = "확인"
+        //            break;
+        //        case lItaly:
+        //            //txtCancel.text = "Annullato"
+        //            txtEnsure.text = "Confermare"
+        //            break;
+        //        case lChinese:
+        //           // txtCancel.text = "取消"
+        //            txtEnsure.text = "确定"
+        //            break;
+        //        case lRussian:
+        //           // txtCancel.text = "Отмена"
+        //            txtEnsure.text = "Подтвердить"
+        //            break;
+        //        case lLithuanian:
+        //           // txtCancel.text = "Taip"
+        //            txtEnsure.text = "Ne"
 
-            break;
-        case ltuerqi:
-           // txtCancel.text = "İptal"
-            txtEnsure.text = "Onayla"
-            break;
-        case ltuerqi1:
-           // txtCancel.text = "İptal"
-            txtEnsure.text = "Onayla"
-            break;
-        case lputaoya:
-           // txtCancel.text = "Cancelar"
-            txtEnsure.text = "Confirme"
-            break;
-        case lxibanya:
-           // txtCancel.text = "Cancelar"
-            txtEnsure.text = "Confirmar"
-            break;
-        case lfayu:
-            //txtCancel.text = "Annuler"
-            txtEnsure.text = "Confirmer"
-            break;
-        case lniboer:
-           // txtCancel.text = "रद्ध गर्नुहोस"
-            txtEnsure.text = "निश्चित गर्नुहोस"
-            break;
-        case lKhmer:
-          //  txtCancel.text = "បោះបង់"
-            txtEnsure.text = "យល់ព្រម"
-            break;
-        }
+        //            break;
+        //        case ltuerqi:
+        //           // txtCancel.text = "İptal"
+        //            txtEnsure.text = "Onayla"
+        //            break;
+        //        case ltuerqi1:
+        //           // txtCancel.text = "İptal"
+        //            txtEnsure.text = "Onayla"
+        //            break;
+        //        case lputaoya:
+        //           // txtCancel.text = "Cancelar"
+        //            txtEnsure.text = "Confirme"
+        //            break;
+        //        case lxibanya:
+        //           // txtCancel.text = "Cancelar"
+        //            txtEnsure.text = "Confirmar"
+        //            break;
+        //        case lfayu:
+        //            //txtCancel.text = "Annuler"
+        //            txtEnsure.text = "Confirmer"
+        //            break;
+        //        case lniboer:
+        //           // txtCancel.text = "रद्ध गर्नुहोस"
+        //            txtEnsure.text = "निश्चित गर्नुहोस"
+        //            break;
+        //        case lKhmer:
+        //          //  txtCancel.text = "បោះបង់"
+        //            txtEnsure.text = "យល់ព្រម"
+        //            break;
+        //        }
     }
 }
 

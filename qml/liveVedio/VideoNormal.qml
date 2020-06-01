@@ -510,10 +510,10 @@ Rectangle {
                 switch(curLanguage)
                 {
                 case lChinese:
-                    txtstr = "wdr设置成功，设备将会重启"
+                    txtstr = "wdr设置成功，设备正在重启"
                     break;
                 case lEnglish:
-                    txtstr = "Camera will restart after setting"
+                    txtstr = "The wdr setting is successful, the Camera is restarting"
                     break;
                 case lItaly:
                     txtstr = "La fotocamera si riavvierà dopo l'impostazione"
