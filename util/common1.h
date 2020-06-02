@@ -10,6 +10,39 @@
 #define KEY_TRUE				0
 #endif
 
+
+
+
+
+
+
+typedef struct _Rectangle_T
+{
+ int pointX;
+ int pointY;
+ int width;
+ int high;
+}Rectangle_T;
+
+
+typedef struct _IradPointInfo_T
+{
+ Rectangle_T point;
+ float tempvalue;
+}IradPointInfo_T;
+
+typedef enum _TempDisplay_T{
+ ENUM_TEMP_Centigrade = 0x00,
+ ENUM_TEMP_Fahrenheit,
+}TempDisplay_T;
+
+typedef struct _IradPoint_T
+{
+ int pointNum;
+ TempDisplay_T  tempdisplay;
+ IradPointInfo_T iradPointInfo[5];
+}IradPoint_T;
+
 typedef struct _VideoReslution_T
 {
     int width;
@@ -53,6 +86,8 @@ typedef enum _Enum_MediaType
     MediaType_PCM,
     MediaType_RGB,
     MediaType_MSG,
+
+    MediaType_TEMPRECTINFO = 0x99,
 }Enum_MediaType;
 
 

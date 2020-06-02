@@ -447,7 +447,7 @@ void TcpWorker::parseRecevieData()
         }
         else if(MediaType_TEMPRECTINFO  == mediaDataType)
         {
-            //            qDebug()<<this->m_did <<"    777";
+                        qDebug()<<this->m_did <<"    MediaType_TEMPRECTINFO";
             //            qDebug()<<"find MediaType_MSG";
             _IradPoint_T iradpoint ;
             needlen = sizeof (iradpoint);
