@@ -86,8 +86,7 @@ typedef enum _Enum_MediaType
     MediaType_PCM,
     MediaType_RGB,
     MediaType_MSG,
-
-    MediaType_TEMPRECTINFO = 0x99,
+    MediaType_IRADPOINT  = 0x30,
 }Enum_MediaType;
 
 

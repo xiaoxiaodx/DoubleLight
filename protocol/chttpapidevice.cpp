@@ -357,6 +357,9 @@ int CHttpApiDevice::HttpMsgCallBack(char * pData) {
             }else if("getalarmparam" == cmd){
 
                 callbackMap.insert("alarmaudiooutenabled",object.value("data").toObject().value("alarmaudiooutenabled").toInt());
+            }else if("getinftempcolor" == cmd){
+
+                callbackMap.insert("tempcolor",object.value("data").toObject().value("tempcolor").toInt());
             }else if("getimagparam" == cmd){
 
                 callbackMap.insert("mirror",object.value("data").toObject().value("mirror").toInt());
@@ -570,11 +573,35 @@ bool CHttpApiDevice::send_httpParSet(QMap<QString,QVariant> map)
         HttpSetMeasureRect(map);
     }else if(cmd.compare("setalarmparam")==0){
         HttpSetalarmparam(map);
-    }else if(cmd.compare("setimagparam")==0){
-        HttpSetimagparam(map);
+    }else if(cmd.compare("setinftempcolor")==0){
+        HttpSetTempColor(map);
     }else
         httpSendCommonCmd(cmd,msgid);
 
+}
+
+void CHttpApiDevice::HttpSetTempColor(QVariantMap value)
+{
+    JsonMsg_T info;
+    sprintf(info.cmd, "%s", "setinftempcolor");
+    sprintf(info.msgID, "%s", value.value("msgid").toString().toLatin1().data());
+    sprintf(info.method, "%s", "request");
+    sprintf(info.ssionID, "%s", "");
+    if(!strlen(this->sessionId)) {
+        qDebug() <<"ssionId error "<<sessionId;
+        return ;
+    }
+    sprintf(info.ssionID, "%s", this->sessionId);
+
+    QJsonObject msgObject;
+    QJsonObject dataObj;
+
+    CjsonMakeHttpHead(&msgObject, &info);
+
+    dataObj.insert("tempcolor",value.value("tempcolor").toInt());
+
+    msgObject.insert("data", QJsonValue(dataObj));
+    SendRequestMsg(msgObject);
 }
 
 void CHttpApiDevice::HttpSetimagparam(QVariantMap value)

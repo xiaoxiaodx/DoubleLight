@@ -192,7 +192,7 @@ private:
     void HttpSetMeasureRect(QVariantMap value);
     void HttpSetalarmparam(QVariantMap value);
     void HttpSetimagparam(QVariantMap value);
-
+    void HttpSetTempColor(QVariantMap value);
 
     void httpSendCommonCmd(QString cmd,QString );
 

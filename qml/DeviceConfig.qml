@@ -880,7 +880,10 @@ Rectangle {
                     mRadius:2
                     model: ListModel{
                         ListElement{showStr:"黑白"}
-                        ListElement{showStr:"彩色"}
+                        ListElement{showStr:"光谱"}
+                        ListElement{showStr:"泰尔红紫"}
+                        ListElement{showStr:" 琥珀色"}
+
                     }
                     onCurrentIndexChanged: {
                         //                    curLanguage = currentIndex
@@ -1126,6 +1129,9 @@ Rectangle {
 
         map.cmd = "getimagparam"
         s_sendcommoncmd(map);
+
+        map.cmd = "getinftempcolor"
+        s_sendcommoncmd(map);
     }
 
     //参数修改设置 全在此函数
@@ -1141,7 +1147,6 @@ Rectangle {
             alarmtempEnableV = 1;
         else
             alarmtempEnableV = 0;
-
 
         var map ={
             osdenable:osdenableV,
@@ -1173,13 +1178,41 @@ Rectangle {
             hue:imagparamhue,
             sharpness:imagparamsharpness
         }
-
-
         s_sendcommoncmd(map1);
+
+
+        var tmpColor1 = 0;
+
+        if(cmbImgSelect.currentIndex === 0)
+            tmpColor1 = 0
+        else if(cmbImgSelect.currentIndex === 1)
+            tmpColor1 = 102
+        else if(cmbImgSelect.currentIndex === 2)
+            tmpColor1 = 104
+        else if(cmbImgSelect.currentIndex === 3)
+            tmpColor1 = 105
+        var map2 = {
+            cmd:"setinftempcolor",
+            tmpColor:tmpColor1
+        }
+        s_sendcommoncmd(map2);
 
         s_beerSwith(swichBeer.checked)
         s_warnSwith(swichWarn.checked)
         s_timeSwith(swithTime.checked)
+    }
+
+
+    function setTempcolor(value)
+    {
+        if(value === 0)
+            cmbImgSelect.currentIndex = 0
+        else if(value === 102)
+            cmbImgSelect.currentIndex = 1
+        else if(value === 104)
+            cmbImgSelect.currentIndex = 2
+        else if(value === 105)
+            cmbImgSelect.currentIndex = 3
     }
 
     function getUpdateFilePath(){

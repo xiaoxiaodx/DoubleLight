@@ -488,9 +488,13 @@ Rectangle {
             s_testRect(smap.x0,smap.y0,smap.w0,smap.h0,smap.x1,smap.y1,smap.w1,smap.h1,smap.x2,smap.y2,smap.w2,smap.h2);
         }else if("alarmsubscription" === strcmd){
 
+
+
         }else if("getalarmparam" === strcmd){
             var beerenable = smap.alarmaudiooutenabled;
             deviceconfig.setSwitchBeer(beerenable)
+        }else if("getinftempcolor" === strcmd){
+            deviceconfig.setTempcolor(smap.tempcolor);
         }else if("getimagparam" === strcmd){
             deviceconfig.imagparamflip = smap.flip
             deviceconfig.imagparambrightness = smap.brightness

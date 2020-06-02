@@ -269,7 +269,6 @@ void TcpWorker::parseRecevieData()
 
             if(readDataBuff.at(0) == D_SYNCDATA_HEAD0 && readDataBuff.at(1)==D_SYNCDATA_HEAD1)
             {
-
                 readDataBuff.remove(0,2);
                 isFindHead = true;
                 needlen = 2;
@@ -302,9 +301,36 @@ void TcpWorker::parseRecevieData()
                 continue;
         }
 
-        if(mediaDataType == MediaType_H264)
+        qDebug()<<" mediaDataType   "<<mediaDataType;
+
+
+        if(MediaType_IRADPOINT == mediaDataType)
+        {
+            qDebug()<<this->m_did <<"    MediaType_IRADPOINT";
+            //qDebug()<<"find MediaType_MSG";
+            _IradPoint_T iradpoint ;
+            needlen = sizeof (_IradPoint_T);
+            if(readDataBuff.length() >= needlen){
+
+                memcpy(&iradpoint,readDataBuff.data(),sizeof (_IradPoint_T));
+
+
+                qDebug()<<"iradpoint:"<<iradpoint.pointNum<<"   "<<iradpoint.tempdisplay;
+
+                readDataBuff.remove(0,needlen);
+                needlen = 2;
+                resetAVFlag();
+                continue;
+            }else {
+                continue;
+            }
+        }
+        else if(mediaDataType == MediaType_H264)
         {
             needlen = 28;
+
+
+            qDebug()<<this->m_did <<"    MediaType_H264";
 
             if(!isSaveVideoInfo)
             {
@@ -444,27 +470,6 @@ void TcpWorker::parseRecevieData()
                 continue;
             }else
                 continue;
-        }
-        else if(MediaType_TEMPRECTINFO  == mediaDataType)
-        {
-            //            qDebug()<<this->m_did <<"    777";
-            //            qDebug()<<"find MediaType_MSG";
-            _IradPoint_T iradpoint ;
-            needlen = sizeof (iradpoint);
-            if(readDataBuff.length() >= needlen){
-
-                memcpy(&iradpoint,readDataBuff.data(),sizeof (_IradPoint_T));
-
-
-                qDebug()<<"iradpoint:"<<iradpoint.pointNum<<"   "<<iradpoint.tempdisplay;
-
-                readDataBuff.remove(0,needlen);
-                needlen = 2;
-                resetAVFlag();
-                continue;
-            }else {
-                continue;
-            }
         }
         else if(MediaType_MSG  == mediaDataType)
         {
