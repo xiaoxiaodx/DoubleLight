@@ -27,8 +27,30 @@ void J07Device::createTcpThread()
 
         emit signal_connentSer(m_ip,556);
     }
+
+
+    if(workerRect == nullptr){
+        workerRect = new TcpWorker(10);
+        m_readRectThread = new QThread;
+
+        // connect(worker,&TcpWorker::signal_sendH264,this,&J07Device::slot_recH264,Qt::DirectConnection);
+        connect(workerRect,&TcpWorker::signal_sendRectInfo,this,&J07Device::slot_recRectInfo,Qt::DirectConnection);
+        connect(this,&J07Device::signal_connentSer,workerRect,&TcpWorker::creatNewTcpConnect);
+        connect(m_readRectThread,&QThread::finished,workerRect,&TcpWorker::deleteLater);
+        connect(m_readRectThread,&QThread::finished,m_readRectThread,&QThread::deleteLater);
+        workerRect->moveToThread(m_readRectThread);
+        m_readRectThread->start();
+
+        emit signal_connentSer(m_ip,557);
+    }
 }
 
+void J07Device::slot_recRectInfo(QVariantMap map){
+
+
+
+    qDebug()<<"slot_recRectInfo "<<map;
+}
 
 void J07Device::slot_recImg(QImage *img,int len,quint64 time,int resw,int resh){
 

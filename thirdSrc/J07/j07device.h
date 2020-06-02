@@ -22,6 +22,7 @@ signals:
 public slots:
     void slot_recH264(char *buff,int len,quint64 time,int resw,int resh);
     void slot_recImg(QImage *img,int len,quint64 time,int resw,int resh);
+    void slot_recRectInfo(QVariantMap map);
 private:
     QString m_ip ="";
     void createTcpThread();
@@ -29,6 +30,9 @@ private:
     //FfmpegCodec *pffmpegCodec = nullptr;
     QThread *m_readThread = nullptr;
     TcpWorker *worker = nullptr;
+
+    QThread *m_readRectThread = nullptr;
+    TcpWorker *workerRect = nullptr;
     char *rgbBuff = nullptr;
     int m_type = -1;
 };

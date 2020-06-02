@@ -96,6 +96,7 @@ signals:
     void signal_connected();
     void signal_sendImg(QImage *img,int len,quint64 time,int resw,int resh);
 
+    void signal_sendRectInfo(QVariantMap map);
 public slots:
 
     void slot_readData();

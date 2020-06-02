@@ -44,7 +44,7 @@ void TcpWorker::slot_soceckErr(QAbstractSocket::SocketError socketError)
 void TcpWorker::creatNewTcpConnect(QString ip, int port)
 {
 
-    DebugLog::getInstance()->writeLog("tcp开始连接  "+ip+"  "+QString::number(port));
+    DebugLog::getInstance()->writeLog("tcp开始连接  "+ip+"  "+QString::number(port)+"   "+myType);
     this->ip = ip;
     this->port = port;
     if(tcpSocket == nullptr){
@@ -117,7 +117,7 @@ void TcpWorker::slot_timerConnectSer()
 void TcpWorker::slot_tcpConnected()
 {
 
-    DebugLog::getInstance()->writeLog( " tcp连接成功");
+    DebugLog::getInstance()->writeLog( "tcp连接成功"+QString::number(myType));
     isConnected = true;
     slot_tcpSendAuthentication(m_did,m_usrName,m_password);
 
@@ -134,7 +134,7 @@ void TcpWorker::slot_tcpDisconnected()
 void TcpWorker::slot_readData()
 {
 
-    //qDebug()<<"slot_readData    "<<
+   // qDebug()<<"slot_readData    "<<myType;
     isHavaData = true;
     // isConnected = true;
 
@@ -148,6 +148,7 @@ void TcpWorker::slot_readData()
         //        out << " data is too long: " << readDataBuff.toHex() << "\n";
         resetAVFlag();
     }
+    //qDebug()<<"slot_readData  1  "<<myType;
     parseRecevieData();
 }
 
@@ -279,6 +280,7 @@ void TcpWorker::parseRecevieData()
         }
 
 
+
         //找到头后，找媒体类型
         if(!isFindMediaType)
         {
@@ -288,7 +290,7 @@ void TcpWorker::parseRecevieData()
                 readDataBuff.remove(0,2);
 
 
-                if(mediaDataType >= MediaType_H264 && mediaDataType <= MediaType_MSG){
+                if(mediaDataType >= MediaType_H264 && mediaDataType <= MediaType_IRADPOINT){
 
                     isFindMediaType = true;
 
@@ -301,12 +303,12 @@ void TcpWorker::parseRecevieData()
                 continue;
         }
 
-        qDebug()<<" mediaDataType   "<<mediaDataType;
+        qDebug()<<" mediaDataType   "<<myType<<":"<<mediaDataType;
 
 
         if(MediaType_IRADPOINT == mediaDataType)
         {
-            qDebug()<<this->m_did <<"    MediaType_IRADPOINT";
+           // qDebug()<<this->m_did <<"    MediaType_IRADPOINT";
             //qDebug()<<"find MediaType_MSG";
             _IradPoint_T iradpoint ;
             needlen = sizeof (_IradPoint_T);
@@ -314,9 +316,32 @@ void TcpWorker::parseRecevieData()
 
                 memcpy(&iradpoint,readDataBuff.data(),sizeof (_IradPoint_T));
 
-
+                qDebug()<<"MediaType_IRADPOINT:"<<readDataBuff.toHex();
                 qDebug()<<"iradpoint:"<<iradpoint.pointNum<<"   "<<iradpoint.tempdisplay;
 
+
+
+
+                IradPointInfo_T *rectArr = iradpoint.iradPointInfo;
+
+
+
+                QList<QVariantMap> listmap;
+                for (int i=0;i<5;i++) {
+                    QVariantMap map;
+                    map.insert("x",rectArr->point.pointX);
+                    map.insert("y",rectArr->point.pointY);
+                    map.insert("w",rectArr->point.width);
+                    map.insert("h",rectArr->point.high);
+                    map.insert("tempvalue",rectArr->tempvalue);
+                    listmap.append(map);
+                }
+                QVariantMap allmap;
+                allmap.insert("rectinfo",QVariant::fromValue(listmap));
+                allmap.insert("temptyep",iradpoint.tempdisplay);
+
+
+                emit signal_sendRectInfo(allmap);
                 readDataBuff.remove(0,needlen);
                 needlen = 2;
                 resetAVFlag();
@@ -330,7 +355,7 @@ void TcpWorker::parseRecevieData()
             needlen = 28;
 
 
-            qDebug()<<this->m_did <<"    MediaType_H264";
+           // qDebug()<<this->m_did <<"    MediaType_H264";
 
             if(!isSaveVideoInfo)
             {
@@ -633,7 +658,6 @@ void TcpWorker::parseShiGanRgb3(QByteArray arr,int arrlen,int resw,int resh)
         pNetMsgTmp = new unsigned char[resw * resh* 2];
 
     memcpy(pNetMsgTmp,arr.data(),arrlen);
-
 
     if(ffmpegConvert == nullptr){
         ffmpegConvert = new FfmpegConvert;

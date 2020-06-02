@@ -123,8 +123,6 @@ private:
 
     QString m_ip = "";
 
-
-
 };
 
 
