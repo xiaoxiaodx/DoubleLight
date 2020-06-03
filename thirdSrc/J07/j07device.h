@@ -17,12 +17,15 @@ public:
 signals:
     //tcp
     void signal_connentSer(QString ip,int port);
+    void signal_connentSer1(QString ip,int port);
     void signal_disconnentSer();
     void signal_tcpSendAuthentication(QString did,QString name,QString pwd);
+
+    void signal_sendRect(int display,QVariantList listmap);
 public slots:
     void slot_recH264(char *buff,int len,quint64 time,int resw,int resh);
     void slot_recImg(QImage *img,int len,quint64 time,int resw,int resh);
-    void slot_recRectInfo(QVariantMap map);
+    void slot_recRectInfo(int tempdisplay,QVariantList listmap);
 private:
     QString m_ip ="";
     void createTcpThread();
@@ -35,6 +38,15 @@ private:
     TcpWorker *workerRect = nullptr;
     char *rgbBuff = nullptr;
     int m_type = -1;
+
+
+
+    int tempdisplay;
+    bool isupdateListRect = false;
+    QVariantList listrectinfo;
+
+
+
 };
 
 #endif // J07DEVICE_H

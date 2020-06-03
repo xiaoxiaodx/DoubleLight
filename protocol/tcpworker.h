@@ -96,7 +96,7 @@ signals:
     void signal_connected();
     void signal_sendImg(QImage *img,int len,quint64 time,int resw,int resh);
 
-    void signal_sendRectInfo(QVariantMap map);
+    void signal_sendRectInfo(int displayTemp,QVariantList map);
 public slots:
 
     void slot_readData();
@@ -179,6 +179,8 @@ private:
 
 
     FfmpegConvert *ffmpegConvert = nullptr;
+
+    QVariantMap allmap;
 };
 
 #endif // TCPWORKER_H

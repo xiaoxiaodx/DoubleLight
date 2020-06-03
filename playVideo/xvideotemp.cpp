@@ -20,7 +20,7 @@ XVideoTemp::XVideoTemp()
 
 void XVideoTemp::fun_recTestRect(int x,int y,int w,int h,int x1,int y1,int w1,int h1,int x2,int y2,int w2,int h2)
 {
-   // qDebug()<<"dsadsadsa    fun_recTestRect";
+    // qDebug()<<"dsadsadsa    fun_recTestRect";
     testRect.setRect(x,y,w,h);
     testRect1.setRect(x1,y1,w1,h1);
     testRect2.setRect(x2,y2,w2,h2);
@@ -82,8 +82,24 @@ void XVideoTemp::createJ07(QString ip,int type)
 {
     if(j07device == nullptr){
         j07device = new J07Device(ip,type);
+
+        connect(j07device,&J07Device::signal_sendRect,this,&XVideoTemp::slot_recRect);
         j07device->startRec();
     }
+}
+
+void XVideoTemp::slot_recRect(int tempdisplay,QVariantList listmap)
+{
+
+    //qDebug()<<"XVideoTemp slot_recRect";
+
+    listrectinfo.clear();
+    this->tempdisplay = tempdisplay;
+    for (int i=0;i<listmap.size();i++) {
+        QVariantMap map = listmap.at(i).toMap();
+        listrectinfo.append(map);
+    }
+   // update();
 }
 
 void XVideoTemp::createYouseePull()
@@ -199,7 +215,15 @@ void XVideoTemp::slot_timeout()
                 delete mRenderImginfo.pImg;
                 mRenderImginfo.pImg = nullptr;
             }
+
             mRenderImginfo = listBufferImginfo.takeFirst();
+            //            ImageInfo imageinfo = listBufferImginfo.takeFirst();
+            //            mRenderImginfo.pImg = imageinfo.pImg;
+            //            mRenderImginfo.listRect.clear();
+            //            for(int i=0;i<imageinfo.listRect.size();i++){
+            //                QVariantMap map = imageinfo.listRect.at(i);
+            //                mRenderImginfo.listRect.append(map);
+            //            }
         }
         mutex.unlock();
     }else {
@@ -252,10 +276,41 @@ void XVideoTemp::paint(QPainter *painter)
 
 
 
+    painter->save();
+    painter->setPen(QPen(QBrush(QColor(0,0,255)),2));
+
+    //qDebug()<<"rect size: "<<listrect.size();
+     QRectF desRect;
+    for(int i=0;i<listrectinfo.size();i++){
+
+        QVariantMap map = listrectinfo.at(i).toMap();
+        qreal x1 = kX * map.value("x").toInt();
+        qreal y1 = kY * map.value("y").toInt();
+        qreal w1 = kX * map.value("w").toInt();
+        qreal h1 = kY * map.value("h").toInt();
+        float tempv = map.value("tempvalue").toFloat();
+        qDebug()<<"rect : "<<x1<<"  "<<y1<<"    "<<w1<<"    "<<h1<<"    "<<tempv;
+
+
+        desRect.setX(x1);
+        desRect.setY(y1);
+        desRect.setWidth(w1);
+        desRect.setHeight(h1);
+
+        painter->drawRect(desRect);
+
+        QString display = tempdisplay==0?"℃":"℉";
+        QString strText = QString::number(tempv, 'f', 1)+display;
+        painter->drawText(desRect.x(),desRect.y()-3,strText);
+    }
+    if(listrectinfo.size()>0)
+        listrectinfo.clear();
+    painter->restore();
+
     /********************/
     /*
     painter->save();
-    painter->setPen(QPen(QBrush(QColor(255,0,255)),2));
+    painter->setPen(QPen(QBrush(QColor(0,0,255)),2));
 
     qreal x1 = kX * testRect.x();
     qreal y1 = kY * testRect.y();
@@ -283,49 +338,49 @@ void XVideoTemp::paint(QPainter *painter)
 
 
     //将矩形链表发送给可见光
-    if(mRenderImginfo.listRect.size()>0){
-        //qDebug()<<"发送矩形:"<<QVariant::fromValue(mRenderImginfo->listRect);
-        QVariantList list ;
-        for(int i=0;i<mRenderImginfo.listRect.size();i++){
-            QVariant map = mRenderImginfo.listRect.at(i);
-            list.append(map);
-        }
-        emit signal_sendListRect(QVariant::fromValue(list));
-    }else{
-        emit signal_sendListRect(QVariantList());
-    }
+//    if(mRenderImginfo.listRect.size()>0){
+//        //qDebug()<<"发送矩形:"<<QVariant::fromValue(mRenderImginfo->listRect);
+//        QVariantList list ;
+//        for(int i=0;i<mRenderImginfo.listRect.size();i++){
+//            QVariant map = mRenderImginfo.listRect.at(i);
+//            list.append(map);
+//        }
+//        emit signal_sendListRect(QVariant::fromValue(list));
+//    }else{
+//        emit signal_sendListRect(QVariantList());
+//    }
 
-    for(int i=0;i<mRenderImginfo.listRect.size();i++){
-        QMap<QString,QVariant> oriRectinfo = mRenderImginfo.listRect.at(i);
-        QRect oriRect = oriRectinfo.value("rect").toRect();
-        QRectF desRect(oriRect.x()*kX,oriRect.y()*kY,oriRect.width()*kX,oriRect.height()*kY);
-        float temp = oriRectinfo.value("temp").toFloat();
-        QString strText = QString::number(temp, 'f', 1);
+//    for(int i=0;i<mRenderImginfo.listRect.size();i++){
+//        QMap<QString,QVariant> oriRectinfo = mRenderImginfo.listRect.at(i);
+//        QRect oriRect = oriRectinfo.value("rect").toRect();
+//        QRectF desRect(oriRect.x()*kX,oriRect.y()*kY,oriRect.width()*kX,oriRect.height()*kY);
+//        float temp = oriRectinfo.value("temp").toFloat();
+//        QString strText = QString::number(temp, 'f', 1);
 
-        QVariantMap map;
-        map.insert("rect",oriRect);
-        map.insert("temp",strText);
+//        QVariantMap map;
+//        map.insert("rect",oriRect);
+//        map.insert("temp",strText);
 
-        if(temp>warnTemp){
+//        if(temp>warnTemp){
 
-            painter->save();
-            painter->setPen(QPen(QBrush(QColor(255,0,0)),2));
-            painter->drawRect(desRect);
-            painter->drawText(desRect.x(),desRect.y()-3,strText);
-            painter->restore();
+//            painter->save();
+//            painter->setPen(QPen(QBrush(QColor(255,0,0)),2));
+//            painter->drawRect(desRect);
+//            painter->drawText(desRect.x(),desRect.y()-3,strText);
+//            painter->restore();
 
-        }else{
-            painter->drawRect(desRect);
-            painter->drawText(desRect.x(),desRect.y()-3,strText);
-        }
-    }
+//        }else{
+//            painter->drawRect(desRect);
+//            painter->drawText(desRect.x(),desRect.y()-3,strText);
+//        }
+//    }
 
-    if(mYouSeeParse != nullptr){
-        QMap<QString,QVariant> map;
-        map.insert("parType","temp");
-        map.insert("tempValue",mRenderImginfo.areaMaxtemp);
-        emit signal_areaMaxtemp(map);
-    }
+//    if(mYouSeeParse != nullptr){
+//        QMap<QString,QVariant> map;
+//        map.insert("parType","temp");
+//        map.insert("tempValue",mRenderImginfo.areaMaxtemp);
+//        emit signal_areaMaxtemp(map);
+//    }
     // DebugLog::getInstance()->writeLog("painter hongwai end***");
 }
 

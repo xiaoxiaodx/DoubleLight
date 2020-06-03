@@ -50,6 +50,8 @@ public:
 
     QList<QVariantMap> listRect;
     float areaMaxtemp = 0;
+
+    int tempdisplay;
 };
 
 typedef struct _ShellView {
