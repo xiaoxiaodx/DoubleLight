@@ -276,36 +276,42 @@ void XVideoTemp::paint(QPainter *painter)
 
 
 
-    painter->save();
-    painter->setPen(QPen(QBrush(QColor(0,0,255)),2));
 
-    //qDebug()<<"rect size: "<<listrect.size();
-     QRectF desRect;
+
+    QRectF desRect;
     for(int i=0;i<listrectinfo.size();i++){
 
-        QVariantMap map = listrectinfo.at(i).toMap();
-        qreal x1 = kX * map.value("x").toInt();
-        qreal y1 = kY * map.value("y").toInt();
-        qreal w1 = kX * map.value("w").toInt();
-        qreal h1 = kY * map.value("h").toInt();
-        float tempv = map.value("tempvalue").toFloat();
-        qDebug()<<"rect : "<<x1<<"  "<<y1<<"    "<<w1<<"    "<<h1<<"    "<<tempv;
 
+        QVariantMap map = listrectinfo.at(i).toMap();
+        qreal x1 = kX * map.value("x").toInt() -10;
+        qreal y1 = kY * map.value("y").toInt() -10;
+        qreal w1 = kX * map.value("w").toInt() + 20;
+        qreal h1 = kY * map.value("h").toInt() + 20;
+        float tempv = map.value("tempvalue").toFloat();
+        int tyep = map.value("type").toInt();
+       // qDebug()<<"rect : "<<x1<<"  "<<y1<<"    "<<w1<<"    "<<h1<<"    "<<tempv<<" "<<tyep;
 
         desRect.setX(x1);
         desRect.setY(y1);
         desRect.setWidth(w1);
         desRect.setHeight(h1);
 
-        painter->drawRect(desRect);
+        painter->save();
+        if(tyep == 0)
+            painter->setPen(QPen(QBrush(QColor(0,255,0)),2));
+        else if(tyep == 1)
+            painter->setPen(QPen(QBrush(QColor(255,0,0)),2));
 
+        painter->drawRect(desRect);
         QString display = tempdisplay==0?"℃":"℉";
         QString strText = QString::number(tempv, 'f', 1)+display;
+
         painter->drawText(desRect.x(),desRect.y()-3,strText);
+        painter->restore();
     }
     if(listrectinfo.size()>0)
         listrectinfo.clear();
-    painter->restore();
+
 
     /********************/
     /*

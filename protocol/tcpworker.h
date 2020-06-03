@@ -97,6 +97,7 @@ signals:
     void signal_sendImg(QImage *img,int len,quint64 time,int resw,int resh);
 
     void signal_sendRectInfo(int displayTemp,QVariantList map);
+
 public slots:
 
     void slot_readData();

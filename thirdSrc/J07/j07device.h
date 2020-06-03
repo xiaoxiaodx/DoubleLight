@@ -26,6 +26,8 @@ public slots:
     void slot_recH264(char *buff,int len,quint64 time,int resw,int resh);
     void slot_recImg(QImage *img,int len,quint64 time,int resw,int resh);
     void slot_recRectInfo(int tempdisplay,QVariantList listmap);
+    void slot_tcpConnected();
+
 private:
     QString m_ip ="";
     void createTcpThread();

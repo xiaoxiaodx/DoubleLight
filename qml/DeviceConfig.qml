@@ -6,6 +6,7 @@ import Qt.labs.settings 1.0
 import "simpleControl"
 import UpdateProgressC 1.0
 import QtQuick.Controls 1.4
+import QtQuick.Controls.Styles 1.4
 import "dialog"
 Rectangle {
     id: root
@@ -158,7 +159,7 @@ Rectangle {
         Component.onCompleted: isCreate = true;
 
         Rectangle{
-
+            id:rectcontent
             width: parent.width-40
             height: parent.height -40
             anchors.horizontalCenter: parent.horizontalCenter
@@ -166,17 +167,39 @@ Rectangle {
             color: "#F8FAFD"
         ScrollView{
             id:scroll
-//            width: parent.width-40
-//            height: parent.height -40
-//            anchors.horizontalCenter: parent.horizontalCenter
-//            anchors.verticalCenter: parent.verticalCenter
-            anchors.fill: parent
+            width: rectcontent.width
+            height: rectcontent.height
+
+            horizontalScrollBarPolicy:Qt.ScrollBarAlwaysOff
+            //frameVisible:true
+            style: ScrollViewStyle{
+
+                incrementControl:null
+                decrementControl :null
+
+                scrollBarBackground :Rectangle{
+
+                    color: "#F8FAFD"
+                    height: scroll.height
+                    width: 10
+                }
+
+                handle:Rectangle{
+                    color: "#989898"
+                    implicitWidth: 10
+                    implicitHeight: 10
+                    width: 10
+                    height: 20
+                    radius: 5
+                    visible: styleData.hovered
+                }
+            }
             Rectangle {
                 id: rect
                 anchors.verticalCenter: parent.verticalCenter
                 anchors.horizontalCenter: parent.horizontalCenter
-                width: parent.width
-                height: 1080
+                width: rectcontent.width
+                height: 900
                 color: "#F8FAFD"
 
                 Text {
@@ -195,8 +218,7 @@ Rectangle {
                     width: parent.width - 20*2
                     height: 1
                     color: "#e2e2e2"
-                    anchors.top: parent.top
-                    anchors.topMargin: 62
+                    y: 62
                     anchors.horizontalCenter: parent.horizontalCenter
 
                 }

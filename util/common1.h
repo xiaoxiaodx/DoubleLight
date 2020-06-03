@@ -29,6 +29,7 @@ typedef struct _IradPointInfo_T
 {
  Rectangle_T point;
  float tempvalue;
+ int type;//0：正常  1：高温
 }IradPointInfo_T;
 
 typedef enum _TempDisplay_T{
@@ -40,7 +41,7 @@ typedef struct _IradPoint_T
 {
  int pointNum;
  TempDisplay_T  tempdisplay;
- IradPointInfo_T iradPointInfo[5];
+ IradPointInfo_T iradPointInfo[6];
 }IradPoint_T;
 
 typedef struct _VideoReslution_T

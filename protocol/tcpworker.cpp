@@ -333,32 +333,31 @@ void TcpWorker::parseRecevieData()
             if(readDataBuff.length()>=needlen)
             {
 
-
-
                 _IradPoint_T *iradpoint = (_IradPoint_T*)readDataBuff.data();
 
                 //qDebug()<<"MediaType_IRADPOINT,needlen:"<<needlen;
                 //qDebug()<<"MediaType_IRADPOINT:"<<readDataBuff.toHex();
                 //qDebug()<<"iradpoint:"<<iradpoint->pointNum<<"   "<<iradpoint->tempdisplay;
-
                 IradPointInfo_T *rectArr = iradpoint->iradPointInfo;
 
                 QVariantList listmap;
-                for (int i=0;i<5;i++) {
+                for (int i=0;i<6;i++) {
                     QVariantMap map;
                     int x = rectArr[i].point.pointX;
                     int y = rectArr[i].point.pointY;
                     int w = rectArr[i].point.width;
                     int h = rectArr[i].point.high;
                     float tempvalue = rectArr[i].tempvalue;
-                    //qDebug()<<"iradpoint    "<<i<<":"<<x<<"   "<<y<<"   "<<w<<" "<<h;
+                    int type = rectArr[i].type;
+                    //qDebug()<<"iradpoint    "<<i<<":"<<x<<"   "<<y<<"   "<<w<<" "<<h<<" "<<tempvalue<<" "<< type;
                     if(x == 0 && y == 0 && w == 0 && h ==0)
-                        break;
+                        continue;
                     map.insert("x",x);
                     map.insert("y",y);
                     map.insert("w",w);
                     map.insert("h",h);
                     map.insert("tempvalue",tempvalue);
+                    map.insert("type",type);
 
                     //qDebug()<<"iradpoint    "<<i<<":"<<rectArr->point.pointX<<"   "<<rectArr->point.pointY;
                     listmap.append(map);

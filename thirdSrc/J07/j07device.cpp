@@ -19,6 +19,7 @@ void J07Device::createTcpThread()
 
         // connect(worker,&TcpWorker::signal_sendH264,this,&J07Device::slot_recH264,Qt::DirectConnection);
         connect(worker,&TcpWorker::signal_sendImg,this,&J07Device::slot_recImg,Qt::DirectConnection);
+        connect(worker,&TcpWorker::signal_connected,this,&J07Device::slot_tcpConnected);
         connect(this,&J07Device::signal_connentSer,worker,&TcpWorker::creatNewTcpConnect);
         connect(m_readThread,&QThread::finished,worker,&TcpWorker::deleteLater);
         connect(m_readThread,&QThread::finished,m_readThread,&QThread::deleteLater);
@@ -27,21 +28,34 @@ void J07Device::createTcpThread()
 
         emit signal_connentSer(m_ip,556);
     }
+}
+
+//流连接成功
+void J07Device::slot_tcpConnected(){
+
 
     qDebug()<<" createTcpThread "<<"*******rect*************";
-    if(workerRect == nullptr){
-        workerRect = new TcpWorker(10);
-        m_readRectThread = new QThread;
 
-        connect(workerRect,&TcpWorker::signal_sendRectInfo,this,&J07Device::slot_recRectInfo,Qt::DirectConnection);
-        connect(this,&J07Device::signal_connentSer1,workerRect,&TcpWorker::creatNewTcpConnect);
-        connect(m_readRectThread,&QThread::finished,workerRect,&TcpWorker::deleteLater);
-        connect(m_readRectThread,&QThread::finished,m_readRectThread,&QThread::deleteLater);
-        workerRect->moveToThread(m_readRectThread);
-        m_readRectThread->start();
-
-        emit signal_connentSer1(m_ip,557);
+    if(workerRect != nullptr)
+    {
+        workerRect->forceStopParse();
+        m_readRectThread->quit();
+        workerRect = nullptr;
+        m_readRectThread = nullptr;
     }
+
+    workerRect = new TcpWorker(10);
+    m_readRectThread = new QThread;
+
+    connect(workerRect,&TcpWorker::signal_sendRectInfo,this,&J07Device::slot_recRectInfo,Qt::DirectConnection);
+    //connect(workerRect,&TcpWorker::signal_connected,this,&J07Device::slot_tcpConnected);
+    connect(this,&J07Device::signal_connentSer1,workerRect,&TcpWorker::creatNewTcpConnect);
+    connect(m_readRectThread,&QThread::finished,workerRect,&TcpWorker::deleteLater);
+    connect(m_readRectThread,&QThread::finished,m_readRectThread,&QThread::deleteLater);
+    workerRect->moveToThread(m_readRectThread);
+    m_readRectThread->start();
+
+    emit signal_connentSer1(m_ip,557);
 
 }
 
