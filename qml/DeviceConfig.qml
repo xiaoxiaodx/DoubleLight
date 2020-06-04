@@ -63,8 +63,6 @@ Rectangle {
         property alias switchRecord:swichRecord.checked
 
 
-
-
         //   if(swithTime.checked)
         //        osdenableV = 1
         //    else

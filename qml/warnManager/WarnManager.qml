@@ -187,11 +187,7 @@ Rectangle {
                 onEntered: imgdate.source = "qrc:/images/data1.png"
                 onReleased: imgdate.source = "qrc:/images/data1.png"
             }
-
         }
-
-
-
 
         //时间选择
         Rectangle{

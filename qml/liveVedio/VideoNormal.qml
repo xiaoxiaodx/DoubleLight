@@ -447,12 +447,10 @@ Rectangle {
                 }
             }
 
-
             deviceconfig.getiradInfo();
 
             map.cmd = "setcurrenttime"
             video.fun_sendCommonPar(map);
-
             video.fun_setInitPar(deviceconfig.getTcpip(),deviceconfig.getShowParentW(),deviceconfig.getShowParentH(),deviceconfig.getShowRectX(),deviceconfig.getShowRectY(),deviceconfig.getShowRectW(),deviceconfig.getShowRectH())
 
             s_tempmodelSelect(smap.tempmodel,deviceconfig.getTcpip());
@@ -483,6 +481,12 @@ Rectangle {
             else{
 
                 warnmanger.funProcessPushAlarm(smap);
+
+                //开启动画
+
+                if(smap.alarmtype !== 81)
+                    imgWar.startAnimation();
+
 
             }
 
