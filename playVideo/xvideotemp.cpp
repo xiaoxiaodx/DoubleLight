@@ -52,6 +52,8 @@ void XVideoTemp::startTemperatureVideo(float tp,QVariant type,QVariant par1,QVar
         createJ07(par1.toString(),1);
     }else if (typeStr.compare("J07-I")==0){
         createJ07(par1.toString(),2);
+    }else if (typeStr.compare("J07-T")==0){
+        createJ07(par1.toString(),3);
     }else{
         DebugLog::getInstance()->writeLog("------>>> tempVideo type is unknow <<<------");
     }

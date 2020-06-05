@@ -34,24 +34,36 @@ void TcpWorker::initVariable()
     timerConnectSer = nullptr;
 }
 
+
+void TcpWorker::slot_soceckErr(QAbstractSocket::SocketError socketError)
+{
+
+    qDebug()<<" tcp socket socketError:"<<socketError;
+    qDebug()<<" tcp socket errStr:"<<tcpSocket->errorString();
+}
 void TcpWorker::creatNewTcpConnect(QString ip, int port)
 {
 
-    DebugLog::getInstance()->writeLog("tcp开始连接  "+ip+"  "+QString::number(port));
+    DebugLog::getInstance()->writeLog("tcp开始连接  "+ip+"  "+QString::number(port)+"   "+myType);
     this->ip = ip;
     this->port = port;
     if(tcpSocket == nullptr){
         tcpSocket = new QTcpSocket;
+
         timerConnectSer = new QTimer;
         connect(tcpSocket,&QTcpSocket::connected,this,&TcpWorker::slot_tcpConnected);
         connect(tcpSocket,&QTcpSocket::readyRead,this,&TcpWorker::slot_readData);
         connect(tcpSocket,&QTcpSocket::disconnected,this,&TcpWorker::slot_tcpDisconnected);
+        //connect(tcpSocket,&QTcpSocket::error,this,&TcpWorker::slot_soceckErr);
+        connect(tcpSocket,SIGNAL(error(QAbstractSocket::SocketError)),this,SLOT(slot_soceckErr(QAbstractSocket::SocketError)));
         connect(timerConnectSer,&QTimer::timeout,this,&TcpWorker::slot_timerConnectSer);
 
-        tcpSocket->setReadBufferSize(1024*1024);
+        //tcpSocket->setReadBufferSize(1024*1024);
+        //tcpSocket->bind(QHostAddress(this->ip),this->port,QAbstractSocket::ReuseAddressHint);
         tcpSocket->connectToHost(this->ip,this->port);
         isForceFinish = false;
-        timerConnectSer->start(3000);
+        if(myType != 10)
+            timerConnectSer->start(3000);
     }
     /*else{
 
@@ -71,19 +83,20 @@ void TcpWorker::slot_disConnectSer()
 //定时对tcp做连接 以达到自动重连的目的
 void TcpWorker::slot_timerConnectSer()
 {
-
     QMutexLocker locker(&mMutex);
     if(isForceFinish){
         timerConnectSer->stop();
         disconnect(timerConnectSer,&QTimer::timeout,this,&TcpWorker::slot_timerConnectSer);
-       // timerConnectSer->deleteLater();
+        timerConnectSer->deleteLater();
+
     }else{
         if(!isConnected){
 
             if(tcpSocket != nullptr){
-                DebugLog::getInstance()->writeLog("start reconnect "+QString::number(myType) + this->ip+"  "+QString::number(this->port));
+                DebugLog::getInstance()->writeLog("start reconnect "+QString::number(myType)+" " + this->ip+"  "+QString::number(this->port));
                 //qDebug()<<"开始重连 "<<myType <<"   "<<this->ip<<"  "<<this->port;
                 tcpSocket->abort();
+                tcpSocket->close();
                 readDataBuff.clear();
                 tcpSocket->connectToHost(this->ip,this->port);
             }
@@ -91,9 +104,7 @@ void TcpWorker::slot_timerConnectSer()
         }
 
         if(!isHavaData){
-
             isConnected = false;
-
         }
 
         isHavaData = false;
@@ -105,7 +116,7 @@ void TcpWorker::slot_timerConnectSer()
 void TcpWorker::slot_tcpConnected()
 {
 
-    DebugLog::getInstance()->writeLog( " tcp连接成功");
+    DebugLog::getInstance()->writeLog( "tcp连接成功"+QString::number(myType));
     isConnected = true;
     slot_tcpSendAuthentication(m_did,m_usrName,m_password);
 
@@ -122,9 +133,9 @@ void TcpWorker::slot_tcpDisconnected()
 void TcpWorker::slot_readData()
 {
 
-    //qDebug()<<"slot_readData    "<<
+    // qDebug()<<"slot_readData    "<<myType;
     isHavaData = true;
-   // isConnected = true;
+    // isConnected = true;
 
     readDataBuff.append(tcpSocket->readAll());
 
@@ -136,6 +147,7 @@ void TcpWorker::slot_readData()
         //        out << " data is too long: " << readDataBuff.toHex() << "\n";
         resetAVFlag();
     }
+   // qDebug()<<"slot_readData  1  "<<myType;
     parseRecevieData();
 }
 
@@ -257,7 +269,6 @@ void TcpWorker::parseRecevieData()
 
             if(readDataBuff.at(0) == D_SYNCDATA_HEAD0 && readDataBuff.at(1)==D_SYNCDATA_HEAD1)
             {
-
                 readDataBuff.remove(0,2);
                 isFindHead = true;
                 needlen = 2;
@@ -266,6 +277,7 @@ void TcpWorker::parseRecevieData()
                 continue;
             }
         }
+
 
 
         //找到头后，找媒体类型
@@ -291,10 +303,12 @@ void TcpWorker::parseRecevieData()
         }
 
 
-
         if(mediaDataType == MediaType_H264)
         {
             needlen = 28;
+
+
+             //qDebug()<<this->m_did <<"    MediaType_H264";
 
             if(!isSaveVideoInfo)
             {
@@ -319,18 +333,21 @@ void TcpWorker::parseRecevieData()
 
                 //emit signal_writeMediaVideoQueue(readDataBuff.data(),m_streamDateLen,infoV,MediaDataProcess::mMediaVeidoType);
 
-
-                //qDebug()<<"s    ****mediaDataTyp "<<mediaDataType<<" myType:"<<myType;
                 quint64 ptsH = 0x00000000ffffffff & infoV.highPts;
                 quint64 ptsL = 0x00000000ffffffff & infoV.lowPts;
                 quint64 pts = ptsH *256 *255*256 + ptsL;
+
+
+                qDebug()<<"Dsadsadsa";
 
                 if(myType == 0)
                     emit signal_sendH264(readDataBuff.data(),m_streamDateLen,pts,vResW,vResH);
                 else if(myType == 1){
                     parseShiGanRgb1(readDataBuff,m_streamDateLen,vResW,vResH);
                 }else if(myType == 2){
-                   parseShiGanRgb2(readDataBuff,m_streamDateLen,vResW,vResH);
+                    parseShiGanRgb2(readDataBuff,m_streamDateLen,vResW,vResH);
+                }else if(myType == 3){
+                    parseShiGanRgb3(readDataBuff,m_streamDateLen,vResW,vResH);
                 }
 
                 readDataBuff.remove(0,m_streamDateLen);
@@ -505,7 +522,10 @@ void TcpWorker::parseShiGanRgb(QByteArray arr,int arrlen)
     memcpy(&stMtHd, &pNetMsg[fpos], sizeof(MediaContexHead));
     fpos += sizeof(MediaContexHead);
 
-
+    //        qDebug()<<"Image Flag:"<<stMtHd.ImageFlag<<"    Type:"<<stMtHd.ImageType<<endl
+    //               <<"W"<<stMtHd.ImageWidth<<" H:"<<stMtHd.ImageHeigh<<"   Byte:"<<stMtHd.ImageByte
+    //              <<"Tempe Flag:"<<stMtHd.TemperFlag<<"  TemperType:"<<stMtHd.TemperType
+    //             <<"TemperWidth:"<<stMtHd.TemperWidth<<"    TemperHeigh:"<<stMtHd.TemperHeigh<<" TemperByte:"<<stMtHd.TemperByte;
     int w,h,x,y;
     if( stMtHd.ImageFlag )
     {
@@ -539,13 +559,12 @@ void TcpWorker::parseShiGanRgb(QByteArray arr,int arrlen)
 
         emit signal_sendImg(pImg,w*h*3,10,w,h);
     }
-
 }
+
 void TcpWorker::parseShiGanRgb1(QByteArray arr,int arrlen,int resw,int resh)
 {
 
 
-    //qDebug()<<" resw    "<<resw<<"  resh:"<<resh;
     if(pNetMsgTmp == nullptr)
         pNetMsgTmp = new unsigned char[resw * resh* 4];
 
@@ -553,21 +572,23 @@ void TcpWorker::parseShiGanRgb1(QByteArray arr,int arrlen,int resw,int resh)
 
     QImage *pImg = nullptr;
     try {
-        pImg =  new QImage(pNetMsgTmp, resw,resh, QImage::Format_RGBA8888);
+        pImg =  new QImage(pNetMsgTmp, resw,resh, QImage::Format_ARGB32);
         // 其它代码
     } catch ( const std::bad_alloc& e ) {
         qDebug()<<" 图片分配内存失败";
         pImg = nullptr;
     }
-    //qDebug()<<" parseShiGanRgb1 "<<resw<<"  "<<resh<<"  "<<arrlen <<"   "<< pImg->width() <<"  "<<pImg->height();
+    // qDebug()<<" parseShiGanRgb1 "<<resw<<"  "<<resh<<"  "<<arrlen;
     emit signal_sendImg(pImg,arrlen,10,resw,resh);
+
 }
+
 
 void TcpWorker::parseShiGanRgb2(QByteArray arr,int arrlen,int resw,int resh)
 {
 
 
-    //qDebug()<<" resw    "<<resw<<"  resh:"<<resh;
+    qDebug()<<" resw    "<<resw<<"  resh:"<<resh;
     if(pNetMsgTmp == nullptr)
         pNetMsgTmp = new unsigned char[resw * resh* 4];
 
@@ -585,11 +606,41 @@ void TcpWorker::parseShiGanRgb2(QByteArray arr,int arrlen,int resw,int resh)
     emit signal_sendImg(pImg,arrlen,10,resw,resh);
 }
 
+#include <QFile>
+void TcpWorker::parseShiGanRgb3(QByteArray arr,int arrlen,int resw,int resh)
+{
+    qDebug()<<" resw    "<<resw<<"  resh:"<<resh <<arrlen;
+    if(pNetMsgTmp == nullptr)
+        pNetMsgTmp = new unsigned char[resw * resh* 2];
+
+    memcpy(pNetMsgTmp,arr.data(),arrlen);
+
+    if(ffmpegConvert == nullptr){
+        ffmpegConvert = new FfmpegConvert;
+        ffmpegConvert->initYuv422ToRgb32(resw,resh);
+
+        QFile file("yuv422.yuv");
+        if(file.open(QIODevice::WriteOnly))
+            file.write((char*)pNetMsgTmp,arrlen);
+    }
+
+    QImage *pImg = ffmpegConvert->yuv422ToRgb32((char*)pNetMsgTmp,resw,resh);
+
+    //    QImage *pImg = nullptr;
+    //    try {
+    //        pImg =  new QImage(pNetMsgTmp, resw,resh, QImage::Format_RGB888);
+    //        // 其它代码
+    //    } catch ( const std::bad_alloc& e ) {
+    //        qDebug()<<" 图片分配内存失败";
+    //        pImg = nullptr;
+    //    }
+    emit signal_sendImg(pImg,arrlen,10,resw,resh);
+}
+
 void TcpWorker::parseH264(QByteArray arr,int arrlen)
 {
 
 }
-
 
 int TcpWorker::byteArr2Int(QByteArray arr)
 {
@@ -656,14 +707,22 @@ void TcpWorker::forceStopParse()
 
 TcpWorker::~TcpWorker()
 {
-    qDebug()<<m_did +  " 析构   tcpWorker";
+    qDebug()<<m_did +  " 析构   tcpWorker:"<<myType;
 
 
     if(tcpSocket != nullptr)
     {
+
+        //   tcpSocket->disconnectFromHost();
         disconnect(tcpSocket,&QTcpSocket::readyRead,this,&TcpWorker::slot_readData);
         disconnect(tcpSocket,&QTcpSocket::disconnected,this,&TcpWorker::slot_tcpDisconnected);
         disconnect(tcpSocket,&QTcpSocket::connected,this,&TcpWorker::slot_tcpConnected);
+        tcpSocket->disconnectFromHost();
+        if (tcpSocket->state() == QAbstractSocket::UnconnectedState ||
+                tcpSocket->waitForDisconnected(1000))
+        {
+            qDebug()  << "disconnect server";
+        }
         tcpSocket->abort();
         tcpSocket->close();
         tcpSocket == nullptr;

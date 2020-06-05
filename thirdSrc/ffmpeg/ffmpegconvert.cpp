@@ -45,11 +45,42 @@ void FfmpegConvert::initYuv420ToRgb32(int nwidth,int nheight)
     m_img_convert_ctx = sws_getContext(nwidth, nheight, AV_PIX_FMT_YUV420P,nwidth, nheight, AV_PIX_FMT_RGB32, SWS_BICUBIC, NULL, NULL, NULL);
 }
 
+void FfmpegConvert::initYuv422ToRgb32(int nwidth,int nheight)
+{
+    m_pFrameYUV = av_frame_alloc();
+    m_pFrameRGB = av_frame_alloc();
+
+// width和heigt为传入的分辨率的大小，分辨率有变化时可以以最大标准申请
+    int numBytes = avpicture_get_size(AV_PIX_FMT_RGB32, nwidth,nheight);
+    m_rgbBuffer = (uint8_t *) av_malloc(numBytes * sizeof(uint8_t));
+    int yuvSize = nwidth * nheight * 2;
+    m_yuvBuffer = (uint8_t *)av_malloc(yuvSize);
+
+    //特别注意sws_getContext内存泄露问题，
+    //注意sws_getContext只能调用一次，在初始化时候调用即可，另外调用完后，在析构函数中使用sws_freeContext，将它的内存释放。
+    //设置图像转换上下文
+    m_img_convert_ctx = sws_getContext(nwidth, nheight, AV_PIX_FMT_YUYV422,nwidth, nheight, AV_PIX_FMT_RGB32, SWS_BICUBIC, NULL, NULL, NULL);
+}
 
 QImage* FfmpegConvert::yuv420ToRgb32(char* pbuff_in,int nwidth,int nheight)
 {
     avpicture_fill((AVPicture *) m_pFrameRGB, m_rgbBuffer, AV_PIX_FMT_RGB32,nwidth, nheight);
     avpicture_fill((AVPicture *) m_pFrameYUV, (uint8_t *)pbuff_in, AV_PIX_FMT_YUV420P, nwidth, nheight);
+    //转换图像格式，将解压出来的YUV420P的图像转换为RGB的图像
+    sws_scale(m_img_convert_ctx,
+            (uint8_t const * const *) m_pFrameYUV->data,
+            m_pFrameYUV->linesize, 0, nheight, m_pFrameRGB->data,
+            m_pFrameRGB->linesize);
+    //把这个RGB数据 用QImage加载
+  return new QImage((uchar *)m_rgbBuffer,nwidth,nheight,QImage::Format_RGB32);
+     //把图像复制一份 传递给界面显示
+   // m_mapImage[nWindowIndex] = tmpImg.copy();
+}
+
+QImage* FfmpegConvert::yuv422ToRgb32(char* pbuff_in,int nwidth,int nheight)
+{
+    avpicture_fill((AVPicture *) m_pFrameRGB, m_rgbBuffer, AV_PIX_FMT_RGB32,nwidth, nheight);
+    avpicture_fill((AVPicture *) m_pFrameYUV, (uint8_t *)pbuff_in, AV_PIX_FMT_YUYV422, nwidth, nheight);
     //转换图像格式，将解压出来的YUV420P的图像转换为RGB的图像
     sws_scale(m_img_convert_ctx,
             (uint8_t const * const *) m_pFrameYUV->data,

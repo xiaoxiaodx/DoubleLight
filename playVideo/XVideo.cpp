@@ -181,7 +181,7 @@ void XVideo::recSearchIp(QString ip,QString ver)
 {
     DebugLog::getInstance()->writeLog("my recSearchIp:"+ip);
     //qDebug()<<"my recSearchIp:"<<ip;
-    //m_ip = "10.67.1.139";
+    //m_ip = "10.67.1.191";
     m_ip = ip;
     emit signal_setIp(m_ip,ver);
     createTcpThread();

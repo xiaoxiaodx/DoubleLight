@@ -508,6 +508,8 @@ Rectangle {
                 deviceconfig.curDevTypeStr = "J07"
             else if(smap.tempmodel === "J07-I")
                 deviceconfig.curDevTypeStr = "J07-I"
+            else if(smap.tempmodel === "J07-T")
+                deviceconfig.curDevTypeStr = "J07-T"
             else
                 return;
 //                map.cmd = "getiradinfo";

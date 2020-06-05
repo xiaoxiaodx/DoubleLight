@@ -26,7 +26,10 @@ public:
   void unInitConvert();
 
   QImage* yuv420ToRgb32(char* pbuff_in,int nwidth,int nheight);
+  QImage* yuv422ToRgb32(char* pbuff_in,int nwidth,int nheight);
+
   void initYuv420ToRgb32(int nwidth,int nheight);
+  void initYuv422ToRgb32(int nwidth,int nheight);
   void yuv420ToRgb32release();
 signals:
 
@@ -44,8 +47,6 @@ private:
     QImage testImg;
     QFile *fileSaveYuv;
     QMutex mutex;
-
-
 
     AVFrame    *m_pFrameRGB,*m_pFrameYUV;
     uint8_t *m_rgbBuffer,*m_yuvBuffer;
