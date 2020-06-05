@@ -100,6 +100,7 @@ private:
     void HttpSetalarmparam(QVariantMap value);
     void HttpSetVideoEncode(QVariantMap value);
     void HttpGetVideoEncode(QVariantMap value);
+    void HttpSetimagparam(QVariantMap value);
 
 
     void httpSendCommonCmd(QString cmd,QString );

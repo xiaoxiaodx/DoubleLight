@@ -134,7 +134,7 @@ void TcpWorker::slot_tcpDisconnected()
 void TcpWorker::slot_readData()
 {
 
-    //qDebug()<<"slot_readData    "<<
+    //qDebug()<<"slot_readData    "<<"";
     isHavaData = true;
     // isConnected = true;
 
@@ -302,6 +302,7 @@ void TcpWorker::parseRecevieData()
                 continue;
         }
 
+        //qDebug()<<"mediaDataType    "<<mediaDataType;
         if(mediaDataType == MediaType_H264)
         {
             needlen = 28;
@@ -328,6 +329,9 @@ void TcpWorker::parseRecevieData()
             {
 
                 //emit signal_writeMediaVideoQueue(readDataBuff.data(),m_streamDateLen,infoV,MediaDataProcess::mMediaVeidoType);
+
+
+                // qDebug()<<"signal_sendH264    "<<myType;
 
                 quint64 ptsH = 0x00000000ffffffff & infoV.highPts;
                 quint64 ptsL = 0x00000000ffffffff & infoV.lowPts;

@@ -5,9 +5,6 @@ import QtQml 2.12
 
 import "./dialog"
 
-//import DeviceManagerment 1.0
-
-
 
 Window {
 
@@ -242,6 +239,10 @@ Window {
                 Qt.quit();
         }
 
+    }
+
+    MsgDialog{
+        id:msgdialog
     }
 
     Loader{

@@ -53,6 +53,10 @@ Rectangle {
     function screenShot(path,object,mx,my,mw,mh,temp){
         warnmodel.funScreenShoot(path,object,mx ,my,mw,mh,temp);
     }
+
+    function screenShot1(path,object,mx,my,mw,mh,temp,type){
+        warnmodel.funScreenShoot1(path,object,mx ,my,mw,mh,temp,type);
+    }
     //加个矩形是为了解决listview显示越界的问题
     Rectangle{
         id:rectTop
@@ -285,6 +289,7 @@ Rectangle {
                 anchors.leftMargin: warnTempHeaderLeftMargin
                 font.pixelSize: fontSize
                 color: "#333333"
+                visible: false
                 font.bold: curLanguage===lKorean
                 text: qsTr("告警温度")
             }
@@ -292,7 +297,7 @@ Rectangle {
                 id: warnImg
                 anchors.verticalCenter: parent.verticalCenter
                 anchors.left: parent.left
-                anchors.leftMargin: warnImgHeaderLeftMargin
+                anchors.leftMargin: warnTempHeaderLeftMargin//warnImgHeaderLeftMargin
                 font.pixelSize: fontSize
                 font.bold: curLanguage===lKorean
                 color: "#333333"
@@ -358,6 +363,7 @@ Rectangle {
                     anchors.left: parent.left
                     anchors.leftMargin: warnTempHeaderLeftMargin
                     font.pixelSize: fontSize
+                    visible: false
                     text: model.warnTemp;
                 }
 
@@ -366,7 +372,7 @@ Rectangle {
                     width: 13
                     height: 14
                     anchors.left: parent.left
-                    anchors.leftMargin: warnImgHeaderLeftMargin
+                    anchors.leftMargin: warnTempHeaderLeftMargin//warnImgHeaderLeftMargin
                     anchors.verticalCenter: parent.verticalCenter
                     source: index === warnList.currentIndex?"qrc:/images/capture_p.png":"qrc:/images/capture.png"
                 }
@@ -485,8 +491,10 @@ Rectangle {
 
     function funProcessPushAlarm(map){
 
-        warnmodel.funProcessPushAlarm(deviceconfig.getScrennShotPath(),map);
+        warnmodel.funProcessPushAlarm1(deviceconfig.getScrennShotPath(),map);
     }
+
+
 
     Popup {
         id: imgpop

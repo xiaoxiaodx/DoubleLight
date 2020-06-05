@@ -449,8 +449,6 @@ Rectangle {
 
             deviceconfig.getiradInfo();
 
-            map.cmd = "setcurrenttime"
-            video.fun_sendCommonPar(map);
             video.fun_setInitPar(deviceconfig.getTcpip(),deviceconfig.getShowParentW(),deviceconfig.getShowParentH(),deviceconfig.getShowRectX(),deviceconfig.getShowRectY(),deviceconfig.getShowRectW(),deviceconfig.getShowRectH())
 
             s_tempmodelSelect(smap.tempmodel,deviceconfig.getTcpip());
@@ -480,12 +478,19 @@ Rectangle {
                 startWarn(smap.temperature);
             else{
 
+
+                warnmanger.screenShot1(deviceconfig.getScrennShotPath(),main,0 ,68,main.width,main.height-68-50-160-57,10,smap.alarmtype)
+
                 warnmanger.funProcessPushAlarm(smap);
 
                 //开启动画
+                if(smap.alarmtype === 80){
 
-                if(smap.alarmtype !== 81)
-                    imgWar.startAnimation();
+                    imgWar.source = "qrc:/images/warn_ico.png"
+                }else if(smap.alarmtype === 82){
+                    imgWar.source = "qrc:/images/warn_nomask.png"
+                }
+                imgWar.startAnimation();
 
 
             }
@@ -513,6 +518,70 @@ Rectangle {
                 cmd:"getvideoencodeparam"
             }
             video.fun_sendCommonPar(map);
+        }else if("getimagparam" === strcmd){
+
+            deviceconfig.imagparamflip = smap.flip
+            deviceconfig.imagparambrightness = smap.brightness
+            deviceconfig.imagparamcolorsaturation =smap.colorsaturation
+            deviceconfig.imagparamcontrast = smap.contrast
+            deviceconfig.imagparamhue = smap.hue
+            deviceconfig.imagparammirror = smap.mirror
+            deviceconfig.imagparamsharpness = smap.sharpness
+            deviceconfig.imagparamwdr = smap.wdr
+            deviceconfig.setWdr(smap.wdr);
+
+        }else if("setimagparam" === strcmd){
+            if(deviceconfig.wdrisChange){
+                msgdialog.width = 500
+                msgdialog.height = 176
+                var txtstr ;
+                switch(curLanguage)
+                {
+                case lChinese:
+                    txtstr = "wdr设置成功，设备正在重启"
+                    break;
+                case lEnglish:
+                    txtstr = "The wdr setting is successful, the Camera is restarting"
+                    break;
+                case lItaly:
+                    txtstr = "La fotocamera si riavvierà dopo l'impostazione"
+                    break;
+                case lKorean:
+                     txtstr = "설정 후 카메라가 다시 시작됩니다"
+                    break;
+                case lRussian:
+                     txtstr = "Камера перезагрузится после настройки"
+                    break;
+                case lLithuanian:
+                     txtstr = "Nustačius fotoaparatą, jis paleis iš naujo"
+                    break;
+                case ltuerqi:
+                     txtstr = "Kamera ayarlandıktan sonra yeniden başlatılacak"
+                    break;
+                case ltuerqi1:
+                     txtstr = "Kamera ayarlandıktan sonra yeniden başlatılacak"
+                    break;
+                case lputaoya:
+                     txtstr = "A câmera será reiniciada após a configuração"
+                    break;
+                case lxibanya:
+                     txtstr = "La cámara se reiniciará después de configurar"
+                    break;
+                case lfayu:
+                     txtstr = "La caméra redémarrera après le réglage"
+                    break;
+                case lniboer:
+                     txtstr = "क्यामेरा सेटिंग पछि रिस्टार्ट हुनेछ"
+                    break;
+                case lKhmer:
+                     txtstr = "កាមេរ៉ានឹងចាប់ផ្តើមឡើងវិញបន្ទាប់ពីកំណត់"
+                    break;
+
+                }
+
+                msgdialog.msgStr = txtstr;
+                msgdialog.open();
+            }
         }
     }
 

@@ -35,7 +35,7 @@ void XVideo::funStartSearch()
 
 void XVideo::slot_timeoutUpdate(){
 
-    //qDebug()<<"tcp 流线程 fun_setListRect:"<<QThread::currentThreadId()<<"    "<<var.toList();
+    //qDebug()<<"tcp 流线程 fun_setListRect:"<<QThread::currentThreadId()<<"    "<<listBuffImg.size();
     if(mMutex.tryLock()){
 
         if(listBuffImg.size()>0){
@@ -206,7 +206,7 @@ void XVideo::createHttpApi(){
 
         qDebug()<<" createHttpApi   "<<m_ip;
         httpThread = new QThread;
-        httpDevice = new CHttpApiDevice("INEW-004122-JWGWM", m_ip,8564, "admin", "admin");
+        httpDevice = new CHttpApiDevice("INEW-004122-JWGWM", m_ip,8564, "gzroot@u", "gzroot@p");
         connect(httpDevice, &CHttpApiDevice::signal_ReadMsg, this, &XVideo::slog_HttpmsgCb);
         connect(this, &XVideo::signal_getInitPar,httpDevice,&CHttpApiDevice::slot_httpGetInitPar);
         connect(this, &XVideo::signal_httpParSet,httpDevice,&CHttpApiDevice::slot_httpParSet);
@@ -289,18 +289,23 @@ void XVideo::paint(QPainter *painter)
     painter->setPen(pen);
     painter->setFont(font);
 
+//    qDebug()<<""<<tempImgResW;
 
-    if(tempImgResW == 0)
-        return;
     // DebugLog::getInstance()->writeLog("painter kejianguang start***");
+
+
+    painter->drawImage(QRect(0,0,width(),height()), *pRenderImginfo.pImg);
+
+
+    return;
+
+        if(tempImgResW == 0)
+            return;
     qreal kX = (qreal)this->width()/(qreal)tempImgResW;
     qreal kY = (qreal)this->height()/(qreal)tempImgResH;
 
     qreal kshowRectX = (qreal)this->width()/showParentW;
     qreal kshowRectY = (qreal)this->height()/showParentH;
-
-    painter->drawImage(QRect(0,0,width(),height()), *pRenderImginfo.pImg);
-
 
     //画限制区域矩形
     painter->save();
@@ -395,6 +400,7 @@ void XVideo::fun_setRectPar(int sx,int sy,int sw,int sh,int pw,int ph){
 void XVideo::slot_recH264(char* h264Arr,int arrlen,quint64 time)
 {
 
+    //qDebug()<<"slot_recH264 ";
     if(pffmpegCodecH264 == nullptr)
        pffmpegCodecH264 = createFFmpegDecodec("h264");
 
@@ -402,18 +408,22 @@ void XVideo::slot_recH264(char* h264Arr,int arrlen,quint64 time)
     if(pffmpegCodecH264 != nullptr){
 
         QImage *Img = nullptr;
-        if(pffmpegCodecH264 != nullptr){
+
             Img = pffmpegCodecH264->decodeVFrame((unsigned char*)h264Arr,arrlen);
             if (Img != nullptr )
             {
                 mMutex.lock();
+               // qDebug()<<"图片为空1:"<<listBuffImg.size();
                 if(listBuffImg.size() < maxBuffLen)
                     listBuffImg.append(Img);
                 else
                     delete Img;
                 mMutex.unlock();
+            }else{
+
+                qDebug()<<"图片为空";
             }
-        }
+
     }
 }
 
@@ -424,7 +434,7 @@ void XVideo::slot_recH265(char* h264Arr,int arrlen,quint64 time)
     if(pffmpegCodecH265 != nullptr){
 
         QImage *Img = nullptr;
-        if(pffmpegCodecH265 != nullptr){
+
             Img = pffmpegCodecH265->decodeVFrame((unsigned char*)h264Arr,arrlen);
             if (Img != nullptr )
             {
@@ -435,7 +445,7 @@ void XVideo::slot_recH265(char* h264Arr,int arrlen,quint64 time)
                     delete Img;
                 mMutex.unlock();
             }
-        }
+
     }
 }
 

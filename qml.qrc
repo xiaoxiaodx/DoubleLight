@@ -109,5 +109,8 @@
         <file>qml/simpleControl/SimpleCheckedButton.qml</file>
         <file>images/logo10.jpg</file>
         <file>images/logo9.png</file>
+        <file>qml/dialog/MsgDialog.qml</file>
+        <file>images/icon_msg.png</file>
+        <file>images/warn_nomask.png</file>
     </qresource>
 </RCC>

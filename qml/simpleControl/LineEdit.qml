@@ -18,6 +18,8 @@ Rectangle{
     property int fontPixSize: 10
     property bool isClick: false
 
+    property alias inputmask: input.inputMask
+    property alias validator:input.validator
     property alias inputLimite: input.inputMethodHints
     property alias isReadOnly: input.readOnly
     Image {
@@ -35,14 +37,12 @@ Rectangle{
         height: parent.height - 2
         anchors.left: isNeedImg?img.right:parent.left
         anchors.leftMargin: textLeftPadding
-
         y:2
         // anchors.verticalCenter: parent.verticalCenter
         font.pixelSize: fontPixSize
         verticalAlignment: Text.AlignVCenter
         //cursorPosition:12
         activeFocusOnPress: false
-
 
         style:TextFieldStyle {
             textColor: txtColor

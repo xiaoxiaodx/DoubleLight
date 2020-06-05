@@ -1,4 +1,4 @@
-#include "warnmodel.h"
+﻿#include "warnmodel.h"
 #include<QVariant>
 #include <QDebug>
 #include <QFile>
@@ -287,6 +287,69 @@ void WarnModel::funDeleteSelect(){
     }
 }
 
+//hardisk 第一次需求变更
+void WarnModel::funProcessPushAlarm1(QString path,QVariantMap map){
+
+    qDebug()<<"funProcessPushAlarm********  "<<map.value("year").toInt() <<"    "<<map.value("month").toInt()<<"    "<<map.value("day").toInt();
+    QDate tmpDate(map.value("year").toInt(),map.value("month").toInt(),map.value("day").toInt());
+    QTime tmptime(map.value("hour").toInt(),map.value("min").toInt(),map.value("sec").toInt());
+    float warnTemp = map.value("temperature").toFloat();
+    int alarmtype = map.value("alarmtype").toInt();
+    QString imgData = map.value("imagedata").toString();
+
+
+
+    QString datestr = tmpDate.toString("yyyyMMdd");
+
+
+
+    QByteArray imgArrBase64 = imgData.toLatin1();
+    QByteArray imgArr = QByteArray::fromBase64(imgArrBase64);
+
+
+    QDateTime curDateTime(tmpDate,tmptime);
+
+    QString  curDatetimeStr = curDateTime.toString("yyyyMMdd_hhmmss");
+
+    QString desFileDir = path+"/image1";
+
+    QString imgAbsolutePath = path+"/image1/"+curDatetimeStr+".jpeg";
+
+    qDebug()<<" tmpDate "<<tmpDate<<"   tmptime"<<tmptime;
+
+    QDir dir;
+    if (!dir.exists(desFileDir)){
+        bool res = dir.mkpath(desFileDir);
+        if(res)
+            DebugLog::getInstance()->writeLog("slot_screenShot create new dir is succ");
+        else
+            DebugLog::getInstance()->writeLog("slot_screenShot create new dir is fail");
+    }
+
+    //创建相对路径
+    if(!QDir::setCurrent(desFileDir)){
+        DebugLog::getInstance()->writeLog("slot_screenShot set relative dir is false");
+        return;
+    }
+
+
+    QFile file(imgAbsolutePath);
+    if(file.open(QIODevice::WriteOnly)){
+        file.write(imgArr,imgArr.length());
+
+        qDebug()<<"funProcessPushAlarm******** file open:"+imgAbsolutePath;
+        file.close();
+        //存完文件 将消息发给qml
+        emit signal_sendWarnMsg(alarmtype,imgAbsolutePath,curDateTime.toString("yyyy-MM-dd hh:mm:ss"),warnTemp);
+    }else {
+        DebugLog::getInstance()->writeLog("slot_screenShot open log file is fail");
+        return ;
+    }
+
+
+}
+
+//hardisk 第一次需求
 void WarnModel::funProcessPushAlarm(QString path,QVariantMap map)
 {
 
@@ -353,11 +416,9 @@ void WarnModel::funProcessPushAlarm(QString path,QVariantMap map)
         file.close();
 
         emit signal_sendWarnMsg(alarmtype,imgAbsolutePath,curDateTime.toString("yyyy-MM-dd hh:mm:ss"),warnTemp);
-//        if(alarmtype != 80){//不是超温告警  不记录log信息
-
-//            return;
-
-//        }
+        //        if(alarmtype != 80){//不是超温告警  不记录log信息
+        //            return;
+        //        }
 
         //存报警图片信息
         /*  告警名录下 建立一个日志文件夹 一个图片文件夹，
@@ -428,6 +489,106 @@ bool WarnModel::funScreenShoot(QString path,QQuickWindow *quic,int capx,int capy
     QString desFileDir = path+"/image";
 
     QString imgAbsolutePath = path+"/image/"+curDatetimeStr+".jpeg";
+
+    QDir dir;
+    if (!dir.exists(desFileDir)){
+        bool res = dir.mkpath(desFileDir);
+        if(res)
+            DebugLog::getInstance()->writeLog("slot_screenShot create new dir is succ");
+        else
+            DebugLog::getInstance()->writeLog("slot_screenShot create new dir is fail");
+    }
+
+    //创建相对路径
+    if(!QDir::setCurrent(desFileDir)){
+        DebugLog::getInstance()->writeLog("slot_screenShot set relative dir is false");
+        return false;
+    }
+
+
+    if(!img1.save(curDatetimeStr+".jpeg","JPEG")){
+        DebugLog::getInstance()->writeLog("scrennshot save fail");
+        return false;
+    }else{
+        //存报警图片信息
+        /*  告警名录下 建立一个日志文件夹 一个图片文件夹，
+                    日志文件夹下放30个日志文件，一个日志文件代表一天，
+                    图片文件夹下放入告警抓拍图片
+                */
+        QString warnLogAbsolutePath = path + "/log";
+        QString warnLogAbsoluteFileName = warnLogAbsolutePath + "/"+curDateTime.date().toString("yyyyMMdd")+".log";
+        if(!dir.exists(warnLogAbsolutePath)){
+            bool res = dir.mkpath(warnLogAbsolutePath);
+            if(res)
+                DebugLog::getInstance()->writeLog("slot_screenShot create new log dir is succ");
+            else
+                DebugLog::getInstance()->writeLog("slot_screenShot create new log dir is fail");
+        }
+
+        /*  抓拍是一种频繁的操作 ，为了优化性能，
+            在抓拍时往文件尾写数据，因为抓拍时间都是顺序后延的
+            同时往数据模型前添加数据
+        */
+        QFile imgInfofile(warnLogAbsoluteFileName);
+        if(imgInfofile.open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Append)){
+            QString tempStr = QString::number(warnTemp,'f',2);
+            QString imgInfoStr = imgAbsolutePath+" "+tempStr+" "+curDatetimeStr+".jpeg";
+            QTextStream out(&imgInfofile);
+            out <<imgInfoStr << "\n";
+            imgInfofile.close();
+
+            QString date = curDateTime.toString("yyyy-MM-dd");
+            QString time = curDateTime.toString("hh:mm:ss");
+
+            //是当前日期才加入列表日志
+            if(curDate.compare(datestr)==0){
+                beginInsertRows(QModelIndex(),0,0);
+                m_listWarn.insert(0,new WarnModelData(curSelect,date+" "+time,tempStr,curDatetimeStr,imgAbsolutePath));
+                endInsertRows();
+            }
+
+        }else {
+            DebugLog::getInstance()->writeLog("slot_screenShot open log file is fail");
+            return false;
+        }
+    }
+    return true;
+}
+
+bool WarnModel::funScreenShoot1(QString path,QQuickWindow *quic,int capx,int capy,int capw,int caph,float warnTemp,int tempType)
+{
+
+    QString datestr = QDate::currentDate().toString("yyyyMMdd");
+    qDebug()<<"*********:"<<path<<" "<<datestr<<"   "<<curDate;
+
+    QImage img= quic->grabWindow();
+
+    if(path == ""){
+        DebugLog::getInstance()->writeLog("scrennshot file path is null");
+        return false;
+    }
+
+
+
+    QImage img1 = img.copy( capx, capy, capw, caph);
+    //QImage img2 = img1.scaled(QSize(960,600),Qt::IgnoreAspectRatio);
+
+    QDateTime curDateTime =  QDateTime::currentDateTime();
+    QString  curDatetimeStr = curDateTime.toString("yyyyMMdd_hhmmss");
+
+
+    QString typeStr = "";
+
+    if(tempType == 80)
+        typeStr = "Alarm";
+    else if(tempType == 81)
+        typeStr = "Normal";
+    else if(tempType == 82)
+        typeStr = "NoMask";
+
+    QString desFileDir = path+"/image/"+typeStr;
+
+    QString imgAbsolutePath = desFileDir+"/"+curDatetimeStr+".jpeg";
 
     QDir dir;
     if (!dir.exists(desFileDir)){
