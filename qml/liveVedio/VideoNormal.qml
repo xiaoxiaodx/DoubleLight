@@ -496,6 +496,7 @@ Rectangle {
         }else if("getinftempcolor" === strcmd){
             deviceconfig.setTempcolor(smap.tempcolor);
         }else if("getimagparam" === strcmd){
+
             deviceconfig.imagparamflip = smap.flip
             deviceconfig.imagparambrightness = smap.brightness
             deviceconfig.imagparamcolorsaturation =smap.colorsaturation

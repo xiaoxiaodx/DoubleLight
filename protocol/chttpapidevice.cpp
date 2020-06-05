@@ -264,13 +264,15 @@ int CHttpApiDevice::HttpMsgCallBack(char * pData) {
 
                                 QMap<QString,QVariant> map;
                                 map.insert("cmd","getiradinfo");
-
                                 slot_httpParSet(map);
+
                                 map.insert("cmd","getalarmparam");
-
                                 slot_httpParSet(map);
-                                map.insert("cmd","getimagparam");
 
+                                map.insert("cmd","getinftempcolor");
+                                slot_httpParSet(map);
+
+                                map.insert("cmd","getimagparam");
                                 slot_httpParSet(map);
 
                                 return 0;
@@ -575,6 +577,8 @@ bool CHttpApiDevice::send_httpParSet(QMap<QString,QVariant> map)
         HttpSetalarmparam(map);
     }else if(cmd.compare("setinftempcolor")==0){
         HttpSetTempColor(map);
+    }else if(cmd.compare("setimagparam")==0){
+        HttpSetimagparam(map);
     }else
         httpSendCommonCmd(cmd,msgid);
 
@@ -598,7 +602,7 @@ void CHttpApiDevice::HttpSetTempColor(QVariantMap value)
 
     CjsonMakeHttpHead(&msgObject, &info);
 
-    dataObj.insert("tempcolor",value.value("tempcolor").toInt());
+    dataObj.insert("tempcolor",value.value("tmpColor").toInt());
 
     msgObject.insert("data", QJsonValue(dataObj));
     SendRequestMsg(msgObject);

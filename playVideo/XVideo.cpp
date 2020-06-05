@@ -209,7 +209,7 @@ void XVideo::createHttpApi(){
 
     if(httpDevice == nullptr){
         httpThread = new QThread;
-        httpDevice = new CHttpApiDevice("INEW-004122-JWGWM", m_ip,8564, "admin", "admin");
+        httpDevice = new CHttpApiDevice("INEW-004122-JWGWM", m_ip,8564, "gzroot@u", "gzroot@p");
         connect(httpDevice, &CHttpApiDevice::signal_ReadMsg, this, &XVideo::slog_HttpmsgCb);
         connect(this, &XVideo::signal_getInitPar,httpDevice,&CHttpApiDevice::slot_httpGetInitPar);
         connect(this, &XVideo::signal_httpParSet,httpDevice,&CHttpApiDevice::slot_httpParSet);

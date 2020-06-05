@@ -854,8 +854,8 @@ Rectangle {
                     anchors.bottom: line4.top
                     anchors.left: line4.left
                     anchors.bottomMargin: 20
-
                 }
+
                 Rectangle{
                     id:line4
                     width:parent.width - 20*2
@@ -901,12 +901,12 @@ Rectangle {
                     bordColor:"#DEDFE3"
                     mRadius:2
                     model: ListModel{
-                        ListElement{showStr:"黑白"}
-                        ListElement{showStr:"光谱"}
-                        ListElement{showStr:"泰尔红紫"}
-                        ListElement{showStr:" 琥珀色"}
-
+                        ListElement{showStr:"0"}//黑白
+                        ListElement{showStr:"1"}//光谱
+                        ListElement{showStr:"2"}//泰尔红紫
+                        ListElement{showStr:"3"}//琥珀色
                     }
+
                     onCurrentIndexChanged: {
                         //                    curLanguage = currentIndex
                         //                    main.s_setLanguage(currentIndex);
@@ -1206,7 +1206,7 @@ Rectangle {
         var tmpColor1 = 0;
 
         if(cmbImgSelect.currentIndex === 0)
-            tmpColor1 = 0
+            tmpColor1 = 1
         else if(cmbImgSelect.currentIndex === 1)
             tmpColor1 = 102
         else if(cmbImgSelect.currentIndex === 2)
@@ -1224,10 +1224,11 @@ Rectangle {
         s_timeSwith(swithTime.checked)
     }
 
-
     function setTempcolor(value)
     {
-        if(value === 0)
+
+        console.debug("********** setTempcolor  "+value)
+        if(value === 1)
             cmbImgSelect.currentIndex = 0
         else if(value === 102)
             cmbImgSelect.currentIndex = 1
@@ -1427,8 +1428,6 @@ Rectangle {
         }
     }
 
-
-
     Connections{
         target: main
         onS_setLanguage:setLanguage(typeL);
@@ -1455,6 +1454,8 @@ Rectangle {
             txtUpdateFile.text = "Upgrade"
             txtSave.text = "Settings"
             labelResolution.text = "Standard"
+            txtImageSet.text = "Image settings"
+            txtImageSelect.text = "Image selectione"
             break;
         case lKorean:
             txtRecordSet.text = "비디오 설정"
@@ -1512,6 +1513,8 @@ Rectangle {
             txtUpdateFile.text = "设备升级"
             txtSave.text = "设置"
             labelResolution.text = "温标选择"
+            txtImageSet.text = "图像设置"
+            txtImageSelect.text = "图像选择"
             break;
         case lRussian:
             txtRecordSet.text = "Настройка записи"
@@ -1531,6 +1534,8 @@ Rectangle {
             txtUpdateFile.text = "обновить"
             txtSave.text = "Настройка"
             labelResolution.text = "стандарт"
+            txtImageSet.text = "Настройки изображения"
+            txtImageSelect.text = "Выбор изображения"
             break;
         case lLithuanian:
             txtRecordSet.text = "Vaizdo parametrų nustatymas"
@@ -1569,6 +1574,8 @@ Rectangle {
             txtUpdateFile.text = "Yükselt"
             txtSave.text = "Ayarlar"
             labelResolution.text = "Standart"
+            txtImageSet.text = "Görüntü ayarları"
+            txtImageSelect.text = "Görüntü seçimi"
             break;
         case ltuerqi1:
             txtRecordSet.text = "Video Ayarları"
@@ -1626,6 +1633,8 @@ Rectangle {
             txtUpdateFile.text = "Potenciar"
             txtSave.text = "Configuraciones"
             labelResolution.text = "Estándar"
+            txtImageSet.text = "Configuraciones de imagen"
+            txtImageSelect.text = "Selección de imagen"
             break;
         case lfayu:
             txtRecordSet.text = "Paramètres vidéo"
@@ -1645,6 +1654,8 @@ Rectangle {
             txtUpdateFile.text = "Améliorer"
             txtSave.text = "Réglages"
             labelResolution.text = "la norme"
+            txtImageSet.text = "Paramètres d'image"
+            txtImageSelect.text = "Sélection d'images"
             break;
         case lniboer:
             txtRecordSet.text = "भिडियो सेटिंग "

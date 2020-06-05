@@ -7,10 +7,10 @@ CONFIG += c++11
 # deprecated API to know how to port your code away from it.
 DEFINES += QT_DEPRECATED_WARNINGS
 # �汾��Ϣ
-VERSION = 3.0.4
+VERSION = 2.9.0.0
 #
-RC_ICONS = myicon6.ico
-TARGET=TTM-S
+RC_ICONS = myicon10.ico
+TARGET=KanataSafe
 # ��˾����
 QMAKE_TARGET_COMPANY = " "
 

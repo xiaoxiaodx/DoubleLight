@@ -631,8 +631,8 @@ void TcpWorker::parseShiGanRgb(QByteArray arr,int arrlen)
 
         emit signal_sendImg(pImg,w*h*3,10,w,h);
     }
-
 }
+
 void TcpWorker::parseShiGanRgb1(QByteArray arr,int arrlen,int resw,int resh)
 {
 
