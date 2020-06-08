@@ -10,8 +10,8 @@ Rectangle {
     property int warnTempHeaderLeftMargin: 304
     property int warnImgHeaderLeftMargin: 478
     property int deleteHeaderLeftMargin: 771
-    property int fontSize: 14
-
+    property int fontSize: lKhmer===curLanguage?28:14
+    property int titlefontSize: lKhmer===curLanguage?36:18
     property int listviewClickIndex: -1
     property bool isAllSelect: false
 
@@ -89,7 +89,7 @@ Rectangle {
             anchors.top: parent.top
             anchors.leftMargin: 60
             anchors.topMargin: 35
-            font.pixelSize: 18
+            font.pixelSize: lKhmer===curLanguage?36:18
             z:2
             text: qsTr("日志列表")
         }
@@ -138,7 +138,14 @@ Rectangle {
                                        curLanguage===lKorean?"삭제하시겠습니까?":
                                        curLanguage===lItaly?"Cancella Tutta la Selezione?":
                                        curLanguage===lRussian?"Вы уверены, что хотите удалить информацию?":
-                                       curLanguage===lLithuanian?"Patvirtinti ištrynimą?":"";
+                                       curLanguage===lLithuanian?"Patvirtinti ištrynimą?":
+                                                                  curLanguage === ltuerqi?"Kapı Bilgileri?":
+                                                                  curLanguage === ltuerqi1?"Tüm Seçimleri Sil?":
+                                                                  curLanguage === lputaoya?"Confirme a exclusão?":
+                                                                  curLanguage === lxibanya?"Confirmar para eliminar?":
+                                                                  curLanguage === lfayu?"Confirmer la suppression?":
+                                                                  curLanguage === lniboer?"साँचै मेट्ने हो ?":
+                                                                    curLanguage === lKhmer?"យល់ព្រមលុបចោល?":""
 
                     askDialog.imgSrc = "qrc:/images/ico_warn.png"
                     askDialog.curType = askDialog.warnInfoMutipleDelete
@@ -178,7 +185,7 @@ Rectangle {
                 anchors.left: imgdate.right
                 anchors.leftMargin: 10
                 anchors.verticalCenter: parent.verticalCenter
-                font.pixelSize: fontSize
+                font.pixelSize: 14
                 color: "#909399"
                 text:Qt.formatDate(calendar.getCurrentData(),"yyyy-MM-dd")
             }
@@ -223,7 +230,7 @@ Rectangle {
                 anchors.left: imgtime.right
                 anchors.leftMargin: 10
                 anchors.verticalCenter: parent.verticalCenter
-                font.pixelSize: fontSize
+                font.pixelSize: 14
                 color: "#909399"
                 text: qsTr("00:00:00")
             }
@@ -354,7 +361,7 @@ Rectangle {
                     anchors.verticalCenter: parent.verticalCenter
                     anchors.left: parent.left
                     anchors.leftMargin: warnTimeHeaderLeftMargin
-                    font.pixelSize: fontSize
+                    font.pixelSize: 14
                     text: model.warnTime;
                 }
                 Text {
@@ -381,7 +388,7 @@ Rectangle {
                     anchors.left: captureImg.right
                     anchors.leftMargin: 7
                     anchors.verticalCenter: parent.verticalCenter
-                    font.pixelSize: fontSize
+                    font.pixelSize: 14
                     color: index === warnList.currentIndex?"#3B84F6":"#333333"
                     text: model.imgName;
                     MouseArea{
@@ -407,7 +414,14 @@ Rectangle {
                          curLanguage === lKorean?"삭제":
                          curLanguage === lItaly?"Cancella":
                          curLanguage === lRussian?"Удалить":
-                         curLanguage === lLithuanian?"Išvalyti":""
+                         curLanguage === lLithuanian?"Išvalyti":
+                            curLanguage === ltuerqi?"Sil":
+                                             ltuerqi1 === curLanguage?"Sil":
+                                             lputaoya === curLanguage?"Sil":
+                                             lxibanya === curLanguage?"Eliminar":
+                                             lfayu === curLanguage?"Supprimer":
+                                             lniboer === curLanguage?"मेट्नुहोस् ":
+                    lKhmer === curLanguage?"លុបចោល":""
                     MouseArea{
                         anchors.fill: parent
                         onClicked: {
@@ -421,7 +435,15 @@ Rectangle {
                                                curLanguage===lKorean?"삭제 정보를 확인합니까?":
                                                curLanguage === lItaly?"Cancello L’Informazione?":
                                                curLanguage === lRussian?"Вы уверены, что хотите удалить информацию?":
-                                               curLanguage === lLithuanian?"Patvirtinti ištrynimą?":""
+                                               curLanguage === lLithuanian?"Patvirtinti ištrynimą?":
+                                               curLanguage === ltuerqi?"Kapı Bilgileri?":
+                                               curLanguage === ltuerqi1?"Tüm Seçimleri Sil?":
+                                               curLanguage === lputaoya?"Confirme a exclusão?":
+                                               curLanguage === lxibanya?"Confirmar para eliminar?":
+                                               curLanguage === lfayu?"Confirmer la suppression?":
+                                               curLanguage === lniboer?"साँचै मेट्ने हो ?":
+                                               curLanguage === lKhmer?"យល់ព្រមលុបចោល?":""
+
                             askDialog.imgSrc = "qrc:/images/ico_warn.png"
                             askDialog.curType = askDialog.warnInfoSingleDelete
                             askDialog.open();
@@ -536,7 +558,6 @@ Rectangle {
                     onClicked: imgpop.close();
                 }
             }
-
         }
     }
 
@@ -614,6 +635,68 @@ Rectangle {
             txtWarnTemp.text = "Tampartūra"
             warnImg.text = "Nuotrauka"
             //deletetxt.text = "删除"
+            break;
+        case ltuerqi:
+            textitle.text = "Etkinlik listesi";
+            txtBatchDelete.text = "Toplu olarak sil"
+            txtDo.text = "İşlem"
+            txtWarnTime.text = "Zaman"
+            txtWarnTemp.text = "Sıcaklıklar"
+            warnImg.text = "Snapshot"
+            //deletetxt.text = "删除"
+            break;
+        case ltuerqi1:
+            textitle.text = "Etkinlik Listesi";
+            txtBatchDelete.text = "Toplu olarak Sil"
+            txtDo.text = "İşlem"
+            txtWarnTime.text = "Zaman"
+            txtWarnTemp.text = "Sıcaklık"
+            warnImg.text = "Ekran Görüntüsü"
+            //deletetxt.text = "删除"
+            break;
+        case lputaoya:
+            textitle.text = "lista de registro";
+            txtBatchDelete.text = "Excluir em lote"
+            txtDo.text = "Operar"
+            txtWarnTime.text = "Tempo"
+            txtWarnTemp.text = "Temperatura"
+            warnImg.text = "Instantâneo"
+            //deletetxt.text = "删除"
+            break;
+        case lxibanya:
+            textitle.text = "lista de registro";
+            txtBatchDelete.text = "Eliminar por lotes"
+            txtDo.text = "Funcionar"
+            txtWarnTime.text = "Hora"
+            txtWarnTemp.text = "Temperatura"
+            warnImg.text = "Instantánea"
+            //deletetxt.text = "删除"
+            break;
+        case lfayu:
+            textitle.text = "Liste des journaux";
+            txtBatchDelete.text = "Supprimer en lot"
+            txtDo.text = "Fonctionnement"
+            txtWarnTime.text = "Heure alarme"
+            txtWarnTemp.text = "Température"
+            warnImg.text = "Instantané"
+            //deletetxt.text = "删除"
+            break;
+        case lniboer:
+            textitle.text = "लग विवरण ";
+            txtBatchDelete.text = "एकैचोटी मेट्नुहोस् "
+            txtDo.text = "चलाउनुहोस"
+            txtWarnTime.text = "समय"
+            txtWarnTemp.text = "तापक्रम"
+            warnImg.text = "स्न्यापशट"
+            //deletetxt.text = "删除"
+            break;
+        case lKhmer:
+            textitle.text = "កំណត់ហេតុការចូលប្រើប្រាស់ឧបករណ៍";
+            txtBatchDelete.text = "លុបចោលទាំងអស់"
+            txtDo.text = "ប្រតិបត្តិការ"
+            txtWarnTime.text = "ពេល"
+            txtWarnTemp.text = "សីតុណ្ហភាព"
+            warnImg.text = "ថតរូប"
             break;
         }
     }

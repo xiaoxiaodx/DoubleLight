@@ -75,6 +75,9 @@
 #define MSG_HEAR_LEN		23
 #define MAX_MSG_BUF_LEN		(1024*1024)
 
+
+#include "ffmpegconvert.h"
+
 class TcpWorker : public QObject
 {
     Q_OBJECT
@@ -93,6 +96,8 @@ signals:
     void signal_sendH265(char* vH264Arr,int arrLen,long long pts,int resw,int resh);
     void signal_connected();
     void signal_sendImg(QImage *img,int len,quint64 time,int resw,int resh);
+
+    void signal_sendRectInfo(int displayTemp,QVariantList map);
 
 public slots:
 
@@ -131,7 +136,7 @@ private:
     void parseShiGanRgb(QByteArray arr,int arrlen);
     void parseShiGanRgb1(QByteArray arr,int arrlen,int resw,int resh);
     void parseShiGanRgb2(QByteArray arr,int arrlen,int resw,int resh);
-
+    void parseShiGanRgb3(QByteArray arr,int arrlen,int resw,int resh);
     QTcpSocket *tcpSocket;
 
     QByteArray readDataBuff;
@@ -175,6 +180,9 @@ private:
     int myType=0;
 
 
+    FfmpegConvert *ffmpegConvert = nullptr;
+
+    QVariantMap allmap;
 };
 
 #endif // TCPWORKER_H

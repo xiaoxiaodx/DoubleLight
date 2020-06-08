@@ -80,6 +80,7 @@ public slots:
     void finishYouPull();
 
     void slot_recImageInfo(QImage *,QVariant,float);
+    void slot_recRect(int tempdisplay,QVariantList listmap);
 protected:
     //  QSGNode* updatePaintNode(QSGNode *old, UpdatePaintNodeData *);
     void paint(QPainter *painter);
@@ -122,6 +123,9 @@ private:
     QRect testRect2;//测试使用
 
     QString m_ip = "";
+
+    int tempdisplay = 0;
+    QVariantList listrectinfo;
 };
 
 

@@ -303,9 +303,9 @@ Rectangle {
 
     function startWarn(warntemp){
 
-
         if(!deviceconfig.getSwitchWarn())
             return;
+
 
         //  if(warnTimer.isDelay1000){
         //            warnTimer.isDelay1000 = false;
@@ -325,6 +325,7 @@ Rectangle {
 
     function startWarn1()
     {
+
 
         //开启声音
         if(deviceconfig.getSwitchBeer())

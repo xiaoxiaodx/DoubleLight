@@ -1,6 +1,7 @@
 import QtQuick 2.0
 import "../qml/simpleControl"
 import Qt.labs.settings 1.0
+
 Rectangle {
 
 
@@ -22,6 +23,7 @@ Rectangle {
         width: parent.width - rectLanguage.width -20
         height: parent.height
         color: "#00ffffff"
+
                 Image {
                     id: btnImg
                     anchors.left: parent.left
@@ -37,12 +39,12 @@ Rectangle {
                     source: "qrc:/images/logo9.png"
                 }
 
+
 //        Text {
 //            id: btnImg
 //            anchors.left: parent.left
 //            anchors.leftMargin: 40
 //            anchors.verticalCenter: parent.verticalCenter
-
 //            color: "white"
 //            font.pixelSize: 30
 //            font.bold: true
@@ -70,7 +72,6 @@ Rectangle {
 
                 main.curLanguage = setting1.curLindex
                 main.s_setLanguage(setting1.curLindex);
-
             }
 
         }
@@ -212,14 +213,23 @@ Rectangle {
             itemLeftMargin:-12
             itemTopMargin:0
             currentIndex:1
+
             enabled: false
+
             model: ListModel{
                 ListElement{showStr:"简体中文"}
                 ListElement{showStr:"English"}
-                ListElement{showStr:"Italian"}
-                ListElement{showStr:"Korean"}
+                //ListElement{showStr:"Italian"}
+                //ListElement{showStr:"Korean"}
                 ListElement{showStr:"Russian"}
-                ListElement{showStr:"Lithuanian"}
+               // ListElement{showStr:"Lithuanian"}
+                ListElement{showStr:"Türkçe"}//土耳其
+                //ListElement{showStr:"Türk dili"}//土耳其语
+               // ListElement{showStr:"Português"}//葡萄牙
+                ListElement{showStr:"Español"}//西班牙
+                ListElement{showStr:"Française"}//法语
+                //ListElement{showStr:"नेपाली"}//尼泊尔文
+                //ListElement{showStr:"Khmer"}//高棉
             }
 
             onCurrentIndexChanged:{
@@ -262,8 +272,8 @@ Rectangle {
             imgSourseNormal: "qrc:/images/win_max.png"
             imgSoursePress: "qrc:/images/win_max_p.png"
             onClick:swinMax()
-
         }
+
         QmlImageButton{
             width: 20
             height: 20
@@ -281,19 +291,17 @@ Rectangle {
     }
 
     function setDeviceConnectState(state){
-//        if(state)
-//            imgstate.source ="qrc:/images/state_succ.png"
-//        else
-//            imgstate.source ="qrc:/images/state_fail.png"
-
+        //        if(state)
+        //            imgstate.source ="qrc:/images/state_succ.png"
+        //        else
+        //            imgstate.source ="qrc:/images/state_fail.png"
     }
+    
     function addDeviceInfo(str){
-
         deivcemodel.append({showStr:str});
     }
 
     function setLanguage(type){
-
         console.debug("setLanguage "+type)
         var index = 0;
         switch(type){
@@ -326,6 +334,41 @@ Rectangle {
             tabbarBtn.barModel.get(index++).txtStr =  "Pagrindinis vaizdas"
             tabbarBtn.barModel.get(index++).txtStr =  "Įrenginio konfiguracija"
             tabbarBtn.barModel.get(index++).txtStr =  "Aliarminis pranešimas"
+            break;
+        case ltuerqi:
+            tabbarBtn.barModel.get(index++).txtStr =  "Genel Önizleme"
+            tabbarBtn.barModel.get(index++).txtStr =  "Cihaz yapılandırması"
+            tabbarBtn.barModel.get(index++).txtStr =  "Alarm"
+            break;
+        case ltuerqi1:
+            tabbarBtn.barModel.get(index++).txtStr =  "Önizleme"
+            tabbarBtn.barModel.get(index++).txtStr =  "Cihaz yapılandırması"
+            tabbarBtn.barModel.get(index++).txtStr =  "Alarm"
+            break;
+        case lputaoya:
+            tabbarBtn.barModel.get(index++).txtStr =  "visualização principal"
+            tabbarBtn.barModel.get(index++).txtStr =  "Configuração do dispositivo"
+            tabbarBtn.barModel.get(index++).txtStr =  "Alarme"
+            break;
+        case lxibanya:
+            tabbarBtn.barModel.get(index++).txtStr =  "Visualización principal"
+            tabbarBtn.barModel.get(index++).txtStr =  "Configuración del dispositivo"
+            tabbarBtn.barModel.get(index++).txtStr =  "Alarma"
+            break;
+        case lfayu:
+            tabbarBtn.barModel.get(index++).txtStr =  "Aperçu principal"
+            tabbarBtn.barModel.get(index++).txtStr =  "Configuration de l'appareil"
+            tabbarBtn.barModel.get(index++).txtStr =  "Alarme"
+            break;
+        case lniboer:
+            tabbarBtn.barModel.get(index++).txtStr =  "मुख्य अबलोकन कक्ष"
+            tabbarBtn.barModel.get(index++).txtStr =  "यन्त्र कन्फिगरेसन"
+            tabbarBtn.barModel.get(index++).txtStr =  "अलार्म"
+            break;
+        case lKhmer:
+            tabbarBtn.barModel.get(index++).txtStr =  "ផ្ទាំងមុខ"
+            tabbarBtn.barModel.get(index++).txtStr =  "ការកំណត់រចនាសម្ព័ន្ធឧបករណ៍"
+            tabbarBtn.barModel.get(index++).txtStr =  "សម្លេងរោទ៍"
             break;
         }
     }

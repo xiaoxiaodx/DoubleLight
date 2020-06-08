@@ -44,7 +44,7 @@ void TcpWorker::slot_soceckErr(QAbstractSocket::SocketError socketError)
 void TcpWorker::creatNewTcpConnect(QString ip, int port)
 {
 
-    DebugLog::getInstance()->writeLog("tcp开始连接  "+ip+"  "+QString::number(port));
+    DebugLog::getInstance()->writeLog("tcp开始连接  "+ip+"  "+QString::number(port)+"   "+myType);
     this->ip = ip;
     this->port = port;
     if(tcpSocket == nullptr){
@@ -54,7 +54,6 @@ void TcpWorker::creatNewTcpConnect(QString ip, int port)
         connect(tcpSocket,&QTcpSocket::connected,this,&TcpWorker::slot_tcpConnected);
         connect(tcpSocket,&QTcpSocket::readyRead,this,&TcpWorker::slot_readData);
         connect(tcpSocket,&QTcpSocket::disconnected,this,&TcpWorker::slot_tcpDisconnected);
-        //connect(tcpSocket,&QTcpSocket::error,this,&TcpWorker::slot_soceckErr);
         connect(tcpSocket,SIGNAL(error(QAbstractSocket::SocketError)),this,SLOT(slot_soceckErr(QAbstractSocket::SocketError)));
         connect(timerConnectSer,&QTimer::timeout,this,&TcpWorker::slot_timerConnectSer);
 
@@ -62,7 +61,8 @@ void TcpWorker::creatNewTcpConnect(QString ip, int port)
         //tcpSocket->bind(QHostAddress(this->ip),this->port,QAbstractSocket::ReuseAddressHint);
         tcpSocket->connectToHost(this->ip,this->port);
         isForceFinish = false;
-        timerConnectSer->start(3000);
+        if(myType != 10)
+            timerConnectSer->start(3000);
     }
     /*else{
 
@@ -82,7 +82,6 @@ void TcpWorker::slot_disConnectSer()
 //定时对tcp做连接 以达到自动重连的目的
 void TcpWorker::slot_timerConnectSer()
 {
-
     QMutexLocker locker(&mMutex);
     if(isForceFinish){
         timerConnectSer->stop();
@@ -96,6 +95,7 @@ void TcpWorker::slot_timerConnectSer()
                 DebugLog::getInstance()->writeLog("start reconnect "+QString::number(myType)+" " + this->ip+"  "+QString::number(this->port));
                 //qDebug()<<"开始重连 "<<myType <<"   "<<this->ip<<"  "<<this->port;
                 tcpSocket->abort();
+                tcpSocket->close();
                 readDataBuff.clear();
                 tcpSocket->connectToHost(this->ip,this->port);
             }
@@ -103,9 +103,7 @@ void TcpWorker::slot_timerConnectSer()
         }
 
         if(!isHavaData){
-
             isConnected = false;
-
         }
 
         isHavaData = false;
@@ -117,7 +115,7 @@ void TcpWorker::slot_timerConnectSer()
 void TcpWorker::slot_tcpConnected()
 {
 
-    DebugLog::getInstance()->writeLog( " tcp连接成功");
+    DebugLog::getInstance()->writeLog( "tcp连接成功"+QString::number(myType));
     isConnected = true;
     slot_tcpSendAuthentication(m_did,m_usrName,m_password);
 
@@ -134,7 +132,7 @@ void TcpWorker::slot_tcpDisconnected()
 void TcpWorker::slot_readData()
 {
 
-    //qDebug()<<"slot_readData    "<<"";
+
     isHavaData = true;
     // isConnected = true;
 
@@ -148,6 +146,7 @@ void TcpWorker::slot_readData()
         //        out << " data is too long: " << readDataBuff.toHex() << "\n";
         resetAVFlag();
     }
+    //qDebug()<<"slot_readData  1  "<<myType;
     parseRecevieData();
 }
 
@@ -269,7 +268,6 @@ void TcpWorker::parseRecevieData()
 
             if(readDataBuff.at(0) == D_SYNCDATA_HEAD0 && readDataBuff.at(1)==D_SYNCDATA_HEAD1)
             {
-
                 readDataBuff.remove(0,2);
                 isFindHead = true;
                 needlen = 2;
@@ -278,6 +276,7 @@ void TcpWorker::parseRecevieData()
                 continue;
             }
         }
+
 
 
         //找到头后，找媒体类型
@@ -289,7 +288,7 @@ void TcpWorker::parseRecevieData()
                 readDataBuff.remove(0,2);
 
 
-                if(mediaDataType >= MediaType_H264 && mediaDataType <= MediaType_MSG){
+                if(mediaDataType >= MediaType_H264 && mediaDataType <= MediaType_IRADPOINT){
 
                     isFindMediaType = true;
 
@@ -302,10 +301,85 @@ void TcpWorker::parseRecevieData()
                 continue;
         }
 
-        //qDebug()<<"mediaDataType    "<<mediaDataType;
-        if(mediaDataType == MediaType_H264)
+        if(MediaType_IRADPOINT == mediaDataType)
+        {
+            // qDebug()<<this->m_did <<"    MediaType_IRADPOINT";
+            //qDebug()<<"find MediaType_MSG";
+            needlen = 28;
+            // qDebug()<<this->m_did <<"    MediaType_H264";
+
+            if(!isSaveVideoInfo)
+            {
+                if(readDataBuff.length() >= needlen)
+                {
+                    m_streamDateLen = saveVideoInfo(readDataBuff);
+                    isSaveVideoInfo = true;
+                    if(m_streamDateLen > videoFrameMaxLen || m_streamDateLen <0)
+                    {
+                        qDebug()<<"视频帧数据长度异常:"<<m_streamDateLen;
+                        resetAVFlag();
+                        continue;
+                    }
+                }else
+                    continue;
+            }
+
+            needlen = m_streamDateLen;
+
+            if(readDataBuff.length()>=needlen)
+            {
+
+                _IradPoint_T *iradpoint = (_IradPoint_T*)readDataBuff.data();
+
+                //qDebug()<<"MediaType_IRADPOINT,needlen:"<<needlen;
+                //qDebug()<<"MediaType_IRADPOINT:"<<readDataBuff.toHex();
+                //qDebug()<<"iradpoint:"<<iradpoint->pointNum<<"   "<<iradpoint->tempdisplay;
+                IradPointInfo_T *rectArr = iradpoint->iradPointInfo;
+
+                QVariantList listmap;
+                for (int i=0;i<6;i++) {
+                    QVariantMap map;
+                    int x = rectArr[i].point.pointX;
+                    int y = rectArr[i].point.pointY;
+                    int w = rectArr[i].point.width;
+                    int h = rectArr[i].point.high;
+                    float tempvalue = rectArr[i].tempvalue;
+                    int type = rectArr[i].type;
+                    //qDebug()<<"iradpoint    "<<i<<":"<<x<<"   "<<y<<"   "<<w<<" "<<h<<" "<<tempvalue<<" "<< type;
+                    if(x == 0 && y == 0 && w == 0 && h ==0)
+                        continue;
+                    map.insert("x",x);
+                    map.insert("y",y);
+                    map.insert("w",w);
+                    map.insert("h",h);
+                    map.insert("tempvalue",tempvalue);
+                    map.insert("type",type);
+
+                    //qDebug()<<"iradpoint    "<<i<<":"<<rectArr->point.pointX<<"   "<<rectArr->point.pointY;
+                    listmap.append(map);
+                }
+
+                emit signal_sendRectInfo(iradpoint->tempdisplay,listmap);
+
+                readDataBuff.remove(0,m_streamDateLen);
+                resetAVFlag();
+
+                needlen = 2;
+
+
+                continue;
+
+            }else{
+
+                continue;
+            }
+        }
+        else if(mediaDataType == MediaType_H264)
         {
             needlen = 28;
+
+
+            // qDebug()<<this->m_did <<"    MediaType_H264";
 
             if(!isSaveVideoInfo)
             {
@@ -343,6 +417,8 @@ void TcpWorker::parseRecevieData()
                     parseShiGanRgb1(readDataBuff,m_streamDateLen,vResW,vResH);
                 }else if(myType == 2){
                     parseShiGanRgb2(readDataBuff,m_streamDateLen,vResW,vResH);
+                }else if(myType == 3){
+                    parseShiGanRgb3(readDataBuff,m_streamDateLen,vResW,vResH);
                 }
 
                 readDataBuff.remove(0,m_streamDateLen);
@@ -606,8 +682,8 @@ void TcpWorker::parseShiGanRgb(QByteArray arr,int arrlen)
 
         emit signal_sendImg(pImg,w*h*3,10,w,h);
     }
-
 }
+
 void TcpWorker::parseShiGanRgb1(QByteArray arr,int arrlen,int resw,int resh)
 {
 
@@ -619,7 +695,11 @@ void TcpWorker::parseShiGanRgb1(QByteArray arr,int arrlen,int resw,int resh)
 
     QImage *pImg = nullptr;
     try {
-        pImg =  new QImage(pNetMsgTmp, resw,resh, QImage::Format_RGB32);
+
+      //  pImg =  new QImage(pNetMsgTmp, resw,resh, QImage::Format_RGB32);
+
+        pImg =  new QImage(pNetMsgTmp, resw,resh, QImage::Format_ARGB32);
+
         // 其它代码
     } catch ( const std::bad_alloc& e ) {
         qDebug()<<" 图片分配内存失败";
@@ -653,11 +733,41 @@ void TcpWorker::parseShiGanRgb2(QByteArray arr,int arrlen,int resw,int resh)
     emit signal_sendImg(pImg,arrlen,10,resw,resh);
 }
 
+#include <QFile>
+void TcpWorker::parseShiGanRgb3(QByteArray arr,int arrlen,int resw,int resh)
+{
+    qDebug()<<" resw    "<<resw<<"  resh:"<<resh <<arrlen;
+    if(pNetMsgTmp == nullptr)
+        pNetMsgTmp = new unsigned char[resw * resh* 2];
+
+    memcpy(pNetMsgTmp,arr.data(),arrlen);
+
+    if(ffmpegConvert == nullptr){
+        ffmpegConvert = new FfmpegConvert;
+        ffmpegConvert->initYuv422ToRgb32(resw,resh);
+
+        QFile file("yuv422.yuv");
+        if(file.open(QIODevice::WriteOnly))
+            file.write((char*)pNetMsgTmp,arrlen);
+    }
+
+    QImage *pImg = ffmpegConvert->yuv422ToRgb32((char*)pNetMsgTmp,resw,resh);
+
+    //    QImage *pImg = nullptr;
+    //    try {
+    //        pImg =  new QImage(pNetMsgTmp, resw,resh, QImage::Format_RGB888);
+    //        // 其它代码
+    //    } catch ( const std::bad_alloc& e ) {
+    //        qDebug()<<" 图片分配内存失败";
+    //        pImg = nullptr;
+    //    }
+    emit signal_sendImg(pImg,arrlen,10,resw,resh);
+}
+
 void TcpWorker::parseH264(QByteArray arr,int arrlen)
 {
 
 }
-
 
 int TcpWorker::byteArr2Int(QByteArray arr)
 {
@@ -736,7 +846,7 @@ TcpWorker::~TcpWorker()
         disconnect(tcpSocket,&QTcpSocket::connected,this,&TcpWorker::slot_tcpConnected);
         tcpSocket->disconnectFromHost();
         if (tcpSocket->state() == QAbstractSocket::UnconnectedState ||
-                  tcpSocket->waitForDisconnected(1000))
+                tcpSocket->waitForDisconnected(1000))
         {
             qDebug()  << "disconnect server";
         }

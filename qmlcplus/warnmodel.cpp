@@ -287,6 +287,7 @@ void WarnModel::funDeleteSelect(){
     }
 }
 
+
 //hardisk 第一次需求变更
 void WarnModel::funProcessPushAlarm1(QString path,QVariantMap map){
 
@@ -463,6 +464,7 @@ void WarnModel::funProcessPushAlarm(QString path,QVariantMap map)
         }
 
     }
+
 }
 
 bool WarnModel::funScreenShoot(QString path,QQuickWindow *quic,int capx,int capy,int capw,int caph,float warnTemp)

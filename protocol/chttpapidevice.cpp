@@ -32,9 +32,14 @@ void CHttpApiDevice::slot_destoryConnect()
     isForceFinish = true;
     qDebug()<<" slot_destoryConnect ";
     if(g_tcpsocket != NULL){
+
         QMap<QString , QVariant> map;
+        map.insert("cmd","unalarmsubscription");
+        send_httpParSet(map);
+
         map.insert("cmd","loginout");
         send_httpParSet(map);
+
         if(SendTimer != nullptr){
 
             qDebug()<<" slot_destoryConnect 2";
@@ -70,9 +75,9 @@ CHttpApiDevice::~CHttpApiDevice()
 
 
     qDebug()<<"析构:  CHttpApiDevice  ";
-    QMap<QString , QVariant> map;
-    map.insert("cmd","loginout");
-    send_httpParSet(map);
+//    QMap<QString , QVariant> map;
+//    map.insert("cmd","loginout");
+//    send_httpParSet(map);
 
     slot_destoryConnect();
     if(warnTcpServer != nullptr){
@@ -91,8 +96,9 @@ void CHttpApiDevice::slot_heartimertout(){
         map.insert("cmd","keepalive");
         slot_httpParSet(map);
 
-        if(warnPushMap.value("switchSubscription").toBool())
-            HttpSubscriptionWarn(warnPushMap, 0);
+        if(warnPushMap.value("switchSubscription").toBool()){
+            HttpSubscriptionWarn(warnPushMap, "0");
+        }
     }
 
     //QMap<QString,QVariant> map;
@@ -118,15 +124,15 @@ void CHttpApiDevice::slot_sendtimerout()
         else
             map.insert("sendCount",0);
         //如果一条消息发送了多次则默认网络异常，则重新开始创建连接
-        if(sendcount > 20){
+        if(sendcount > 30){
             map.insert("sendCount",0);
             createConnect();
+            DebugLog::getInstance()->writeLog("reconect http");
         }
-        if(sendcount % 3 == 0){
-            emit signal_sendMag(map);
+       // if(sendcount % 4 == 0){
+            send_httpParSet(map);//emit signal_sendMag(map);
             qDebug()<< "signal_sendMag  "<<map;
-        }
-
+        //}
         listMsg.append(map);
     }
 }
@@ -166,7 +172,7 @@ QString CHttpApiDevice::createMsgId(QString cmd){
 
 
 bool CHttpApiDevice::createConnect(){
-
+    listMsg.clear();
     if (g_tcpsocket == nullptr)
     {
         g_tcpsocket = new QTcpSocket;
@@ -188,6 +194,8 @@ bool CHttpApiDevice::createConnect(){
         g_tcpsocket->disconnectFromHost();
         g_tcpsocket->abort();
     }
+
+
     g_tcpsocket->connectToHost(this->g_ip,this->g_port);
 
     if(g_tcpsocket->waitForConnected(200)){
@@ -223,7 +231,8 @@ int CHttpApiDevice::SendRequestMsg(QJsonObject msg){
     qDebug() <<"http send msg :"<<httpSendmsg;
 
     if(g_tcpsocket != nullptr && g_tcpsocket->isWritable()){
-        g_tcpsocket->write(httpSendmsg.toStdString().c_str(), httpSendmsg.length());
+        qint64 sendlen = g_tcpsocket->write(httpSendmsg.toStdString().c_str(), httpSendmsg.length());
+        qDebug()<<"-----sendlen----:"<<sendlen;
         g_tcpsocket->flush();//不缓存，直接发送
     }
     return 0;
@@ -246,7 +255,7 @@ int CHttpApiDevice::HttpMsgCallBack(char * pData) {
             QMap<QString,QVariant> callbackMap;
             callbackMap.insert("cmd",cmd);
             if("login" == cmd) {
-                loginFlag = true;
+
 
                 qDebug()<<"*****";
                 if (object.contains("data")) {  // 包含指定的 key
@@ -261,8 +270,11 @@ int CHttpApiDevice::HttpMsgCallBack(char * pData) {
                                 QString ssionId = value.toString();
                                 sprintf(this->sessionId, "%s", ssionId.toStdString().c_str());
 
+
+                                //loginFlag = true;
                                 DebugLog::getInstance()->writeLog(">>>>>>>>>>>http login succ <<<<<<<<<<<<<<:"+ssionId);
                                 //listMsg.clear();
+
 
                                 QMap<QString,QVariant> map;
                                 map.insert("cmd","getiradinfo");
@@ -270,6 +282,7 @@ int CHttpApiDevice::HttpMsgCallBack(char * pData) {
 
                                 map.insert("cmd","getalarmparam");
                                 slot_httpParSet(map);
+
 
                                 map.insert("cmd","getimagparam");
                                 slot_httpParSet(map);
@@ -279,6 +292,7 @@ int CHttpApiDevice::HttpMsgCallBack(char * pData) {
 
                                 map.insert("cmd","getinftempcolor");
                                 slot_httpParSet(map);
+
                                 return 0;
                             }
                         }
@@ -301,6 +315,7 @@ int CHttpApiDevice::HttpMsgCallBack(char * pData) {
             } else if ("loginout" == cmd) {
 
                 memset(this->sessionId, 0, sizeof(this->sessionId));
+
                 qDebug() << "登出成功   sessionid : " << sessionId;
 
                 return 0;
@@ -370,9 +385,14 @@ int CHttpApiDevice::HttpMsgCallBack(char * pData) {
             }else if("getalarmparam" == cmd){
 
                 callbackMap.insert("alarmaudiooutenabled",object.value("data").toObject().value("alarmaudiooutenabled").toInt());
+
             }else if("getvideoencodeparam" == cmd){
 
                 callbackMap.insert("encoding",object.value("data").toObject().value("encoding").toString());
+            }else if("getinftempcolor" == cmd){
+
+                callbackMap.insert("tempcolor",object.value("data").toObject().value("tempcolor").toInt());
+
             }else if("getimagparam" == cmd){
 
                 callbackMap.insert("mirror",object.value("data").toObject().value("mirror").toInt());
@@ -384,8 +404,6 @@ int CHttpApiDevice::HttpMsgCallBack(char * pData) {
                 callbackMap.insert("sharpness",object.value("data").toObject().value("sharpness").toInt());
                 callbackMap.insert("wdr",object.value("data").toObject().value("wdr").toInt());
 
-            }else if("getinftempcolor" == cmd){
-                callbackMap.insert("tempcolor",object.value("data").toObject().value("tempcolor").toInt());
 
             }
 
@@ -484,12 +502,10 @@ void CHttpApiDevice::slot_Connected() {
 
     emit signal_httpConnected();
 
-    LogoutDevice("");
+    //LogoutDevice("");
 
+    LoginDevice("0");
     listMsg.clear();
-
-    LoginDevice("");
-    qDebug()<<"connetc success !";
 }
 
 void CHttpApiDevice::slot_disconnected() {
@@ -527,12 +543,19 @@ void CHttpApiDevice::LogoutDevice(QString msgid){
 
 void CHttpApiDevice::slot_httpParSet(QMap<QString,QVariant> map)
 {
-    QString msgid = createMsgId(map.value("cmd").toString());
-    map.insert("msgid",msgid);
-    listMsg.append(map);
 
-    if(SendTimer != nullptr && !SendTimer->isActive())
-        SendTimer->start(sendertimerInter);
+
+    if(g_tcpsocket != nullptr && g_tcpsocket->isWritable()){
+
+
+        QString msgid = createMsgId(map.value("cmd").toString());
+        map.insert("msgid",msgid);
+        listMsg.append(map);
+
+        if(SendTimer != nullptr && !SendTimer->isActive())
+            SendTimer->start(sendertimerInter);
+    }
+
 }
 
 bool CHttpApiDevice::send_httpParSet(QMap<QString,QVariant> map)
@@ -586,6 +609,7 @@ bool CHttpApiDevice::send_httpParSet(QMap<QString,QVariant> map)
         HttpSetimagparam(map);
     }else if(cmd.compare("setinftempcolor")==0){
         HttpSetTempColor(map);
+
     }else
         httpSendCommonCmd(cmd,msgid);
 
@@ -645,6 +669,7 @@ void CHttpApiDevice::HttpSetimagparam(QVariantMap value)
     SendRequestMsg(msgObject);
 }
 
+
 void CHttpApiDevice::HttpGetVideoEncode(QVariantMap value){
 
     JsonMsg_T info;
@@ -697,6 +722,7 @@ void CHttpApiDevice::HttpSetVideoEncode(QVariantMap value)
 
     SendRequestMsg(msgObject);
 }
+
 
 
 void CHttpApiDevice::HttpSetalarmparam(QVariantMap value){
@@ -776,6 +802,7 @@ void CHttpApiDevice::createWarnService(QString ip,int port)
     if(warnTcpServer == nullptr){
         warnTcpServer = new WarnTcpServer;
         warnTcpServer->createSer(ip,port);
+        warnTcpServer->setCurWarnIp(g_ip);
         connect(warnTcpServer,&WarnTcpServer::signal_WarnMsg,this,&CHttpApiDevice::slot_WarnMsg);
     }
 }
@@ -955,6 +982,7 @@ void CHttpApiDevice::HttpSetIraInfo(QVariantMap value,QString msgid)
 ////    msgObject.insert("data", QJsonValue(dataObj));
 //    SendRequestMsg(msgObject);
 //}
+#include <QTimeZone>
 void CHttpApiDevice::HttpSetDate(QString msgid)
 {
     JsonMsg_T info ={"setcurrenttime","request","","012345"};
@@ -969,9 +997,17 @@ void CHttpApiDevice::HttpSetDate(QString msgid)
     QJsonObject dataObj;
     QDateTime dateT = QDateTime::currentDateTime();
 
-
     CjsonMakeHttpHead(&msgObject, &info);
-    dataObj.insert("utc", dateT.toUTC().toString("yyyy-MM-ddThh:mm:ssZ"));//设置utc时间，格式："2000-10-10T03:39:44Z"
+
+    QTimeZone currentZone = dateT.timeZone();
+    QString timezoneStr = currentZone.displayName(QTimeZone::StandardTime,QTimeZone::OffsetName);
+    QString timezone = timezoneStr.remove("UTC");
+    qDebug()<<"时区:"<<timezoneStr<<" "<<timezone;
+
+    dataObj.insert("localtime", dateT.toString("yyyy-MM-ddThh:mm:ssZ"));//设置utc时间，格式："2000-10-10T03:39:44Z"
+    dataObj.insert("timezone",timezone);
+
+    msgObject.insert("data", QJsonValue(dataObj));
     msgObject.insert("data", QJsonValue(dataObj));
     SendRequestMsg(msgObject);
 }
@@ -996,7 +1032,9 @@ void CHttpApiDevice::HttpSetOsdParam(int osdTimeEnable,QString msgid){
     dataObj.insert("time", QJsonValue(timeObj));
     msgObject.insert("data", QJsonValue(dataObj));
     SendRequestMsg(msgObject);
+
 }
+
 
 void CHttpApiDevice::HttpGetMotiondetectParam(){
 

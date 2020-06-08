@@ -6,24 +6,18 @@ CONFIG += c++11
 # depend on your compiler). Refer to the documentation for the
 # deprecated API to know how to port your code away from it.
 DEFINES += QT_DEPRECATED_WARNINGS
-# �汾��Ϣ
+
 VERSION = 3.0.0.0
-# ͼ
+
 RC_ICONS = myicon11.ico
 TARGET=VMukti_VMS
-# ��˾����
+
 QMAKE_TARGET_COMPANY = " "
-
-# ��Ʒ����
 QMAKE_TARGET_PRODUCT = " "
-
-# �ļ�˵��
 QMAKE_TARGET_DESCRIPTION = "Qt Creator based on Qt 5.12.2 (MINGW 2020, 64 bit)"
-
-# ��Ȩ��Ϣ
 QMAKE_TARGET_COPYRIGHT = "Copyright 2020-2016 The Qt Company Ltd. All rights reserved."
 
-# ���ģ����壩
+
 RC_LANG = 0x0004
 
 SOURCES += \
@@ -107,7 +101,7 @@ HEADERS += \
     protocol/warntcpserver.h \
     consoleprocess.h
 
-RESOURCES += qml.qrc
+#RESOURCES += qml.qrc
 
 # Additional import path used to resolve QML modules in Qt Creator's code model
 QML_IMPORT_PATH =
@@ -159,4 +153,6 @@ LIBS += -lWs2_32
 INCLUDEPATH += $$PWD/thirdLib/irc/include
 LIBS += $$PWD/thirdLib/irc/IRNetSDK64.lib
 
-DISTFILES +=
+RESOURCES += \
+    qml.qrc
+

@@ -53,6 +53,7 @@ public:
     ~WarnTcpServer();
     void createSer(QString ip,int port);
     void destroySer();
+    void setCurWarnIp(QString ip);
 signals:
     void signal_WarnMsg(QMap<QString,QVariant>);
 public slots:
@@ -70,6 +71,8 @@ private:
 
     bool isFindHead = false;
     bool isFindMediaType;
+
+    QString curWarnIp = "";
 };
 
 #endif // WARNTCPSERVER_H

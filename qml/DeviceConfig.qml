@@ -6,6 +6,7 @@ import Qt.labs.settings 1.0
 import "simpleControl"
 import UpdateProgressC 1.0
 import QtQuick.Controls 1.4
+import QtQuick.Controls.Styles 1.4
 import "dialog"
 import QtQuick.Controls.Styles 1.4
 Rectangle {
@@ -33,12 +34,13 @@ Rectangle {
     
     signal s_sendcommoncmd(var mvalue);
     signal s_deviceUpdate()
-    
-    property int fontSize: 14
 
+
+    property int fontSize: curLanguage ===lKhmer?28:14
     property int lineeditfontSize: 14
-
     property color fontColor: "#333333"
+
+
     
     property string curDevTypeStr:"E03"
     //第一根左对齐线
@@ -49,9 +51,7 @@ Rectangle {
     property int tempdriftcapMin: -2
     property int tempcontrolcapMax: 6
     property int tempcontrolcapMin: 0
-    
-    
-    
+
     property int imagparammirror: -1
     property int imagparamflip: -1
     property int imagparambrightness: -1
@@ -61,7 +61,7 @@ Rectangle {
     property int imagparamsharpness: -1
     property int imagparamwdr: -1
     property bool wdrisChange: false
-    
+
     Settings {
         id:setting
         
@@ -142,18 +142,18 @@ Rectangle {
         setting.screenShotPath =  screenv.funIsExitCurCapturePath(setting.screenShotPath)
         setting.recordPath = screenv.funIsExitCurRecordPath(setting.recordPath)
     }
-    
-    
+
     Rectangle{
         width: parent.width
         height: parent.height - mDeviceStateBar.height
+
+        color: "#DFE1E6"
         MouseArea{
             anchors.fill: parent
         }
         
         Component.onCompleted: isCreate = true;
-        
-        
+
         Rectangle{
             id:rectcontent
             width: parent.width-40
@@ -161,6 +161,7 @@ Rectangle {
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.verticalCenter: parent.verticalCenter
             color: "#F8FAFD"
+
             ScrollView{
                 id:scroll
                 width: rectcontent.width
@@ -535,6 +536,7 @@ Rectangle {
                         isNeedDoubleClickEdit: false
                         textLeftPadding:0
                         txtColor: Qt.rgba(0,0,0,0.65)
+
                         text: "38"
                         color: "#F8FAFD"
                         validator: RegExpValidator { regExp:  /(\d{1,3})([.,]\d{1,1})?$/ }
@@ -639,7 +641,6 @@ Rectangle {
                                 }
                             }
                         }
-                        
                     }
                     
                     Text {
@@ -650,7 +651,6 @@ Rectangle {
                         anchors.right: swichBeer.left
                         anchors.rightMargin: 20
                         anchors.verticalCenter: swichBeer.verticalCenter
-                        
                     }
                     SimpleSwich{
                         id:swichBeer
@@ -730,6 +730,7 @@ Rectangle {
                         anchors.verticalCenter: swichKuandongtai.verticalCenter
                         
                     }
+
 
 
                     Text {
@@ -1114,7 +1115,12 @@ Rectangle {
                 
             }
         }
-    }
+
+
+
+        }
+
+
     
     Rectangle{
         id:mDeviceStateBar
@@ -1200,23 +1206,19 @@ Rectangle {
     }
     
     function getiradInfo(){
-        var map ={
-            cmd:"getiradinfo"
-        }
+        var map ={cmd:"getiradinfo"}
         s_sendcommoncmd(map);
         
         map.cmd = "getalarmparam"
         s_sendcommoncmd(map);
-        
-//        map.cmd = "getvideoencodeparam"
-//        s_sendcommoncmd(map);
-        
+
+
         map.cmd = "getimagparam"
         s_sendcommoncmd(map);
-        
+
         map.cmd = "getinftempcolor"
         s_sendcommoncmd(map);
-        
+
     }
 
     function setTempcolor(value)
@@ -1235,7 +1237,7 @@ Rectangle {
     
     //参数修改设置 全在此函数
     function iradInfoSet(){
-        
+
         var osdenableV;
         if(swithTime.checked)
             osdenableV = 1
@@ -1257,6 +1259,7 @@ Rectangle {
             tempdisplay:cmbTempTypeSelect.currentIndex,
             cmd:"setiradinfo"}
 
+
         s_sendcommoncmd(map);
         
         
@@ -1275,12 +1278,15 @@ Rectangle {
         
         var kuandongt = swichKuandongtai.checked?1:0
         
+
         if(imagparamwdr !== kuandongt)
             wdrisChange = true
         else
             wdrisChange = false
+
         
         var map2 ={
+
             cmd:"setimagparam",
             wdr:swichKuandongtai.checked?1:0,
             mirror:imagparammirror,
@@ -1291,9 +1297,11 @@ Rectangle {
             hue:imagparamhue,
             sharpness:imagparamsharpness
         }
+
         s_sendcommoncmd(map2);
 
         var tmpColor1 = 0;
+
         if(cmbImgSelect.currentIndex === 0)
             tmpColor1 = 1
         else if(cmbImgSelect.currentIndex === 1)
@@ -1302,16 +1310,19 @@ Rectangle {
             tmpColor1 = 104
         else if(cmbImgSelect.currentIndex === 3)
             tmpColor1 = 105
+
         var map3 = {
             cmd:"setinftempcolor",
             tmpColor:tmpColor1
         }
         s_sendcommoncmd(map3);
         
+
         s_beerSwith(swichBeer.checked)
         s_warnSwith(swichWarn.checked)
         s_timeSwith(swithTime.checked)
     }
+
 
 
     function setSwitchTempdisplay(mvalue)
@@ -1319,6 +1330,7 @@ Rectangle {
         cmbTempTypeSelect.currentIndex = mvalue
     }
     
+
     function getUpdateFilePath(){
         return setting.updateFilePath;
     }
@@ -1356,7 +1368,7 @@ Rectangle {
     {
         swichWarn.checked = mvalue
     }
-    
+
     function getSwitchTime(){
         return setting.switchTime
     }
@@ -1387,7 +1399,7 @@ Rectangle {
     function setIsOpenAdjustRect(value){
         setting.isOpenAdjustRect = value
     }
-    
+
     function setRedRect(pw,ph,rx,ry,rw,rh){
         
         if(curDevTypeStr === "e03"){
@@ -1463,6 +1475,7 @@ Rectangle {
             return setting.d06showRectW
         }
     }
+
     function getShowRectH(){
         if(curDevTypeStr === "e03"){
             return setting.e03showRectH
@@ -1474,6 +1487,7 @@ Rectangle {
             return setting.d06showRectH
         }
     }
+
     function getShowParentW(){
         if(curDevTypeStr === "e03"){
             return setting.e03showParentW
@@ -1485,6 +1499,7 @@ Rectangle {
             return setting.d06showParentW
         }
     }
+
     function getShowParentH(){
         if(curDevTypeStr === "e03"){
             return setting.e03showParentH
@@ -1496,6 +1511,7 @@ Rectangle {
             return setting.d06showParentH
         }
     }
+
     
     function setVideoType(typeStr){
         
@@ -1514,7 +1530,7 @@ Rectangle {
     }
     
     
-    
+
     Connections{
         target: main
         onS_setLanguage:setLanguage(typeL);
@@ -1544,6 +1560,7 @@ Rectangle {
             txtImageSet.text = "Image settings"
                         txtImageSelect.text = "Image selectione"
             labelResolution.text = "Standard"
+
             break;
         case lKorean:
             txtRecordSet.text = "비디오 설정"
@@ -1562,8 +1579,10 @@ Rectangle {
             txtUpdate.text = "업그레이드"
             txtUpdateFile.text = "업그레이드"
             txtSave.text = "설정"
+
             txtImageSet.text = "Image settings"
                         txtImageSelect.text = "Image selectione"
+
             break;
         case lItaly:
             txtRecordSet.text = "Settaggio Video"
@@ -1582,8 +1601,10 @@ Rectangle {
             txtUpdate.text = "aggiornare"
             txtUpdateFile.text = "aggiornare"
             txtSave.text = "Settaggio"
+
             txtImageSet.text = "Image settings"
                         txtImageSelect.text = "Image selectione"
+
             break;
         case lChinese:
             txtRecordSet.text = "录像设置"
@@ -1602,10 +1623,12 @@ Rectangle {
             txtUpdate.text = "升级"
             txtUpdateFile.text = "设备升级"
             txtSave.text = "设置"
+
            // txtencodetype.text = "编码方式"
             labelResolution.text = "温标选择"
             txtImageSet.text = "Image settings"
                         txtImageSelect.text = "Image selectione"
+
             break;
         case lRussian:
             txtRecordSet.text = "Настройка записи"
@@ -1624,8 +1647,10 @@ Rectangle {
             txtUpdate.text = "обновить"
             txtUpdateFile.text = "обновить"
             txtSave.text = "Настройка"
+
             txtImageSet.text = "Image settings"
                         txtImageSelect.text = "Image selectione"
+
             break;
         case lLithuanian:
             txtRecordSet.text = "Vaizdo parametrų nustatymas"
@@ -1644,8 +1669,10 @@ Rectangle {
             txtUpdate.text = "patobulinti"
             txtUpdateFile.text = "patobulinti"
             txtSave.text = "nustatymas"
+
             txtImageSet.text = "Image settings"
                         txtImageSelect.text = "Image selectione"
+
             break;
         }
     }

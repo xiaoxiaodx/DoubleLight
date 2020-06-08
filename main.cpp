@@ -27,8 +27,6 @@ int main(int argc, char *argv[])
     QQmlApplicationEngine engine;
 //    QmlLanguage qmlLanguage(app, engine);
 //    engine.rootContext()->setContextProperty("qmlLanguage", &qmlLanguage);
-
-
 //    QTranslator translator;
 //    translator.load("en_US.qm");
 //    app.installTranslator(&translator);
