@@ -295,17 +295,20 @@ void XVideo::paint(QPainter *painter)
     painter->setFont(font);
 
 
-    if(tempImgResW == 0)
-        return;
+//    if(tempImgResW == 0)
+//        return;
     // DebugLog::getInstance()->writeLog("painter kejianguang start***");
+
+    painter->drawImage(QRect(0,0,width(),height()), *pRenderImginfo.pImg);
+
+
+    return;
+
     qreal kX = (qreal)this->width()/(qreal)tempImgResW;
     qreal kY = (qreal)this->height()/(qreal)tempImgResH;
 
     qreal kshowRectX = (qreal)this->width()/showParentW;
     qreal kshowRectY = (qreal)this->height()/showParentH;
-
-    painter->drawImage(QRect(0,0,width(),height()), *pRenderImginfo.pImg);
-
 
     //画限制区域矩形
     painter->save();
@@ -316,7 +319,6 @@ void XVideo::paint(QPainter *painter)
 
     qreal kshowX = (qreal)rectF.width()/(qreal)this->width();
     qreal kshowY = (qreal)rectF.height()/(qreal)this->height();
-
 
     //画温度矩形
     for (int i=0;i<pRenderImginfo.listRect.size();i++) {

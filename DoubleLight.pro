@@ -9,8 +9,8 @@ DEFINES += QT_DEPRECATED_WARNINGS
 # �汾��Ϣ
 VERSION = 2.9.0.0
 #
-RC_ICONS = myicon10.ico
-TARGET=KanataSafe
+RC_ICONS = myicon14.ico
+TARGET=FoxCam
 # ��˾����
 QMAKE_TARGET_COMPANY = " "
 
