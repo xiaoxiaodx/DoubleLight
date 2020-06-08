@@ -63,7 +63,19 @@ void XVideo::slot_timeoutUpdate(){
 
 void XVideo::startNormalVideo(float tp,QString deviceinfo)
 {
-    DebugLog::getInstance()->writeLog("startNormalVideo ");
+    DebugLog::getInstance()->writeLog("startNormalVideo " + deviceinfo);
+
+    QStringList listip = deviceinfo.split(".");
+
+    if(listip.size() >= 4){
+
+        m_ip = deviceinfo;
+        warnTemp = tp;
+        createTcpThread();
+        return;
+    }
+
+
     for (int i=0;i<listdeivceinfo.size();i++) {
 
         QVariantMap map = listdeivceinfo.at(i);

@@ -33,7 +33,8 @@ ComboBox {
     property string bordColor: "transparent"
     property int mRadius: 10
 
-    property string curstr: ""
+    property alias curstr: inputTem.text
+
     delegate: ItemDelegate {
         width: control.width
         height:itemHeight

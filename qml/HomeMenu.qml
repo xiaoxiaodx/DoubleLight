@@ -166,7 +166,7 @@ Rectangle {
                 hoverEnabled: true
                 onEntered:imgconnect.source = "qrc:/images/deviceconnect_h.png"
                 onExited: imgconnect.source = "qrc:/images/deviceconnect.png"
-                onClicked: s_connectDevice(cmbdevicelist.currentText)
+                onClicked: s_connectDevice(cmbdevicelist.curstr)
             }
         }
     }
