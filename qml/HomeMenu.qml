@@ -115,39 +115,31 @@ Rectangle {
         anchors.verticalCenter: parent.verticalCenter
         border.width: 1
         border.color: "white"
-        MyComBox{
+        MyComBox1{
             id:cmbdevicelist
-            width:200
+            width:220
             height: 24
             anchors.left: parent.left
             anchors.verticalCenter: parent.verticalCenter
             contentBg: "#00FFFFFF"
             itemColorBgNor:"#ffffff"
             itemColorBgHoverd: "#E7EAF1"
-            contenleft:10
-            //indicatorImgSrc:"qrc:/images/language_down.png"
-            //indicatorW: 11
-            //indicatorH: 7
+            contenleft:5
+            indicatorImgSrc:"qrc:/images/language_down.png"
+            indicatorW: 11
+            indicatorH: 7
             itemLeftMargin:0
             itemTopMargin:0
             currentIndex:0
             model: deivcemodel
         }
-//        Image {
-//            id: imgstate
-//            width: 6
-//            height: 6
-//            anchors.left: parent.left
-//            anchors.leftMargin: 8
-//            anchors.verticalCenter: parent.verticalCenter
-//            source: "qrc:/images/state_fail.png"
-//        }
+
         Image {
             id: imgflush
             width: 12
             height: 12
             anchors.right: cmbdevicelist.right
-            anchors.rightMargin: 8
+            anchors.rightMargin: 5
             anchors.verticalCenter: parent.verticalCenter
             source: "qrc:/images/deviceFlush.png"
             MouseArea{

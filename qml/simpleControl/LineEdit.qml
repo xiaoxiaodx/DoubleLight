@@ -54,6 +54,7 @@ Rectangle{
                 implicitHeight: rectlineEdit.height-4
                 radius: 1
             }
+
         }
 
         MouseArea{//这段代码的意义在于解决  双击编辑栏时出现的黑点闪烁bug

@@ -479,7 +479,8 @@ Rectangle {
             else{
 
 
-                warnmanger.screenShot1(deviceconfig.getScrennShotPath(),main,0 ,68,main.width,main.height-68-50-160-57,10,smap.alarmtype)
+                if(deviceconfig.getSwitchScreenShot())
+                    warnmanger.screenShot1(deviceconfig.getScrennShotPath(),main,0 ,68,main.width,main.height-68-50-160-57,10,smap.alarmtype)
 
                 warnmanger.funProcessPushAlarm(smap);
 
@@ -487,10 +488,13 @@ Rectangle {
                 if(smap.alarmtype === 80){
 
                     imgWar.source = "qrc:/images/warn_ico.png"
+                    imgWar.startAnimation();
+                    startWarn1()
                 }else if(smap.alarmtype === 82){
                     imgWar.source = "qrc:/images/warn_nomask.png"
+                    imgWar.startAnimation();
+                    startWarn1()
                 }
-                imgWar.startAnimation();
 
 
             }
@@ -518,6 +522,8 @@ Rectangle {
                 cmd:"getvideoencodeparam"
             }
             video.fun_sendCommonPar(map);
+        }else if("getinftempcolor" === strcmd){
+            deviceconfig.setTempcolor(smap.tempcolor);
         }else if("getimagparam" === strcmd){
 
             deviceconfig.imagparamflip = smap.flip

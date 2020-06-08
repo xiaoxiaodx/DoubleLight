@@ -307,21 +307,29 @@ Rectangle {
         if(!deviceconfig.getSwitchWarn())
             return;
 
-     //  if(warnTimer.isDelay1000){
-//            warnTimer.isDelay1000 = false;
-//            warnTimer.start();
-            //开启动画
-            imgWar.startAnimation();
-            //开启截图
-            if(deviceconfig.getSwitchScreenShot())
-                warnmanger.screenShot(deviceconfig.getScrennShotPath(),main,0 ,68,main.width,main.height-68,warntemp)
+        //  if(warnTimer.isDelay1000){
+        //            warnTimer.isDelay1000 = false;
+        //            warnTimer.start();
+        //开启动画
+        imgWar.startAnimation();
+        //开启截图
+        if(deviceconfig.getSwitchScreenShot())
+            warnmanger.screenShot(deviceconfig.getScrennShotPath(),main,0 ,68,main.width,main.height-68,warntemp)
 
-            //开启声音
-            if(deviceconfig.getSwitchBeer())
-                playWarn.play()
+        //开启声音
+        if(deviceconfig.getSwitchBeer())
+            playWarn.play()
         //}
     }
 
+
+    function startWarn1()
+    {
+
+        //开启声音
+        if(deviceconfig.getSwitchBeer())
+            playWarn.play()
+    }
 
     function startRecordLable(){
         imgRecord.startAnimation();
@@ -353,16 +361,16 @@ Rectangle {
 
 
 
-//    Timer{
-//        id:updateTimer
-//        repeat:true
-//        interval: 1800000;
-//        Component.onCompleted: updateTimer.start();
-//        onTriggered: {
-//            videoTemp.updateDate();
-//            videoNormal.updateDate();
-//        }
-//    }
+    //    Timer{
+    //        id:updateTimer
+    //        repeat:true
+    //        interval: 1800000;
+    //        Component.onCompleted: updateTimer.start();
+    //        onTriggered: {
+    //            videoTemp.updateDate();
+    //            videoNormal.updateDate();
+    //        }
+    //    }
 
     Connections{
         target: main

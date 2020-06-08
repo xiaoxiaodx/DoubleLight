@@ -112,5 +112,6 @@
         <file>qml/dialog/MsgDialog.qml</file>
         <file>images/icon_msg.png</file>
         <file>images/warn_nomask.png</file>
+        <file>qml/simpleControl/MyComBox1.qml</file>
     </qresource>
 </RCC>
