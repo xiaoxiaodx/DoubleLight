@@ -122,7 +122,7 @@ void CHttpApiDevice::slot_sendtimerout()
             map.insert("sendCount",0);
             createConnect();
         }
-        if(sendcount % 4 == 0){
+        if(sendcount % 3 == 0){
             emit signal_sendMag(map);
             qDebug()<< "signal_sendMag  "<<map;
         }

@@ -666,50 +666,47 @@ Rectangle {
                         }
                     }
                     
-                    Text {
-                        id: txtencodetype
-                        text: qsTr("编码方式")
-                        font.pixelSize: fontSize
-                        color: fontColor
-                        anchors.right: checkh264.left
-                        anchors.rightMargin: 20
-                        anchors.verticalCenter: checkh264.verticalCenter
-                        
-                    }
-                    
-                    ExclusiveGroup { id: buttonGroup }
-                    SimpleCheckedButton{
-                        id:checkh264
-                        exclusiveGroup:buttonGroup
-                        txtFont.pixelSize: fontSize
-                        txtColor: fontColor
-                        imgW: 12
-                        imgH: 12
-                        imgSrc: "qrc:/images/unselect.png"
-                        imgCheckSrc: "qrc:/images/select.png"
-                        anchors.left: line2.left
-                        anchors.leftMargin: parSetFirstAlignLine
-                        anchors.top: line2.bottom
-                        anchors.topMargin:263
-                        color: "#F8FAFD"
-                        text: "H264"
-                    }
-                    
-                    SimpleCheckedButton{
-                        id:checkh265
-                        exclusiveGroup:buttonGroup
-                        txtFont.pixelSize: fontSize
-                        txtColor: fontColor
-                        imgW: 12
-                        imgH: 12
-                        imgSrc: "qrc:/images/unselect.png"
-                        imgCheckSrc: "qrc:/images/select.png"
-                        anchors.left: checkh264.right
-                        anchors.leftMargin: 20
-                        anchors.verticalCenter: checkh264.verticalCenter
-                        color: "#F8FAFD"
-                        text: "H265"
-                    }
+//                    Text {
+//                        id: txtencodetype
+//                        text: qsTr("编码方式")
+//                        font.pixelSize: fontSize
+//                        color: fontColor
+//                        anchors.right: checkh264.left
+//                        anchors.rightMargin: 20
+//                        anchors.verticalCenter: checkh264.verticalCenter
+//                    }
+//                    ExclusiveGroup { id: buttonGroup }
+//                    SimpleCheckedButton{
+//                        id:checkh264
+//                        exclusiveGroup:buttonGroup
+//                        txtFont.pixelSize: fontSize
+//                        txtColor: fontColor
+//                        imgW: 12
+//                        imgH: 12
+//                        imgSrc: "qrc:/images/unselect.png"
+//                        imgCheckSrc: "qrc:/images/select.png"
+//                        anchors.left: line2.left
+//                        anchors.leftMargin: parSetFirstAlignLine
+//                        anchors.top: line2.bottom
+//                        anchors.topMargin:263
+//                        color: "#F8FAFD"
+//                        text: "H264"
+//                    }
+//                    SimpleCheckedButton{
+//                        id:checkh265
+//                        exclusiveGroup:buttonGroup
+//                        txtFont.pixelSize: fontSize
+//                        txtColor: fontColor
+//                        imgW: 12
+//                        imgH: 12
+//                        imgSrc: "qrc:/images/unselect.png"
+//                        imgCheckSrc: "qrc:/images/select.png"
+//                        anchors.left: checkh264.right
+//                        anchors.leftMargin: 20
+//                        anchors.verticalCenter: checkh264.verticalCenter
+//                        color: "#F8FAFD"
+//                        text: "H265"
+//                    }
                     
                     
                     SimpleSwich{
@@ -719,7 +716,7 @@ Rectangle {
                         anchors.left: line2.left
                         anchors.leftMargin: parSetFirstAlignLine
                         anchors.top: line2.bottom
-                        anchors.topMargin:310
+                        anchors.topMargin:263
                         
                     }
                     
@@ -813,7 +810,7 @@ Rectangle {
                         height: 1
                         color: "#e2e2e2"
                         anchors.top: parent.top
-                        anchors.topMargin: 580
+                        anchors.topMargin: 540
                         anchors.horizontalCenter: parent.horizontalCenter
                     }
                     
@@ -921,7 +918,7 @@ Rectangle {
                         visible: true//curDevTypeStr==="J07"
                         color: "#e2e2e2"
                         anchors.top: parent.top
-                        anchors.topMargin: 810
+                        anchors.topMargin: 800
                         anchors.horizontalCenter: parent.horizontalCenter
                     }
 
@@ -989,7 +986,7 @@ Rectangle {
                         //visible: curDevTypeStr==="f03"
                         color: "#e2e2e2"
                         anchors.top: parent.top
-                        anchors.topMargin: 697
+                        anchors.topMargin: 670
                         anchors.horizontalCenter: parent.horizontalCenter
                     }
                     
@@ -1211,8 +1208,8 @@ Rectangle {
         map.cmd = "getalarmparam"
         s_sendcommoncmd(map);
         
-        map.cmd = "getvideoencodeparam"
-        s_sendcommoncmd(map);
+//        map.cmd = "getvideoencodeparam"
+//        s_sendcommoncmd(map);
         
         map.cmd = "getimagparam"
         s_sendcommoncmd(map);
@@ -1263,16 +1260,16 @@ Rectangle {
         s_sendcommoncmd(map);
         
         
-        var typeStr;
-        if(checkh264.checked)
-            typeStr = "h264"
-        if(checkh265.checked)
-            typeStr = "h265"
-        var map1 = {
-            cmd:"setvideoencodeparam",
-            encoding:typeStr
-        }
-        s_sendcommoncmd(map1);
+//        var typeStr;
+//        if(checkh264.checked)
+//            typeStr = "h264"
+//        if(checkh265.checked)
+//            typeStr = "h265"
+//        var map1 = {
+//            cmd:"setvideoencodeparam",
+//            encoding:typeStr
+//        }
+//        s_sendcommoncmd(map1);
         
         
         
@@ -1543,7 +1540,7 @@ Rectangle {
             txtUpdate.text = "Upgrade"
             txtUpdateFile.text = "Upgrade"
             txtSave.text = "Settings"
-            txtencodetype.text = "Encoding Style"
+           // txtencodetype.text = "Encoding Style"
             txtImageSet.text = "Image settings"
                         txtImageSelect.text = "Image selectione"
             labelResolution.text = "Standard"
@@ -1605,7 +1602,7 @@ Rectangle {
             txtUpdate.text = "升级"
             txtUpdateFile.text = "设备升级"
             txtSave.text = "设置"
-            txtencodetype.text = "编码方式"
+           // txtencodetype.text = "编码方式"
             labelResolution.text = "温标选择"
             txtImageSet.text = "Image settings"
                         txtImageSelect.text = "Image selectione"
