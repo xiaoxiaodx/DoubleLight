@@ -666,47 +666,47 @@ Rectangle {
                         }
                     }
                     
-//                    Text {
-//                        id: txtencodetype
-//                        text: qsTr("编码方式")
-//                        font.pixelSize: fontSize
-//                        color: fontColor
-//                        anchors.right: checkh264.left
-//                        anchors.rightMargin: 20
-//                        anchors.verticalCenter: checkh264.verticalCenter
-//                    }
-//                    ExclusiveGroup { id: buttonGroup }
-//                    SimpleCheckedButton{
-//                        id:checkh264
-//                        exclusiveGroup:buttonGroup
-//                        txtFont.pixelSize: fontSize
-//                        txtColor: fontColor
-//                        imgW: 12
-//                        imgH: 12
-//                        imgSrc: "qrc:/images/unselect.png"
-//                        imgCheckSrc: "qrc:/images/select.png"
-//                        anchors.left: line2.left
-//                        anchors.leftMargin: parSetFirstAlignLine
-//                        anchors.top: line2.bottom
-//                        anchors.topMargin:263
-//                        color: "#F8FAFD"
-//                        text: "H264"
-//                    }
-//                    SimpleCheckedButton{
-//                        id:checkh265
-//                        exclusiveGroup:buttonGroup
-//                        txtFont.pixelSize: fontSize
-//                        txtColor: fontColor
-//                        imgW: 12
-//                        imgH: 12
-//                        imgSrc: "qrc:/images/unselect.png"
-//                        imgCheckSrc: "qrc:/images/select.png"
-//                        anchors.left: checkh264.right
-//                        anchors.leftMargin: 20
-//                        anchors.verticalCenter: checkh264.verticalCenter
-//                        color: "#F8FAFD"
-//                        text: "H265"
-//                    }
+                    //                    Text {
+                    //                        id: txtencodetype
+                    //                        text: qsTr("编码方式")
+                    //                        font.pixelSize: fontSize
+                    //                        color: fontColor
+                    //                        anchors.right: checkh264.left
+                    //                        anchors.rightMargin: 20
+                    //                        anchors.verticalCenter: checkh264.verticalCenter
+                    //                    }
+                    //                    ExclusiveGroup { id: buttonGroup }
+                    //                    SimpleCheckedButton{
+                    //                        id:checkh264
+                    //                        exclusiveGroup:buttonGroup
+                    //                        txtFont.pixelSize: fontSize
+                    //                        txtColor: fontColor
+                    //                        imgW: 12
+                    //                        imgH: 12
+                    //                        imgSrc: "qrc:/images/unselect.png"
+                    //                        imgCheckSrc: "qrc:/images/select.png"
+                    //                        anchors.left: line2.left
+                    //                        anchors.leftMargin: parSetFirstAlignLine
+                    //                        anchors.top: line2.bottom
+                    //                        anchors.topMargin:263
+                    //                        color: "#F8FAFD"
+                    //                        text: "H264"
+                    //                    }
+                    //                    SimpleCheckedButton{
+                    //                        id:checkh265
+                    //                        exclusiveGroup:buttonGroup
+                    //                        txtFont.pixelSize: fontSize
+                    //                        txtColor: fontColor
+                    //                        imgW: 12
+                    //                        imgH: 12
+                    //                        imgSrc: "qrc:/images/unselect.png"
+                    //                        imgCheckSrc: "qrc:/images/select.png"
+                    //                        anchors.left: checkh264.right
+                    //                        anchors.leftMargin: 20
+                    //                        anchors.verticalCenter: checkh264.verticalCenter
+                    //                        color: "#F8FAFD"
+                    //                        text: "H265"
+                    //                    }
                     
                     
                     SimpleSwich{
@@ -735,7 +735,7 @@ Rectangle {
 
                     Text {
                         id: labelResolution
-                        text: qsTr("温标选择")
+                        text: qsTr("°C/°F")
                         font.pixelSize: fontSize
                         color: fontColor
                         anchors.right: cmbTempTypeSelect.left
@@ -1118,7 +1118,7 @@ Rectangle {
 
 
 
-        }
+    }
 
 
     
@@ -1263,16 +1263,16 @@ Rectangle {
         s_sendcommoncmd(map);
         
         
-//        var typeStr;
-//        if(checkh264.checked)
-//            typeStr = "h264"
-//        if(checkh265.checked)
-//            typeStr = "h265"
-//        var map1 = {
-//            cmd:"setvideoencodeparam",
-//            encoding:typeStr
-//        }
-//        s_sendcommoncmd(map1);
+        //        var typeStr;
+        //        if(checkh264.checked)
+        //            typeStr = "h264"
+        //        if(checkh265.checked)
+        //            typeStr = "h265"
+        //        var map1 = {
+        //            cmd:"setvideoencodeparam",
+        //            encoding:typeStr
+        //        }
+        //        s_sendcommoncmd(map1);
         
         
         
@@ -1537,7 +1537,7 @@ Rectangle {
     }
     
     function setLanguage(type){
-        
+
         switch(type){
         case lEnglish:
             txtRecordSet.text = "Video Settings"
@@ -1556,11 +1556,9 @@ Rectangle {
             txtUpdate.text = "Upgrade"
             txtUpdateFile.text = "Upgrade"
             txtSave.text = "Settings"
-           // txtencodetype.text = "Encoding Style"
-            txtImageSet.text = "Image settings"
-                        txtImageSelect.text = "Image selectione"
-            labelResolution.text = "Standard"
 
+            txtImageSet.text = "Image settings"
+            txtImageSelect.text = "Image selectione"
             break;
         case lKorean:
             txtRecordSet.text = "비디오 설정"
@@ -1579,9 +1577,6 @@ Rectangle {
             txtUpdate.text = "업그레이드"
             txtUpdateFile.text = "업그레이드"
             txtSave.text = "설정"
-
-            txtImageSet.text = "Image settings"
-                        txtImageSelect.text = "Image selectione"
 
             break;
         case lItaly:
@@ -1602,9 +1597,6 @@ Rectangle {
             txtUpdateFile.text = "aggiornare"
             txtSave.text = "Settaggio"
 
-            txtImageSet.text = "Image settings"
-                        txtImageSelect.text = "Image selectione"
-
             break;
         case lChinese:
             txtRecordSet.text = "录像设置"
@@ -1624,11 +1616,8 @@ Rectangle {
             txtUpdateFile.text = "设备升级"
             txtSave.text = "设置"
 
-           // txtencodetype.text = "编码方式"
-            labelResolution.text = "温标选择"
-            txtImageSet.text = "Image settings"
-                        txtImageSelect.text = "Image selectione"
-
+            txtImageSet.text = "图像设置"
+            txtImageSelect.text = "图像选择"
             break;
         case lRussian:
             txtRecordSet.text = "Настройка записи"
@@ -1648,9 +1637,8 @@ Rectangle {
             txtUpdateFile.text = "обновить"
             txtSave.text = "Настройка"
 
-            txtImageSet.text = "Image settings"
-                        txtImageSelect.text = "Image selectione"
-
+            txtImageSet.text = "Настройки изображения"
+            txtImageSelect.text = "Выбор изображения"
             break;
         case lLithuanian:
             txtRecordSet.text = "Vaizdo parametrų nustatymas"
@@ -1670,11 +1658,147 @@ Rectangle {
             txtUpdateFile.text = "patobulinti"
             txtSave.text = "nustatymas"
 
-            txtImageSet.text = "Image settings"
-                        txtImageSelect.text = "Image selectione"
+            break;
+        case ltuerqi:
+            txtRecordSet.text = "Video ayarları"
+            txtRecortPath.text = "Depolama yolu"
+            txtScreenShotPath.text = "Depolama yolu"
+            txtWarnTemSet.text = "Alarm Sıcaklığı"
+            labelSwitchTime.text = "Zaman OSD'si"
+            labelTime.text = "Zaman OSD'si"
+            txtparset.text = "Parametre ayarı"
+            txtSwichBeer.text = "Buzzer"
+            txtSwichRecord.text = "Video"
+            txtSwichScreenShot.text = "Snapshot"
+            txtSwichWarn.text = "Alarm (anahtar)"
+            txtTempMin.text = "Max Min Sıcaklık"
+            txtTempDrift.text = "Sıcaklık sapması ayarı"
+            txtUpdate.text = "Yükselt"
+            txtUpdateFile.text = "Yükselt"
+            txtSave.text = "Ayarlar"
+
+            txtImageSet.text = "Görüntü ayarları"
+            txtImageSelect.text = "Görüntü seçimi"
+            break;
+        case ltuerqi1:
+            txtRecordSet.text = "Video Ayarları"
+            txtRecortPath.text = "Depolama Yöntemi"
+            txtScreenShotPath.text = "Depolama Yöntemi"
+            txtWarnTemSet.text = "Sıcaklık Alarmı"
+            labelSwitchTime.text = "Ekranda Gösterim"
+            labelTime.text = "Ekranda Gösterim"
+            txtparset.text = "Parametre Ayarları"
+            txtSwichBeer.text = "Siren"
+            txtSwichRecord.text = "Video"
+            txtSwichScreenShot.text = "Ekran Resmi"
+            txtSwichWarn.text = "Alarm (anahtar)"
+            txtTempMin.text = "Max Min Sıcaklık"
+            txtTempDrift.text = "Sıcaklık Sapma Ayarı"
+            txtUpdate.text = "Yükselt"
+            txtUpdateFile.text = "Yükselt"
+            txtSave.text = "Ayarlar"
+
+            break;
+        case lputaoya:
+            txtRecordSet.text = "configurações de vídeo"
+            txtRecortPath.text = "rota de armazenamento"
+            txtScreenShotPath.text = "caminho de armazenamento"
+            txtWarnTemSet.text = "Alarme de temperatura"
+            labelSwitchTime.text = "Tempo OSD"
+            labelTime.text = "Tempo OSD"
+            txtparset.text = "Configuração de parâmetro"
+            txtSwichBeer.text = "campainha"
+            txtSwichRecord.text = "Vídeo"
+            txtSwichScreenShot.text = "Instantâneo"
+            txtSwichWarn.text = "Alarme (switch)"
+            txtTempMin.text = "válvula de controle de temperatura"
+            txtTempDrift.text = "configuração deriva de temperatura"
+            txtUpdate.text = "Melhoria"
+            txtUpdateFile.text = "Melhoria"
+            txtSave.text = "Definições"
+
+            break;
+        case lxibanya:
+            txtRecordSet.text = "Ajustes de video"
+            txtRecortPath.text = "ruta de almacenamiento"
+            txtScreenShotPath.text = "ruta de almacenamiento"
+            txtWarnTemSet.text = "alarma de temperatura"
+            labelSwitchTime.text = "tiempo OSD"
+            labelTime.text = "tiempo OSD"
+            txtparset.text = "Ajuste de parámetros"
+            txtSwichBeer.text = "Zumbador"
+            txtSwichRecord.text = "Vídeo"
+            txtSwichScreenShot.text = "Instantánea"
+            txtSwichWarn.text = "Alarma (interruptor)"
+            txtTempMin.text = "válvula de control de temperatura"
+            txtTempDrift.text = "ajuste de la deriva térmica"
+            txtUpdate.text = "Potenciar"
+            txtUpdateFile.text = "Potenciar"
+            txtSave.text = "Configuraciones"
+
+            txtImageSet.text = "Configuraciones de imagen"
+            txtImageSelect.text = "Selección de imagen"
+            break;
+        case lfayu:
+            txtRecordSet.text = "Paramètres vidéo"
+            txtRecortPath.text = "Chemin de stockage vidéo"
+            txtScreenShotPath.text = "Chemin de stockage photo"
+            txtWarnTemSet.text = "Température d'alarme"
+            labelSwitchTime.text = "Heure OSD"
+            labelTime.text = "Heure OSD"
+            txtparset.text = "Réglage des paramètres"
+            txtSwichBeer.text = "Avertisseur sonore"
+            txtSwichRecord.text = "Vidéo"
+            txtSwichScreenShot.text = "Instantané"
+            txtSwichWarn.text = "Alarme(interrupteur)"
+            txtTempMin.text = "Température max/min"
+            txtTempDrift.text = "Correction de la température"
+            txtUpdate.text = "Améliorer"
+            txtUpdateFile.text = "Améliorer"
+            txtSave.text = "Réglages"
+
+            txtImageSet.text = "Paramètres d'image"
+            txtImageSelect.text = "Sélection d'images"
+            break;
+        case lniboer:
+            txtRecordSet.text = "भिडियो सेटिंग "
+            txtRecortPath.text = "स्टोर गर्ने ठाउँ"
+            txtScreenShotPath.text = "स्टोर गर्ने ठाउँ"
+            txtWarnTemSet.text = "तापक्रम अलार्म"
+            labelSwitchTime.text = "स्क्रिनमा प्रदर्शन गर्नुहोस्"
+            labelTime.text = "स्क्रिनमा प्रदर्शन गर्नुहोस्"
+            txtparset.text = "प्यारामिटर सेटिंग"
+            txtSwichBeer.text = "घन्टी"
+            txtSwichRecord.text = "भिडियो"
+            txtSwichScreenShot.text = "स्क्रीनशट"
+            txtSwichWarn.text = "अलार्म (स्विच)"
+            txtTempMin.text = "अधिकतम न्यूनतम तापक्रम"
+            txtTempDrift.text = "तापक्रम विचलन सेटिंग"
+            txtUpdate.text = "अपग्रेड गर्नुहोस"
+            txtUpdateFile.text = "अपग्रेड गर्नुहोस"
+            txtSave.text = "निश्चित गर्नुहोस "
+
+            break;
+        case lKhmer:
+            txtRecordSet.text = "ការកំណត់វីដេអូ"
+            txtRecortPath.text = "កន្លែងផ្ទុកទិន្នន័យ"
+            txtScreenShotPath.text = "កន្លែងផ្ទុកទិន្នន័យ"
+            txtWarnTemSet.text = "កំណត់សីតុណ្ហភាពដែលត្រូវរោទ៍"
+            labelSwitchTime.text = "បង្ហាញពេលវេលា"
+            labelTime.text = "បង្ហាញពេលវេលា"
+            txtparset.text = "ការកំណត់ប៉ារ៉ាម៉ែត្រ"
+            txtSwichBeer.text = "បិទបើកកុងតាក់"
+            txtSwichRecord.text = "វីដេអូ"
+            txtSwichScreenShot.text = "ថតរូប"
+            txtSwichWarn.text = "ប្តូរសម្លេងរោទ៍"
+            txtTempMin.text = "សន្ទះគ្រប់គ្រងសីតុណ្ហភាព"
+            txtTempDrift.text = "ការកំណត់លំហូរសីតុណ្ហភាព"
+            txtUpdate.text = "ធ្វើឱ្យប្រសើរឡើង"
+            txtUpdateFile.text = "ធ្វើឱ្យប្រសើរឡើង"
+            txtSave.text = "ការកំណត់ប៉ារ៉ាម៉ែត្រ"
 
             break;
         }
+
     }
-    
 }

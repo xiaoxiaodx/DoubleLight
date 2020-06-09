@@ -403,11 +403,33 @@ Rectangle {
             name.text = "总通行："
             break;
         case lRussian:
-
+            name3.text =  "Без маски："
+            name2.text =  "аномальный："
+            name1.text = "нормальный："
+            name.text = "количество："
             break;
         case lLithuanian:
 
             break;
+        case ltuerqi:
+            name3.text =  "Maske yok："
+            name2.text =  "Alarm："
+            name1.text = "Normal："
+            name.text = "Miktar："
+            break;
+        case lfayu:
+            name3.text =  "Pas de masque："
+            name2.text =  "Alarme："
+            name1.text = "Ordinaire："
+            name.text = "Total："
+            break;
+
+        case lxibanya:
+            name3.text =  "Sin mascara："
+            name2.text =  "Alarma："
+            name1.text = "normal："
+            name.text = "Cantidad："
+            break
         }
     }
 
