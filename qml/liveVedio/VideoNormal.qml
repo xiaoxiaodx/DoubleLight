@@ -454,7 +454,7 @@ Rectangle {
             s_tempmodelSelect(smap.tempmodel,deviceconfig.getTcpip());
         }else if(strcmd === "getiradinfo"){
             var alarmtempEnable = smap.alarmtempEnable;
-            var alarmTemp = smap.alarmTemp;
+            var alarmTemp = smap.alarmtemp;
             var tempdriftcaplevelMin = smap.tempdriftcaplevelMin;
             var tempdriftcaplevelMax = smap.tempdriftcaplevelMax;
             var tempcontrolcaplevelMin = smap.tempcontrolcaplevelMin;
@@ -468,10 +468,17 @@ Rectangle {
             deviceconfig.tempdriftcapMax = tempdriftcaplevelMax;
             deviceconfig.tempdriftcapMin = tempdriftcaplevelMin;
             deviceconfig.setTemDrift(tempdrift)
+
+            console.debug("***************** "+ smap.alarmtemp)
+            console.debug("***************** "+ alarmTemp.toFixed(2))
+
+            deviceconfig.setSwitchTempdisplay(smap.tempdisplay)
             deviceconfig.setWarnTem(alarmTemp.toFixed(2))
             deviceconfig.setSwitchTime(osdenable)
             deviceconfig.setTempContrl(tempcontrol)
             deviceconfig.setSwitchWarn(alarmtempEnable)
+
+
         }else if(strcmd === "pushalarm"){
 
             if(smap.imagedata === undefined)//老版本没有这个字段

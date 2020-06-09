@@ -69,6 +69,9 @@ void XVideo::startNormalVideo(float tp,QString deviceinfo)
 
     if(listip.size() >= 4){
 
+        if(m_ip.compare(m_ip)!=0){
+            destroyAllFunction();
+        }
         m_ip = deviceinfo;
         warnTemp = tp;
         createTcpThread();

@@ -33,6 +33,13 @@ void CHttpApiDevice::slot_destoryConnect()
     qDebug()<<" slot_destoryConnect ";
     if(g_tcpsocket != NULL){
         QMap<QString , QVariant> map;
+
+        warnPushMap.insert("ip",read_ip_address());
+        warnPushMap.insert("switchSubscription",false);
+        warnPushMap.insert("port",warnPort);
+        warnPushMap.insert("isSubscription",false);
+        HttpSubscriptionWarn(warnPushMap, "0");
+
         map.insert("cmd","loginout");
         send_httpParSet(map);
         if(SendTimer != nullptr){
@@ -59,7 +66,6 @@ void CHttpApiDevice::slot_destoryConnect()
             SendTimer = nullptr;
             reconnectTimer = nullptr;
 
-            qDebug()<<" slot_destoryConnect 5";
         }
 
     }
@@ -91,8 +97,13 @@ void CHttpApiDevice::slot_heartimertout(){
         map.insert("cmd","keepalive");
         slot_httpParSet(map);
 
-        if(warnPushMap.value("switchSubscription").toBool())
-            HttpSubscriptionWarn(warnPushMap, 0);
+        if(warnPushMap.value("switchSubscription").toBool()){
+            warnPushMap.insert("ip",read_ip_address());
+            warnPushMap.insert("switchSubscription",false);
+            warnPushMap.insert("port",warnPort);
+            warnPushMap.insert("isSubscription",false);
+            HttpSubscriptionWarn(warnPushMap, "0");
+        }
     }
 
     //QMap<QString,QVariant> map;
@@ -320,11 +331,11 @@ int CHttpApiDevice::HttpMsgCallBack(char * pData) {
                 callbackMap.insert("timeenable",object.value("data").toObject().value("timeenable").toInt());
                 callbackMap.insert("tempmodel",object.value("data").toObject().value("tempmodel").toString());
             }else if ("getiradinfo" == cmd) {
-                qDebug()<<"rec getiradinfo";
+                qDebug()<<"rec getiradinfo  "<<object.value("data").toObject().value("alarmparam").toObject().value("alarmtemp").toDouble();
 
 
                 callbackMap.insert("alarmtempEnable",object.value("data").toObject().value("alarmparam").toObject().value("enable").toInt());
-                callbackMap.insert("alarmTemp",object.value("data").toObject().value("alarmparam").toObject().value("alarmtemp").toDouble());
+                callbackMap.insert("alarmtemp",object.value("data").toObject().value("alarmparam").toObject().value("alarmtemp").toDouble());
                 callbackMap.insert("tempdriftcaplevelMin",object.value("data").toObject().value("ctrlparamlevel").toObject().value("tempdriftcaplevel").toObject().value("min").toInt());
 
                 callbackMap.insert("tempdriftcaplevelMax",object.value("data").toObject().value("ctrlparamlevel").toObject().value("tempdriftcaplevel").toObject().value("max").toInt());
@@ -803,19 +814,6 @@ void CHttpApiDevice::httpSendCommonCmd(QString cmd,QString msgid)
     SendRequestMsg(msgObject);
 }
 
-//void CHttpApiDevice::HttpGetIraInfo()
-//{
-//    JsonMsg_T info ={"getiradinfo","request","","012345"};
-//    if(!strlen(this->sessionId)) {
-//        qDebug() <<"ssionId error "<<sessionId;
-//        return ;
-//    }
-//    sprintf(info.ssionID, "%s", this->sessionId);
-
-//    QJsonObject msgObject;
-//    CjsonMakeHttpHead(&msgObject, &info);
-//    SendRequestMsg(msgObject);
-//}
 void CHttpApiDevice::HttpSubscriptionWarn(QMap<QString,QVariant> map,QString msgid)
 {
 
