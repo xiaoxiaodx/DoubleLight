@@ -148,7 +148,7 @@ private:
     QTimer *timeoutCnt; //定时发送命令，
     QString timerEventCmd;//命令
     int dataEnableParam;  //数据
-    bool loginFlag;      //login 标志位，登录成功才让操作
+    bool loginFlag = false;      //login 标志位，登录成功才让操作
 
 public slots:
     void slot_ReadMsg();

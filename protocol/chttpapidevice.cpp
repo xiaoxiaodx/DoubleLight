@@ -30,6 +30,8 @@ CHttpApiDevice::CHttpApiDevice(QString devid, QString ip, unsigned short port, Q
 void CHttpApiDevice::slot_destoryConnect()
 {
     isForceFinish = true;
+
+    loginFlag = false;
     qDebug()<<" slot_destoryConnect ";
     if(g_tcpsocket != NULL){
 
@@ -255,8 +257,6 @@ int CHttpApiDevice::HttpMsgCallBack(char * pData) {
             QMap<QString,QVariant> callbackMap;
             callbackMap.insert("cmd",cmd);
             if("login" == cmd) {
-
-
                 qDebug()<<"*****";
                 if (object.contains("data")) {  // 包含指定的 key
                     QJsonValue value = object.value("data");
@@ -270,29 +270,20 @@ int CHttpApiDevice::HttpMsgCallBack(char * pData) {
                                 QString ssionId = value.toString();
                                 sprintf(this->sessionId, "%s", ssionId.toStdString().c_str());
 
-
-                                //loginFlag = true;
+                                loginFlag = true;
                                 DebugLog::getInstance()->writeLog(">>>>>>>>>>>http login succ <<<<<<<<<<<<<<:"+ssionId);
-                                //listMsg.clear();
-
 
                                 QMap<QString,QVariant> map;
                                 map.insert("cmd","getiradinfo");
                                 slot_httpParSet(map);
-
                                 map.insert("cmd","getalarmparam");
                                 slot_httpParSet(map);
-
-
                                 map.insert("cmd","getimagparam");
                                 slot_httpParSet(map);
-
                                 map.insert("cmd","setcurrenttime");
                                 send_httpParSet(map);
-
                                 map.insert("cmd","getinftempcolor");
                                 slot_httpParSet(map);
-
                                 return 0;
                             }
                         }
@@ -442,8 +433,19 @@ void CHttpApiDevice::slot_ReadMsg() {
     for (int i=0;i<listData.size();i++) {//解决连包问题
         QString oneData = listData.at(i);
 
-        QString keyContentLength = "Content-Length: ";
+        QString stateCode = oneData.mid(0,3);
 
+
+        qDebug()<<">>>>>>"<<i<<" stateCode "<<stateCode;
+
+        if(stateCode.compare("403")==0){
+            LoginDevice("0");
+
+            parseStr.clear();
+            return;
+        }
+
+        QString keyContentLength = "Content-Length: ";
         //不包含 长度字段 则下一组测试
         if(!oneData.contains(keyContentLength)){
             //如果还有下一帧数据，则丢弃这一帧无效数据
@@ -490,8 +492,7 @@ void CHttpApiDevice::slot_ReadMsg() {
 
         }
 
-        //解析分发
-        //HttpMsgCallBack(bodyData);
+
     }
     parseStr.remove(0,charOffset);
     qDebug()<<" slot_ReadMsg    ***1";
@@ -517,6 +518,10 @@ void CHttpApiDevice::slot_connectServer() {
 
 
 void CHttpApiDevice::LoginDevice(QString msgid){
+
+    if(loginFlag)
+        return;
+
     JsonMsg_T info ={"login","request","","012345"};
     sprintf(info.msgID, "%s",msgid.toLatin1().data());
     QJsonObject dataObj;
@@ -529,6 +534,11 @@ void CHttpApiDevice::LoginDevice(QString msgid){
     SendRequestMsg(msgObject);
 }
 void CHttpApiDevice::LogoutDevice(QString msgid){
+
+    loginFlag = false;
+    qDebug()<<">>>>>>LogoutDevice:"<<loginFlag;
+
+
     JsonMsg_T info ={"loginout","request","","012345"};
     sprintf(info.msgID, "%s",msgid.toLatin1().data());
     if(!strlen(this->sessionId)) {
@@ -565,6 +575,11 @@ bool CHttpApiDevice::send_httpParSet(QMap<QString,QVariant> map)
         return false ;
     qDebug()<<"send_httpParSet  "<<g_ip<<"  map:"<<map;
     DebugLog::getInstance()->writeLog("http_sendMsg :"+ map.value("cmd").toString());
+
+    if(!loginFlag){
+        return false;
+    }
+
 
     QString cmd = map.value("cmd").toString();
     QString msgid = map.value("msgid").toString();
