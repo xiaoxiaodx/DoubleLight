@@ -33,7 +33,7 @@ Rectangle {
     Text {
         id: pos1
         anchors.horizontalCenter: parent.horizontalCenter
-        anchors.bottomMargin: 10
+        anchors.bottomMargin: 50
         anchors.bottom:parent.bottom
         color: "red"
         text: qsTr("text")
