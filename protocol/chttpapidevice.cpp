@@ -77,9 +77,9 @@ CHttpApiDevice::~CHttpApiDevice()
 
 
     qDebug()<<"析构:  CHttpApiDevice  ";
-//    QMap<QString , QVariant> map;
-//    map.insert("cmd","loginout");
-//    send_httpParSet(map);
+    //    QMap<QString , QVariant> map;
+    //    map.insert("cmd","loginout");
+    //    send_httpParSet(map);
 
     slot_destoryConnect();
     if(warnTcpServer != nullptr){
@@ -131,10 +131,11 @@ void CHttpApiDevice::slot_sendtimerout()
             createConnect();
             DebugLog::getInstance()->writeLog("reconect http");
         }
-       // if(sendcount % 4 == 0){
-            send_httpParSet(map);//emit signal_sendMag(map);
-            qDebug()<< "signal_sendMag  "<<map;
-        //}
+
+
+        send_httpParSet(map);//emit signal_sendMag(map);
+
+
         listMsg.append(map);
     }
 }
@@ -273,7 +274,10 @@ int CHttpApiDevice::HttpMsgCallBack(char * pData) {
                                 loginFlag = true;
                                 DebugLog::getInstance()->writeLog(">>>>>>>>>>>http login succ <<<<<<<<<<<<<<:"+ssionId);
 
+
                                 QMap<QString,QVariant> map;
+                                map.insert("cmd","getinftempmodel");
+                                send_httpParSet(map);
                                 map.insert("cmd","getiradinfo");
                                 slot_httpParSet(map);
                                 map.insert("cmd","getalarmparam");
@@ -281,7 +285,7 @@ int CHttpApiDevice::HttpMsgCallBack(char * pData) {
                                 map.insert("cmd","getimagparam");
                                 slot_httpParSet(map);
                                 map.insert("cmd","setcurrenttime");
-                                send_httpParSet(map);
+                                slot_httpParSet(map);
                                 map.insert("cmd","getinftempcolor");
                                 slot_httpParSet(map);
                                 return 0;
@@ -291,15 +295,11 @@ int CHttpApiDevice::HttpMsgCallBack(char * pData) {
                         qDebug()<<"value not object ";
                     }
                 } else {
-                    DebugLog::getInstance()->writeLog("get sessionID fail");
-
                     DebugLog::getInstance()->writeLog(">>>>>>>>>>>http login fail <<<<<<<<<<<<<<");
 
-                    qDebug()<<"not find data ";
-
-                    QMap<QString,QVariant> map;
-                    map.insert("cmd","login");
-                    slot_httpParSet(map);
+                    //                    QMap<QString,QVariant> map;
+                    //                    map.insert("cmd","login");
+                    //                    send_httpParSet(map);
 
                 }
 
@@ -439,9 +439,11 @@ void CHttpApiDevice::slot_ReadMsg() {
         qDebug()<<">>>>>>"<<i<<" stateCode "<<stateCode;
 
         if(stateCode.compare("403")==0){
-            LoginDevice("0");
 
+
+            listMsg.clear();
             parseStr.clear();
+            LoginDevice("0");
             return;
         }
 
@@ -501,10 +503,7 @@ void CHttpApiDevice::slot_ReadMsg() {
 void CHttpApiDevice::slot_Connected() {
 
 
-    emit signal_httpConnected();
-
-    //LogoutDevice("");
-
+    //emit signal_httpConnected();
     LoginDevice("0");
     listMsg.clear();
 }
@@ -518,9 +517,6 @@ void CHttpApiDevice::slot_connectServer() {
 
 
 void CHttpApiDevice::LoginDevice(QString msgid){
-
-    if(loginFlag)
-        return;
 
     JsonMsg_T info ={"login","request","","012345"};
     sprintf(info.msgID, "%s",msgid.toLatin1().data());
@@ -574,11 +570,14 @@ bool CHttpApiDevice::send_httpParSet(QMap<QString,QVariant> map)
     if(g_tcpsocket == nullptr)
         return false ;
     qDebug()<<"send_httpParSet  "<<g_ip<<"  map:"<<map;
-    DebugLog::getInstance()->writeLog("http_sendMsg :"+ map.value("cmd").toString());
 
-    if(!loginFlag){
-        return false;
-    }
+
+
+        if(!strlen(this->sessionId)){
+            DebugLog::getInstance()->writeLog("sessionid is invalid :"+QString(this->sessionId));
+            listMsg.clear();
+            LoginDevice("0");
+        }
 
 
     QString cmd = map.value("cmd").toString();

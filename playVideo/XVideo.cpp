@@ -250,9 +250,9 @@ void XVideo::createHttpApi(){
 void XVideo::slot_httpConnected()
 {
 
-    QMap<QString,QVariant> map;
-    map.insert("cmd","getinftempmodel");
-    emit signal_httpParSet(map);
+//    QMap<QString,QVariant> map;
+//    map.insert("cmd","getinftempmodel");
+//    emit signal_httpParSet(map);
 }
 
 void XVideo::slog_HttpmsgCb(QMap<QString,QVariant> map) {
