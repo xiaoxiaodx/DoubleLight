@@ -717,7 +717,6 @@ Rectangle {
                         anchors.leftMargin: parSetFirstAlignLine
                         anchors.top: line2.bottom
                         anchors.topMargin:303
-                        
                     }
                     
                     Text {
@@ -1277,8 +1276,6 @@ Rectangle {
         s_sendcommoncmd(map1);
         
         var kuandongt = swichKuandongtai.checked?1:0
-        
-
         if(imagparamwdr !== kuandongt)
             wdrisChange = true
         else
@@ -1286,7 +1283,6 @@ Rectangle {
 
         
         var map2 ={
-
             cmd:"setimagparam",
             wdr:swichKuandongtai.checked?1:0,
             mirror:imagparammirror,
@@ -1297,7 +1293,6 @@ Rectangle {
             hue:imagparamhue,
             sharpness:imagparamsharpness
         }
-
         s_sendcommoncmd(map2);
 
         var tmpColor1 = 0;
@@ -1322,8 +1317,6 @@ Rectangle {
         s_warnSwith(swichWarn.checked)
         s_timeSwith(swithTime.checked)
     }
-
-
 
     function setSwitchTempdisplay(mvalue)
     {

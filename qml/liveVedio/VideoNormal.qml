@@ -46,19 +46,19 @@ Rectangle {
         onDoubleClicked:doubleClick(true);
     }
 
-//    Text {
-//        id: pos1
-//        anchors.horizontalCenter: parent.horizontalCenter
-//        anchors.bottomMargin: 10
-//        anchors.bottom:parent.bottom
-//        color: "red"
-//        text: qsTr("text")
-//    }
+    //    Text {
+    //        id: pos1
+    //        anchors.horizontalCenter: parent.horizontalCenter
+    //        anchors.bottomMargin: 10
+    //        anchors.bottom:parent.bottom
+    //        color: "red"
+    //        text: qsTr("text")
+    //    }
     XVideo{
         id:video
 
         //property real whradia:  0.75
-       //property real hwradia: 1.333
+        //property real hwradia: 1.333
         property real whradia: 0.5625
         property real hwradia: 1.778
         //anchors.fill: parent
@@ -71,7 +71,7 @@ Rectangle {
 
         Component.onCompleted:{
             //video.fun_setInitPar(deviceconfig.getTcpip(),deviceconfig.getShowParentW(),deviceconfig.getShowParentH(),deviceconfig.getShowRectX(),deviceconfig.getShowRectY(),deviceconfig.getShowRectW(),deviceconfig.getShowRectH())
-           // video.startNormalVideo(deviceconfig.getWarnTem())
+            // video.startNormalVideo(deviceconfig.getWarnTem())
         }
 
         onSignal_loginStatus: main.showToast(msg);
@@ -82,18 +82,18 @@ Rectangle {
             deviceconfig.setTcpip(ip)
             homeMenu.setDeviceConnectState(istrue)
         }
-//                MouseArea{
-//                    id:mouse22
-//                    anchors.fill: parent
-//                    cursorShape: Qt.CrossCursor
-//                    onClicked: {
-//                        var kx = video.width / 1920;
-//                        var ky = video.height / 1080;
-//                        var x1 = mouse.x / kx;
-//                        var y1 = mouse.y / ky;
-//                        pos1.text ="pos:"+ x1 +"    "+y1
-//                    }
-//                }
+        //                MouseArea{
+        //                    id:mouse22
+        //                    anchors.fill: parent
+        //                    cursorShape: Qt.CrossCursor
+        //                    onClicked: {
+        //                        var kx = video.width / 1920;
+        //                        var ky = video.height / 1080;
+        //                        var x1 = mouse.x / kx;
+        //                        var y1 = mouse.y / ky;
+        //                        pos1.text ="pos:"+ x1 +"    "+y1
+        //                    }
+        //                }
         Rectangle{
             id:rectadmjt
             x:0//deviceconfig.getShowRectX()
@@ -536,9 +536,10 @@ Rectangle {
             deviceconfig.setWdr(smap.wdr);
 
         }else if("setimagparam" === strcmd){
+
+            console.debug("***setimagparam***:"+deviceconfig.wdrisChange)
             if(deviceconfig.wdrisChange){
-                msgdialog.width = 500
-                msgdialog.height = 176
+
                 var txtstr ;
                 switch(curLanguage)
                 {
@@ -552,115 +553,61 @@ Rectangle {
                     txtstr = "La fotocamera si riavvierà dopo l'impostazione"
                     break;
                 case lKorean:
-                     txtstr = "설정 후 카메라가 다시 시작됩니다"
+                    txtstr = "설정 후 카메라가 다시 시작됩니다"
                     break;
                 case lRussian:
-                     txtstr = "Камера перезагрузится после настройки"
+                    txtstr = "Камера перезагрузится после настройки"
                     break;
                 case lLithuanian:
-                     txtstr = "Nustačius fotoaparatą, jis paleis iš naujo"
+                    txtstr = "Nustačius fotoaparatą, jis paleis iš naujo"
                     break;
                 case ltuerqi:
-                     txtstr = "Kamera ayarlandıktan sonra yeniden başlatılacak"
+                    txtstr = "Kamera ayarlandıktan sonra yeniden başlatılacak"
                     break;
                 case ltuerqi1:
-                     txtstr = "Kamera ayarlandıktan sonra yeniden başlatılacak"
+                    txtstr = "Kamera ayarlandıktan sonra yeniden başlatılacak"
                     break;
                 case lputaoya:
-                     txtstr = "A câmera será reiniciada após a configuração"
+                    txtstr = "A câmera será reiniciada após a configuração"
                     break;
                 case lxibanya:
-                     txtstr = "La cámara se reiniciará después de configurar"
+                    txtstr = "La cámara se reiniciará después de configurar"
                     break;
                 case lfayu:
-                     txtstr = "La caméra redémarrera après le réglage"
+                    txtstr = "La caméra redémarrera après le réglage"
                     break;
                 case lniboer:
-                     txtstr = "क्यामेरा सेटिंग पछि रिस्टार्ट हुनेछ"
+                    txtstr = "क्यामेरा सेटिंग पछि रिस्टार्ट हुनेछ"
                     break;
                 case lKhmer:
-                     txtstr = "កាមេរ៉ានឹងចាប់ផ្តើមឡើងវិញបន្ទាប់ពីកំណត់"
+                    txtstr = "កាមេរ៉ានឹងចាប់ផ្តើមឡើងវិញបន្ទាប់ពីកំណត់"
                     break;
                 }
+
+                msgdialog.width = 500
+                msgdialog.height = 176
+                msgdialog.msgStr = txtstr
+                msgdialog.open();
+            }else{
+
+                var map11 ={
+                    cmd:"getimagparam"
+                }
+                video.fun_sendCommonPar(map11);
+            }
         }else if("getvideoencodeparam"=== strcmd){
 
-            console.debug("*****************"  +smap.encoding )
+            console.debug("*****************    "  +smap.encoding )
             deviceconfig.setVideoType(smap.encoding)
 
         }else if("setvideoencodeparam"=== strcmd){//设置成功
             //在重新获取
 
-            var map ={
+            var map2 ={
                 cmd:"getvideoencodeparam"
             }
-            video.fun_sendCommonPar(map);
-        }else if("getinftempcolor" === strcmd){
-            deviceconfig.setTempcolor(smap.tempcolor);
-        }else if("getimagparam" === strcmd){
+            video.fun_sendCommonPar(map2);
 
-            deviceconfig.imagparamflip = smap.flip
-            deviceconfig.imagparambrightness = smap.brightness
-            deviceconfig.imagparamcolorsaturation =smap.colorsaturation
-            deviceconfig.imagparamcontrast = smap.contrast
-            deviceconfig.imagparamhue = smap.hue
-            deviceconfig.imagparammirror = smap.mirror
-            deviceconfig.imagparamsharpness = smap.sharpness
-            deviceconfig.imagparamwdr = smap.wdr
-            deviceconfig.setWdr(smap.wdr);
-
-        }else if("setimagparam" === strcmd){
-            if(deviceconfig.wdrisChange){
-                msgdialog.width = 500
-                msgdialog.height = 176
-                var txtstr ;
-                switch(curLanguage)
-                {
-                case lChinese:
-                    txtstr = "wdr设置成功，设备正在重启"
-                    break;
-                case lEnglish:
-                    txtstr = "The wdr setting is successful, the Camera is restarting"
-                    break;
-                case lItaly:
-                    txtstr = "La fotocamera si riavvierà dopo l'impostazione"
-                    break;
-                case lKorean:
-                     txtstr = "설정 후 카메라가 다시 시작됩니다"
-                    break;
-                case lRussian:
-                     txtstr = "Камера перезагрузится после настройки"
-                    break;
-                case lLithuanian:
-                     txtstr = "Nustačius fotoaparatą, jis paleis iš naujo"
-                    break;
-                case ltuerqi:
-                     txtstr = "Kamera ayarlandıktan sonra yeniden başlatılacak"
-                    break;
-                case ltuerqi1:
-                     txtstr = "Kamera ayarlandıktan sonra yeniden başlatılacak"
-                    break;
-                case lputaoya:
-                     txtstr = "A câmera será reiniciada após a configuração"
-                    break;
-                case lxibanya:
-                     txtstr = "La cámara se reiniciará después de configurar"
-                    break;
-                case lfayu:
-                     txtstr = "La caméra redémarrera après le réglage"
-                    break;
-                case lniboer:
-                     txtstr = "क्यामेरा सेटिंग पछि रिस्टार्ट हुनेछ"
-                    break;
-                case lKhmer:
-                     txtstr = "កាមេរ៉ានឹងចាប់ផ្តើមឡើងវិញបន្ទាប់ពីកំណត់"
-                    break;
-
-
-                }
-
-                msgdialog.msgStr = txtstr;
-                msgdialog.open();
-            }
         }
     }
 
@@ -723,6 +670,4 @@ Rectangle {
         //video.fun_setRectPar(rectadmjt.x,rectadmjt.y,rectadmjt.width,rectadmjt.height,video.width,video.height)
         console.debug("矩形位置："+rectadmjt.x+" "+rectadmjt.y+" "+rectadmjt.width+" "+rectadmjt.height+" "+video.width+" "+video.height);
     }
-
-}
 }

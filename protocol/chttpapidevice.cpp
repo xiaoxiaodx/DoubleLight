@@ -270,29 +270,25 @@ int CHttpApiDevice::HttpMsgCallBack(char * pData) {
                                 QString ssionId = value.toString();
                                 sprintf(this->sessionId, "%s", ssionId.toStdString().c_str());
 
-
-                                //loginFlag = true;
+                                loginFlag = true;
                                 DebugLog::getInstance()->writeLog(">>>>>>>>>>>http login succ <<<<<<<<<<<<<<:"+ssionId);
-                                //listMsg.clear();
+
 
 
                                 QMap<QString,QVariant> map;
-                                map.insert("cmd","getiradinfo");
-                                slot_httpParSet(map);
-
-                                map.insert("cmd","getalarmparam");
-                                slot_httpParSet(map);
-
-
-                                map.insert("cmd","getimagparam");
-                                slot_httpParSet(map);
-
-                                map.insert("cmd","setcurrenttime");
+                                map.insert("cmd","getinftempmodel");
                                 send_httpParSet(map);
 
+                                map.insert("cmd","getiradinfo");
+                                slot_httpParSet(map);
+                                map.insert("cmd","getalarmparam");
+                                slot_httpParSet(map);
+                                map.insert("cmd","getimagparam");
+                                slot_httpParSet(map);
+                                map.insert("cmd","setcurrenttime");
+                                slot_httpParSet(map);
                                 map.insert("cmd","getinftempcolor");
                                 slot_httpParSet(map);
-
                                 return 0;
                             }
                         }
@@ -300,16 +296,7 @@ int CHttpApiDevice::HttpMsgCallBack(char * pData) {
                         qDebug()<<"value not object ";
                     }
                 } else {
-                    DebugLog::getInstance()->writeLog("get sessionID fail");
-
                     DebugLog::getInstance()->writeLog(">>>>>>>>>>>http login fail <<<<<<<<<<<<<<");
-
-                    qDebug()<<"not find data ";
-
-                    QMap<QString,QVariant> map;
-                    map.insert("cmd","login");
-                    slot_httpParSet(map);
-
                 }
 
             } else if ("loginout" == cmd) {
@@ -389,6 +376,9 @@ int CHttpApiDevice::HttpMsgCallBack(char * pData) {
             }else if("getvideoencodeparam" == cmd){
 
                 callbackMap.insert("encoding",object.value("data").toObject().value("encoding").toString());
+
+
+                qDebug()<<"aaaaaaaaaaaaaaa:"<<object.value("data").toObject().value("encoding").toString();
             }else if("getinftempcolor" == cmd){
 
                 callbackMap.insert("tempcolor",object.value("data").toObject().value("tempcolor").toInt());
@@ -403,8 +393,6 @@ int CHttpApiDevice::HttpMsgCallBack(char * pData) {
                 callbackMap.insert("hue",object.value("data").toObject().value("hue").toInt());
                 callbackMap.insert("sharpness",object.value("data").toObject().value("sharpness").toInt());
                 callbackMap.insert("wdr",object.value("data").toObject().value("wdr").toInt());
-
-
             }
 
             DebugLog::getInstance()->writeLog("callbackMap:"+callbackMap.value("cmd").toString());
@@ -440,10 +428,20 @@ void CHttpApiDevice::slot_ReadMsg() {
     int httpheadLen = QString("HTTP/1.1 ").length();
     int charOffset = 0;
     for (int i=0;i<listData.size();i++) {//解决连包问题
+
         QString oneData = listData.at(i);
 
-        QString keyContentLength = "Content-Length: ";
+        QString stateCode = oneData.mid(0,3);
 
+        qDebug()<<">>>>>>"<<i<<" stateCode "<<stateCode;
+        if(stateCode.compare("403")==0){
+            listMsg.clear();
+            parseStr.clear();
+            LoginDevice("0");
+            return;
+        }
+
+        QString keyContentLength = "Content-Length: ";
         //不包含 长度字段 则下一组测试
         if(!oneData.contains(keyContentLength)){
             //如果还有下一帧数据，则丢弃这一帧无效数据
@@ -563,8 +561,12 @@ bool CHttpApiDevice::send_httpParSet(QMap<QString,QVariant> map)
 
     if(g_tcpsocket == nullptr)
         return false ;
-    qDebug()<<"send_httpParSet  "<<g_ip<<"  map:"<<map;
-    DebugLog::getInstance()->writeLog("http_sendMsg :"+ map.value("cmd").toString());
+
+    if(!strlen(this->sessionId)){
+        DebugLog::getInstance()->writeLog("sessionid is invalid :"+QString(this->sessionId));
+        listMsg.clear();
+        LoginDevice("0");
+    }
 
     QString cmd = map.value("cmd").toString();
     QString msgid = map.value("msgid").toString();
