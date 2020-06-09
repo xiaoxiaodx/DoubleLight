@@ -577,6 +577,8 @@ Rectangle {
                      txtstr = "កាមេរ៉ានឹងចាប់ផ្តើមឡើងវិញបន្ទាប់ពីកំណត់"
                     break;
                 }
+                msgdialog.msgStr = txtstr
+                msgdialog.open()
         }else if("getvideoencodeparam"=== strcmd){
 
             console.debug("*****************"  +smap.encoding )
