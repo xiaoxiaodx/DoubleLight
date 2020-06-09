@@ -24,32 +24,32 @@ Rectangle {
         height: parent.height
         color: "#00ffffff"
 
-                Image {
-                    id: btnImg
-                    anchors.left: parent.left
-                    anchors.leftMargin: 30
-        //            anchors.topMargin: 10
-                    anchors.verticalCenter: parent.verticalCenter
-        //            anchors.bottom: parent.bottom
-        //            anchors.bottomMargin: 10
-        //            width: parent.height - 26
-        //           parent.height - 26
-                    width: 50
-                    height: 50
-                    source: "qrc:/images/logo9.png"
-                }
+//                Image {
+//                    id: btnImg
+//                    anchors.left: parent.left
+//                    anchors.leftMargin: 30
+//        //            anchors.topMargin: 10
+//                    anchors.verticalCenter: parent.verticalCenter
+//        //            anchors.bottom: parent.bottom
+//        //            anchors.bottomMargin: 10
+//        //            width: parent.height - 26
+//        //           parent.height - 26
+//                    width: 50
+//                    height: 50
+//                    source: "qrc:/images/logo9.png"
+//                }
 
 
-//        Text {
-//            id: btnImg
-//            anchors.left: parent.left
-//            anchors.leftMargin: 40
-//            anchors.verticalCenter: parent.verticalCenter
-//            color: "white"
-//            font.pixelSize: 30
-//            font.bold: true
-//            text: ""
-//        }
+        Text {
+            id: btnImg
+            anchors.left: parent.left
+            anchors.leftMargin: 40
+            anchors.verticalCenter: parent.verticalCenter
+            color: "white"
+            font.pixelSize: 30
+            font.bold: true
+            text: ""
+        }
         QmlTabBarButtonH{
             id:tabbarBtn
             height: parent.height
@@ -214,7 +214,7 @@ Rectangle {
             itemTopMargin:0
             currentIndex:1
 
-            enabled: false
+          //  enabled: false
 
             model: ListModel{
                 ListElement{showStr:"简体中文"}
