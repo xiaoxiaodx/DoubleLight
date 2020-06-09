@@ -78,11 +78,16 @@ void WarnTcpServer::createSer(QString ip,int port)
     }
 }
 
+void WarnTcpServer::setCurWarnIp(QString ip)
+{
+    curWarnIp = ip;
+}
+
 void WarnTcpServer::slot_newConnect(){
     //get cliet's sockfd
     if(cliSocket != nullptr){
-        //disconnect(cliSocket,&QTcpSocket::readyRead,this,&WarnTcpServer::slot_readByte);
-        // cliSocket->disconnectFromHost();
+        disconnect(cliSocket,&QTcpSocket::readyRead,this,&WarnTcpServer::slot_readByte);
+        cliSocket->disconnectFromHost();
         cliSocket->abort();
         cliSocket->close();
         delete cliSocket;
@@ -91,15 +96,26 @@ void WarnTcpServer::slot_newConnect(){
     }
 
 
+
     cliSocket = tcpServer->nextPendingConnection();
-    //  cliSocket->bind(cliSocket->peerPort(),QAbstractSocket::ReuseAddressHint);
+    QString cli_ip = cliSocket->peerAddress().toString();
+    quint16 cli_port = cliSocket->peerPort();
+    QString temp = QString("[%1:%2 connect success]").arg(cli_ip).arg(cli_port);
+
+    if(curWarnIp.compare(cli_ip)!=0){
+        cliSocket->disconnectFromHost();
+        cliSocket->abort();
+        cliSocket->close();
+        delete cliSocket;
+        cliSocket = nullptr;
+        return;
+    }
+
     connect(cliSocket,&QTcpSocket::readyRead,this,&WarnTcpServer::slot_readByte);
     //get client's ip and port
 
-    //    QString cli_ip = cliSocket->peerAddress().toString();
-    //    quint16 cli_port = cliSocket->peerPort();
-    //    QString temp = QString("[%1:%2 connect success]").arg(cli_ip).arg(cli_port);
-    //    qDebug() << temp;
+
+
 }
 
 void WarnTcpServer::slot_readByte()
@@ -144,10 +160,8 @@ void WarnTcpServer::HttpMsgCallBack1(QByteArray arr)
 
     while(msgdata.length() >= needlen)
     {
-
         if(!isFindHead)
         {
-
             if(msgdata.at(0) == D_SYNCDATA_HEAD0 && msgdata.at(1)==D_SYNCDATA_HEAD1)
             {
 

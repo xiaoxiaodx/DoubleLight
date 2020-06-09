@@ -65,6 +65,8 @@ signals:
 
     void signal_connected(bool istrue,QString ip);
 
+
+    void signal_tcpipChange(QString str);
 public slots:
     void slot_recH264(char *buff,int len,quint64 time);
     void slot_recH265(char *buff,int len,quint64 time);

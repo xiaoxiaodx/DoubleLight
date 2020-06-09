@@ -69,7 +69,10 @@ void XVideo::startNormalVideo(float tp,QString deviceinfo)
 
     if(listip.size() >= 4){
 
-        if(m_ip.compare(m_ip)!=0){
+
+
+        if(m_ip.compare(deviceinfo)!=0){
+
             destroyAllFunction();
         }
         m_ip = deviceinfo;
@@ -202,6 +205,8 @@ void XVideo::createTcpThread()
         worker->moveToThread(m_readThread);
         m_readThread->start();
 
+
+
         emit signal_connentSer(m_ip,555);
     }
 }
@@ -221,7 +226,7 @@ void XVideo::createHttpApi(){
 
         qDebug()<<" createHttpApi   "<<m_ip;
         httpThread = new QThread;
-        httpDevice = new CHttpApiDevice("INEW-004122-JWGWM", m_ip,8564, "gzroot@u", "gzroot@p");
+        httpDevice = new CHttpApiDevice("INEW-004122-JWGWM", m_ip,8564, "gzuser@u", "gzuser@p");
         connect(httpDevice, &CHttpApiDevice::signal_ReadMsg, this, &XVideo::slog_HttpmsgCb);
         connect(this, &XVideo::signal_getInitPar,httpDevice,&CHttpApiDevice::slot_httpGetInitPar);
         connect(this, &XVideo::signal_httpParSet,httpDevice,&CHttpApiDevice::slot_httpParSet);
@@ -237,8 +242,10 @@ void XVideo::createHttpApi(){
 
         emit signal_createHttp();
 
+
     }else
         emit signal_createHttp();
+
 }
 //获取型号后在获取其他参数
 void XVideo::slot_httpConnected()
@@ -306,16 +313,13 @@ void XVideo::paint(QPainter *painter)
 
 //    qDebug()<<""<<tempImgResW;
 
-    // DebugLog::getInstance()->writeLog("painter kejianguang start***");
-
 
     painter->drawImage(QRect(0,0,width(),height()), *pRenderImginfo.pImg);
 
 
     return;
 
-        if(tempImgResW == 0)
-            return;
+
     qreal kX = (qreal)this->width()/(qreal)tempImgResW;
     qreal kY = (qreal)this->height()/(qreal)tempImgResH;
 
@@ -331,7 +335,6 @@ void XVideo::paint(QPainter *painter)
 
     qreal kshowX = (qreal)rectF.width()/(qreal)this->width();
     qreal kshowY = (qreal)rectF.height()/(qreal)this->height();
-
 
     //画温度矩形
     for (int i=0;i<pRenderImginfo.listRect.size();i++) {

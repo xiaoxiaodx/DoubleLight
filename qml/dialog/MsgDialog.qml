@@ -71,6 +71,7 @@ Popup {
             anchors.top: parent.top
             anchors.topMargin: 5
             source: "qrc:/images/img_close.png"
+
             MouseArea{
                 anchors.fill: parent
                 onClicked: root.close();

@@ -54,6 +54,7 @@ Popup {
             anchors.left: img.right
             anchors.leftMargin: 16
             anchors.verticalCenter: img.verticalCenter
+            font.pixelSize: lKhmer===curLanguage?28:14
             text: qsTr("text")
         }
         Rectangle{
@@ -71,7 +72,7 @@ Popup {
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.verticalCenter: parent.verticalCenter
                 elide: Text.ElideMiddle
-                font.pixelSize: 14
+                font.pixelSize: lKhmer===curLanguage?28:14
                 color: "#3B84F6"
                 text: qsTr("确定")
             }
@@ -101,7 +102,7 @@ Popup {
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.verticalCenter: parent.verticalCenter
                 elide: Text.ElideMiddle
-                font.pixelSize: 14
+                font.pixelSize: lKhmer===curLanguage?28:14
                 color: "#909399"
                 text: qsTr("取消")
             }
@@ -155,6 +156,35 @@ Popup {
         case lLithuanian:
             txtCancel.text = "Taip"
             txtEnsure.text = "Ne"
+
+            break;
+        case ltuerqi:
+            txtCancel.text = "İptal"
+            txtEnsure.text = "Onayla"
+            break;
+        case ltuerqi1:
+            txtCancel.text = "İptal"
+            txtEnsure.text = "Onayla"
+            break;
+        case lputaoya:
+            txtCancel.text = "Cancelar"
+            txtEnsure.text = "confirme"
+            break;
+        case lxibanya:
+            txtCancel.text = "Cancelar"
+            txtEnsure.text = "Confirmar"
+            break;
+        case lfayu:
+            txtCancel.text = "Annuler"
+            txtEnsure.text = "Confirmer"
+            break;
+        case lniboer:
+            txtCancel.text = "रद्ध गर्नुहोस"
+            txtEnsure.text = "निश्चित गर्नुहोस"
+            break;
+        case lKhmer:
+            txtCancel.text = "បោះបង់"
+            txtEnsure.text = "យល់ព្រម"
             break;
         }
     }

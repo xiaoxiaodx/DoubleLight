@@ -35,14 +35,49 @@ Window {
 
     property int windowSizeState: 1 //1：正常，0最小化，2最大化
 
+
+//    property int curLanguage: 1
+//    property int lChinese: 0
+//    property int lEnglish: 1
+//    property int lItaly: 2
+//    property int lKorean: 3
+//    property int lRussian: 4
+//    property int lLithuanian: 5
+//    property int ltuerqi: 6
+//    property int ltuerqi1: 7
+//    property int lputaoya: 8
+//    property int lxibanya: 9
+//    property int lfayu: 10
+//    property int lniboer: 11
+//    property int lKhmer:12
+
+
+
+
     property int curLanguage: 1
     property int lChinese: 0
     property int lEnglish: 1
-    property int lItaly: 2
-    property int lKorean: 3
-    property int lRussian: 4
-    property int lLithuanian: 5
+    property int lRussian: 2
+    property int ltuerqi: 3
+    property int lxibanya: 4
+    property int lfayu: 5
+    property int lItaly: 6
+    property int lLithuanian: 7
+    property int lKorean: 8
+    property int ltuerqi1: 9
+    property int lputaoya: 10
+    property int lniboer: 11
+    property int lKhmer:12
 
+
+
+
+//    ListElement{showStr:"简体中文"}
+//    ListElement{showStr:"English"}
+//    ListElement{showStr:"Russian"}
+//    ListElement{showStr:"Türkçe"}//土耳其
+//    ListElement{showStr:"Español"}//西班牙
+//    ListElement{showStr:"Française"}//法语
 
     signal s_setLanguage(var typeL);
 
@@ -85,8 +120,14 @@ Window {
                                curLanguage===lKorean?"나가시겠습니까?":
                                curLanguage===lItaly?"Uscita Dal Sistema?":
                                curLanguage===lRussian?"Подтвердить выход?":
-                               curLanguage===lLithuanian?"Patvirtinti išėjimą?":"";
-
+                               curLanguage===lLithuanian?"Patvirtinti išėjimą?":
+                                curLanguage=== ltuerqi?"Çıkış için onayla?":
+                                           curLanguage===ltuerqi1?"Onayla ve çık ?":
+                                           curLanguage===lputaoya?"Confirmar para sair?":
+                                           curLanguage===lxibanya?"Confirmar salida?":
+                                           curLanguage===lfayu?"Confirmer pour quitter?":
+                                           curLanguage===lniboer?"बाहिर निस्कने हो?":
+                                            curLanguage===lKhmer?"យល់ព្រមចាកចេញ?":"";
             askDialog.imgSrc = "qrc:/images/icon_question.png"
             askDialog.curType = askDialog.exeClose
             askDialog.open();
@@ -232,18 +273,18 @@ Window {
 
     AskDialog{
         id:askDialog
-
         onS_CurTypeMsg: {
 
             if(askDialog.exeClose === type)
                 Qt.quit();
         }
-
     }
 
     MsgDialog{
         id:msgdialog
     }
+
+
 
     Loader{
         id:loaderToast

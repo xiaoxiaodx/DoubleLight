@@ -19,6 +19,7 @@ void J07Device::createTcpThread()
 
         // connect(worker,&TcpWorker::signal_sendH264,this,&J07Device::slot_recH264,Qt::DirectConnection);
         connect(worker,&TcpWorker::signal_sendImg,this,&J07Device::slot_recImg,Qt::DirectConnection);
+        connect(worker,&TcpWorker::signal_connected,this,&J07Device::slot_tcpConnected);
         connect(this,&J07Device::signal_connentSer,worker,&TcpWorker::creatNewTcpConnect);
         connect(m_readThread,&QThread::finished,worker,&TcpWorker::deleteLater);
         connect(m_readThread,&QThread::finished,m_readThread,&QThread::deleteLater);
@@ -29,6 +30,47 @@ void J07Device::createTcpThread()
     }
 }
 
+//流连接成功
+void J07Device::slot_tcpConnected(){
+
+
+    qDebug()<<" createTcpThread "<<"*******rect*************";
+
+    if(workerRect != nullptr)
+    {
+        workerRect->forceStopParse();
+        m_readRectThread->quit();
+        workerRect = nullptr;
+        m_readRectThread = nullptr;
+    }
+
+    workerRect = new TcpWorker(10);
+    m_readRectThread = new QThread;
+
+    connect(workerRect,&TcpWorker::signal_sendRectInfo,this,&J07Device::slot_recRectInfo,Qt::DirectConnection);
+    //connect(workerRect,&TcpWorker::signal_connected,this,&J07Device::slot_tcpConnected);
+    connect(this,&J07Device::signal_connentSer1,workerRect,&TcpWorker::creatNewTcpConnect);
+    connect(m_readRectThread,&QThread::finished,workerRect,&TcpWorker::deleteLater);
+    connect(m_readRectThread,&QThread::finished,m_readRectThread,&QThread::deleteLater);
+    workerRect->moveToThread(m_readRectThread);
+    m_readRectThread->start();
+
+    emit signal_connentSer1(m_ip,557);
+
+}
+
+void J07Device::slot_recRectInfo(int tempdisplay,QVariantList listmap){
+
+    //qDebug()<<"slot_recRectInfo "<<tempdisplay;
+
+    listrectinfo.clear();
+    for (int i=0;i<listmap.size();i++) {
+        QVariantMap map = listmap.at(i).toMap();
+        listrectinfo.append(map);
+    }
+
+    emit signal_sendRect(tempdisplay,listrectinfo);
+}
 
 void J07Device::slot_recImg(QImage *img,int len,quint64 time,int resw,int resh){
 
@@ -38,9 +80,21 @@ void J07Device::slot_recImg(QImage *img,int len,quint64 time,int resw,int resh){
         info.pImg =img;
         info.listRect.clear();
         XVideoTemp::mutex.lock();
-        if(XVideoTemp::listBufferImginfo.size() < XVideoTemp::maxBuffLen)
+        if(XVideoTemp::listBufferImginfo.size() < XVideoTemp::maxBuffLen){
+
+            info.tempdisplay = tempdisplay;
+
+            if(isupdateListRect){
+                for (int i=0;i<listrectinfo.size();i++) {
+                    QVariantMap map = listrectinfo.at(i).toMap();
+                    // qDebug()<<"slot_recImg  "<<i<<":"<<map.value("x").toInt();
+                    info.listRect.append(map);
+                }
+                isupdateListRect = false;
+            }
+
             XVideoTemp::listBufferImginfo.append(info);
-        else{
+        }else{
             if(info.pImg != nullptr)
                 delete info.pImg;
         }
@@ -95,7 +149,15 @@ void J07Device::forceFinish()
 
         worker = nullptr;
         m_readThread = nullptr;
+    }
 
+
+    if(workerRect != nullptr)
+    {
+        workerRect->forceStopParse();
+        m_readRectThread->quit();
+        workerRect = nullptr;
+        m_readRectThread = nullptr;
     }
 
     deleteLater();

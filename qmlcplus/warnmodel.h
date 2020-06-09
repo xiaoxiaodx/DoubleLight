@@ -19,6 +19,7 @@ public:
         ImgName,
         AbsolutePath
     };
+
     Q_INVOKABLE void funFlushWarnInfo(QString capturePaht,QString logFileName);
     Q_INVOKABLE void funDeleteIndex(int index);
     Q_INVOKABLE int funFindIndex(QString h,QString m,QString s);
