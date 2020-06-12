@@ -394,9 +394,12 @@ Rectangle {
                     MouseArea{
                         anchors.fill: parent
                         onClicked:{
-                            console.debug("absolutePath:"+model.absolutePath)
-                            imgshow.source ="file:///"+ model.absolutePath
-                            imgpop.open();
+//                            console.debug("absolutePath:"+model.absolutePath)
+//                            imgshow.source ="file:///"+ model.absolutePath
+//                            imgpop.open();
+
+                            videopop.videoSrc = "file:///"+ model.absolutePath
+                            videopop.open();
                         }
                     }
                 }
@@ -516,6 +519,13 @@ Rectangle {
         warnmodel.funProcessPushAlarm1(deviceconfig.getScrennShotPath(),map);
     }
 
+    DialogPlayVideo{
+        id:videopop
+        x:(parent.width-720)/2
+        y:(parent.height-520)/2
+        width: 720
+        height: 520
+    }
 
 
     Popup {

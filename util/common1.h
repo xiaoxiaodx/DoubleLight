@@ -57,7 +57,6 @@ typedef struct _QueueVideoInputInfo_T{
     unsigned char staty0; //编码类型
     VideoReslution_T reslution;
     int bitrate;
-    //unsigned long long  pts;//ms 级别
     unsigned int highPts;
     unsigned int lowPts;//ms 级别
 }QueueVideoInputInfo_T;

@@ -409,7 +409,10 @@ void TcpWorker::parseRecevieData()
 
                 quint64 ptsH = 0x00000000ffffffff & infoV.highPts;
                 quint64 ptsL = 0x00000000ffffffff & infoV.lowPts;
-                quint64 pts = ptsH *256 *255*256 + ptsL;
+                quint64 ptsH1 = ptsH * 256*256*256*256;
+                quint64 pts = ptsH1 + ptsL;
+
+                qDebug()<<"pts:"<<ptsH<<"   "<<ptsL<<"   "<<pts;
 
                 if(myType == 0)
                     emit signal_sendH264(readDataBuff.data(),m_streamDateLen,pts,vResW,vResH);

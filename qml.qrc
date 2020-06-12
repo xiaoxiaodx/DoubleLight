@@ -113,5 +113,6 @@
         <file>images/icon_msg.png</file>
         <file>images/warn_nomask.png</file>
         <file>qml/simpleControl/MyComBox1.qml</file>
+        <file>qml/dialog/DialogPlayVideo.qml</file>
     </qresource>
 </RCC>

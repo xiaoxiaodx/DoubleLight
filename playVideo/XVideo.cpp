@@ -441,7 +441,6 @@ void XVideo::slot_recH264(char* h264Arr,int arrlen,quint64 time)
 
                 qDebug()<<"图片为空";
             }
-
     }
 }
 
