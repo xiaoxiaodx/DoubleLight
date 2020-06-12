@@ -1283,26 +1283,9 @@ Rectangle {
             tempdisplay:cmbTempTypeSelect.currentIndex,
             cmd:"setiradinfo"}
         
-        
         s_sendcommoncmd(map);
-        
-        
-        //        var typeStr;
-        //        if(checkh264.checked)
-        //            typeStr = "h264"
-        //        if(checkh265.checked)
-        //            typeStr = "h265"
-        //        var map1 = {
-        //            cmd:"setvideoencodeparam",
-        //            encoding:typeStr
-        //        }
-        //        s_sendcommoncmd(map1);
-        
-        
-        
+
         var kuandongt = swichKuandongtai.checked?1:0
-        
-        
         if(imagparamwdr !== kuandongt)
             wdrisChange = true
         else

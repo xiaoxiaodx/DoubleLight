@@ -200,9 +200,7 @@ bool CHttpApiDevice::createConnect(){
 
 
     g_tcpsocket->connectToHost(this->g_ip,this->g_port);
-
     if(g_tcpsocket->waitForConnected(200)){
-
         return true;
     }else{
         return false;
@@ -291,6 +289,11 @@ int CHttpApiDevice::HttpMsgCallBack(char * pData) {
 
                                 map.insert("cmd","getdeviceinfo");
                                 slot_httpParSet(map);
+
+
+                                if(warnPushMap.value("switchSubscription").toBool()){
+                                    HttpSubscriptionWarn(warnPushMap, "0");
+                                }
 
                                 return 0;
                             }
@@ -582,11 +585,11 @@ bool CHttpApiDevice::send_httpParSet(QMap<QString,QVariant> map)
 
 
 
-        if(!strlen(this->sessionId)){
-            DebugLog::getInstance()->writeLog("sessionid is invalid :"+QString(this->sessionId));
-            listMsg.clear();
-            LoginDevice("0");
-        }
+    if(!strlen(this->sessionId)){
+        DebugLog::getInstance()->writeLog("sessionid is invalid :"+QString(this->sessionId));
+        listMsg.clear();
+        LoginDevice("0");
+    }
 
 
     QString cmd = map.value("cmd").toString();
