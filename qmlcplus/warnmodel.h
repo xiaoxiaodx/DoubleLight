@@ -20,6 +20,8 @@ public:
         AbsolutePath
     };
 
+    Q_INVOKABLE void setClipbord(QString str);
+
     Q_INVOKABLE void funFlushWarnInfo(QString capturePaht,QString logFileName);
     Q_INVOKABLE void funDeleteIndex(int index);
     Q_INVOKABLE int funFindIndex(QString h,QString m,QString s);
@@ -29,7 +31,7 @@ public:
 
     Q_INVOKABLE void funProcessPushAlarm(QString path,QVariantMap map);
     Q_INVOKABLE void funProcessPushAlarm1(QString path,QVariantMap map);
-
+    Q_INVOKABLE void funProcessPushAlarm2(QString path,QVariantMap map);
     //截屏
     Q_INVOKABLE bool funScreenShoot(QString path,QQuickWindow *quic,int capx,int capy,int capw,int caph,float warnTemp);
     Q_INVOKABLE bool funScreenShoot1(QString path,QQuickWindow *quic,int capx,int capy,int capw,int caph,float warnTemp,int tempType);
@@ -46,6 +48,8 @@ signals:
 private:
     void removeIndex(int index);
     void removeAll();
+
+    void writeLogInfo(QString );
 
     QList<WarnModelData*> m_listWarn;
     QString curDate = "";

@@ -57,7 +57,8 @@ SOURCES += \
     qmlcplus/updateprogressc.cpp \
     qmlcplus/upcontrol.cpp \
     protocol/warntcpserver.cpp \
-    consoleprocess.cpp
+    consoleprocess.cpp \
+    playVideo/xvideoreplay1.cpp
 
 HEADERS += \
     playVideo/XVideo.h \
@@ -99,7 +100,8 @@ HEADERS += \
     qmlcplus/updateprogressc.h \
     qmlcplus/upcontrol.h \
     protocol/warntcpserver.h \
-    consoleprocess.h
+    consoleprocess.h \
+    playVideo/xvideoreplay1.h
 
 #RESOURCES += qml.qrc
 

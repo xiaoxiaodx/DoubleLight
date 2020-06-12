@@ -1,6 +1,6 @@
 import QtQuick.Controls 2.5
 import QtQuick 2.0
-import WarnModel 1.0
+
 import "../playbackVideo"
 import "../dialog"
 Rectangle {
@@ -22,33 +22,7 @@ Rectangle {
         warnmodel.set
     }
     property string curDateStr: ""
-    WarnModel{
-        id:warnmodel
-        // Component.objectName: warnmodel.funFlushWarnInfo(deviceconfig.getScrennShotPath(),curDateStr);
 
-        onSignal_sendWarnMsg:{
-
-
-
-            console.debug("push warn :" +time +"    "+type +"   "+  path +"   "+ tempvalue.toFixed(2))
-            switch(type){
-
-            case 80:
-                pushwarnmodel.numberOfAbnormalTemperaturePeople ++
-                break;
-            case 81:
-                pushwarnmodel.numberOfNormalPeople++
-                break;
-
-            case 82:
-                pushwarnmodel.numberOfNoMaskPeople++
-                break;
-            }
-
-            pushwarnmodel.numberOfPeople ++ ;
-            pushwarnmodel.insert(0,{"warnTime":time,"absolutePath":path,"warnTemp":tempvalue.toFixed(2),"temptype":type})
-        }
-    }
 
     function screenShot(path,object,mx,my,mw,mh,temp){
         warnmodel.funScreenShoot(path,object,mx ,my,mw,mh,temp);
@@ -513,7 +487,7 @@ Rectangle {
 
     function funProcessPushAlarm(map){
 
-        warnmodel.funProcessPushAlarm1(deviceconfig.getScrennShotPath(),map);
+        warnmodel.funProcessPushAlarm2(deviceconfig.getScrennShotPath(),map);
     }
 
 

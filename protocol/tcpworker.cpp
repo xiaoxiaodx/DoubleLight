@@ -65,10 +65,10 @@ void TcpWorker::creatNewTcpConnect(QString ip, int port)
             timerConnectSer->start(3000);
     }
     /*else{
-
         tcpSocket->connectToHost(this->ip,this->port);
         timerConnectSer->start(3000);
     }*/
+
     DebugLog::getInstance()->writeLog("tcp连接创建完成"+m_did);
 }
 
@@ -84,11 +84,13 @@ void TcpWorker::slot_timerConnectSer()
 {
     QMutexLocker locker(&mMutex);
     if(isForceFinish){
+
         timerConnectSer->stop();
         disconnect(timerConnectSer,&QTimer::timeout,this,&TcpWorker::slot_timerConnectSer);
         timerConnectSer->deleteLater();
 
     }else{
+
         if(!isConnected){
 
             if(tcpSocket != nullptr){
@@ -99,7 +101,6 @@ void TcpWorker::slot_timerConnectSer()
                 readDataBuff.clear();
                 tcpSocket->connectToHost(this->ip,this->port);
             }
-
         }
 
         if(!isHavaData){
@@ -116,10 +117,13 @@ void TcpWorker::slot_tcpConnected()
 {
 
     DebugLog::getInstance()->writeLog( "tcp连接成功"+QString::number(myType));
+
     isConnected = true;
+
     slot_tcpSendAuthentication(m_did,m_usrName,m_password);
 
     emit signal_connected();
+
 }
 
 void TcpWorker::slot_tcpDisconnected()
@@ -193,6 +197,7 @@ int TcpWorker::saveVideoInfo(QByteArray &arr)
 
     return datalen;
 }
+
 int TcpWorker::saveAudioInfo(QByteArray &arr)
 {
 

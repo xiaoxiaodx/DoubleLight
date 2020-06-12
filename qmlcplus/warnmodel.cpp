@@ -4,6 +4,8 @@
 #include <QFile>
 #include <QTextStream>
 #include "debuglog.h"
+#include <QGuiApplication>
+#include <QClipboard>
 
 /*
     在报警时会往文件末尾写入一行警报信息，所以就意味着时间大的在文件的后面
@@ -20,6 +22,10 @@ WarnModel::WarnModel(QObject *parent ):QAbstractListModel(parent)
     //    m_listWarn.append(new WarnModelData(true,"19911103","1111111","sasads","aaaaa"));
 }
 
+void WarnModel::setClipbord(QString str)
+{
+    QGuiApplication::clipboard()->setText(str,QClipboard::Clipboard);
+}
 
 int WarnModel::rowCount(const QModelIndex &) const
 {
@@ -235,7 +241,6 @@ int WarnModel::funFindIndex(QString h,QString m,QString s){
                 minDeT = absTmpDt;
                 findIndex = i;
             }
-
         }
     }
 
@@ -286,9 +291,143 @@ void WarnModel::funDeleteSelect(){
         file.close();
     }
 }
+//hardisk 第二次需求变更,存人脸检测图片，发送给qml显示，同时存版本发来的抓拍，并存日志列表
+void WarnModel::funProcessPushAlarm2(QString path,QVariantMap map){
+
+    qDebug()<<"funProcessPushAlarm********  "<<map.value("year").toInt() <<"    "<<map.value("month").toInt()<<"    "<<map.value("day").toInt();
+    QDate tmpDate(map.value("year").toInt(),map.value("month").toInt(),map.value("day").toInt());
+    QTime tmptime(map.value("hour").toInt(),map.value("min").toInt(),map.value("sec").toInt());
+    float warnTemp = map.value("temperature").toFloat();
+    int alarmtype = map.value("alarmtype").toInt();
+    QString imgData = map.value("imagedata").toString();
+    QString snapimagedata = map.value("snapimagedata").toString();
 
 
-//hardisk 第一次需求变更
+    QString datestr = tmpDate.toString("yyyyMMdd");
+
+    QByteArray imgArrBase64 = imgData.toLatin1();
+    QByteArray imgArr = QByteArray::fromBase64(imgArrBase64);
+
+    QDateTime curDateTime(tmpDate,tmptime);
+
+    QString  curDatetimeStr = curDateTime.toString("yyyyMMdd_hhmmss");
+
+    QString desFileDir = path+"/image1";
+
+    QString imgAbsolutePath = path+"/image1/"+curDatetimeStr+".jpeg";
+
+    qDebug()<<" tmpDate "<<tmpDate<<"   tmptime"<<tmptime;
+
+    QDir dir;
+    if (!dir.exists(desFileDir)){
+        bool res = dir.mkpath(desFileDir);
+        if(res)
+            DebugLog::getInstance()->writeLog("slot_screenShot create new dir is succ");
+        else
+            DebugLog::getInstance()->writeLog("slot_screenShot create new dir is fail");
+    }
+
+    //创建相对路径
+    if(!QDir::setCurrent(desFileDir)){
+        DebugLog::getInstance()->writeLog("slot_screenShot set relative dir is false");
+        return;
+    }
+
+
+
+    QFileInfo fileInfo(imgAbsolutePath);
+    if(fileInfo.isFile()){
+        int indx = imgAbsolutePath.indexOf(".");
+        imgAbsolutePath.insert(indx,"1");
+    }
+
+    QFile file(imgAbsolutePath);
+    if(file.open(QIODevice::WriteOnly)){
+        file.write(imgArr,imgArr.length());
+
+        qDebug()<<"funProcessPushAlarm******** file open:"+imgAbsolutePath;
+        file.close();
+        //存完文件 将消息发给qml
+        emit signal_sendWarnMsg(alarmtype,imgAbsolutePath,curDateTime.toString("yyyy-MM-dd hh:mm:ss"),warnTemp);
+    }else {
+        DebugLog::getInstance()->writeLog("slot_screenShot open log file is fail");
+        return ;
+    }
+
+    //抓拍
+    QByteArray snapimgArrBase64 = snapimagedata.toLatin1();
+    QByteArray snapimgArr = QByteArray::fromBase64(snapimgArrBase64);
+
+    QString desFileDir1 = path+"/image";
+
+    QDir dir1;
+    if (!dir1.exists(desFileDir1)){
+        bool res = dir1.mkpath(desFileDir1);
+        if(res)
+            DebugLog::getInstance()->writeLog("slot_screenShot create new dir is succ");
+        else
+            DebugLog::getInstance()->writeLog("slot_screenShot create new dir is fail");
+    }
+
+    QString imgAbsolutePath1 = path+"/image/"+curDatetimeStr+".jpeg";
+
+    QFileInfo fileInfo1(imgAbsolutePath1);
+    if(fileInfo1.isFile()){
+        int indx = imgAbsolutePath1.indexOf(".");
+        imgAbsolutePath1.insert(indx,"1");
+    }
+
+    QFile file1(imgAbsolutePath1);
+    if(file1.open(QIODevice::WriteOnly)){
+        file1.write(snapimgArr,snapimgArr.length());
+        file1.close();
+
+        //存报警图片信息
+        /*  告警名录下 建立一个日志文件夹 一个图片文件夹，
+                    日志文件夹下放30个日志文件，一个日志文件代表一天，
+                    图片文件夹下放入告警抓拍图片
+                */
+        QString warnLogAbsolutePath = path + "/log";
+        QString warnLogAbsoluteFileName = warnLogAbsolutePath + "/"+curDateTime.date().toString("yyyyMMdd")+".log";
+        if(!dir.exists(warnLogAbsolutePath)){
+            bool res = dir.mkpath(warnLogAbsolutePath);
+            if(res)
+                DebugLog::getInstance()->writeLog("slot_screenShot create new log dir is succ");
+            else
+                DebugLog::getInstance()->writeLog("slot_screenShot create new log dir is fail");
+        }
+
+        /*  抓拍是一种频繁的操作 ，为了优化性能，
+            在抓拍时往文件尾写数据，因为抓拍时间都是顺序后延的
+            同时往数据模型前添加数据
+        */
+        QFile imgInfofile(warnLogAbsoluteFileName);
+        if(imgInfofile.open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Append)){
+            QString tempStr = QString::number(warnTemp,'f',2);
+            QString imgInfoStr = imgAbsolutePath1+" "+tempStr+" "+curDatetimeStr+".jpeg";
+            QTextStream out(&imgInfofile);
+            out <<imgInfoStr << "\n";
+            imgInfofile.close();
+
+            QString date = curDateTime.toString("yyyy-MM-dd");
+            QString time = curDateTime.toString("hh:mm:ss");
+
+            //是当前日期才加入列表日志
+            if(curDate.compare(datestr)==0){
+                beginInsertRows(QModelIndex(),0,0);
+                m_listWarn.insert(0,new WarnModelData(curSelect,date+" "+time,tempStr,curDatetimeStr,imgAbsolutePath1));
+                endInsertRows();
+            }
+
+        }else {
+            DebugLog::getInstance()->writeLog("slot_screenShot open log file is fail");
+            return ;
+        }
+    }
+
+}
+
+//hardisk 第一次需求变更,存人脸检测图片，并保存本地
 void WarnModel::funProcessPushAlarm1(QString path,QVariantMap map){
 
     qDebug()<<"funProcessPushAlarm********  "<<map.value("year").toInt() <<"    "<<map.value("month").toInt()<<"    "<<map.value("day").toInt();
@@ -346,32 +485,18 @@ void WarnModel::funProcessPushAlarm1(QString path,QVariantMap map){
         DebugLog::getInstance()->writeLog("slot_screenShot open log file is fail");
         return ;
     }
-
-
 }
 
 //hardisk 第一次需求
 void WarnModel::funProcessPushAlarm(QString path,QVariantMap map)
 {
 
-    //    callbackMap.insert("cmd",cmd);
-    //    callbackMap.insert("msgid",msgid);
-    //    callbackMap.insert("alarmtype",object.value("data").toObject().value("alarmtype").toInt());
-    //    callbackMap.insert("year",object.value("data").toObject().value("alarmtime").toObject().value("year").toInt());
-    //    callbackMap.insert("mouth",object.value("data").toObject().value("alarmtime").toObject().value("month").toInt());
-    //    callbackMap.insert("day",object.value("data").toObject().value("alarmtime").toObject().value("day").toInt());
-    //    callbackMap.insert("hour",object.value("data").toObject().value("alarmtime").toObject().value("hour").toInt());
-    //    callbackMap.insert("min",object.value("data").toObject().value("alarmtime").toObject().value("min").toInt());
-    //    callbackMap.insert("sec",object.value("data").toObject().value("alarmtime").toObject().value("sec").toInt());
-    //    callbackMap.insert("temperature",object.value("data").toObject().value("temperature").toString().toFloat());
-
-
     qDebug()<<"funProcessPushAlarm********  "<<map.value("year").toInt() <<"    "<<map.value("month").toInt()<<"    "<<map.value("day").toInt();
     QDate tmpDate(map.value("year").toInt(),map.value("month").toInt(),map.value("day").toInt());
     QTime tmptime(map.value("hour").toInt(),map.value("min").toInt(),map.value("sec").toInt());
     float warnTemp = map.value("temperature").toFloat();
     int alarmtype = map.value("alarmtype").toInt();
-    QString imgData = map.value("imagedata").toString();
+    QString imgData = map.value("snapimagedata").toString();
 
 
 
@@ -462,7 +587,6 @@ void WarnModel::funProcessPushAlarm(QString path,QVariantMap map)
             DebugLog::getInstance()->writeLog("slot_screenShot open log file is fail");
             return ;
         }
-
     }
 
 }

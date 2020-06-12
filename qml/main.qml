@@ -4,7 +4,7 @@ import QtQuick.Window 2.12
 import QtQml 2.12
 
 import "./dialog"
-
+import WarnModel 1.0
 
 Window {
 
@@ -87,6 +87,33 @@ Window {
         console.debug("visibly change "+visibility)
     }
 
+    WarnModel{
+        id:warnmodel
+        // Component.objectName: warnmodel.funFlushWarnInfo(deviceconfig.getScrennShotPath(),curDateStr);
+
+        onSignal_sendWarnMsg:{
+
+
+
+            console.debug("push warn :" +time +"    "+type +"   "+  path +"   "+ tempvalue.toFixed(2))
+            switch(type){
+
+            case 80:
+                pushwarnmodel.numberOfAbnormalTemperaturePeople ++
+                break;
+            case 81:
+                pushwarnmodel.numberOfNormalPeople++
+                break;
+
+            case 82:
+                pushwarnmodel.numberOfNoMaskPeople++
+                break;
+            }
+
+            pushwarnmodel.numberOfPeople ++ ;
+            pushwarnmodel.insert(0,{"warnTime":time,"absolutePath":path,"warnTemp":tempvalue.toFixed(2),"temptype":type})
+        }
+    }
 
     ListModel{
         id:pushwarnmodel
@@ -267,7 +294,6 @@ Window {
                 adjustWindow(MainContent.ADJUSTW.WBOTTOM,0,offsetY);
             }
             //setDlgPoint(offset.x, 0)
-
         }
     }
 
@@ -305,7 +331,6 @@ Window {
             maxWid:main.width/2
         }
     }
-
 
     function showToast(stri){
         toastStr = stri;

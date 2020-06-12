@@ -151,9 +151,10 @@ typedef struct _PushFaceAlarmMsg_T
 
 #include <QJsonParseError>
 #include <QJsonObject>
-
+#include <QDateTime>
 void WarnTcpServer::HttpMsgCallBack1(QByteArray arr)
 {
+
 
     msgdata.append(arr);
     int needlen = 8;
@@ -187,7 +188,7 @@ void WarnTcpServer::HttpMsgCallBack1(QByteArray arr)
 
         PushFaceAlarmMsg_T *faceAlarm = (PushFaceAlarmMsg_T*)msgdata.data();
 
-        qDebug()<<"faceAlarm->datalen"<<faceAlarm->datalen;
+       // qDebug()<<"faceAlarm->datalen"<<faceAlarm->datalen;
 
         callbackMap.insert("alarmtype",faceAlarm->alarmType);
         callbackMap.insert("year",faceAlarm->alarmTime.curTime.year);
@@ -197,6 +198,14 @@ void WarnTcpServer::HttpMsgCallBack1(QByteArray arr)
         callbackMap.insert("min",faceAlarm->alarmTime.curTime.min);
         callbackMap.insert("sec",faceAlarm->alarmTime.curTime.sec);
         callbackMap.insert("temperature",faceAlarm->temperature);
+
+
+        QDate tmpDate(callbackMap.value("year").toInt(),callbackMap.value("month").toInt(),callbackMap.value("day").toInt());
+        QTime tmptime(callbackMap.value("hour").toInt(),callbackMap.value("min").toInt(),callbackMap.value("sec").toInt());
+
+        QDateTime datetime(tmpDate,tmptime);
+
+        qDebug()<<" datetime:"<<datetime.toString("yyyy-MM-dd hh:mm:ss");
 
         QByteArray imgarr;
         imgarr = msgdata.mid(44,faceAlarm->datalen);
@@ -260,6 +269,8 @@ int WarnTcpServer::HttpMsgCallBack(QByteArray arr) {
                 callbackMap.insert("temperature",object.value("data").toObject().value("temperature").toString().toFloat());
                 if(object.value("data").toObject().contains("imagedata"))
                     callbackMap.insert("imagedata",object.value("data").toObject().value("imagedata").toString());
+                if(object.value("data").toObject().contains("snapimagedata"))
+                    callbackMap.insert("snapimagedata",object.value("data").toObject().value("snapimagedata").toString());
             }
 
             emit signal_WarnMsg(callbackMap);

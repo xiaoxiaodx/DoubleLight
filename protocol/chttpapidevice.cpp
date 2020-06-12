@@ -288,6 +288,10 @@ int CHttpApiDevice::HttpMsgCallBack(char * pData) {
                                 slot_httpParSet(map);
                                 map.insert("cmd","getinftempcolor");
                                 slot_httpParSet(map);
+
+                                map.insert("cmd","getdeviceinfo");
+                                slot_httpParSet(map);
+
                                 return 0;
                             }
                         }
@@ -341,6 +345,9 @@ int CHttpApiDevice::HttpMsgCallBack(char * pData) {
                 callbackMap.insert("tempcontrol",object.value("data").toObject().value("ctrlparam").toObject().value("tempcontrol").toInt());
                 callbackMap.insert("tempdisplay",object.value("data").toObject().value("ctrlparam").toObject().value("tempdisplay").toInt());
                 callbackMap.insert("osdenable",object.value("data").toObject().value("osdenable").toInt());
+                callbackMap.insert("maskenable",object.value("data").toObject().value("maskenable").toInt());
+
+
 
             }else if("pushalarm" == cmd){
                 callbackMap.insert("alarmtype",object.value("data").toObject().value("alarmtype").toInt());
@@ -396,6 +403,8 @@ int CHttpApiDevice::HttpMsgCallBack(char * pData) {
                 callbackMap.insert("wdr",object.value("data").toObject().value("wdr").toInt());
 
 
+            }else if("getdeviceinfo" == cmd){
+                callbackMap.insert("softwarever",object.value("data").toObject().value("softwarever").toString());
             }
 
             DebugLog::getInstance()->writeLog("callbackMap:"+callbackMap.value("cmd").toString());
@@ -965,12 +974,16 @@ void CHttpApiDevice::HttpSetIraInfo(QVariantMap value,QString msgid)
 
     dataObj.insert("osdenable",value.value("osdenable").toInt());
 
+    dataObj.insert("maskenable", value.value("maskenable").toInt());
     alarmparamObj.insert("enable", value.value("alarmtempEnable").toInt());
     alarmparamObj.insert("alarmtemp", value.value("alarmtemp").toString().toDouble());
 
     ctrlparamObj.insert("tempdrift", value.value("tempdrift").toString().toInt());
     ctrlparamObj.insert("tempcontrol", value.value("tempcontrol").toString().toInt());
     ctrlparamObj.insert("tempdisplay", value.value("tempdisplay").toString().toInt());
+
+
+
 
     dataObj.insert("alarmparam", QJsonValue(alarmparamObj));
     dataObj.insert("ctrlparam", QJsonValue(ctrlparamObj));

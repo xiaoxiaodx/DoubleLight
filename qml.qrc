@@ -113,5 +113,9 @@
         <file>images/icon_msg.png</file>
         <file>images/warn_nomask.png</file>
         <file>qml/simpleControl/MyComBox1.qml</file>
+        <file>images/imgVersion.png</file>
+        <file>images/imgVersion_h.png</file>
+        <file>images/imgVersionCopy.png</file>
+        <file>images/imgVersionCopy_h.png</file>
     </qresource>
 </RCC>

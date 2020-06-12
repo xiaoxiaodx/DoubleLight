@@ -464,7 +464,7 @@ Rectangle {
             var tempcontrol = smap.tempcontrol;
             var osdenable = smap.osdenable;
             var tempdisplay = smap.tempdisplay;
-
+            var maskenable = smap.maskenable
             deviceconfig.setSwitchTempdisplay(tempdisplay);
             deviceconfig.tempcontrolcapMax = tempcontrolcaplevelMax
             deviceconfig.tempcontrolcapMin = tempcontrolcaplevelMin;
@@ -475,7 +475,7 @@ Rectangle {
             deviceconfig.setSwitchTime(osdenable)
             deviceconfig.setTempContrl(tempcontrol)
             deviceconfig.setSwitchWarn(alarmtempEnable)
-
+           deviceconfig.setSwithMask(maskenable)
 
         }else if(strcmd === "pushalarm"){
 
@@ -484,8 +484,9 @@ Rectangle {
             else{
 
 
-                if(deviceconfig.getSwitchScreenShot())
-                    warnmanger.screenShot1(deviceconfig.getScrennShotPath(),main,0 ,68,main.width,main.height-68-50-160-57,10,smap.alarmtype)
+//                if(deviceconfig.getSwitchScreenShot())
+//                    warnmanger.screenShot1(deviceconfig.getScrennShotPath(),main,0 ,68,main.width,main.height-68-50-160-57,10,smap.alarmtype)
+
 
                 warnmanger.funProcessPushAlarm(smap);
 
@@ -530,6 +531,8 @@ Rectangle {
             deviceconfig.imagparamwdr = smap.wdr
             deviceconfig.setWdr(smap.wdr);
 
+        }else if("getdeviceinfo" === strcmd){
+            mhomeStateBar.setVersionInfo(smap.softwarever);
         }else if("setimagparam" === strcmd){
             if(deviceconfig.wdrisChange){
                 msgdialog.width = 500
@@ -541,40 +544,19 @@ Rectangle {
                     txtstr = "wdr设置成功，设备正在重启"
                     break;
                 case lEnglish:
-                    txtstr = "The wdr setting is successful, the Camera is restarting"
-                    break;
-                case lItaly:
-                    txtstr = "La fotocamera si riavvierà dopo l'impostazione"
-                    break;
-                case lKorean:
-                     txtstr = "설정 후 카메라가 다시 시작됩니다"
+                    txtstr = "WDR is ON, Camera is rebooting"
                     break;
                 case lRussian:
-                     txtstr = "Камера перезагрузится после настройки"
-                    break;
-                case lLithuanian:
-                     txtstr = "Nustačius fotoaparatą, jis paleis iš naujo"
+                     txtstr = "WDR включен, камера перезагружается"
                     break;
                 case ltuerqi:
-                     txtstr = "Kamera ayarlandıktan sonra yeniden başlatılacak"
-                    break;
-                case ltuerqi1:
-                     txtstr = "Kamera ayarlandıktan sonra yeniden başlatılacak"
-                    break;
-                case lputaoya:
-                     txtstr = "A câmera será reiniciada após a configuração"
+                     txtstr = "WDR AÇIK, Kamera yeniden başlatılıyor"
                     break;
                 case lxibanya:
-                     txtstr = "La cámara se reiniciará después de configurar"
+                     txtstr = "WDR está encendido, la cámara se reinicia"
                     break;
                 case lfayu:
-                     txtstr = "La caméra redémarrera après le réglage"
-                    break;
-                case lniboer:
-                     txtstr = "क्यामेरा सेटिंग पछि रिस्टार्ट हुनेछ"
-                    break;
-                case lKhmer:
-                     txtstr = "កាមេរ៉ានឹងចាប់ផ្តើមឡើងវិញបន្ទាប់ពីកំណត់"
+                     txtstr = "Le WDR est activé, la caméra redémarre"
                     break;
                 }
                 msgdialog.msgStr = txtstr
@@ -651,8 +633,6 @@ Rectangle {
                 case lKhmer:
                      txtstr = "កាមេរ៉ានឹងចាប់ផ្តើមឡើងវិញបន្ទាប់ពីកំណត់"
                     break;
-
-
                 }
 
                 msgdialog.msgStr = txtstr;

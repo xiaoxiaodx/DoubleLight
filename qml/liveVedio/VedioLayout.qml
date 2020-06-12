@@ -385,16 +385,10 @@ Rectangle {
         var index = 0;
         switch(type){
         case lEnglish:
-            name3.text =  "No mask："
-            name2.text =  "Alarm："
+            name3.text =  "No Mask："
+            name2.text =  "Abnormal："
             name1.text = "Normal："
             name.text = "Amount："
-            break;
-        case lKorean:
-
-            break;
-        case lItaly:
-
             break;
         case lChinese:
             name3.text =  "未带口罩："
@@ -405,30 +399,26 @@ Rectangle {
         case lRussian:
             name3.text =  "Без маски："
             name2.text =  "аномальный："
-            name1.text = "нормальный："
-            name.text = "количество："
-            break;
-        case lLithuanian:
-
+            name1.text = "Аномальный："
+            name.text = "Всего："
             break;
         case ltuerqi:
             name3.text =  "Maske yok："
-            name2.text =  "Alarm："
+            name2.text =  "Abnormal："
             name1.text = "Normal："
-            name.text = "Miktar："
+            name.text = "Toplam："
             break;
         case lfayu:
             name3.text =  "Pas de masque："
-            name2.text =  "Alarme："
+            name2.text =  "Abnormal："
             name1.text = "Ordinaire："
             name.text = "Total："
             break;
-
         case lxibanya:
-            name3.text =  "Sin mascara："
-            name2.text =  "Alarma："
-            name1.text = "normal："
-            name.text = "Cantidad："
+            name3.text =  "Sin máscara："
+            name2.text =  "Abnormal："
+            name1.text = "Normal："
+            name.text = "Total："
             break
         }
     }

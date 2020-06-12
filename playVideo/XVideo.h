@@ -16,6 +16,12 @@
 #include "chttpapidevice.h"
 
 #include "debuglog.h"
+
+class H264Frame{
+public:
+    quint64 pts;//ms
+    char *data;
+};
 class XVideo : public QQuickPaintedItem
 {
     Q_OBJECT
@@ -83,6 +89,7 @@ protected:
 private:
     void createSearchIp();
     void createTcpThread();
+    void recordH264(char* data,int len,quint64 pts);
     FfmpegCodec *createFFmpegDecodec(QString type);
     void createHttpApi();
 
@@ -134,6 +141,12 @@ private:
 
     qreal tempImgResW =0;
     qreal tempImgResH =0;
+
+    bool startRecord = false;
+
+
+    QList<H264Frame> listH264;
+    int preBuffTime = 1500;//ms
 };
 
 #endif // XVideo_H

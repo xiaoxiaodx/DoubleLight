@@ -69,8 +69,6 @@ void XVideo::startNormalVideo(float tp,QString deviceinfo)
 
     if(listip.size() >= 4){
 
-
-
         if(m_ip.compare(deviceinfo)!=0){
             destroyAllFunction();
         }
@@ -79,7 +77,6 @@ void XVideo::startNormalVideo(float tp,QString deviceinfo)
         createTcpThread();
         return;
     }
-
 
     for (int i=0;i<listdeivceinfo.size();i++) {
 
@@ -171,6 +168,7 @@ FfmpegCodec * XVideo::createFFmpegDecodec(QString type)
     if(m_readThread != nullptr)
         connect(m_readThread,&QThread::finished,pffmpegCodec,&FfmpegCodec::deleteLater);
     return pffmpegCodec;
+
 }
 
 void XVideo::fun_sendCommonPar(QVariantMap map)
@@ -413,14 +411,25 @@ void XVideo::fun_setRectPar(int sx,int sy,int sw,int sh,int pw,int ph){
 
 
 
+void XVideo::recordH264(char* h264Arr,int arrlen,quint64 time)
+{
+
+
+
+    H264Frame h264Frame;
+    h264Frame.pts = time;
+    h264Frame.data = new char[arrlen];
+    mempcpy(h264Frame.data,h264Arr,arrlen);
+    listH264.append(h264Frame);
+}
 //tcpworker 线程
 void XVideo::slot_recH264(char* h264Arr,int arrlen,quint64 time)
 {
 
-    //qDebug()<<"slot_recH264 ";
+    //recordH264(h264Arr,arrlen,time);
+
     if(pffmpegCodecH264 == nullptr)
        pffmpegCodecH264 = createFFmpegDecodec("h264");
-
 
     if(pffmpegCodecH264 != nullptr){
 
@@ -440,7 +449,6 @@ void XVideo::slot_recH264(char* h264Arr,int arrlen,quint64 time)
 
                 qDebug()<<"图片为空";
             }
-
     }
 }
 
@@ -462,7 +470,6 @@ void XVideo::slot_recH265(char* h264Arr,int arrlen,quint64 time)
                     delete Img;
                 mMutex.unlock();
             }
-
     }
 }
 
@@ -543,6 +550,7 @@ void XVideo::fun_temMin(QVariant mvalue)
 {
 
 }
+
 void XVideo::fun_temOffset(QVariant mvalue)
 {
 

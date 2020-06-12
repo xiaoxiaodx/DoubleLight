@@ -34,13 +34,13 @@ Rectangle {
     
     signal s_sendcommoncmd(var mvalue);
     signal s_deviceUpdate()
-
-
+    
+    
     property int fontSize: curLanguage ===lKhmer?28:14
     property int lineeditfontSize: 14
     property color fontColor: "#333333"
-
-
+    
+    
     
     property string curDevTypeStr:"E03"
     //第一根左对齐线
@@ -51,7 +51,7 @@ Rectangle {
     property int tempdriftcapMin: -2
     property int tempcontrolcapMax: 6
     property int tempcontrolcapMin: 0
-
+    
     property int imagparammirror: -1
     property int imagparamflip: -1
     property int imagparambrightness: -1
@@ -61,7 +61,7 @@ Rectangle {
     property int imagparamsharpness: -1
     property int imagparamwdr: -1
     property bool wdrisChange: false
-
+    
     Settings {
         id:setting
         
@@ -142,18 +142,18 @@ Rectangle {
         setting.screenShotPath =  screenv.funIsExitCurCapturePath(setting.screenShotPath)
         setting.recordPath = screenv.funIsExitCurRecordPath(setting.recordPath)
     }
-
+    
     Rectangle{
         width: parent.width
         height: parent.height - mDeviceStateBar.height
-
+        
         color: "#DFE1E6"
         MouseArea{
             anchors.fill: parent
         }
         
         Component.onCompleted: isCreate = true;
-
+        
         Rectangle{
             id:rectcontent
             width: parent.width-40
@@ -161,7 +161,7 @@ Rectangle {
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.verticalCenter: parent.verticalCenter
             color: "#F8FAFD"
-
+            
             ScrollView{
                 id:scroll
                 width: rectcontent.width
@@ -536,7 +536,7 @@ Rectangle {
                         isNeedDoubleClickEdit: false
                         textLeftPadding:0
                         txtColor: Qt.rgba(0,0,0,0.65)
-
+                        
                         text: "38"
                         color: "#F8FAFD"
                         validator: RegExpValidator { regExp:  /(\d{1,3})([.,]\d{1,1})?$/ }
@@ -730,9 +730,9 @@ Rectangle {
                         anchors.verticalCenter: swichKuandongtai.verticalCenter
                         
                     }
-
-
-
+                    
+                    
+                    
                     Text {
                         id: labelResolution
                         text: qsTr("°C/°F")
@@ -742,13 +742,13 @@ Rectangle {
                         anchors.rightMargin: 20
                         anchors.verticalCenter: cmbTempTypeSelect.verticalCenter
                     }
-
+                    
                     ListModel{
                         id:reTempTypeSelectModel
                         ListElement{showStr:"℃"}
                         ListElement{showStr:"℉"}
                     }
-
+                    
                     MyComBox{
                         id:cmbTempTypeSelect
                         width:88
@@ -770,12 +770,12 @@ Rectangle {
                         bordColor:"#DEDFE3"
                         mRadius:2
                         model: reTempTypeSelectModel
-
+                        
                         onCurrentIndexChanged: {
-
+                            
                             if(cmbTempTypeSelect.currentIndex === 1){
                                 // (F（华氏知度）-32)÷1.8
-
+                                
                                 console.debug("*********    "+inputTem.text)
                                 var tempStr = inputTem.text
                                 console.debug("*********    "+tempStr)
@@ -792,8 +792,30 @@ Rectangle {
                             }
                         }
                     }
-
                     
+                    
+
+                    SimpleSwich{
+                        id:swichMask
+                        width: 30
+                        height: 15
+                        anchors.left: line2.left
+                        anchors.leftMargin: parSetFirstAlignLine
+                        anchors.top: line2.bottom
+                        anchors.topMargin:303
+
+                    }
+
+                    Text {
+                        id: txtMask
+                        text: qsTr("口罩告警")
+                        font.pixelSize: fontSize
+                        color: fontColor
+                        anchors.right: swichMask.left
+                        anchors.rightMargin: 20
+                        anchors.verticalCenter: swichMask.verticalCenter
+                    }
+
                     
                     Text {
                         id: txtRecordSet
@@ -811,7 +833,7 @@ Rectangle {
                         height: 1
                         color: "#e2e2e2"
                         anchors.top: parent.top
-                        anchors.topMargin: 540
+                        anchors.topMargin: 580
                         anchors.horizontalCenter: parent.horizontalCenter
                     }
                     
@@ -899,7 +921,7 @@ Rectangle {
                         }
                     }
                     
-
+                    
                     
                     Text {
                         id: txtImageSet
@@ -911,7 +933,7 @@ Rectangle {
                         anchors.left: line4.left
                         anchors.bottomMargin: 20
                     }
-
+                    
                     Rectangle{
                         id:line4
                         width:parent.width - 20*2
@@ -919,10 +941,10 @@ Rectangle {
                         visible: true//curDevTypeStr==="J07"
                         color: "#e2e2e2"
                         anchors.top: parent.top
-                        anchors.topMargin: 800
+                        anchors.topMargin: 820
                         anchors.horizontalCenter: parent.horizontalCenter
                     }
-
+                    
                     Text {
                         id: txtImageSelect
                         font.pixelSize: fontSize
@@ -933,7 +955,7 @@ Rectangle {
                         anchors.rightMargin: 20
                         anchors.verticalCenter: cmbImgSelect.verticalCenter
                     }
-
+                    
                     MyComBox{
                         id:cmbImgSelect
                         width:88
@@ -962,7 +984,7 @@ Rectangle {
                             ListElement{showStr:"2"}//泰尔红紫
                             ListElement{showStr:"3"}//琥珀色
                         }
-
+                        
                         onCurrentIndexChanged: {
                             //                    curLanguage = currentIndex
                             //                    main.s_setLanguage(currentIndex);
@@ -987,7 +1009,7 @@ Rectangle {
                         //visible: curDevTypeStr==="f03"
                         color: "#e2e2e2"
                         anchors.top: parent.top
-                        anchors.topMargin: 670
+                        anchors.topMargin: 690
                         anchors.horizontalCenter: parent.horizontalCenter
                     }
                     
@@ -1115,12 +1137,12 @@ Rectangle {
                 
             }
         }
-
-
-
+        
+        
+        
     }
-
-
+    
+    
     
     Rectangle{
         id:mDeviceStateBar
@@ -1211,19 +1233,19 @@ Rectangle {
         
         map.cmd = "getalarmparam"
         s_sendcommoncmd(map);
-
-
+        
+        
         map.cmd = "getimagparam"
         s_sendcommoncmd(map);
-
+        
         map.cmd = "getinftempcolor"
         s_sendcommoncmd(map);
-
+        
     }
-
+    
     function setTempcolor(value)
     {
-
+        
         console.debug("********** setTempcolor  "+value)
         if(value === 1)
             cmbImgSelect.currentIndex = 0
@@ -1237,7 +1259,7 @@ Rectangle {
     
     //参数修改设置 全在此函数
     function iradInfoSet(){
-
+        
         var osdenableV;
         if(swithTime.checked)
             osdenableV = 1
@@ -1250,16 +1272,18 @@ Rectangle {
         else
             alarmtempEnableV = 0;
         
+        var maskenable = swichMask.checked?1:0
         var map ={
             osdenable:osdenableV,
             alarmtempEnable:alarmtempEnableV,
             alarmtemp:inputTem.text,
             tempdrift:inputTempDrift.text,
             tempcontrol:inputTempMin.text,
+            maskenable:maskenable,
             tempdisplay:cmbTempTypeSelect.currentIndex,
             cmd:"setiradinfo"}
-
-
+        
+        
         s_sendcommoncmd(map);
         
         
@@ -1278,15 +1302,15 @@ Rectangle {
         
         var kuandongt = swichKuandongtai.checked?1:0
         
-
+        
         if(imagparamwdr !== kuandongt)
             wdrisChange = true
         else
             wdrisChange = false
-
+        
         
         var map2 ={
-
+            
             cmd:"setimagparam",
             wdr:swichKuandongtai.checked?1:0,
             mirror:imagparammirror,
@@ -1297,11 +1321,11 @@ Rectangle {
             hue:imagparamhue,
             sharpness:imagparamsharpness
         }
-
+        
         s_sendcommoncmd(map2);
-
+        
         var tmpColor1 = 0;
-
+        
         if(cmbImgSelect.currentIndex === 0)
             tmpColor1 = 1
         else if(cmbImgSelect.currentIndex === 1)
@@ -1310,27 +1334,27 @@ Rectangle {
             tmpColor1 = 104
         else if(cmbImgSelect.currentIndex === 3)
             tmpColor1 = 105
-
+        
         var map3 = {
             cmd:"setinftempcolor",
             tmpColor:tmpColor1
         }
         s_sendcommoncmd(map3);
         
-
+        
         s_beerSwith(swichBeer.checked)
         s_warnSwith(swichWarn.checked)
         s_timeSwith(swithTime.checked)
     }
-
-
-
+    
+    
+    
     function setSwitchTempdisplay(mvalue)
     {
         cmbTempTypeSelect.currentIndex = mvalue
     }
     
-
+    
     function getUpdateFilePath(){
         return setting.updateFilePath;
     }
@@ -1364,11 +1388,15 @@ Rectangle {
         return setting.switchWarn;
     }
     
+    function setSwithMask(mvalue){
+        swichMask.checked = mvalue
+    }
+
     function setSwitchWarn(mvalue)
     {
         swichWarn.checked = mvalue
     }
-
+    
     function getSwitchTime(){
         return setting.switchTime
     }
@@ -1399,7 +1427,7 @@ Rectangle {
     function setIsOpenAdjustRect(value){
         setting.isOpenAdjustRect = value
     }
-
+    
     function setRedRect(pw,ph,rx,ry,rw,rh){
         
         if(curDevTypeStr === "e03"){
@@ -1475,7 +1503,7 @@ Rectangle {
             return setting.d06showRectW
         }
     }
-
+    
     function getShowRectH(){
         if(curDevTypeStr === "e03"){
             return setting.e03showRectH
@@ -1487,7 +1515,7 @@ Rectangle {
             return setting.d06showRectH
         }
     }
-
+    
     function getShowParentW(){
         if(curDevTypeStr === "e03"){
             return setting.e03showParentW
@@ -1499,7 +1527,7 @@ Rectangle {
             return setting.d06showParentW
         }
     }
-
+    
     function getShowParentH(){
         if(curDevTypeStr === "e03"){
             return setting.e03showParentH
@@ -1511,7 +1539,7 @@ Rectangle {
             return setting.d06showParentH
         }
     }
-
+    
     
     function setVideoType(typeStr){
         
@@ -1530,14 +1558,14 @@ Rectangle {
     }
     
     
-
+    
     Connections{
         target: main
         onS_setLanguage:setLanguage(typeL);
     }
     
     function setLanguage(type){
-
+        
         switch(type){
         case lEnglish:
             txtRecordSet.text = "Video Settings"
@@ -1555,48 +1583,11 @@ Rectangle {
             txtTempDrift.text = "Temperature drift setting"
             txtUpdate.text = "Upgrade"
             txtUpdateFile.text = "Upgrade"
-            txtSave.text = "Settings"
-
-            txtImageSet.text = "Image settings"
-            txtImageSelect.text = "Image selectione"
-            break;
-        case lKorean:
-            txtRecordSet.text = "비디오 설정"
-            txtRecortPath.text = "저장 경로"
-            txtScreenShotPath.text = "저장 경로"
-            txtWarnTemSet.text = "알람온도설정"
-            labelSwitchTime.text = "시간스위치 "
-            labelTime.text = "시간표시"
-            txtparset.text = "파라미터 설정"
-            txtSwichBeer.text = "알람 경보음"
-            txtSwichRecord.text = "비디오"
-            txtSwichScreenShot.text = "사진저장"
-            txtSwichWarn.text = "알람"
-            txtTempMin.text = "최대/최소 온도"
-            txtTempDrift.text = "온도변화폭 설정"
-            txtUpdate.text = "업그레이드"
-            txtUpdateFile.text = "업그레이드"
-            txtSave.text = "설정"
-
-            break;
-        case lItaly:
-            txtRecordSet.text = "Settaggio Video"
-            txtRecortPath.text = "Directory Video"
-            txtScreenShotPath.text = "Directory Fotografie"
-            txtWarnTemSet.text = "Allarme Temperatura"
-            labelSwitchTime.text = "Ora"
-            labelTime.text = "Ora OSD"
-            txtparset.text = "Settaggio Parametri"
-            txtSwichBeer.text = "Sirena"
-            txtSwichRecord.text = "Tasto Video"
-            txtSwichScreenShot.text = "Fotografia"
-            txtSwichWarn.text = "Allarme"
-            txtTempMin.text = "Max Min Temperatura"
-            txtTempDrift.text = "Correzione Temperatura"
-            txtUpdate.text = "aggiornare"
-            txtUpdateFile.text = "aggiornare"
-            txtSave.text = "Settaggio"
-
+            txtSave.text = "Confirm"
+            // txtencodetype.text = "Encoding Style"
+            txtImageSet.text = "Thermal Image Color"
+            txtImageSelect.text = "Color Setting "
+            txtMask.text = "Mask Alarm"
             break;
         case lChinese:
             txtRecordSet.text = "录像设置"
@@ -1615,9 +1606,9 @@ Rectangle {
             txtUpdate.text = "升级"
             txtUpdateFile.text = "设备升级"
             txtSave.text = "设置"
-
             txtImageSet.text = "图像设置"
             txtImageSelect.text = "图像选择"
+            txtMask.text = "口罩告警"
             break;
         case lRussian:
             txtRecordSet.text = "Настройка записи"
@@ -1633,31 +1624,12 @@ Rectangle {
             txtSwichWarn.text = "Тревога"
             txtTempMin.text = "Max Min температура"
             txtTempDrift.text = "Коррекция температуры"
-            txtUpdate.text = "обновить"
-            txtUpdateFile.text = "обновить"
-            txtSave.text = "Настройка"
-
-            txtImageSet.text = "Настройки изображения"
-            txtImageSelect.text = "Выбор изображения"
-            break;
-        case lLithuanian:
-            txtRecordSet.text = "Vaizdo parametrų nustatymas"
-            txtRecortPath.text = "Vaizdo įrašo saugojimo kelias "
-            txtScreenShotPath.text = "Momentinių nuotraukų išsaugojimo kelias"
-            txtWarnTemSet.text = "Temperatūros aliarmas"
-            labelSwitchTime.text = "Rodymas"
-            labelTime.text = "Laiko rodymas"
-            txtparset.text = "Parametrų nustatymai"
-            txtSwichBeer.text = "Sirena"
-            txtSwichRecord.text = "Įrašyti vaizdą"
-            txtSwichScreenShot.text = "Nuotrauka "
-            txtSwichWarn.text = "Aliarmas"
-            txtTempMin.text = "Temperatūros ribų nustatymas"
-            txtTempDrift.text = "Temperatūrinio dreifo nustatymas "
-            txtUpdate.text = "patobulinti"
-            txtUpdateFile.text = "patobulinti"
-            txtSave.text = "nustatymas"
-
+            txtUpdate.text = "Обновить"
+            txtUpdateFile.text = "Обновление устройства"
+            txtSave.text = "Подтверждение"
+            txtImageSet.text = "Цвет теплового изображения"
+            txtImageSelect.text = "Настройка цвета"
+            txtMask.text = "Маска тревоги"
             break;
         case ltuerqi:
             txtRecordSet.text = "Video ayarları"
@@ -1674,48 +1646,11 @@ Rectangle {
             txtTempMin.text = "Max Min Sıcaklık"
             txtTempDrift.text = "Sıcaklık sapması ayarı"
             txtUpdate.text = "Yükselt"
-            txtUpdateFile.text = "Yükselt"
-            txtSave.text = "Ayarlar"
-
-            txtImageSet.text = "Görüntü ayarları"
-            txtImageSelect.text = "Görüntü seçimi"
-            break;
-        case ltuerqi1:
-            txtRecordSet.text = "Video Ayarları"
-            txtRecortPath.text = "Depolama Yöntemi"
-            txtScreenShotPath.text = "Depolama Yöntemi"
-            txtWarnTemSet.text = "Sıcaklık Alarmı"
-            labelSwitchTime.text = "Ekranda Gösterim"
-            labelTime.text = "Ekranda Gösterim"
-            txtparset.text = "Parametre Ayarları"
-            txtSwichBeer.text = "Siren"
-            txtSwichRecord.text = "Video"
-            txtSwichScreenShot.text = "Ekran Resmi"
-            txtSwichWarn.text = "Alarm (anahtar)"
-            txtTempMin.text = "Max Min Sıcaklık"
-            txtTempDrift.text = "Sıcaklık Sapma Ayarı"
-            txtUpdate.text = "Yükselt"
-            txtUpdateFile.text = "Yükselt"
-            txtSave.text = "Ayarlar"
-
-            break;
-        case lputaoya:
-            txtRecordSet.text = "configurações de vídeo"
-            txtRecortPath.text = "rota de armazenamento"
-            txtScreenShotPath.text = "caminho de armazenamento"
-            txtWarnTemSet.text = "Alarme de temperatura"
-            labelSwitchTime.text = "Tempo OSD"
-            labelTime.text = "Tempo OSD"
-            txtparset.text = "Configuração de parâmetro"
-            txtSwichBeer.text = "campainha"
-            txtSwichRecord.text = "Vídeo"
-            txtSwichScreenShot.text = "Instantâneo"
-            txtSwichWarn.text = "Alarme (switch)"
-            txtTempMin.text = "válvula de controle de temperatura"
-            txtTempDrift.text = "configuração deriva de temperatura"
-            txtUpdate.text = "Melhoria"
-            txtUpdateFile.text = "Melhoria"
-            txtSave.text = "Definições"
+            txtUpdateFile.text = "Cihaz Yükseltme"
+            txtSave.text = "Onaylamak"
+            txtImageSet.text = "Termal Görüntü Rengi"
+            txtImageSelect.text = "Renk Ayarı"
+            txtMask.text = "Maske Alarmı"
 
             break;
         case lxibanya:
@@ -1732,12 +1667,12 @@ Rectangle {
             txtSwichWarn.text = "Alarma (interruptor)"
             txtTempMin.text = "válvula de control de temperatura"
             txtTempDrift.text = "ajuste de la deriva térmica"
-            txtUpdate.text = "Potenciar"
+            txtUpdate.text = "Upgrade"
             txtUpdateFile.text = "Potenciar"
-            txtSave.text = "Configuraciones"
-
-            txtImageSet.text = "Configuraciones de imagen"
-            txtImageSelect.text = "Selección de imagen"
+            txtSave.text = "Confirmar"
+            txtImageSet.text = "Color de imagen térmica"
+            txtImageSelect.text = "Ajuste de color"
+            txtMask.text = "Alarma de máscara"
             break;
         case lfayu:
             txtRecordSet.text = "Paramètres vidéo"
@@ -1754,51 +1689,13 @@ Rectangle {
             txtTempMin.text = "Température max/min"
             txtTempDrift.text = "Correction de la température"
             txtUpdate.text = "Améliorer"
-            txtUpdateFile.text = "Améliorer"
-            txtSave.text = "Réglages"
-
-            txtImageSet.text = "Paramètres d'image"
-            txtImageSelect.text = "Sélection d'images"
-            break;
-        case lniboer:
-            txtRecordSet.text = "भिडियो सेटिंग "
-            txtRecortPath.text = "स्टोर गर्ने ठाउँ"
-            txtScreenShotPath.text = "स्टोर गर्ने ठाउँ"
-            txtWarnTemSet.text = "तापक्रम अलार्म"
-            labelSwitchTime.text = "स्क्रिनमा प्रदर्शन गर्नुहोस्"
-            labelTime.text = "स्क्रिनमा प्रदर्शन गर्नुहोस्"
-            txtparset.text = "प्यारामिटर सेटिंग"
-            txtSwichBeer.text = "घन्टी"
-            txtSwichRecord.text = "भिडियो"
-            txtSwichScreenShot.text = "स्क्रीनशट"
-            txtSwichWarn.text = "अलार्म (स्विच)"
-            txtTempMin.text = "अधिकतम न्यूनतम तापक्रम"
-            txtTempDrift.text = "तापक्रम विचलन सेटिंग"
-            txtUpdate.text = "अपग्रेड गर्नुहोस"
-            txtUpdateFile.text = "अपग्रेड गर्नुहोस"
-            txtSave.text = "निश्चित गर्नुहोस "
-
-            break;
-        case lKhmer:
-            txtRecordSet.text = "ការកំណត់វីដេអូ"
-            txtRecortPath.text = "កន្លែងផ្ទុកទិន្នន័យ"
-            txtScreenShotPath.text = "កន្លែងផ្ទុកទិន្នន័យ"
-            txtWarnTemSet.text = "កំណត់សីតុណ្ហភាពដែលត្រូវរោទ៍"
-            labelSwitchTime.text = "បង្ហាញពេលវេលា"
-            labelTime.text = "បង្ហាញពេលវេលា"
-            txtparset.text = "ការកំណត់ប៉ារ៉ាម៉ែត្រ"
-            txtSwichBeer.text = "បិទបើកកុងតាក់"
-            txtSwichRecord.text = "វីដេអូ"
-            txtSwichScreenShot.text = "ថតរូប"
-            txtSwichWarn.text = "ប្តូរសម្លេងរោទ៍"
-            txtTempMin.text = "សន្ទះគ្រប់គ្រងសីតុណ្ហភាព"
-            txtTempDrift.text = "ការកំណត់លំហូរសីតុណ្ហភាព"
-            txtUpdate.text = "ធ្វើឱ្យប្រសើរឡើង"
-            txtUpdateFile.text = "ធ្វើឱ្យប្រសើរឡើង"
-            txtSave.text = "ការកំណត់ប៉ារ៉ាម៉ែត្រ"
-
+            txtUpdateFile.text = "Mise à niveau de l'appareil"
+            txtSave.text = "Confirmer"
+            txtImageSet.text = "Couleur de l'image thermique"
+            txtImageSelect.text = "Réglage des couleurs"
+            txtMask.text = "Masque d'alarme"
             break;
         }
-
     }
+    
 }

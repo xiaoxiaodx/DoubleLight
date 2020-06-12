@@ -1,7 +1,10 @@
 import QtQuick 2.0
 
+import QtQuick.Controls 2.5
+import "./simpleControl"
+import QtGraphicalEffects 1.12
 Rectangle{
-    id:mhomeStateBar
+    id:root
 
 
 
@@ -83,5 +86,79 @@ Rectangle{
 //        }
     }
 
+
+
+    Image {
+        id: imgVersion
+        width: 29
+        height: 29
+        anchors.left: parent.left
+        anchors.leftMargin: 30
+        anchors.verticalCenter: parent.verticalCenter
+        source: "qrc:/images/imgVersion.png"
+        MouseArea{
+            anchors.fill: parent
+            hoverEnabled: true
+            onClicked: popVersion.open()
+            onEntered: imgVersion.source = "qrc:/images/imgVersion_h.png"
+            onExited: imgVersion.source = "qrc:/images/imgVersion.png"
+        }
+    }
+
+
+    Popup {
+        id: popVersion
+        x: imgVersion.x + imgVersion.width + 5
+        y: imgVersion.y
+        modal: true
+        focus: true
+        //设置窗口关闭方式为按“Esc”键关闭
+        closePolicy: Popup.OnEscape
+        //设置窗口的背景控件，不设置的话Popup的边框会显示出来
+        background: rect
+        dim:false
+
+
+        Rectangle {
+            id: rect
+
+            width: txtVersion.width + 25 + imgcopy.width
+            height: txtVersion.height+10
+            color: "#ffffff"
+            radius: 4
+            Text {
+                id: txtVersion
+                anchors.left: parent.left
+                anchors.leftMargin: 10
+                anchors.verticalCenter: parent.verticalCenter
+                color: "#333333"
+                font.pixelSize: 12
+                text: qsTr("")
+            }
+            Image{
+                id:imgcopy
+                width: 10
+                height: 10
+                source: "qrc:/images/imgVersionCopy.png"
+                anchors.verticalCenter: parent.verticalCenter
+                anchors.left: txtVersion.right
+                anchors.leftMargin: 5
+
+                MouseArea{
+                    anchors.fill: parent
+                    hoverEnabled: true
+                    onClicked: {
+                        warnmodel.setClipbord(txtVersion.text);
+                    }
+                    onEntered: imgcopy.source = "qrc:/images/imgVersionCopy_h.png"
+                    onExited: imgcopy.source = "qrc:/images/imgVersionCopy.png"
+                }
+            }
+        }
+    }
+
+    function setVersionInfo( str){
+        txtVersion.text = str
+    }
 
 }

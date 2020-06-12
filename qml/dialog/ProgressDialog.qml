@@ -68,4 +68,32 @@ Popup {
     }
 
 
+
+    Connections{
+        target: main
+        onS_setLanguage:setLanguage(typeL);
+    }
+
+    function setLanguage(type){
+        switch(type){
+        case lEnglish:
+            txttitle.text = "Pls wait for device upgrading "
+            break;
+        case lChinese:
+            txttitle.text = "正在升级,请等待…"
+            break;
+        case lRussian:
+            txtCancel.text = "Пожалуйста, дождитесь обновления устройства"
+            break;
+        case ltuerqi:
+            txtCancel.text = "Pls cihaz yükseltmesini bekleyin"
+            break;
+        case lxibanya:
+            txtCancel.text = "Por favor espere la actualización del dispositivo"
+            break;
+        case lfayu:
+            txtCancel.text = "Veuillez attendre la mise à niveau de l'appareil"
+            break;
+        }
+    }
 }
