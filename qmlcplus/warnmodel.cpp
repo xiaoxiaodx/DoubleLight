@@ -294,13 +294,16 @@ void WarnModel::funDeleteSelect(){
 //hardisk 第二次需求变更,存人脸检测图片，发送给qml显示，同时存版本发来的抓拍，并存日志列表
 void WarnModel::funProcessPushAlarm2(QString path,QVariantMap map){
 
+    if(flagI > 100000)
+        flagI = 0;
+
     qDebug()<<"funProcessPushAlarm********  "<<map.value("year").toInt() <<"    "<<map.value("month").toInt()<<"    "<<map.value("day").toInt();
     QDate tmpDate(map.value("year").toInt(),map.value("month").toInt(),map.value("day").toInt());
     QTime tmptime(map.value("hour").toInt(),map.value("min").toInt(),map.value("sec").toInt());
     float warnTemp = map.value("temperature").toFloat();
     int alarmtype = map.value("alarmtype").toInt();
     QString imgData = map.value("imagedata").toString();
-    QString snapimagedata = map.value("snapimagedata").toString();
+
 
 
     QString datestr = tmpDate.toString("yyyyMMdd");
@@ -333,13 +336,12 @@ void WarnModel::funProcessPushAlarm2(QString path,QVariantMap map){
         return;
     }
 
-
-
     QFileInfo fileInfo(imgAbsolutePath);
     if(fileInfo.isFile()){
-        int indx = imgAbsolutePath.indexOf(".");
-        imgAbsolutePath.insert(indx,"1");
+        imgAbsolutePath =  path+"/image1/"+QString::number(flagI)+"_"+curDatetimeStr+".jpeg";
+        flagI++;
     }
+
 
     QFile file(imgAbsolutePath);
     if(file.open(QIODevice::WriteOnly)){
@@ -355,6 +357,11 @@ void WarnModel::funProcessPushAlarm2(QString path,QVariantMap map){
     }
 
     //抓拍
+
+    if(!map.contains("snapimagedata"))
+        return;
+    QString snapimagedata = map.value("snapimagedata").toString();
+
     QByteArray snapimgArrBase64 = snapimagedata.toLatin1();
     QByteArray snapimgArr = QByteArray::fromBase64(snapimgArrBase64);
 
@@ -370,12 +377,6 @@ void WarnModel::funProcessPushAlarm2(QString path,QVariantMap map){
     }
 
     QString imgAbsolutePath1 = path+"/image/"+curDatetimeStr+".jpeg";
-
-    QFileInfo fileInfo1(imgAbsolutePath1);
-    if(fileInfo1.isFile()){
-        int indx = imgAbsolutePath1.indexOf(".");
-        imgAbsolutePath1.insert(indx,"1");
-    }
 
     QFile file1(imgAbsolutePath1);
     if(file1.open(QIODevice::WriteOnly)){

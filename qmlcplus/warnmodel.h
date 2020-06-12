@@ -55,6 +55,8 @@ private:
     QString curDate = "";
     QString curPath = "";
     bool curSelect = false;
+
+    unsigned int flagI = 0;
 };
 
 #endif // WARNMODEL_H

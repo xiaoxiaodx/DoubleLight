@@ -449,7 +449,6 @@ Rectangle {
 
             deviceconfig.getiradInfo();
 
-
             video.fun_setInitPar(deviceconfig.getTcpip(),deviceconfig.getShowParentW(),deviceconfig.getShowParentH(),deviceconfig.getShowRectX(),deviceconfig.getShowRectY(),deviceconfig.getShowRectW(),deviceconfig.getShowRectH())
 
             s_tempmodelSelect(smap.tempmodel,deviceconfig.getTcpip());
