@@ -254,17 +254,17 @@ Rectangle {
         SequentialAnimation {
             id:animationWarnOpacity
             //loops: Animation.Infinite
-            alwaysRunToEnd: true
+            alwaysRunToEnd: false
             NumberAnimation { target: imgWar; property: "opacity"; to: 1; duration: 200 }
-            NumberAnimation { target: imgWar; property: "opacity"; to: 1; duration: 300 }
+            NumberAnimation { target: imgWar; property: "opacity"; to: 1; duration: 500 }
             NumberAnimation { target: imgWar; property: "opacity"; to: 0; duration: 200 }
         }
-        function startAnimation(){
 
+        function startAnimation(){
             animationWarnOpacity.start();
         }
-        function stopAnimation(){
 
+        function stopAnimation(){
             animationWarnOpacity.stop();
             imgWar.opacity = 0;
         }
@@ -325,8 +325,6 @@ Rectangle {
 
     function startWarn1()
     {
-
-
         //开启声音
         if(deviceconfig.getSwitchBeer())
             playWarn.play()

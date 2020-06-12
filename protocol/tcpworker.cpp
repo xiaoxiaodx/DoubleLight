@@ -844,7 +844,6 @@ TcpWorker::~TcpWorker()
 
     if(tcpSocket != nullptr)
     {
-
         //   tcpSocket->disconnectFromHost();
         disconnect(tcpSocket,&QTcpSocket::readyRead,this,&TcpWorker::slot_readData);
         disconnect(tcpSocket,&QTcpSocket::disconnected,this,&TcpWorker::slot_tcpDisconnected);

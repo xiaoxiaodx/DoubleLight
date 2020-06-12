@@ -834,6 +834,8 @@ void CHttpApiDevice::createWarnService(QString ip,int port)
 }
 void CHttpApiDevice::slot_WarnMsg(QMap<QString,QVariant> map)
 {
+    qDebug()<<"slot_WarnMsg :";
+     qDebug()<<"slot_WarnMsg :"<<map;
     emit signal_ReadMsg(map);
 }
 

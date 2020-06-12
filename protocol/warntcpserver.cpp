@@ -113,19 +113,15 @@ void WarnTcpServer::slot_newConnect(){
 
     connect(cliSocket,&QTcpSocket::readyRead,this,&WarnTcpServer::slot_readByte);
     //get client's ip and port
-
-
-
 }
 
 void WarnTcpServer::slot_readByte()
 {
     QByteArray msgdata1=cliSocket->readAll();
 
-
     // msgdata.append(cliSocket->readAll());
     qDebug()<<" slot_ReadMsg    msgdata1    "<<msgdata1.length();
-    qDebug()<<" slot_ReadMsg    msgdata1    "<<QString(msgdata1);
+    //qDebug()<<" slot_ReadMsg    msgdata1    "<<QString(msgdata1);
 
     HttpMsgCallBack(msgdata1);
 }
@@ -154,8 +150,6 @@ typedef struct _PushFaceAlarmMsg_T
 #include <QDateTime>
 void WarnTcpServer::HttpMsgCallBack1(QByteArray arr)
 {
-
-
     msgdata.append(arr);
     int needlen = 8;
 
@@ -168,7 +162,6 @@ void WarnTcpServer::HttpMsgCallBack1(QByteArray arr)
 
                 qDebug()<<"find head ";
                 isFindHead = true;
-
                 int i1 = msgdata.at(4) & 0x000000ff;
                 int i2 = msgdata.at(5) & 0x000000ff;
                 int i3 = msgdata.at(6) & 0x000000ff;
@@ -269,8 +262,11 @@ int WarnTcpServer::HttpMsgCallBack(QByteArray arr) {
                 callbackMap.insert("temperature",object.value("data").toObject().value("temperature").toString().toFloat());
                 if(object.value("data").toObject().contains("imagedata"))
                     callbackMap.insert("imagedata",object.value("data").toObject().value("imagedata").toString());
-                if(object.value("data").toObject().contains("snapimagedata"))
+                if(object.value("data").toObject().contains("snapimagedata")){
+
+                    qDebug()<<"snapimagedata    *****";
                     callbackMap.insert("snapimagedata",object.value("data").toObject().value("snapimagedata").toString());
+                }
             }
 
             emit signal_WarnMsg(callbackMap);
@@ -278,9 +274,7 @@ int WarnTcpServer::HttpMsgCallBack(QByteArray arr) {
             qDebug()<<"not is document !";
 
         }
-
         msgdata.clear();
-
     } else {
         qDebug()<<"parse error "<<jsonError.error;
     }

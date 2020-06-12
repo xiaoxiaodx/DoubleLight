@@ -437,7 +437,6 @@ Rectangle {
                 deviceconfig.curDevTypeStr = "f03"
             else if(smap.tempmodel === "J07-S" || smap.tempmodel === "J07"){
                 deviceconfig.curDevTypeStr = "J07-S"
-
                 if(deviceconfig.getSwitchWarn()){
                     var map1 ={
                         cmd:"alarmsubscription",
@@ -448,7 +447,6 @@ Rectangle {
             }
 
             deviceconfig.getiradInfo();
-
             video.fun_setInitPar(deviceconfig.getTcpip(),deviceconfig.getShowParentW(),deviceconfig.getShowParentH(),deviceconfig.getShowRectX(),deviceconfig.getShowRectY(),deviceconfig.getShowRectW(),deviceconfig.getShowRectH())
 
             s_tempmodelSelect(smap.tempmodel,deviceconfig.getTcpip());
@@ -478,20 +476,15 @@ Rectangle {
 
         }else if(strcmd === "pushalarm"){
 
-            if(smap.imagedata === undefined)//老版本没有这个字段
-                startWarn(smap.temperature);
-            else{
-
-
+//            if(smap.imagedata === undefined)//老版本没有这个字段
+//                startWarn(smap.temperature);
+//            else{
 //                if(deviceconfig.getSwitchScreenShot())
 //                    warnmanger.screenShot1(deviceconfig.getScrennShotPath(),main,0 ,68,main.width,main.height-68-50-160-57,10,smap.alarmtype)
 
-
                 warnmanger.funProcessPushAlarm(smap);
-
                 //开启动画
                 if(smap.alarmtype === 80){
-
                     imgWar.source = "qrc:/images/warn_ico.png"
                     imgWar.startAnimation();
                     startWarn1()
@@ -500,9 +493,7 @@ Rectangle {
                     imgWar.startAnimation();
                     startWarn1()
                 }
-
-
-            }
+            //}
 
         }else if(strcmd === "update"){
             deviceconfig.updateDevice(smap.did,smap.url)

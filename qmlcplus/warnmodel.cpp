@@ -302,14 +302,8 @@ void WarnModel::funProcessPushAlarm2(QString path,QVariantMap map){
     QTime tmptime(map.value("hour").toInt(),map.value("min").toInt(),map.value("sec").toInt());
     float warnTemp = map.value("temperature").toFloat();
     int alarmtype = map.value("alarmtype").toInt();
-    QString imgData = map.value("imagedata").toString();
-
-
 
     QString datestr = tmpDate.toString("yyyyMMdd");
-
-    QByteArray imgArrBase64 = imgData.toLatin1();
-    QByteArray imgArr = QByteArray::fromBase64(imgArrBase64);
 
     QDateTime curDateTime(tmpDate,tmptime);
 
@@ -336,30 +330,40 @@ void WarnModel::funProcessPushAlarm2(QString path,QVariantMap map){
         return;
     }
 
-    QFileInfo fileInfo(imgAbsolutePath);
-    if(fileInfo.isFile()){
-        imgAbsolutePath =  path+"/image1/"+QString::number(flagI)+"_"+curDatetimeStr+".jpeg";
-        flagI++;
+    if(map.contains("imagedata")){
+
+        QFileInfo fileInfo(imgAbsolutePath);
+        if(fileInfo.isFile()){
+            imgAbsolutePath =  path+"/image1/"+QString::number(flagI)+"_"+curDatetimeStr+".jpeg";
+            flagI++;
+        }
+
+        QString imgData = map.value("imagedata").toString();
+        QByteArray imgArrBase64 = imgData.toLatin1();
+        QByteArray imgArr = QByteArray::fromBase64(imgArrBase64);
+        QFile file(imgAbsolutePath);
+        if(file.open(QIODevice::WriteOnly)){
+            file.write(imgArr,imgArr.length());
+
+            qDebug()<<"funProcessPushAlarm******** file open:"+imgAbsolutePath;
+            file.close();
+            //存完文件 将消息发给qml
+            emit signal_sendWarnMsg(alarmtype,imgAbsolutePath,curDateTime.toString("yyyy-MM-dd hh:mm:ss"),warnTemp);
+        }else {
+            DebugLog::getInstance()->writeLog("slot_screenShot open log file is fail");
+            return ;
+        }
+
+    }else{
+        qDebug()<<"不包含  imagedata";
     }
 
-
-    QFile file(imgAbsolutePath);
-    if(file.open(QIODevice::WriteOnly)){
-        file.write(imgArr,imgArr.length());
-
-        qDebug()<<"funProcessPushAlarm******** file open:"+imgAbsolutePath;
-        file.close();
-        //存完文件 将消息发给qml
-        emit signal_sendWarnMsg(alarmtype,imgAbsolutePath,curDateTime.toString("yyyy-MM-dd hh:mm:ss"),warnTemp);
-    }else {
-        DebugLog::getInstance()->writeLog("slot_screenShot open log file is fail");
-        return ;
-    }
 
     //抓拍
-
     if(!map.contains("snapimagedata"))
         return;
+
+    qDebug()<<"snapimagedata    ";
     QString snapimagedata = map.value("snapimagedata").toString();
 
     QByteArray snapimgArrBase64 = snapimagedata.toLatin1();

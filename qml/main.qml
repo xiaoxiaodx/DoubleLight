@@ -92,19 +92,14 @@ Window {
         // Component.objectName: warnmodel.funFlushWarnInfo(deviceconfig.getScrennShotPath(),curDateStr);
 
         onSignal_sendWarnMsg:{
-
-
-
             console.debug("push warn :" +time +"    "+type +"   "+  path +"   "+ tempvalue.toFixed(2))
             switch(type){
-
             case 80:
                 pushwarnmodel.numberOfAbnormalTemperaturePeople ++
                 break;
             case 81:
                 pushwarnmodel.numberOfNormalPeople++
                 break;
-
             case 82:
                 pushwarnmodel.numberOfNoMaskPeople++
                 break;
