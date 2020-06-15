@@ -200,11 +200,7 @@ bool CHttpApiDevice::createConnect(){
 
 
     g_tcpsocket->connectToHost(this->g_ip,this->g_port);
-    if(g_tcpsocket->waitForConnected(200)){
-        return true;
-    }else{
-        return false;
-    }
+
 }
 
 int CHttpApiDevice::CjsonMakeHttpHead(QJsonObject *msgObject, JsonMsg_T *msg) {
@@ -516,6 +512,7 @@ void CHttpApiDevice::slot_Connected() {
 
 
     //emit signal_httpConnected();
+    DebugLog::getInstance()->writeLog("http create succ ! ------ send login" );
     LoginDevice("0");
     listMsg.clear();
 }

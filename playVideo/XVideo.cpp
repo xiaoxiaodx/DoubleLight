@@ -69,9 +69,9 @@ void XVideo::startNormalVideo(float tp,QString deviceinfo)
 
     if(listip.size() >= 4){
 
-        if(m_ip.compare(deviceinfo)!=0){
+       // if(m_ip.compare(deviceinfo)!=0){
             destroyAllFunction();
-        }
+        //}
         m_ip = deviceinfo;
         warnTemp = tp;
         createTcpThread();
@@ -84,9 +84,9 @@ void XVideo::startNormalVideo(float tp,QString deviceinfo)
         if(deviceinfo.compare(map.value("uuid").toString())==0){
             QString curip = map.value("ip").toString();
 
-            if(m_ip.compare(curip)!=0){
+           // if(m_ip.compare(curip)!=0){
                 destroyAllFunction();
-            }
+           // }
             m_ip = curip;
             warnTemp = tp;
             createTcpThread();
@@ -220,8 +220,7 @@ void XVideo::createHttpApi(){
 
 
     if(httpDevice == nullptr){
-
-        qDebug()<<" createHttpApi   "<<m_ip;
+        DebugLog::getInstance()->writeLog("createHttpApi " + m_ip);
         httpThread = new QThread;
         httpDevice = new CHttpApiDevice("INEW-004122-JWGWM", m_ip,8564, "gzuser@u", "gzuser@p");
         connect(httpDevice, &CHttpApiDevice::signal_ReadMsg, this, &XVideo::slog_HttpmsgCb);
@@ -266,8 +265,6 @@ void XVideo::createSearchIp()
 {
     if(psearch == nullptr){
         psearch = new MySearch1;
-
-
         connect(psearch,&MySearch1::signal_sendDeviceinfo,this,&XVideo::recSearchDeviceinfo);
 
     }
@@ -313,12 +310,8 @@ void XVideo::paint(QPainter *painter)
 
 //    qDebug()<<""<<tempImgResW;
 
-
     painter->drawImage(QRect(0,0,width(),height()), *pRenderImginfo.pImg);
-
-
     return;
-
 
     qreal kX = (qreal)this->width()/(qreal)tempImgResW;
     qreal kY = (qreal)this->height()/(qreal)tempImgResH;

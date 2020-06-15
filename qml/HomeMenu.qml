@@ -165,9 +165,13 @@ Rectangle {
             MouseArea{
                 anchors.fill: parent
                 hoverEnabled: true
-                onEntered:imgconnect.source = "qrc:/images/deviceconnect_h.png"
-                onExited: imgconnect.source = "qrc:/images/deviceconnect.png"
-                onClicked: s_connectDevice(cmbdevicelist.curstr)
+                onPressed:imgconnect.source = "qrc:/images/deviceconnect_h.png"
+                onReleased: imgconnect.source = "qrc:/images/deviceconnect.png"
+                onClicked: {
+                    imgconnect.enabled = false;
+                    btnTimer.start();
+                    s_connectDevice(cmbdevicelist.curstr)
+                }
             }
         }
     }
@@ -250,6 +254,16 @@ Rectangle {
         }
     }
 
+
+    Timer{
+        id:btnTimer
+        triggeredOnStart:false
+        repeat :false
+        interval:1500
+        onTriggered: {
+            imgconnect.enabled = true
+        }
+    }
     Row{
         id:windowAdjust
         anchors.right: parent.right
