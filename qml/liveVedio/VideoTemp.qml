@@ -127,8 +127,8 @@ Rectangle {
                     anchors.fill: parent
                     cursorShape: Qt.CrossCursor
                     onClicked: {
-                        var kx = video.width / 206;
-                        var ky = video.height / 156;
+                        var kx = video.width / 256;
+                        var ky = video.height / 192;
                         var x1 = mouse.x / kx;
                         var y1 = mouse.y / ky;
                         pos1.text ="pos:"+ x1 +"    "+y1
