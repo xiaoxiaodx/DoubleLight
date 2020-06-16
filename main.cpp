@@ -25,12 +25,6 @@ int main(int argc, char *argv[])
     app.setApplicationName("DoubleLight"); //3
 
     QQmlApplicationEngine engine;
-//    QmlLanguage qmlLanguage(app, engine);
-//    engine.rootContext()->setContextProperty("qmlLanguage", &qmlLanguage);
-//    QTranslator translator;
-//    translator.load("en_US.qm");
-//    app.installTranslator(&translator);
-
 
     ConsoleProcess pro;
     qmlRegisterType<XVideo>("XVideo", 1, 0, "XVideo");
@@ -40,6 +34,7 @@ int main(int argc, char *argv[])
     qmlRegisterType<XVideoReplay>("XVideoReplay", 1, 0, "XVideoReplay");
     qmlRegisterType<WarnModel>("WarnModel", 1, 0, "WarnModel");
     qmlRegisterType<updateProgressC>("UpdateProgressC", 1, 0, "UpdateProgressC");
+
     engine.load(QUrl(QStringLiteral("qrc:/qml/main.qml")));
 
     if (engine.rootObjects().isEmpty())

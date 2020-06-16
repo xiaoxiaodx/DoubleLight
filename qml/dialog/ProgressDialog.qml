@@ -83,16 +83,16 @@ Popup {
             txttitle.text = "正在升级,请等待…"
             break;
         case lRussian:
-            txtCancel.text = "Пожалуйста, дождитесь обновления устройства"
+            txttitle.text = "Пожалуйста, дождитесь обновления устройства"
             break;
         case ltuerqi:
-            txtCancel.text = "Pls cihaz yükseltmesini bekleyin"
+            txttitle.text = "Pls cihaz yükseltmesini bekleyin"
             break;
         case lxibanya:
             txtCancel.text = "Por favor espere la actualización del dispositivo"
             break;
         case lfayu:
-            txtCancel.text = "Veuillez attendre la mise à niveau de l'appareil"
+            txttitle.text = "Veuillez attendre la mise à niveau de l'appareil"
             break;
         }
     }
