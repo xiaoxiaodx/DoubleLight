@@ -27,16 +27,17 @@ Rectangle {
                 Image {
                     id: btnImg
                     anchors.left: parent.left
-                    anchors.leftMargin: 0
-        //            anchors.topMargin: 10
-                    anchors.verticalCenter: parent.verticalCenter
+                    anchors.leftMargin: 30
+                    anchors.topMargin: 5
+                    anchors.top: parent.top
+         //           anchors.verticalCenter: parent.verticalCenter
         //            anchors.bottom: parent.bottom
         //            anchors.bottomMargin: 10
         //            width: parent.height - 26
         //           parent.height - 26
-                    width: 80
-                    height: parent.height
-                    source: "qrc:/images/logo14.jpg"
+                    width: 128
+                    height: 64
+                    source: "qrc:/images/logo15.png"
                 }
 
 
@@ -216,7 +217,7 @@ Rectangle {
             indicatorH: 7
             itemLeftMargin:-12
             itemTopMargin:0
-            currentIndex:1
+            currentIndex:3
 
           //  enabled: false
 
