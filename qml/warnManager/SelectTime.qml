@@ -197,6 +197,10 @@ Rectangle {
             txtCancel.text = "取消"
             txtEnsure.text = "确定"
             break
+        case lBolan:
+            txtCancel.text = "Anuluj"
+            txtEnsure.text = "OK"
+            break
         case lRussian:
             txtCancel.text = "нет"
             txtEnsure.text = "да"

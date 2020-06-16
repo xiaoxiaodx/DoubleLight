@@ -533,6 +533,9 @@ Rectangle {
                 case lChinese:
                     txtstr = "wdr设置成功，设备正在重启"
                     break;
+                case lBolan:
+                    txtstr = "WDR jest włączony, kamera uruchamia się ponownie"
+                    break;
                 case lEnglish:
                     txtstr = "WDR is ON, Camera is rebooting"
                     break;

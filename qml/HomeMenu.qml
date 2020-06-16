@@ -34,9 +34,9 @@ Rectangle {
         //            anchors.bottomMargin: 10
         //            width: parent.height - 26
         //           parent.height - 26
-                    width: 80
-                    height: parent.height
-                    source: "qrc:/images/logo14.jpg"
+                    width: 6*height+10
+                    height: 20
+                    source: "qrc:/images/logo16.png"
                 }
 
 
@@ -216,22 +216,22 @@ Rectangle {
             indicatorH: 7
             itemLeftMargin:-12
             itemTopMargin:0
-            currentIndex:1
+            currentIndex:0
 
           //  enabled: false
 
             model: ListModel{
-                ListElement{showStr:"简体中文"}
+                ListElement{showStr:"Polskie"}
                 ListElement{showStr:"English"}
                 //ListElement{showStr:"Italian"}
                 //ListElement{showStr:"Korean"}
-                ListElement{showStr:"Russian"}
+               // ListElement{showStr:"Russian"}
                // ListElement{showStr:"Lithuanian"}
-                ListElement{showStr:"Türkçe"}//土耳其
+               // ListElement{showStr:"Türkçe"}//土耳其
                 //ListElement{showStr:"Türk dili"}//土耳其语
                // ListElement{showStr:"Português"}//葡萄牙
-                ListElement{showStr:"Español"}//西班牙
-                ListElement{showStr:"Française"}//法语
+                //ListElement{showStr:"Español"}//西班牙
+               // ListElement{showStr:"Française"}//法语
                 //ListElement{showStr:"नेपाली"}//尼泊尔文
                 //ListElement{showStr:"Khmer"}//高棉
             }
@@ -338,6 +338,11 @@ Rectangle {
             tabbarBtn.barModel.get(index++).txtStr =  "主预览"
             tabbarBtn.barModel.get(index++).txtStr =  "设备配置"
             tabbarBtn.barModel.get(index++).txtStr =  "告警管理"
+            break;
+        case lBolan:
+            tabbarBtn.barModel.get(index++).txtStr =  "Podgląd główny"
+            tabbarBtn.barModel.get(index++).txtStr =  "Konfiguracja urządzenia"
+            tabbarBtn.barModel.get(index++).txtStr =  "Alarm"
             break;
         case lRussian:
             tabbarBtn.barModel.get(index++).txtStr =  "Основной просмотр"

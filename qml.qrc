@@ -119,5 +119,7 @@
         <file>images/imgVersionCopy_h.png</file>
         <file>images/logo13.jpg</file>
         <file>images/logo14.jpg</file>
+        <file>images/logo15.png</file>
+        <file>images/logo16.png</file>
     </qresource>
 </RCC>

@@ -1593,6 +1593,27 @@ Rectangle {
             txtImageSelect.text = "图像选择"
             txtMask.text = "口罩告警"
             break;
+        case lBolan:
+            txtRecordSet.text = "Ustawienia wideo"
+            txtRecortPath.text = "Ścieżka przechowywania"
+            txtScreenShotPath.text = "Ścieżka przechowywania"
+            txtWarnTemSet.text = "Alarm Temperatury"
+            labelSwitchTime.text = "Czas OSD"
+            labelTime.text = "Czas"
+            txtparset.text = "Ustawienia parametrów"
+            txtSwichBeer.text = "Brzęczek"
+            txtSwichRecord.text = "Wideo"
+            txtSwichScreenShot.text = "Zdjęcie"
+            txtSwichWarn.text = "Alarm"
+            txtTempMin.text = "Zawór regulacji temperatury"
+            txtTempDrift.text = "Ustaw. dryfu temperatyry"
+            txtUpdate.text = "Aktualizacja"
+            txtUpdateFile.text = "Aktualizacja urządzenia"
+            txtSave.text = "Zapisz"
+            txtImageSet.text = "Kolor obrazu termicznego"
+            txtImageSelect.text = "Ustawienie koloru"
+            txtMask.text = "Alarm maski"
+            break;
         case lRussian:
             txtRecordSet.text = "Настройка записи"
             txtRecortPath.text = "Путь хранения видео"

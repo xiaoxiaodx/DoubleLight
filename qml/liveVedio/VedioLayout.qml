@@ -394,6 +394,12 @@ Rectangle {
             name1.text = "正常："
             name.text = "总通行："
             break;
+        case lBolan:
+            name3.text =  "Bez znaku："
+            name2.text =  "Anormale："
+            name1.text = "Normalna："
+            name.text = "Całkowity："
+            break;
         case lRussian:
             name3.text =  "Без маски："
             name2.text =  "аномальный："

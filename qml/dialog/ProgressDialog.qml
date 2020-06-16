@@ -81,6 +81,9 @@ Popup {
             break;
         case lChinese:
             txttitle.text = "正在升级,请等待…"
+            break
+        case lBolan:
+            txttitle.text = "Proszę czekać na aktualizację urządzenia"
             break;
         case lRussian:
             txttitle.text = "Пожалуйста, дождитесь обновления устройства"

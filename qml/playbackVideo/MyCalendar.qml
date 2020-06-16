@@ -316,7 +316,8 @@ Popup {
             return year + " "+getLithuanianMouth(month);
         case lniboer:
             return year + " " +getEnglishMouth(month);
-
+        default:
+            return year + " "+getEnglishMouth(month);
         }
 
     }
@@ -455,6 +456,8 @@ Popup {
             return getLithuanianWeekly(week);
         case lniboer:
             return getNiboerWeekly(week);
+        default:
+            return getEnglishWeekly(week);
         }
 
     }
@@ -588,7 +591,11 @@ Popup {
         switch(type){
         case lEnglish:
             txtCancel.text = "Cancel"
-            txtEnsure.text = "Confirm "
+            txtEnsure.text = "Confirm"
+            break;
+        case lBolan:
+            txtCancel.text = "Anuluj"
+            txtEnsure.text = "Potwierdź"
             break;
         case lKorean:
             txtCancel.text = "취소"
