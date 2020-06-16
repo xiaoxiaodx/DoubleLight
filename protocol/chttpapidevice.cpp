@@ -286,6 +286,8 @@ int CHttpApiDevice::HttpMsgCallBack(char * pData) {
                                 map.insert("cmd","getdeviceinfo");
                                 slot_httpParSet(map);
 
+                                map.insert("cmd","getnetworkinfo");
+                                slot_httpParSet(map);
 
                                 if(warnPushMap.value("switchSubscription").toBool()){
                                     HttpSubscriptionWarn(warnPushMap, "0");
@@ -404,7 +406,14 @@ int CHttpApiDevice::HttpMsgCallBack(char * pData) {
 
             }else if("getdeviceinfo" == cmd){
                 callbackMap.insert("softwarever",object.value("data").toObject().value("softwarever").toString());
+            }else if("getnetworkinfo" == cmd){
+                callbackMap.insert("ip",object.value("data").toObject().value("ip").toString());
+                callbackMap.insert("gateway",object.value("data").toObject().value("gateway").toString());
+                callbackMap.insert("netmask",object.value("data").toObject().value("netmask").toString());
+                callbackMap.insert("dhcpenable ",object.value("data").toObject().value("dhcpenable ").toInt());
             }
+
+
 
             DebugLog::getInstance()->writeLog("callbackMap:"+callbackMap.value("cmd").toString());
             emit signal_ReadMsg(callbackMap);

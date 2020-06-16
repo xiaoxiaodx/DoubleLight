@@ -197,6 +197,10 @@ Rectangle {
             txtCancel.text = "取消"
             txtEnsure.text = "确定"
             break
+        case lKhmer:
+            txtCancel.text = "បោះបង់"
+            txtEnsure.text = "យល់ព្រម"
+            break
         case lBolan:
             txtCancel.text = "Anuluj"
             txtEnsure.text = "OK"

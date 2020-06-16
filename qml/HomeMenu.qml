@@ -27,16 +27,15 @@ Rectangle {
                 Image {
                     id: btnImg
                     anchors.left: parent.left
-                    anchors.leftMargin: 0
+                    anchors.leftMargin: 30
         //            anchors.topMargin: 10
                     anchors.verticalCenter: parent.verticalCenter
         //            anchors.bottom: parent.bottom
         //            anchors.bottomMargin: 10
-        //            width: parent.height - 26
-        //           parent.height - 26
-                    width: 6*height+10
-                    height: 20
-                    source: "qrc:/images/logo16.png"
+
+                    width: 4*height
+                    height: 40
+                    source: "qrc:/images/logo17.png"
                 }
 
 
@@ -61,7 +60,7 @@ Rectangle {
             textColor: "white"
             textSelectColor:"white"
             txtLeftMargin:7
-            textSize:18
+            textSize:curLanguage === lKhmer ?30:18
             Component.onCompleted: {
 
                 console.debug("curLanguagev     11:"+curLanguage)
@@ -220,18 +219,27 @@ Rectangle {
 
           //  enabled: false
 
+//            property int lKhmer:0
+//            property int lEnglish: 1
+//            property int lRussian: 2
+//            property int ltuerqi: 3
+//            property int lxibanya: 4
+//            property int lfayu: 5
+//            property int lChinese:6
+
             model: ListModel{
-                ListElement{showStr:"Polskie"}
+                ListElement{showStr:"lKhmer"}
                 ListElement{showStr:"English"}
                 //ListElement{showStr:"Italian"}
                 //ListElement{showStr:"Korean"}
-               // ListElement{showStr:"Russian"}
+                ListElement{showStr:"Russian"}
                // ListElement{showStr:"Lithuanian"}
-               // ListElement{showStr:"Türkçe"}//土耳其
+                ListElement{showStr:"Türkçe"}//土耳其
                 //ListElement{showStr:"Türk dili"}//土耳其语
                // ListElement{showStr:"Português"}//葡萄牙
-                //ListElement{showStr:"Español"}//西班牙
-               // ListElement{showStr:"Française"}//法语
+                ListElement{showStr:"Español"}//西班牙
+                ListElement{showStr:"Française"}//法语
+                ListElement{showStr:"简体中文"}
                 //ListElement{showStr:"नेपाली"}//尼泊尔文
                 //ListElement{showStr:"Khmer"}//高棉
             }
@@ -333,6 +341,11 @@ Rectangle {
             tabbarBtn.barModel.get(index++).txtStr =  "Vista Principale"
             tabbarBtn.barModel.get(index++).txtStr =  "Settaggio"
             tabbarBtn.barModel.get(index++).txtStr =  "Gestione Allarmi"
+            break;
+        case lKhmer:
+            tabbarBtn.barModel.get(index++).txtStr =  "ផ្ទាំងមុខ"
+            tabbarBtn.barModel.get(index++).txtStr =  "ការកំណត់រចនាសម្ព័ន្ធឧបករណ៍"
+            tabbarBtn.barModel.get(index++).txtStr =  "សម្លេងរោទ៍"
             break;
         case lChinese:
             tabbarBtn.barModel.get(index++).txtStr =  "主预览"

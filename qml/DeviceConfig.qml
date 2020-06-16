@@ -196,7 +196,7 @@ Rectangle {
                     anchors.verticalCenter: parent.verticalCenter
                     anchors.horizontalCenter: parent.horizontalCenter
                     width: rectcontent.width
-                    height: 920
+                    height: 1200
                     color: "#F8FAFD"
                     
                     Text {
@@ -295,7 +295,7 @@ Rectangle {
                             anchors.verticalCenter: rectTempDrift.verticalCenter
                             border.width: 0
                             inputLimite:Qt.ImhDigitsOnly
-                            font.pixelSize: fontSize
+                            font.pixelSize: lineeditfontSize
                             placeholderText: ""
                             isNeedDoubleClickEdit: false
                             textLeftPadding:0
@@ -398,7 +398,7 @@ Rectangle {
                             anchors.verticalCenter: rectTempMin.verticalCenter
                             border.width: 0
                             inputLimite:Qt.ImhDigitsOnly
-                            font.pixelSize: fontSize
+                            font.pixelSize: lineeditfontSize
                             placeholderText: ""
                             isNeedDoubleClickEdit: false
                             textLeftPadding:0
@@ -531,7 +531,7 @@ Rectangle {
                         anchors.verticalCenter:swichWarn.verticalCenter
                         border.width: 1
                         border.color: "#DEDFE3"
-                        font.pixelSize: fontSize
+                        font.pixelSize: lineeditfontSize
                         placeholderText: ""
                         isNeedDoubleClickEdit: false
                         textLeftPadding:0
@@ -550,7 +550,7 @@ Rectangle {
                     Text {
                         id: txtTem1
                         text: cmbTempTypeSelect.currentIndex === 0 ?qsTr("℃"):qsTr("℉")
-                        font.pixelSize: fontSize
+                        font.pixelSize: lineeditfontSize
                         color: fontColor
                         anchors.left: inputTem.right
                         anchors.leftMargin: 6
@@ -603,11 +603,10 @@ Rectangle {
                             height: rectScreenShotPath.height -2
                             anchors.left: parent.left
                             anchors.leftMargin: 2
-                            
                             anchors.verticalCenter: rectScreenShotPath.verticalCenter
                             border.width: 0
                             text:screenv.funGetCurPath()
-                            font.pixelSize: fontSize
+                            font.pixelSize: lineeditfontSize
                             placeholderText: ""
                             isNeedDoubleClickEdit: false
                             textLeftPadding:0
@@ -723,7 +722,7 @@ Rectangle {
                     Text {
                         id: txtKuandongtai
                         text: qsTr("WDR")
-                        font.pixelSize: fontSize
+                        font.pixelSize: lineeditfontSize
                         color: fontColor
                         anchors.right: swichKuandongtai.left
                         anchors.rightMargin: 20
@@ -736,7 +735,7 @@ Rectangle {
                     Text {
                         id: labelResolution
                         text: qsTr("°C/°F")
-                        font.pixelSize: fontSize
+                        font.pixelSize: lineeditfontSize
                         color: fontColor
                         anchors.right: cmbTempTypeSelect.left
                         anchors.rightMargin: 20
@@ -882,11 +881,10 @@ Rectangle {
                             height: rectRecordPath.height -2
                             anchors.left: parent.left
                             anchors.leftMargin: 2
-                            
                             anchors.verticalCenter: rectRecordPath.verticalCenter
                             border.width: 0
                             text: screenv.funGetCurPath()
-                            font.pixelSize: fontSize
+                            font.pixelSize: lineeditfontSize
                             placeholderText: ""
                             isNeedDoubleClickEdit: false
                             textLeftPadding:0
@@ -975,7 +973,7 @@ Rectangle {
                         itemTopMargin:0
                         itemFontColor: "#5A5E66"
                         contentFontColor: "#a6000000"
-                        contentFontSize: fontSize
+                        contentFontSize: lineeditfontSize
                         bordColor:"#DEDFE3"
                         mRadius:2
                         model: ListModel{
@@ -1033,7 +1031,7 @@ Rectangle {
                             anchors.verticalCenter: rectUpdatePath.verticalCenter
                             border.width: 0
                             text: ""//screenv.funGetCurPath()
-                            font.pixelSize: fontSize
+                            font.pixelSize: lineeditfontSize
                             placeholderText: ""
                             isNeedDoubleClickEdit: false
                             textLeftPadding:0
@@ -1105,6 +1103,209 @@ Rectangle {
                     
                     
                     
+
+                    Text {
+                        id: txtNetSet
+                        font.pixelSize: fontSize
+                        text: qsTr("网络设置")
+                        color: fontColor
+                        visible: true//curDevTypeStr==="J07"
+                        anchors.bottom: line6.top
+                        anchors.left: line6.left
+                        anchors.bottomMargin: 20
+                    }
+
+                    Rectangle{
+                        id:line6
+                        width:parent.width - 20*2
+                        height: 1
+                        visible: true//curDevTypeStr==="J07"
+                        color: "#e2e2e2"
+                        anchors.top: line4.bottom
+                        anchors.topMargin: 144
+                        anchors.horizontalCenter: parent.horizontalCenter
+                    }
+
+
+
+                    Text {
+                        id: labelNetType
+                        text: qsTr("网络地址")
+                        font.pixelSize: fontSize
+                        color: fontColor
+                        anchors.right: cmbNetTypeSelect.left
+                        anchors.rightMargin: 20
+                        anchors.verticalCenter: cmbNetTypeSelect.verticalCenter
+                    }
+
+                    ListModel{
+                        id:netTypeModel
+                        ListElement{showStr:"DHCP"}
+                        ListElement{showStr:"固定ip"}
+                    }
+
+                    MyComBox{
+                        id:cmbNetTypeSelect
+                        width:88
+                        height: 28
+                        anchors.left: line6.left
+                        anchors.leftMargin: parSetFirstAlignLine
+                        anchors.top: line6.bottom
+                        anchors.topMargin: 10
+                        contentBg: "#ffffff"
+                        itemColorBgNor:"#FFFFFF"
+                        itemColorBgHoverd: "#E7EAF1"
+                        indicatorImgSrc:"qrc:/images/imgTypeSelect.png"
+                        indicatorW: 9
+                        indicatorH: 5
+                        itemLeftMargin:0
+                        itemTopMargin:0
+                        itemFontColor: "#5A5E66"
+                        contentFontColor: "#a6000000"
+                        contentFontSize: lineeditfontSize
+                        bordColor:"#DEDFE3"
+                        mRadius:2
+                        model: netTypeModel
+                        onCurrentIndexChanged: {
+
+
+                        }
+                    }
+
+
+                    Text {
+                        id: txtip
+                        text: qsTr("ip地址")
+                        color: fontColor
+                        font.pixelSize: fontSize
+                        anchors.right: rectIp.left
+                        anchors.rightMargin: 20
+                        anchors.verticalCenter: rectIp.verticalCenter
+                    }
+
+                    Rectangle{
+                        id:rectIp
+                        color: "#D6D8DB"
+                        width: 200
+                        height: 28
+                        radius: 4
+                        anchors.left: line6.left
+                        anchors.top:line6.bottom
+                        anchors.topMargin: 48
+                        anchors.leftMargin: parSetFirstAlignLine
+                        LineEdit {
+                            id: inputNetIp
+                            width: rectIp.width  - 2
+                            height: rectIp.height -2
+                            anchors.left: parent.left
+                            anchors.leftMargin: 1
+                            anchors.verticalCenter: rectIp.verticalCenter
+                            border.width: 0
+                            inputLimite:Qt.ImhDigitsOnly
+                            font.pixelSize: lineeditfontSize
+                            placeholderText: ""
+                            isNeedDoubleClickEdit: false
+                            textLeftPadding:0
+                            txtColor: Qt.rgba(0,0,0,0.65)
+                            inputmask: "000.000.000.000"
+                            text: ""
+                            //isReadOnly:true
+                            color: "#F8FAFD"
+                            onTextChanged: {
+
+                            }
+                        }
+                    }
+
+
+                    Text {
+                        id: txtmask
+                        text: qsTr("子网掩码")
+                        color: fontColor
+                        font.pixelSize: fontSize
+                        anchors.right: rectmask.left
+                        anchors.rightMargin: 20
+                        anchors.verticalCenter: rectmask.verticalCenter
+                    }
+
+                    Rectangle{
+                        id:rectmask
+                        color: "#D6D8DB"
+                        width: 200
+                        height: 28
+                        radius: 4
+                        anchors.left: line6.left
+                        anchors.top:line6.bottom
+                        anchors.topMargin: 86
+                        anchors.leftMargin: parSetFirstAlignLine
+                        LineEdit {
+                            id: inputMask
+                            width: rectmask.width  - 2
+                            height: rectmask.height -2
+                            anchors.left: parent.left
+                            anchors.leftMargin: 1
+                            anchors.verticalCenter: rectmask.verticalCenter
+                            border.width: 0
+                            inputLimite:Qt.ImhDigitsOnly
+                            font.pixelSize: lineeditfontSize
+                            placeholderText: ""
+                            isNeedDoubleClickEdit: false
+                            textLeftPadding:0
+                            txtColor: Qt.rgba(0,0,0,0.65)
+                            inputmask: "000.000.000.000"
+                            text: ""
+                            //isReadOnly:true
+                            color: "#F8FAFD"
+                            onTextChanged: {
+
+                            }
+                        }
+                    }
+
+
+                    Text {
+                        id: txtGateway
+                        text: qsTr("网关")
+                        color: fontColor
+                        font.pixelSize: fontSize
+                        anchors.right: rectmask.left
+                        anchors.rightMargin: 20
+                        anchors.verticalCenter: recGateway.verticalCenter
+                    }
+
+                    Rectangle{
+                        id:recGateway
+                        color: "#D6D8DB"
+                        width: 200
+                        height: 28
+                        radius: 4
+                        anchors.left: line6.left
+                        anchors.top:line6.bottom
+                        anchors.topMargin: 124
+                        anchors.leftMargin: parSetFirstAlignLine
+                        LineEdit {
+                            id: inputGateway
+                            width: recGateway.width  - 2
+                            height: recGateway.height -2
+                            anchors.left: parent.left
+                            anchors.leftMargin: 1
+                            anchors.verticalCenter: recGateway.verticalCenter
+                            border.width: 0
+                            inputLimite:Qt.ImhDigitsOnly
+                            font.pixelSize: lineeditfontSize
+                            placeholderText: ""
+                            isNeedDoubleClickEdit: false
+                            textLeftPadding:0
+                            txtColor: Qt.rgba(0,0,0,0.65)
+                            inputmask: "000.000.000.000"
+                            text: ""
+                            //isReadOnly:true
+                            color: "#F8FAFD"
+                            onTextChanged: {
+
+                            }
+                        }
+                    }
                     Rectangle{
                         id:btnSave
                         width: txtSave.width +24
@@ -1220,7 +1421,23 @@ Rectangle {
     //            dataObj.insert("alarmparam", QJsonValue(alarmparamObj));
     //            dataObj.insert("ctrlparam", QJsonValue(ctrlparamObj));
     
-    
+    function setNetip(value){
+
+        inputNetIp.text = value
+
+    }
+
+    function setDhcpenable(value){
+        cmbNetTypeSelect.currentIndex = value
+    }
+
+    function setNetmask(value){
+        inputMask.text = value
+    }
+
+    function setNetGateway(value){
+        inputGateway.text = value
+    }
     
     function setWdr(value){
         imagparamwdr = value
@@ -1241,6 +1458,9 @@ Rectangle {
         map.cmd = "getinftempcolor"
         s_sendcommoncmd(map);
         
+
+        map.cmd = "getnetworkinfo"
+        s_sendcommoncmd(map);
     }
     
     function setTempcolor(value)
@@ -1324,6 +1544,15 @@ Rectangle {
         }
         s_sendcommoncmd(map3);
         
+
+        var map4 = {
+            cmd:"setnetworkinfo",
+            ip:inputNetIp.text,
+            gateway:inputGateway.text,
+            netmask:inputMask.text,
+            dhcpenable:cmbNetTypeSelect.currentIndex
+        }
+        s_sendcommoncmd(map4);
         
         s_beerSwith(swichBeer.checked)
         s_warnSwith(swichWarn.checked)
@@ -1592,6 +1821,27 @@ Rectangle {
             txtImageSet.text = "图像设置"
             txtImageSelect.text = "图像选择"
             txtMask.text = "口罩告警"
+            break;
+        case lKhmer:
+            txtRecordSet.text = "ការកំណត់វីដេអូ"
+            txtRecortPath.text = "កន្លែងផ្ទុកទិន្នន័យ"
+            txtScreenShotPath.text = "កន្លែងផ្ទុកទិន្នន័យ"
+            txtWarnTemSet.text = "កំណត់សីតុណ្ហភាពដែលត្រូវរោទ៍"
+            labelSwitchTime.text = "បង្ហាញពេលវេលា"
+            labelTime.text = "បង្ហាញពេលវេលា"
+            txtparset.text = "ការកំណត់ប៉ារ៉ាម៉ែត្រ"
+            txtSwichBeer.text = "បិទបើកកុងតាក់ (បុហ្ស័រ)"
+            txtSwichRecord.text = "វីដេអូ"
+            txtSwichScreenShot.text = "ថតរូប"
+            txtSwichWarn.text = "ប្តូរសម្លេងរោទ៍"
+            txtTempMin.text = "សន្ទះគ្រប់គ្រងសីតុណ្ហភាព"
+            txtTempDrift.text = "ការកំណត់លំហូរសីតុណ្ហភាព"
+            txtUpdate.text = "Upgrade"
+            txtUpdateFile.text = "Upgrade"
+            txtSave.text = "Confirm"
+            txtImageSet.text = "Thermal Image Color"
+            txtImageSelect.text = "Color Setting "
+            txtMask.text = "Mask Alarm"
             break;
         case lBolan:
             txtRecordSet.text = "Ustawienia wideo"

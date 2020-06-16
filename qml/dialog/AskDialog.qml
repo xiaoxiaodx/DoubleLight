@@ -149,6 +149,10 @@ Popup {
             txtCancel.text = "Annullato"
             txtEnsure.text = "Confermare"
             break;
+        case lKhmer:
+            txtCancel.text = "បោះបង់"
+            txtEnsure.text = "យល់ព្រម"
+            break;
         case lChinese:
             txtCancel.text = "取消"
             txtEnsure.text = "确定"
