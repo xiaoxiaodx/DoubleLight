@@ -12,10 +12,12 @@
 #include "tcpworker.h"
 #include "ffmpegcodec.h"
 #include "mysearch1.h"
-#include "youseeparse.h"
 #include "chttpapidevice.h"
-
 #include "debuglog.h"
+
+
+
+
 class XVideo : public QQuickPaintedItem
 {
     Q_OBJECT
@@ -48,7 +50,6 @@ signals:
     void signal_loginStatus(QString msg);
     void signal_waitingLoad(QString msgload);
     void signal_endLoad();
-
     //
     void signal_temp(float tempV);
     //私有流参数
@@ -56,16 +57,11 @@ signals:
     void signal_httpUiParSet(QVariant map);
     void signal_getInitPar();
     void signal_createHttp();
-
     void signal_destroyHttp();
-
     //http 搜索
     void signal_resetSearch();
     void signal_finishSearch();
-
     void signal_connected(bool istrue,QString ip);
-
-
     void signal_tcpipChange(QString str);
 public slots:
     void slot_recH264(char *buff,int len,quint64 time);
@@ -85,9 +81,7 @@ private:
     void createTcpThread();
     FfmpegCodec *createFFmpegDecodec(QString type);
     void createHttpApi();
-
     void destroyAllFunction();
-
     void updateUi();
 
     QString deviceType = "";

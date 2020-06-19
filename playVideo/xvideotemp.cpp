@@ -2,7 +2,6 @@
 
 #include <QPainter>
 #include <QDebug>
-#include <render/texturenode.h>
 #include <QPainter>
 
 #include "XVideo.h"
@@ -28,7 +27,7 @@ void XVideoTemp::fun_recTestRect(int x,int y,int w,int h,int x1,int y1,int w1,in
 void XVideoTemp::destroyAllFunction()
 {
 
-    finishYouPull();
+
 
     if(j07device != nullptr){
 
@@ -52,11 +51,11 @@ void XVideoTemp::startTemperatureVideo(float tp,QVariant type,QVariant par1,QVar
     m_ip = curip;
 
     if(typeStr.compare("E03")==0){//384*288
-        createYouseePull();
+
     }else if (typeStr.compare("D04")==0){//
-        createYouseePull();
+
     }else if (typeStr.compare("D06")==0){
-        createShiGan();
+
     }else if (typeStr.compare("F03")==0){
         //createIRCNet();
         createJ07(m_ip,1);
@@ -102,57 +101,18 @@ void XVideoTemp::slot_recRect(int tempdisplay,QVariantList listmap)
    // update();
 }
 
-void XVideoTemp::createYouseePull()
-{
-    if(mYouSeeParse == nullptr){
-        youseeThread = new QThread;
-        mYouSeeParse = new YouSeeParse;
-        mYouSeeParse->moveToThread(youseeThread);
-        connect(this,&XVideoTemp::signal_startinit,mYouSeeParse,&YouSeeParse::slot_init);
-        connect(this,&XVideoTemp::signal_stop,mYouSeeParse,&YouSeeParse::slot_stopPlay);
-        connect(this,&XVideoTemp::signal_getInitPar,mYouSeeParse,&YouSeeParse::slot_getInitPar);
-        connect(youseeThread,&QThread::finished,youseeThread,&QThread::deleteLater);
-        connect(this,&XVideoTemp::signal_parSet,mYouSeeParse,&YouSeeParse::slot_parSet);
-        youseeThread->start();
-    }
-    emit signal_startinit();
-}
 
 
 
-void XVideoTemp::createIRCNet()
-{
-    mircNet.ircInit();
-}
 
-void XVideoTemp::finishYouPull()
-{
-    if(mYouSeeParse != nullptr){
 
-        mYouSeeParse->forceFinish();
-        youseeThread->exit();
-        youseeThread->wait();
-        youseeThread = nullptr;
-    }
-}
 
-void XVideoTemp::createShiGan(){
 
-    if(pShiGanObject == nullptr){
-        shiganThread = new QThread;
-        pShiGanObject = new ShiGanObject;
-        pShiGanObject->moveToThread(shiganThread);
-        connect(this,&XVideoTemp::signal_startLoop,pShiGanObject,&ShiGanObject::slot_loopRec);
-        //connect(pShiGanObject,&ShiGanObject::signal_sendImageInfo,this,&XVideoTemp::slot_recImageInfo);
-        //connect(this,&XVideoTemp::signal_shiganHeart,pShiGanObject,&ShiGanObject::sendHeart,Qt::DirectConnection);
-        shiganThread->start();
-        emit signal_startLoop();
-    }
-}
+
 
 void XVideoTemp::fun_colorShowType(int type){
 
-    mircNet.FuncSetColor(type+1);
+
 }
 
 void XVideoTemp::slot_recImageInfo(QImage *img,QVariant var,float f)
@@ -192,16 +152,13 @@ void XVideoTemp::fun_getInitPar()
 }
 
 void XVideoTemp::fun_temMax(QVariant mvalue){
-    YouSeeParse::check_max_temp = mvalue.toFloat();
-    qDebug()<<" check_max_temp  "<<YouSeeParse::check_max_temp;
+
 }
 void XVideoTemp::fun_temMin(QVariant mvalue){
-    YouSeeParse::check_min_temp = mvalue.toFloat();
-    qDebug()<<" check_min_temp  "<<YouSeeParse::check_min_temp;
+
 }
 void XVideoTemp::fun_temOffset(QVariant mvalue){
-    YouSeeParse::temp_offset = mvalue.toFloat()/2;
-    qDebug()<<" temp_offset  "<<YouSeeParse::temp_offset;
+
 }
 
 void XVideoTemp::slot_timeout()
@@ -381,22 +338,12 @@ void XVideoTemp::paint(QPainter *painter)
 //        }
 //    }
 
-//    if(mYouSeeParse != nullptr){
-//        QMap<QString,QVariant> map;
-//        map.insert("parType","temp");
-//        map.insert("tempValue",mRenderImginfo.areaMaxtemp);
-//        emit signal_areaMaxtemp(map);
-//    }
-    // DebugLog::getInstance()->writeLog("painter hongwai end***");
+
+
 }
 
 void XVideoTemp::fun_updateDate(){
 
-    if(mYouSeeParse != nullptr){
-        QMap<QString,QVariant> map;
-        map.insert("cmd","setDate");
-        emit signal_parSet(map);
-    }
 }
 
 void XVideoTemp::fun_timeSwitch(bool isChecked){
@@ -410,15 +357,14 @@ void XVideoTemp::fun_temSet(QVariant mvalue){
 
 void XVideoTemp::fun_temDrift(QVariant mvalue)
 {
-    YouSeeParse::temp_offset = mvalue.toFloat()/2;
-    qDebug()<<"dsadsa"<<YouSeeParse::temp_offset;
+
 }
 
 
 XVideoTemp::~XVideoTemp()
 {
     qDebug()<< " 析构   XVideoTemp";
-    finishYouPull();
+
     if(mRenderImginfo.pImg != nullptr){
         delete mRenderImginfo.pImg;
     }

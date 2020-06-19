@@ -29,6 +29,8 @@ public:
 
     Q_INVOKABLE void funProcessPushAlarm(QString path,QVariantMap map);
     Q_INVOKABLE void funProcessPushAlarm1(QString path,QVariantMap map);
+    Q_INVOKABLE void funProcessPushAlarm2(QString path,QString did,QVariantMap map);
+
 
     //截屏
     Q_INVOKABLE bool funScreenShoot(QString path,QQuickWindow *quic,int capx,int capy,int capw,int caph,float warnTemp);

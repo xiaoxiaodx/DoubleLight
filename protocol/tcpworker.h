@@ -17,7 +17,20 @@
 #include <QMutex>
 #include <QAbstractSocket>
 #define MAX_AUDIO_FRAME_SIZE 192000
-#include "shigan.h"
+
+
+class ImageInfo{
+public:
+    QImage *pImg;
+    quint64 time;
+    bool isDrawLine = false;
+
+    QList<QVariantMap> listRect;
+    float areaMaxtemp = 0;
+
+    int tempdisplay;
+};
+
 //typedef enum
 //{
 //    CMD_HeartBeat			= 0x31,

@@ -47,6 +47,9 @@ Rectangle {
     property int parSetFirstAlignLine: curLanguage === lChinese?134:curLanguage === lEnglish?230:curLanguage === lKorean?204:curLanguage ===lRussian?210:300
     property int parSetSecondAlignLine: curLanguage === lChinese?368:curLanguage === lEnglish?488:curLanguage === lKorean?388:curLanguage ===lRussian?538:700
     
+    property int firstTopMargin: 15
+    property int perTopMargin: 20
+
     property int tempdriftcapMax: 2
     property int tempdriftcapMin: -2
     property int tempcontrolcapMax: 6
@@ -78,26 +81,7 @@ Rectangle {
         property alias switchScreenShot:swichScreenShot.checked
         property alias switchBeer:swichBeer.checked
         property alias switchRecord:swichRecord.checked
-        
-        
-        //   if(swithTime.checked)
-        //        osdenableV = 1
-        //    else
-        //        osdenableV = 0
-        //    var alarmtempEnableV;
-        
-        //    if(swichWarn.checked)
-        //        alarmtempEnableV = 1;
-        //    else
-        //        alarmtempEnableV = 0;
-        //        var map ={
-        //            osdenable:osdenableV,
-        //            alarmtempEnable:alarmtempEnableV,
-        //            alarmtemp:inputTem.text,
-        //            tempdrift:inputTempDrift.text,
-        //            tempcontrol:inputTempMin.text,
-        //            cmd:"setiradinfo"
-        //        }
+
         
         
         property alias updateFilePath:inputUpdatePath.text
@@ -196,7 +180,7 @@ Rectangle {
                     anchors.verticalCenter: parent.verticalCenter
                     anchors.horizontalCenter: parent.horizontalCenter
                     width: rectcontent.width
-                    height: 950
+                    height: 1200
                     color: "#F8FAFD"
                     
                     Text {
@@ -204,14 +188,14 @@ Rectangle {
                         font.pixelSize: fontSize
                         color: fontColor
                         text: qsTr("时间显示")
-                        anchors.bottom: line1.top
-                        anchors.left: line1.left
+                        anchors.bottom: lineTime.top
+                        anchors.left: lineTime.left
                         anchors.bottomMargin: 20
                         
                     }
                     
                     Rectangle{
-                        id:line1
+                        id:lineTime
                         width: parent.width - 20*2
                         height: 1
                         color: "#e2e2e2"
@@ -235,10 +219,10 @@ Rectangle {
                         id:swithTime
                         width: 30
                         height: 15
-                        anchors.left: line1.left
+                        anchors.left: lineTime.left
                         anchors.leftMargin: parSetFirstAlignLine
-                        anchors.top: line1.bottom
-                        anchors.topMargin: 20
+                        anchors.top: lineTime.bottom
+                        anchors.topMargin: firstTopMargin
                         onCheckedChanged: {
                             
                             //s_timeSwith(checked)
@@ -252,17 +236,17 @@ Rectangle {
                         color: fontColor
                         text: qsTr("参数设置")
                         
-                        anchors.bottom: line2.top
-                        anchors.left: line2.left
+                        anchors.bottom: lineParset.top
+                        anchors.left: lineParset.left
                         anchors.bottomMargin: 20
                     }
                     Rectangle{
-                        id:line2
+                        id:lineParset
                         width:parent.width - 20*2
                         height: 1
                         color: "#e2e2e2"
-                        anchors.top: parent.top
-                        anchors.topMargin: 187
+                        anchors.top: lineTime.bottom
+                        anchors.topMargin: 114
                         anchors.horizontalCenter: parent.horizontalCenter
                     }
                     
@@ -272,7 +256,7 @@ Rectangle {
                         color: fontColor
                         font.pixelSize: fontSize
                         anchors.right: rectTempDrift.left
-                        anchors.rightMargin: 20
+                        anchors.rightMargin: firstTopMargin
                         anchors.verticalCenter: rectTempDrift.verticalCenter
                     }
                     
@@ -282,9 +266,9 @@ Rectangle {
                         width: 88
                         height: 32
                         radius: 4
-                        anchors.left: line2.left
+                        anchors.left: lineParset.left
                         anchors.leftMargin: parSetFirstAlignLine
-                        anchors.top: line2.bottom
+                        anchors.top: lineParset.bottom
                         anchors.topMargin: 20
                         LineEdit {
                             id: inputTempDrift
@@ -385,10 +369,11 @@ Rectangle {
                         width: 88
                         height: 32
                         radius: 4
-                        anchors.left: line2.left
-                        anchors.top:line2.bottom
-                        anchors.topMargin: 73
+                        anchors.left: lineParset.left
                         anchors.leftMargin: parSetFirstAlignLine
+                        anchors.top:rectTempDrift.bottom
+                        anchors.topMargin: perTopMargin
+
                         LineEdit {
                             id: inputTempMin
                             width: rectTempMin.width  - 22
@@ -503,10 +488,10 @@ Rectangle {
                         id:swichWarn
                         width: 30
                         height: 15
-                        anchors.left: line2.left
+                        anchors.left: lineParset.left
                         anchors.leftMargin: parSetFirstAlignLine
-                        anchors.top: line2.bottom
-                        anchors.topMargin: 125
+                        anchors.top: rectTempMin.bottom
+                        anchors.topMargin: perTopMargin
                         onCheckedChanged:{
                             
                             // s_warnSwith(checked)
@@ -526,7 +511,7 @@ Rectangle {
                         id: inputTem
                         width: 88
                         height: 28
-                        anchors.left: line2.left
+                        anchors.left: lineParset.left
                         anchors.leftMargin: parSetSecondAlignLine
                         anchors.verticalCenter:swichWarn.verticalCenter
                         border.width: 1
@@ -570,10 +555,10 @@ Rectangle {
                         id:swichScreenShot
                         width: 30
                         height: 15
-                        anchors.left: line2.left
+                        anchors.left: lineParset.left
                         anchors.leftMargin: parSetFirstAlignLine
-                        anchors.top: line2.bottom
-                        anchors.topMargin: 172
+                        anchors.top: swichWarn.bottom
+                        anchors.topMargin: perTopMargin
                         onCheckedChanged: s_screenShotSwith(checked)
                     }
                     
@@ -594,7 +579,7 @@ Rectangle {
                         border.width: 1
                         width: 200
                         height: 28
-                        anchors.left: line2.left
+                        anchors.left: lineParset.left
                         anchors.leftMargin: parSetSecondAlignLine
                         anchors.verticalCenter: swichScreenShot.verticalCenter
                         LineEdit {
@@ -643,6 +628,55 @@ Rectangle {
                         }
                     }
                     
+
+                    Text {
+                        id: labelSnapInter
+                        text: qsTr("抓拍间隔")
+                        font.pixelSize: fontSize
+                        color: fontColor
+                        anchors.right: cmbsnapScrrenSelect.left
+                        anchors.rightMargin: 20
+                        anchors.verticalCenter: cmbsnapScrrenSelect.verticalCenter
+                    }
+
+                    ListModel{
+                        id:snapScrrenModel
+                        ListElement{showStr:"1s"}
+                        ListElement{showStr:"5s"}
+                        ListElement{showStr:"10s"}
+                        ListElement{showStr:"30s"}
+                        ListElement{showStr:"60s"}
+                    }
+
+                    MyComBox{
+                        id:cmbsnapScrrenSelect
+                        width:88
+                        height: 28
+                        anchors.left: lineParset.left
+                        anchors.leftMargin: parSetFirstAlignLine
+                        anchors.top:swichScreenShot.bottom
+                        anchors.topMargin: perTopMargin
+                        contentBg: "#ffffff"
+                        itemColorBgNor:"#FFFFFF"
+                        itemColorBgHoverd: "#E7EAF1"
+                        indicatorImgSrc:"qrc:/images/imgTypeSelect.png"
+                        indicatorW: 9
+                        indicatorH: 5
+                        itemLeftMargin:0
+                        itemTopMargin:0
+                        itemFontColor: "#5A5E66"
+                        contentFontColor: "#a6000000"
+                        contentFontSize: lineeditfontSize
+                        bordColor:"#DEDFE3"
+                        mRadius:2
+                        model: snapScrrenModel
+
+                        onCurrentIndexChanged: {
+
+
+                        }
+                    }
+
                     Text {
                         id: txtSwichBeer
                         text: qsTr("蜂鸣开关")
@@ -656,10 +690,10 @@ Rectangle {
                         id:swichBeer
                         width: 30
                         height: 15
-                        anchors.left: line2.left
+                        anchors.left: lineParset.left
                         anchors.leftMargin: parSetFirstAlignLine
-                        anchors.top: line2.bottom
-                        anchors.topMargin:218
+                        anchors.top: cmbsnapScrrenSelect.bottom
+                        anchors.topMargin:perTopMargin
                         onCheckedChanged:{
                             
                             //s_beerSwith(checked)
@@ -685,10 +719,10 @@ Rectangle {
                         imgH: 12
                         imgSrc: "qrc:/images/unselect.png"
                         imgCheckSrc: "qrc:/images/select.png"
-                        anchors.left: line2.left
+                        anchors.left: lineParset.left
                         anchors.leftMargin: parSetFirstAlignLine
-                        anchors.top: line2.bottom
-                        anchors.topMargin:263
+                        anchors.top: swichBeer.bottom
+                        anchors.topMargin:perTopMargin
                         color: "#F8FAFD"
                         text: "H264"
                     }
@@ -708,30 +742,6 @@ Rectangle {
                         text: "H265"
                     }
                     
-                    
-                    SimpleSwich{
-                        id:swichKuandongtai
-                        width: 30
-                        height: 15
-                        anchors.left: line2.left
-                        anchors.leftMargin: parSetFirstAlignLine
-                        anchors.top: line2.bottom
-                        anchors.topMargin:303
-                    }
-                    
-                    Text {
-                        id: txtKuandongtai
-                        text: qsTr("WDR")
-                        font.pixelSize: fontSize
-                        color: fontColor
-                        anchors.right: swichKuandongtai.left
-                        anchors.rightMargin: 20
-                        anchors.verticalCenter: swichKuandongtai.verticalCenter
-                        
-                    }
-
-
-
                     Text {
                         id: labelResolution
                         text: qsTr("温标选择")
@@ -752,9 +762,10 @@ Rectangle {
                         id:cmbTempTypeSelect
                         width:88
                         height: 28
-                        anchors.left: line2.left
-                        anchors.leftMargin: parSetSecondAlignLine
-                        anchors.verticalCenter: swichKuandongtai.verticalCenter
+                        anchors.left: lineParset.left
+                        anchors.leftMargin: parSetFirstAlignLine
+                        anchors.top:checkh264.bottom
+                        anchors.topMargin: perTopMargin
                         contentBg: "#ffffff"
                         itemColorBgNor:"#FFFFFF"
                         itemColorBgHoverd: "#E7EAF1"
@@ -774,7 +785,6 @@ Rectangle {
 
                             if(cmbTempTypeSelect.currentIndex === 1){
                                 // (F（华氏知度）-32)÷1.8
-
                                 console.debug("*********    "+inputTem.text)
                                 var tempStr = inputTem.text
                                 console.debug("*********    "+tempStr)
@@ -799,18 +809,18 @@ Rectangle {
                         text: qsTr("录像设置")
                         color: fontColor
                         font.pixelSize: fontSize
-                        anchors.bottom: line3.top
-                        anchors.left: line3.left
+                        anchors.bottom: lineRecordSet.top
+                        anchors.left: lineRecordSet.left
                         anchors.bottomMargin: 20
                     }
                     
                     Rectangle{
-                        id:line3
+                        id:lineRecordSet
                         width: parent.width - 20*2
                         height: 1
                         color: "#e2e2e2"
-                        anchors.top: parent.top
-                        anchors.topMargin: 580
+                        anchors.top: lineWDR.bottom
+                        anchors.topMargin: 238
                         anchors.horizontalCenter: parent.horizontalCenter
                     }
                     
@@ -827,10 +837,10 @@ Rectangle {
                         id:swichRecord
                         width: 30
                         height: 15
-                        anchors.left: line3.left
+                        anchors.left: lineRecordSet.left
                         anchors.leftMargin: parSetFirstAlignLine
-                        anchors.top: line3.bottom
-                        anchors.topMargin: 27
+                        anchors.top: lineRecordSet.bottom
+                        anchors.topMargin: firstTopMargin
                         onCheckedChanged: s_recordSwith(checked)
                     }
                     
@@ -850,7 +860,7 @@ Rectangle {
                         border.width: 1
                         width: 200
                         height: 28
-                        anchors.left: line3.left
+                        anchors.left: lineRecordSet.left
                         anchors.leftMargin: parSetSecondAlignLine
                         anchors.verticalCenter: swichRecord.verticalCenter
                         LineEdit {
@@ -906,19 +916,19 @@ Rectangle {
                         text: qsTr("图像设置")
                         color: fontColor
                         visible: true//curDevTypeStr==="J07"
-                        anchors.bottom: line4.top
-                        anchors.left: line4.left
+                        anchors.bottom: lineImageSet.top
+                        anchors.left: lineImageSet.left
                         anchors.bottomMargin: 20
                     }
 
                     Rectangle{
-                        id:line4
+                        id:lineImageSet
                         width:parent.width - 20*2
                         height: 1
                         visible: true//curDevTypeStr==="J07"
                         color: "#e2e2e2"
-                        anchors.top: parent.top
-                        anchors.topMargin: 840
+                        anchors.top: lineDeviceUpdate.bottom
+                        anchors.topMargin: 122
                         anchors.horizontalCenter: parent.horizontalCenter
                     }
 
@@ -929,7 +939,7 @@ Rectangle {
                         color: fontColor
                         visible: true//curDevTypeStr==="J07"
                         anchors.right: cmbImgSelect.left
-                        anchors.rightMargin: 20
+                        anchors.rightMargin: firstTopMargin
                         anchors.verticalCenter: cmbImgSelect.verticalCenter
                     }
 
@@ -938,9 +948,9 @@ Rectangle {
                         width:88
                         height: 28
                         visible: true//curDevTypeStr==="J07"
-                        anchors.left: line4.left
+                        anchors.left: lineImageSet.left
                         anchors.leftMargin: parSetFirstAlignLine
-                        anchors.top: line4.bottom
+                        anchors.top: lineImageSet.bottom
                         anchors.topMargin: 20
                         contentBg: "#ffffff"
                         itemColorBgNor:"#FFFFFF"
@@ -975,18 +985,18 @@ Rectangle {
                         text: qsTr("设备升级")
                         color: fontColor
                         //  visible: curDevTypeStr==="f03"
-                        anchors.bottom: line5.top
-                        anchors.left: line5.left
+                        anchors.bottom: lineDeviceUpdate.top
+                        anchors.left: lineDeviceUpdate.left
                         anchors.bottomMargin: 20
                     }
                     Rectangle{
-                        id:line5
+                        id:lineDeviceUpdate
                         width:parent.width - 20*2
                         height: 1
                         //visible: curDevTypeStr==="f03"
                         color: "#e2e2e2"
-                        anchors.top: parent.top
-                        anchors.topMargin: 710
+                        anchors.top: lineRecordSet.bottom
+                        anchors.topMargin: 120
                         anchors.horizontalCenter: parent.horizontalCenter
                     }
                     
@@ -997,10 +1007,10 @@ Rectangle {
                         border.width: 1
                         width: 200
                         height: 28
-                        anchors.left: line5.left
+                        anchors.left: lineDeviceUpdate.left
                         anchors.leftMargin: 48
-                        anchors.top: line5.bottom
-                        anchors.topMargin: 20
+                        anchors.top: lineDeviceUpdate.bottom
+                        anchors.topMargin: firstTopMargin
                         LineEdit {
                             id: inputUpdatePath
                             width: rectUpdatePath.width - imgRecordPath.width - 22
@@ -1081,6 +1091,329 @@ Rectangle {
                     }
                     
                     
+
+                    Text {
+                        id: txtWdr
+                        font.pixelSize: fontSize
+                        color: fontColor
+                        text: qsTr("WDR设置")
+
+                        anchors.bottom: lineWDR.top
+                        anchors.left: lineWDR.left
+                        anchors.bottomMargin: 20
+                    }
+
+                    Rectangle{
+                        id:lineWDR
+                        width:parent.width - 20*2
+                        height: 1
+                        color: "#e2e2e2"
+                        anchors.top: lineParset.bottom
+                        anchors.topMargin: 404
+                        anchors.horizontalCenter: parent.horizontalCenter
+                    }
+
+
+                    SimpleSwich{
+                        id:swichKuandongtai
+                        width: 30
+                        height: 15
+                        anchors.left: lineWDR.left
+                        anchors.leftMargin: parSetFirstAlignLine
+                        anchors.top: lineWDR.bottom
+                        anchors.topMargin:12
+                    }
+
+                    Text {
+                        id: txtKuandongtai
+                        text: qsTr("WDR")
+                        font.pixelSize: fontSize
+                        color: fontColor
+                        anchors.right: swichKuandongtai.left
+                        anchors.rightMargin: 20
+                        anchors.verticalCenter: swichKuandongtai.verticalCenter
+                    }
+
+                    Text {
+                        id: txtbrightness
+                        text: qsTr("亮度")
+                        font.pixelSize: fontSize
+                        color: fontColor
+                        anchors.right: brightnessSlider.left
+                        anchors.rightMargin: 20
+                        anchors.verticalCenter: brightnessSlider.verticalCenter
+                    }
+
+                    Slider {
+                        id:brightnessSlider
+                        width: 200
+                        height:20
+                        anchors.left: lineWDR.left
+                        anchors.leftMargin: parSetFirstAlignLine
+                        anchors.top: swichKuandongtai.bottom
+                        anchors.topMargin: perTopMargin
+                        stepSize:1
+                        minimumValue: 0
+                        maximumValue: 100
+                        value: 0
+                        style: SliderStyle {
+                            groove: Rectangle {
+                                implicitWidth: 200
+                                implicitHeight: 10
+                                color: "#DFE1E6"
+                                radius: 5
+                                Rectangle{
+                                    id:sliderrect1
+                                    anchors.left: parent.left
+                                    width: parent.width * brightnessSlider.value/brightnessSlider.maximumValue
+                                    height: parent.height
+                                    color: "#8AB8FF"
+                                    radius: 5
+                                }
+                                Rectangle{
+                                    id:sliderrect2
+                                    anchors.left: sliderrect1.right
+                                    width: parent.width - sliderrect1.width
+                                    height: parent.height
+                                    color: "transparent"
+                                    radius: 5
+                                }
+                            }
+                            handle:/*Rectangle {
+                                anchors.centerIn: parent
+                                color: control.pressed ? "white" : "lightgray"
+                                implicitWidth: 14
+                                implicitHeight: 14*/
+                                   Image {
+                                id: imgSlider
+                                width: 14
+                                height: 14
+                                source: "qrc:/images/slider.png"
+                            }
+
+                        }
+                    }
+
+                    Text {
+                        id: txtbrightnessvalue
+                        text: brightnessSlider.value
+                        font.pixelSize: fontSize
+                        color: fontColor
+                        anchors.left: brightnessSlider.right
+                        anchors.leftMargin: 10
+                        anchors.verticalCenter: brightnessSlider.verticalCenter
+                    }
+
+
+                    Text {
+                        id: txthue
+                        text: qsTr("色度")
+                        font.pixelSize: fontSize
+                        color: fontColor
+                        anchors.right: hueSlider.left
+                        anchors.rightMargin: 20
+                        anchors.verticalCenter: hueSlider.verticalCenter
+                    }
+
+                    Slider {
+                        id:hueSlider
+                        width: 200
+                        height:20
+                        anchors.left: lineWDR.left
+                        anchors.leftMargin: parSetFirstAlignLine
+                        anchors.top: brightnessSlider.bottom
+                        anchors.topMargin: perTopMargin
+                        stepSize:1
+                        minimumValue: 0
+                        maximumValue: 100
+                        value: 0
+                        style: SliderStyle {
+                            groove: Rectangle {
+                                implicitWidth: 200
+                                implicitHeight: 10
+                                color: "#DFE1E6"
+                                radius: 5
+                                Rectangle{
+                                    id:sliderrect3
+                                    anchors.left: parent.left
+                                    width: parent.width * hueSlider.value/hueSlider.maximumValue
+                                    height: parent.height
+                                    color: "#8AB8FF"
+                                    radius: 5
+                                }
+                                Rectangle{
+                                    id:sliderrect4
+                                    anchors.left: sliderrect3.right
+                                    width: parent.width - sliderrect3.width
+                                    height: parent.height
+                                    color: "transparent"
+                                    radius: 5
+                                }
+                            }
+                            handle:/*Rectangle {
+                                anchors.centerIn: parent
+                                color: control.pressed ? "white" : "lightgray"
+                                implicitWidth: 14
+                                implicitHeight: 14*/
+                                   Image {
+                                width: 14
+                                height: 14
+                                source: "qrc:/images/slider.png"
+                            }
+
+                        }
+                    }
+                    Text {
+                        id: txthuevalue
+                        text: hueSlider.value
+                        font.pixelSize: fontSize
+                        color: fontColor
+                        anchors.left: hueSlider.right
+                        anchors.leftMargin: 10
+                        anchors.verticalCenter: hueSlider.verticalCenter
+                    }
+
+                    Text {
+                        id: txtcontrast
+                        text: qsTr("对比度")
+                        font.pixelSize: fontSize
+                        color: fontColor
+                        anchors.right: contrastSlider.left
+                        anchors.rightMargin: 20
+                        anchors.verticalCenter: contrastSlider.verticalCenter
+                    }
+
+                    Slider {
+                        id:contrastSlider
+                        width: 200
+                        height:20
+                        anchors.left: lineWDR.left
+                        anchors.leftMargin: parSetFirstAlignLine
+                        anchors.top: hueSlider.bottom
+                        anchors.topMargin: perTopMargin
+                        stepSize:1
+                        minimumValue: 0
+                        maximumValue: 100
+                        value: 0
+                        style: SliderStyle {
+                            groove: Rectangle {
+                                implicitWidth: 200
+                                implicitHeight: 10
+                                color: "#DFE1E6"
+                                radius: 2
+                                Rectangle{
+                                    id:sliderrect5
+                                    anchors.left: parent.left
+                                    width:  parent.width * contrastSlider.value/contrastSlider.maximumValue
+                                    height: parent.height
+                                    color: "#8AB8FF"
+                                    radius: 5
+                                }
+                                Rectangle{
+                                    id:sliderrect6
+                                    anchors.left: sliderrect5.right
+                                    width: parent.width - sliderrect5.width
+                                    height: parent.height
+                                    color: "transparent"
+                                    radius: 5
+                                }
+                            }
+                            handle:/*Rectangle {
+                                anchors.centerIn: parent
+                                color: control.pressed ? "white" : "lightgray"
+                                implicitWidth: 14
+                                implicitHeight: 14*/
+                                   Image {
+                                width: 14
+                                height: 14
+                                source: "qrc:/images/slider.png"
+                            }
+
+                        }
+                    }
+
+                    Text {
+                        id: txtcontrastvalue
+                        text: contrastSlider.value
+                        font.pixelSize: fontSize
+                        color: fontColor
+                        anchors.left: contrastSlider.right
+                        anchors.leftMargin: 10
+                        anchors.verticalCenter: contrastSlider.verticalCenter
+                    }
+
+                    Text {
+                        id: txtcolorsaturation
+                        text: qsTr("饱和度")
+                        font.pixelSize: fontSize
+                        color: fontColor
+                        anchors.right: colorsaturationSlider.left
+                        anchors.rightMargin: 20
+                        anchors.verticalCenter: colorsaturationSlider.verticalCenter
+                    }
+
+                    Slider {
+                        id:colorsaturationSlider
+                        width: 200
+                        height:20
+                        anchors.left: lineWDR.left
+                        anchors.leftMargin: parSetFirstAlignLine
+                        anchors.top: contrastSlider.bottom
+                        anchors.topMargin: perTopMargin
+
+                        stepSize:1
+                        minimumValue: 0
+                        maximumValue: 100
+                        value: 0
+
+                        style: SliderStyle {
+                            groove: Rectangle {
+                                implicitWidth: 200
+                                implicitHeight: 10
+                                color: "#DFE1E6"
+                                radius: 5
+                                Rectangle{
+                                    id:sliderrect7
+                                    anchors.left: parent.left
+                                    width:  parent.width * colorsaturationSlider.value/colorsaturationSlider.maximumValue
+                                    height: parent.height
+                                    color: "#8AB8FF"
+                                    radius: 5
+                                }
+                                Rectangle{
+                                    id:sliderrect8
+                                    anchors.left: sliderrect7.right
+                                    width: parent.width - sliderrect7.width
+                                    height: parent.height
+                                    radius: 5
+                                    color: "transparent"
+                                }
+                            }
+                            handle:/*Rectangle {
+                                anchors.centerIn: parent
+                                color: control.pressed ? "white" : "lightgray"
+                                implicitWidth: 14
+                                implicitHeight: 14*/
+                                   Image {
+
+                                width: 14
+                                height: 14
+                                source: "qrc:/images/slider.png"
+                            }
+
+                        }
+                    }
+
+
+                    Text {
+                        id: txtcolorsaturationvalue
+                        text: colorsaturationSlider.value
+                        font.pixelSize: fontSize
+                        color: fontColor
+                        anchors.left: colorsaturationSlider.right
+                        anchors.leftMargin: 10
+                        anchors.verticalCenter: colorsaturationSlider.verticalCenter
+                    }
                     
                     Rectangle{
                         id:btnSave
@@ -1111,13 +1444,9 @@ Rectangle {
                         }
                     }
                 }
-                
             }
         }
-
-
-
-        }
+    }
 
 
     
@@ -1548,10 +1877,10 @@ Rectangle {
             txtTempDrift.text = "Temperature drift setting"
             txtUpdate.text = "Upgrade"
             txtUpdateFile.text = "Upgrade"
-            txtSave.text = "Settings"
+            txtSave.text = "Save"
             txtencodetype.text = "Encoding Style"
             txtImageSet.text = "Image settings"
-                        txtImageSelect.text = "Image selectione"
+            txtImageSelect.text = "Image selectione"
             labelResolution.text = "Standard"
 
             break;
@@ -1574,7 +1903,7 @@ Rectangle {
             txtSave.text = "설정"
 
             txtImageSet.text = "Image settings"
-                        txtImageSelect.text = "Image selectione"
+            txtImageSelect.text = "Image selectione"
 
             break;
         case lItaly:
@@ -1596,7 +1925,7 @@ Rectangle {
             txtSave.text = "Settaggio"
 
             txtImageSet.text = "Image settings"
-                        txtImageSelect.text = "Image selectione"
+            txtImageSelect.text = "Image selectione"
 
             break;
         case lChinese:
@@ -1620,7 +1949,7 @@ Rectangle {
             txtencodetype.text = "编码方式"
             labelResolution.text = "温标选择"
             txtImageSet.text = "Image settings"
-                        txtImageSelect.text = "Image selectione"
+            txtImageSelect.text = "Image selectione"
 
             break;
         case lRussian:
@@ -1642,7 +1971,7 @@ Rectangle {
             txtSave.text = "Настройка"
 
             txtImageSet.text = "Image settings"
-                        txtImageSelect.text = "Image selectione"
+            txtImageSelect.text = "Image selectione"
 
             break;
         case lLithuanian:
@@ -1664,7 +1993,7 @@ Rectangle {
             txtSave.text = "nustatymas"
 
             txtImageSet.text = "Image settings"
-                        txtImageSelect.text = "Image selectione"
+            txtImageSelect.text = "Image selectione"
 
             break;
         }

@@ -12,15 +12,10 @@
 
 #include <QQuickWindow>
 #include "tcpworker.h"
-
-#include "render/renderthread.h"
 #include "ffmpegcodec.h"
 #include "mysearch1.h"
-#include "youseeparse.h"
 #include "chttpapidevice.h"
-#include "shiganobject.h"
 #include "debuglog.h"
-#include "irc/ircnet.h"
 #include "J07/j07device.h"
 #include <QSemaphore>
 
@@ -75,9 +70,6 @@ signals:
 public slots:
     void slot_timeout();
 
-    //void ready();
-
-    void finishYouPull();
 
     void slot_recImageInfo(QImage *,QVariant,float);
     void slot_recRect(int tempdisplay,QVariantList listmap);
@@ -86,9 +78,7 @@ protected:
     void paint(QPainter *painter);
 private:
 
-    void createYouseePull();
-    void createShiGan();
-    void createIRCNet();
+
     void createJ07(QString ip,int type);
 
     void destroyAllFunction();
@@ -99,19 +89,11 @@ private:
 
     bool isFirstData = false;
 
-    yuvInfo yuvData;
-    QList<yuvInfo> listYuv;
 
-    QThread *youseeThread = nullptr;
-    YouSeeParse *mYouSeeParse = nullptr;
-
-    QThread *shiganThread = nullptr;
-    ShiGanObject *pShiGanObject = nullptr;
 
     J07Device *j07device = nullptr;
     int shiganHeartTimerCount = 0;
 
-    IRCNet mircNet;
     int tempImgWidth = 0;
     int tempImgHeight = 0;
     float warnTemp;

@@ -279,6 +279,8 @@ int CHttpApiDevice::HttpMsgCallBack(char * pData) {
                                 map.insert("cmd","getinftempmodel");
                                 send_httpParSet(map);
 
+                                map.insert("cmd","getdeviceinfo");
+                                slot_httpParSet(map);
                                 map.insert("cmd","getiradinfo");
                                 slot_httpParSet(map);
                                 map.insert("cmd","getalarmparam");
@@ -393,7 +395,15 @@ int CHttpApiDevice::HttpMsgCallBack(char * pData) {
                 callbackMap.insert("hue",object.value("data").toObject().value("hue").toInt());
                 callbackMap.insert("sharpness",object.value("data").toObject().value("sharpness").toInt());
                 callbackMap.insert("wdr",object.value("data").toObject().value("wdr").toInt());
+            }else if("getdeviceinfo" == cmd){
+
+                callbackMap.insert("model",object.value("data").toObject().value("model").toString());
+                callbackMap.insert("uuid",object.value("data").toObject().value("uuid").toString());
+
             }
+
+
+
 
             DebugLog::getInstance()->writeLog("callbackMap:"+callbackMap.value("cmd").toString());
             emit signal_ReadMsg(callbackMap);

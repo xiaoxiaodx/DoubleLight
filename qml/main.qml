@@ -308,9 +308,9 @@ Window {
 
 
     function showToast(stri){
-        toastStr = stri;
-        loaderToast.sourceComponent = null;
-        loaderToast.sourceComponent = toast
+//        toastStr = stri;
+//        loaderToast.sourceComponent = null;
+//        loaderToast.sourceComponent = toast
     }
 
     function setDlgPoint(dlgX ,dlgY)

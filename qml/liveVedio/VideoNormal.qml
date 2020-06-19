@@ -518,6 +518,8 @@ Rectangle {
 
 
 
+        }else if("getdeviceinfo" === strcmd){
+
         }else if("getalarmparam" === strcmd){
             var beerenable = smap.alarmaudiooutenabled;
             deviceconfig.setSwitchBeer(beerenable)

@@ -412,7 +412,7 @@ void TcpWorker::parseRecevieData()
                 quint64 ptsH1 = ptsH * 256*256*256*256;
                 quint64 pts = ptsH1 + ptsL;
 
-                qDebug()<<"pts:"<<ptsH<<"   "<<ptsL<<"   "<<pts;
+                //qDebug()<<"pts:"<<ptsH<<"   "<<ptsL<<"   "<<pts;
 
                 if(myType == 0)
                     emit signal_sendH264(readDataBuff.data(),m_streamDateLen,pts,vResW,vResH);
@@ -620,71 +620,69 @@ void TcpWorker::parseShiGanRgb(QByteArray arr,int arrlen)
 {
 
 
-    //qDebug()<<"parseShiGanRgb   "<<arr.length()<<"  "<<arrlen;
 
+//    if(arrlen > BUFFLEN)
+//    {
+//        qDebug()<<"parseShiGanRgb 长度过长:"<<arrlen;
+//        return;
+//    }
+//    MediaContexHead stMtHd;
 
-    if(arrlen > BUFFLEN)
-    {
-        qDebug()<<"parseShiGanRgb 长度过长:"<<arrlen;
-        return;
-    }
-    MediaContexHead stMtHd;
+//    if(pNetMsg == nullptr)
+//        pNetMsg = (unsigned char *)malloc(arrlen);
 
-    if(pNetMsg == nullptr)
-        pNetMsg = (unsigned char *)malloc(arrlen);
+//    memcpy(pNetMsg,arr.data(),arrlen);
 
-    memcpy(pNetMsg,arr.data(),arrlen);
-
-    int framelen = (pNetMsg[4]<< 24)|(pNetMsg[3]<<16)|(pNetMsg[2] << 8)|(pNetMsg[1]);
+//    int framelen = (pNetMsg[4]<< 24)|(pNetMsg[3]<<16)|(pNetMsg[2] << 8)|(pNetMsg[1]);
 
 
 
-    int bufpos=0;
-    bufpos -= framelen + 3;  // head[1 byte]  crc[2 byte]
+//    int bufpos=0;
+//    bufpos -= framelen + 3;  // head[1 byte]  crc[2 byte]
 
-    int fpos = 0;
-    fpos = MSG_HEAR_LEN;
+//    int fpos = 0;
+//    fpos = MSG_HEAR_LEN;
 
-    memcpy(&stMtHd, &pNetMsg[fpos], sizeof(MediaContexHead));
-    fpos += sizeof(MediaContexHead);
+//    memcpy(&stMtHd, &pNetMsg[fpos], sizeof(MediaContexHead));
+//    fpos += sizeof(MediaContexHead);
 
-    //        qDebug()<<"Image Flag:"<<stMtHd.ImageFlag<<"    Type:"<<stMtHd.ImageType<<endl
-    //               <<"W"<<stMtHd.ImageWidth<<" H:"<<stMtHd.ImageHeigh<<"   Byte:"<<stMtHd.ImageByte
-    //              <<"Tempe Flag:"<<stMtHd.TemperFlag<<"  TemperType:"<<stMtHd.TemperType
-    //             <<"TemperWidth:"<<stMtHd.TemperWidth<<"    TemperHeigh:"<<stMtHd.TemperHeigh<<" TemperByte:"<<stMtHd.TemperByte;
-    int w,h,x,y;
-    if( stMtHd.ImageFlag )
-    {
-        w = stMtHd.ImageWidth;
-        h = stMtHd.ImageHeigh;
-        if(pNetMsgTmp == nullptr)
-            pNetMsgTmp = new unsigned char[(w+2)*h*3];
-        int tpos = 0;
-        for(y=0; y < h; y++)
-        {
-            for(x=0; x < w; x++)
-            {
-                // R G B
-                pNetMsgTmp[tpos++] = pNetMsg[fpos+y*w*3+x*3+2];
-                pNetMsgTmp[tpos++] = pNetMsg[fpos+y*w*3+x*3+1];
-                pNetMsgTmp[tpos++] = pNetMsg[fpos+y*w*3+x*3];
-            }
-            pNetMsgTmp[tpos++] = 0;
-            pNetMsgTmp[tpos++] = 0;
-        }
+//    //        qDebug()<<"Image Flag:"<<stMtHd.ImageFlag<<"    Type:"<<stMtHd.ImageType<<endl
+//    //               <<"W"<<stMtHd.ImageWidth<<" H:"<<stMtHd.ImageHeigh<<"   Byte:"<<stMtHd.ImageByte
+//    //              <<"Tempe Flag:"<<stMtHd.TemperFlag<<"  TemperType:"<<stMtHd.TemperType
+//    //             <<"TemperWidth:"<<stMtHd.TemperWidth<<"    TemperHeigh:"<<stMtHd.TemperHeigh<<" TemperByte:"<<stMtHd.TemperByte;
+//    int w,h,x,y;
+//    if( stMtHd.ImageFlag )
+//    {
+//        w = stMtHd.ImageWidth;
+//        h = stMtHd.ImageHeigh;
+//        if(pNetMsgTmp == nullptr)
+//            pNetMsgTmp = new unsigned char[(w+2)*h*3];
+//        int tpos = 0;
+//        for(y=0; y < h; y++)
+//        {
+//            for(x=0; x < w; x++)
+//            {
+//                // R G B
+//                pNetMsgTmp[tpos++] = pNetMsg[fpos+y*w*3+x*3+2];
+//                pNetMsgTmp[tpos++] = pNetMsg[fpos+y*w*3+x*3+1];
+//                pNetMsgTmp[tpos++] = pNetMsg[fpos+y*w*3+x*3];
+//            }
+//            pNetMsgTmp[tpos++] = 0;
+//            pNetMsgTmp[tpos++] = 0;
+//        }
 
-        //emit signal_sendH264((char*)pNetMsgTmp,w*h*3,10,w,h);
-        QImage *pImg = nullptr;
-        try {
-            pImg =  new QImage(pNetMsgTmp, w, h, QImage::Format_RGB888);
-            // 其它代码
-        } catch ( const std::bad_alloc& e ) {
-            qDebug()<<" 图片分配内存失败";
-            pImg = nullptr;
-        }
+//        //emit signal_sendH264((char*)pNetMsgTmp,w*h*3,10,w,h);
+//        QImage *pImg = nullptr;
+//        try {
+//            pImg =  new QImage(pNetMsgTmp, w, h, QImage::Format_RGB888);
+//            // 其它代码
+//        } catch ( const std::bad_alloc& e ) {
+//            qDebug()<<" 图片分配内存失败";
+//            pImg = nullptr;
+//        }
 
-        emit signal_sendImg(pImg,w*h*3,10,w,h);
-    }
+//        emit signal_sendImg(pImg,w*h*3,10,w,h);
+//    }
 }
 
 void TcpWorker::parseShiGanRgb1(QByteArray arr,int arrlen,int resw,int resh)

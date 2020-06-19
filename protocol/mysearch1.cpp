@@ -118,14 +118,14 @@ void MySearch1::readResultMsg()
                     QString softver = value.toObject().value("softver").toString();
                     QString uuid = value.toObject().value("uuid").toString();
 
-                    QString deviceinfo = ">>>>>>device info<<<<<< \n\t\thardver:"+hardver
-                            +"\n\t\tip:"+ip
-                            +"\n\t\tmodel:"+model
-                            +"\n\t\tdevtype:"+devtype
-                            +"\n\t\tsoftver:"+softver
-                            +"\n\t\tprotocolver:"+protocolver
-                            +"\n\t\tuuid:"+uuid;
-                    DebugLog::getInstance()->writeLog(deviceinfo);
+//                    QString deviceinfo = ">>>>>>device info<<<<<< \n\t\thardver:"+hardver
+//                            +"\n\t\tip:"+ip
+//                            +"\n\t\tmodel:"+model
+//                            +"\n\t\tdevtype:"+devtype
+//                            +"\n\t\tsoftver:"+softver
+//                            +"\n\t\tprotocolver:"+protocolver
+//                            +"\n\t\tuuid:"+uuid;
+//                    DebugLog::getInstance()->writeLog(deviceinfo);
 
 
                     QVariantMap map;

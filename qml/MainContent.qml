@@ -6,7 +6,7 @@ import ScreenVideo 1.0
 import QtMultimedia 5.8
 import QtQuick.Controls 2.5
 import "../qml/liveVedio"
-import "../qml/playbackVideo"
+
 import "../qml/warnManager"
 import "simpleControl"
 Rectangle {

@@ -350,23 +350,10 @@ void WarnModel::funProcessPushAlarm1(QString path,QVariantMap map){
 
 }
 
-//hardisk 第一次需求
-void WarnModel::funProcessPushAlarm(QString path,QVariantMap map)
-{
+//hardisk 第二次需求
 
-    //    callbackMap.insert("cmd",cmd);
-    //    callbackMap.insert("msgid",msgid);
-    //    callbackMap.insert("alarmtype",object.value("data").toObject().value("alarmtype").toInt());
-    //    callbackMap.insert("year",object.value("data").toObject().value("alarmtime").toObject().value("year").toInt());
-    //    callbackMap.insert("mouth",object.value("data").toObject().value("alarmtime").toObject().value("month").toInt());
-    //    callbackMap.insert("day",object.value("data").toObject().value("alarmtime").toObject().value("day").toInt());
-    //    callbackMap.insert("hour",object.value("data").toObject().value("alarmtime").toObject().value("hour").toInt());
-    //    callbackMap.insert("min",object.value("data").toObject().value("alarmtime").toObject().value("min").toInt());
-    //    callbackMap.insert("sec",object.value("data").toObject().value("alarmtime").toObject().value("sec").toInt());
-    //    callbackMap.insert("temperature",object.value("data").toObject().value("temperature").toString().toFloat());
+void WarnModel::funProcessPushAlarm2(QString path,QString did,QVariantMap map){
 
-
-    qDebug()<<"funProcessPushAlarm********  "<<map.value("year").toInt() <<"    "<<map.value("month").toInt()<<"    "<<map.value("day").toInt();
     QDate tmpDate(map.value("year").toInt(),map.value("month").toInt(),map.value("day").toInt());
     QTime tmptime(map.value("hour").toInt(),map.value("min").toInt(),map.value("sec").toInt());
     float warnTemp = map.value("temperature").toFloat();
@@ -377,6 +364,66 @@ void WarnModel::funProcessPushAlarm(QString path,QVariantMap map)
 
     QString datestr = tmpDate.toString("yyyyMMdd");
 
+
+
+    QByteArray imgArrBase64 = imgData.toLatin1();
+    QByteArray imgArr = QByteArray::fromBase64(imgArrBase64);
+
+
+    QDateTime curDateTime(tmpDate,tmptime);
+
+    QString  curDatetimeStr = curDateTime.toString("yyyyMMdd_hhmmss");
+
+    QString desFileDir = path+"/image1";
+
+    QString imgAbsolutePath = path+"/image1/"+curDatetimeStr+".jpeg";
+
+    qDebug()<<" tmpDate "<<tmpDate<<"   tmptime"<<tmptime;
+
+    QDir dir;
+    if (!dir.exists(desFileDir)){
+        bool res = dir.mkpath(desFileDir);
+        if(res)
+            DebugLog::getInstance()->writeLog("slot_screenShot create new dir is succ");
+        else
+            DebugLog::getInstance()->writeLog("slot_screenShot create new dir is fail");
+    }
+
+    //创建相对路径
+    if(!QDir::setCurrent(desFileDir)){
+        DebugLog::getInstance()->writeLog("slot_screenShot set relative dir is false");
+        return;
+    }
+
+
+    QFile file(imgAbsolutePath);
+    if(file.open(QIODevice::WriteOnly)){
+        file.write(imgArr,imgArr.length());
+
+        qDebug()<<"funProcessPushAlarm******** file open:"+imgAbsolutePath;
+        file.close();
+        //存完文件 将消息发给qml
+        emit signal_sendWarnMsg(alarmtype,imgAbsolutePath,curDateTime.toString("yyyy-MM-dd hh:mm:ss"),warnTemp);
+    }else {
+        DebugLog::getInstance()->writeLog("slot_screenShot open log file is fail");
+        return ;
+    }
+
+
+}
+
+void WarnModel::funProcessPushAlarm(QString path,QVariantMap map)
+{
+
+    qDebug()<<"funProcessPushAlarm********  "<<map.value("year").toInt() <<"    "<<map.value("month").toInt()<<"    "<<map.value("day").toInt();
+    QDate tmpDate(map.value("year").toInt(),map.value("month").toInt(),map.value("day").toInt());
+    QTime tmptime(map.value("hour").toInt(),map.value("min").toInt(),map.value("sec").toInt());
+    float warnTemp = map.value("temperature").toFloat();
+    int alarmtype = map.value("alarmtype").toInt();
+    QString imgData = map.value("imagedata").toString();
+
+
+    QString datestr = tmpDate.toString("yyyyMMdd");
 
 
     QByteArray imgArrBase64 = imgData.toLatin1();

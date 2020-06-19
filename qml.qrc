@@ -46,8 +46,6 @@
         <file>qml/simpleControl/SimpleSwich.qml</file>
         <file>qml/dialog/AskDialog.qml</file>
         <file>alarm.wav</file>
-        <file>qml/playbackVideo/MyCalendar.qml</file>
-        <file>qml/playbackVideo/PlaybackVideo.qml</file>
         <file>images/play.png</file>
         <file>images/play_fast.png</file>
         <file>images/play_fast_h.png</file>
@@ -114,5 +112,8 @@
         <file>images/warn_nomask.png</file>
         <file>qml/simpleControl/MyComBox1.qml</file>
         <file>qml/dialog/DialogPlayVideo.qml</file>
+        <file>images/3.png</file>
+        <file>qml/playbackVideo/MyCalendar.qml</file>
+        <file>images/slider.png</file>
     </qresource>
 </RCC>

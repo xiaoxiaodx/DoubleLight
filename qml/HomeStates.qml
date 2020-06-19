@@ -84,4 +84,15 @@ Rectangle{
     }
 
 
+    Image {
+        id: imgloo
+        width: 220
+        height: 40
+        anchors.left: parent.left
+        anchors.leftMargin: 10
+        anchors.verticalCenter: parent.verticalCenter
+        source: "qrc:/images/3.png"
+    }
+
+
 }

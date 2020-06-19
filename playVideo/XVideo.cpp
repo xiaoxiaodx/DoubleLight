@@ -1,7 +1,6 @@
 ﻿#include "XVideo.h"
 #include <QPainter>
 #include <QDebug>
-#include <render/texturenode.h>
 #include <QPainter>
 
 
@@ -69,12 +68,10 @@ void XVideo::startNormalVideo(float tp,QString deviceinfo)
 
     if(listip.size() >= 4){
 
-
-
-        if(m_ip.compare(deviceinfo)!=0){
+        //if(m_ip.compare(deviceinfo)!=0){
 
             destroyAllFunction();
-        }
+       // }
         m_ip = deviceinfo;
         warnTemp = tp;
         createTcpThread();
@@ -88,9 +85,9 @@ void XVideo::startNormalVideo(float tp,QString deviceinfo)
         if(deviceinfo.compare(map.value("uuid").toString())==0){
             QString curip = map.value("ip").toString();
 
-            if(m_ip.compare(curip)!=0){
+           // if(m_ip.compare(curip)!=0){
                 destroyAllFunction();
-            }
+           // }
             m_ip = curip;
             warnTemp = tp;
             createTcpThread();
