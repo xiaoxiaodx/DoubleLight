@@ -54,7 +54,7 @@ Window {
 
 
 
-    property int curLanguage: 0
+    property int curLanguage: 1
     property int lKhmer:0
     property int lEnglish: 1
     property int lRussian: 2

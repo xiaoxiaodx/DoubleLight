@@ -24,31 +24,31 @@ Rectangle {
         height: parent.height
         color: "#00ffffff"
 
-                Image {
-                    id: btnImg
-                    anchors.left: parent.left
-                    anchors.leftMargin: 30
-        //            anchors.topMargin: 10
-                    anchors.verticalCenter: parent.verticalCenter
-        //            anchors.bottom: parent.bottom
-        //            anchors.bottomMargin: 10
+//                Image {
+//                    id: btnImg
+//                    anchors.left: parent.left
+//                    anchors.leftMargin: 30
+//        //            anchors.topMargin: 10
+//                    anchors.verticalCenter: parent.verticalCenter
+//        //            anchors.bottom: parent.bottom
+//        //            anchors.bottomMargin: 10
 
-                    width: 4*height
-                    height: 40
-                    source: "qrc:/images/logo17.png"
-                }
+//                    width: 4*height
+//                    height: 40
+//                    source: "qrc:/images/logo17.png"
+//                }
 
 
-//        Text {
-//            id: btnImg
-//            anchors.left: parent.left
-//            anchors.leftMargin: 40
-//            anchors.verticalCenter: parent.verticalCenter
-//            color: "white"
-//            font.pixelSize: 30
-//            font.bold: true
-//            text: ""
-//        }
+        Text {
+            id: btnImg
+            anchors.left: parent.left
+            anchors.leftMargin: 40
+            anchors.verticalCenter: parent.verticalCenter
+            color: "white"
+            font.pixelSize: 30
+            font.bold: true
+            text: ""
+        }
         QmlTabBarButtonH{
             id:tabbarBtn
             height: parent.height
@@ -215,7 +215,7 @@ Rectangle {
             indicatorH: 7
             itemLeftMargin:-12
             itemTopMargin:0
-            currentIndex:0
+            currentIndex:1
 
           //  enabled: false
 
