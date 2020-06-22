@@ -755,7 +755,7 @@ Rectangle {
                         anchors.left: line2.left
                         anchors.leftMargin: parSetSecondAlignLine
                         anchors.verticalCenter: swichKuandongtai.verticalCenter
-                        contentBg: "#ffffff"
+                        contentBg: "#F8FAFD"
                         itemColorBgNor:"#FFFFFF"
                         itemColorBgHoverd: "#E7EAF1"
                         indicatorImgSrc:"qrc:/images/imgTypeSelect.png"
@@ -963,7 +963,7 @@ Rectangle {
                         anchors.leftMargin: parSetFirstAlignLine
                         anchors.top: line4.bottom
                         anchors.topMargin: 20
-                        contentBg: "#ffffff"
+                        contentBg: "#F8FAFD"
                         itemColorBgNor:"#FFFFFF"
                         itemColorBgHoverd: "#E7EAF1"
                         indicatorImgSrc:"qrc:/images/imgTypeSelect.png"
@@ -1106,7 +1106,7 @@ Rectangle {
 
                     Text {
                         id: txtNetSet
-                        font.pixelSize: fontSize
+                        font.pixelSize: lineeditfontSize
                         text: qsTr("网络设置")
                         color: fontColor
                         visible: true//curDevTypeStr==="J07"
@@ -1130,54 +1130,40 @@ Rectangle {
 
                     Text {
                         id: labelNetType
-                        text: qsTr("网络地址")
-                        font.pixelSize: fontSize
+                        text: qsTr("DHCP")
+                        font.pixelSize: lineeditfontSize
                         color: fontColor
-                        anchors.right: cmbNetTypeSelect.left
+                        anchors.right: swichDhcp.left
                         anchors.rightMargin: 20
-                        anchors.verticalCenter: cmbNetTypeSelect.verticalCenter
+                        anchors.verticalCenter: swichDhcp.verticalCenter
                     }
 
-                    ListModel{
-                        id:netTypeModel
-                        ListElement{showStr:"DHCP"}
-                        ListElement{showStr:"固定ip"}
-                    }
 
-                    MyComBox{
-                        id:cmbNetTypeSelect
-                        width:88
-                        height: 28
-                        anchors.left: line6.left
+                    SimpleSwich{
+                        id:swichDhcp
+                        width: 30
+                        height: 15
                         anchors.leftMargin: parSetFirstAlignLine
+                        anchors.left: line6.left
                         anchors.top: line6.bottom
                         anchors.topMargin: 10
-                        contentBg: "#ffffff"
-                        itemColorBgNor:"#FFFFFF"
-                        itemColorBgHoverd: "#E7EAF1"
-                        indicatorImgSrc:"qrc:/images/imgTypeSelect.png"
-                        indicatorW: 9
-                        indicatorH: 5
-                        itemLeftMargin:0
-                        itemTopMargin:0
-                        itemFontColor: "#5A5E66"
-                        contentFontColor: "#a6000000"
-                        contentFontSize: lineeditfontSize
-                        bordColor:"#DEDFE3"
-                        mRadius:2
-                        model: netTypeModel
-                        onCurrentIndexChanged: {
+                        onCheckedChanged: {
 
-
+                            if(swichDhcp.checked){
+                                inputNetIp.text = ""
+                                inputGateway.text = ""
+                                inputMask.text = ""
+                            }
                         }
                     }
+
 
 
                     Text {
                         id: txtip
                         text: qsTr("ip地址")
                         color: fontColor
-                        font.pixelSize: fontSize
+                        font.pixelSize: lineeditfontSize
                         anchors.right: rectIp.left
                         anchors.rightMargin: 20
                         anchors.verticalCenter: rectIp.verticalCenter
@@ -1185,7 +1171,6 @@ Rectangle {
 
                     Rectangle{
                         id:rectIp
-                        color: "#D6D8DB"
                         width: 200
                         height: 28
                         radius: 4
@@ -1193,6 +1178,9 @@ Rectangle {
                         anchors.top:line6.bottom
                         anchors.topMargin: 48
                         anchors.leftMargin: parSetFirstAlignLine
+
+                        color: "#DEDFE3"
+                        enabled: !swichDhcp.checked
                         LineEdit {
                             id: inputNetIp
                             width: rectIp.width  - 2
@@ -1206,11 +1194,13 @@ Rectangle {
                             placeholderText: ""
                             isNeedDoubleClickEdit: false
                             textLeftPadding:0
+
                             txtColor: Qt.rgba(0,0,0,0.65)
                             inputmask: "000.000.000.000"
                             text: ""
                             //isReadOnly:true
-                            color: "#F8FAFD"
+                            //color: "#F8FAFD"
+                            color: (swichDhcp.checked)?"#EEEEEE":"#F8FAFD"
                             onTextChanged: {
 
                             }
@@ -1222,7 +1212,7 @@ Rectangle {
                         id: txtmask
                         text: qsTr("子网掩码")
                         color: fontColor
-                        font.pixelSize: fontSize
+                        font.pixelSize: lineeditfontSize
                         anchors.right: rectmask.left
                         anchors.rightMargin: 20
                         anchors.verticalCenter: rectmask.verticalCenter
@@ -1255,7 +1245,7 @@ Rectangle {
                             inputmask: "000.000.000.000"
                             text: ""
                             //isReadOnly:true
-                            color: "#F8FAFD"
+                            color: (swichDhcp.checked)?"#EEEEEE":"#F8FAFD"
                             onTextChanged: {
 
                             }
@@ -1267,7 +1257,7 @@ Rectangle {
                         id: txtGateway
                         text: qsTr("网关")
                         color: fontColor
-                        font.pixelSize: fontSize
+                        font.pixelSize: lineeditfontSize
                         anchors.right: rectmask.left
                         anchors.rightMargin: 20
                         anchors.verticalCenter: recGateway.verticalCenter
@@ -1300,7 +1290,7 @@ Rectangle {
                             inputmask: "000.000.000.000"
                             text: ""
                             //isReadOnly:true
-                            color: "#F8FAFD"
+                            color: (swichDhcp.checked)?"#EEEEEE":"#F8FAFD"
                             onTextChanged: {
 
                             }
@@ -1428,7 +1418,9 @@ Rectangle {
     }
 
     function setDhcpenable(value){
-        cmbNetTypeSelect.currentIndex = value
+        swichDhcp.checked = value===1
+
+
     }
 
     function setNetmask(value){
@@ -1550,7 +1542,7 @@ Rectangle {
             ip:inputNetIp.text,
             gateway:inputGateway.text,
             netmask:inputMask.text,
-            dhcpenable:cmbNetTypeSelect.currentIndex
+            dhcpenable: swichDhcp.checked?1:0
         }
         s_sendcommoncmd(map4);
         
@@ -1800,6 +1792,11 @@ Rectangle {
             txtImageSet.text = "Thermal Image Color"
             txtImageSelect.text = "Color Setting "
             txtMask.text = "Mask Alarm"
+            //labelNetType.text = "Network Address"
+            txtNetSet.text = "Network Settings"
+            txtip.text = "IP Address"
+            txtmask.text = "Subnet Mask"
+            txtGateway.text = "Default Gateway"
             break;
         case lChinese:
             txtRecordSet.text = "录像设置"
@@ -1821,6 +1818,11 @@ Rectangle {
             txtImageSet.text = "图像设置"
             txtImageSelect.text = "图像选择"
             txtMask.text = "口罩告警"
+            //labelNetType.text = "网络地址"
+            txtmask.text = "子网掩码"
+            txtNetSet.text = "网络设置"
+            txtip.text = "ip地址"
+            txtGateway.text = "网关"
             break;
         case lKhmer:
             txtRecordSet.text = "ការកំណត់វីដេអូ"
@@ -1836,12 +1838,16 @@ Rectangle {
             txtSwichWarn.text = "ប្តូរសម្លេងរោទ៍"
             txtTempMin.text = "សន្ទះគ្រប់គ្រងសីតុណ្ហភាព"
             txtTempDrift.text = "ការកំណត់លំហូរសីតុណ្ហភាព"
-            txtUpdate.text = "Upgrade"
-            txtUpdateFile.text = "Upgrade"
-            txtSave.text = "Confirm"
-            txtImageSet.text = "Thermal Image Color"
-            txtImageSelect.text = "Color Setting "
-            txtMask.text = "Mask Alarm"
+            txtUpdate.text = "ធ្វើឱ្យប្រសើរឡើង"
+            txtUpdateFile.text = "ធ្វើឧបករណ៍ឱ្យប្រសើរឡើង"
+            txtSave.text = "រក្សាទុក"
+            txtImageSet.text = "កំណត់ពណ៌"
+            txtImageSelect.text = "ពណ៌រូបភាពកម្តៅ"
+            txtMask.text = "សំឡេងរោរ៍ ម៉ាស់"
+            txtNetSet.text = "Network Settings"
+            txtip.text = "IP Address"
+            txtmask.text = "Subnet Mask"
+            txtGateway.text = "Default Gateway"
             break;
         case lBolan:
             txtRecordSet.text = "Ustawienia wideo"
@@ -1884,6 +1890,11 @@ Rectangle {
             txtImageSet.text = "Цвет теплового изображения"
             txtImageSelect.text = "Настройка цвета"
             txtMask.text = "Маска тревоги"
+            //labelNetType.text = "Айпи адрес"
+            txtmask.text = "Маска подсети"
+            txtNetSet.text = "Сетевые настройки"
+            txtip.text = "Сетевой адрес"
+            txtGateway.text = "Шлюз по умолчанию"
             break;
         case ltuerqi:
             txtRecordSet.text = "Video ayarları"
@@ -1905,7 +1916,11 @@ Rectangle {
             txtImageSet.text = "Termal Görüntü Rengi"
             txtImageSelect.text = "Renk Ayarı"
             txtMask.text = "Maske Alarmı"
-
+            //labelNetType.text = "Ağ adresi"
+            txtNetSet.text = "Ağ ayarları"
+            txtip.text = "IP adresi"
+            txtmask.text = "Alt Ağ Maskesi"
+            txtGateway.text = "Varsayılan giriş"
             break;
         case lxibanya:
             txtRecordSet.text = "Ajustes de video"
@@ -1927,6 +1942,11 @@ Rectangle {
             txtImageSet.text = "Color de imagen térmica"
             txtImageSelect.text = "Ajuste de color"
             txtMask.text = "Alarma de máscara"
+            // labelNetType.text = "Dirección de red"
+            txtmask.text = "Máscara de subred"
+            txtNetSet.text = "Configuración de red"
+            txtip.text = "Dirección IP"
+            txtGateway.text = "Puerta de enlace predeterminada"
             break;
         case lfayu:
             txtRecordSet.text = "Paramètres vidéo"
@@ -1948,6 +1968,11 @@ Rectangle {
             txtImageSet.text = "Couleur de l'image thermique"
             txtImageSelect.text = "Réglage des couleurs"
             txtMask.text = "Masque d'alarme"
+            //labelNetType.text = "Adresse réseau"
+            txtNetSet.text = "Paramètres réseau"
+            txtip.text = "Adresse IP"
+            txtmask.text = "Masque de sous-réseau"
+            txtGateway.text = "Passerelle par défaut"
             break;
         }
     }

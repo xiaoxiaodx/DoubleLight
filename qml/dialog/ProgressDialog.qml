@@ -83,7 +83,7 @@ Popup {
             txttitle.text = "正在升级,请等待…"
             break
         case lKhmer:
-            txttitle.text = "正在升级,请等待…"
+            txttitle.text = "សូមរង់ចាំ ឧបករណ៍កំពុងត្រូវបានធ្វើឱ្យប្រសើរឡើង"
             break
         case lBolan:
             txttitle.text = "Proszę czekać na aktualizację urządzenia"

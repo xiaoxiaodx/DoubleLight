@@ -509,6 +509,33 @@ Rectangle {
             deviceconfig.setSwitchBeer(beerenable)
         }else if("getinftempcolor" === strcmd){
             deviceconfig.setTempcolor(smap.tempcolor);
+        }else if("getdeviceinfo" === strcmd){
+            mhomeStateBar.setVersionInfo(smap.softwarever);
+        }else if("getvideoencodeparam"=== strcmd){
+
+            console.debug("*****************"  +smap.encoding )
+            deviceconfig.setVideoType(smap.encoding)
+
+        }else if("setvideoencodeparam"=== strcmd){//设置成功
+            //在重新获取
+            var map ={
+                cmd:"getvideoencodeparam"
+            }
+            video.fun_sendCommonPar(map);
+        }else if("getnetworkinfo" === strcmd){
+            if(smap.dhcpenable === 1){
+
+                deviceconfig.setNetip("")
+                deviceconfig.setNetGateway("")
+                deviceconfig.setNetmask("")
+            }else{
+                deviceconfig.setNetip(smap.ip)
+                deviceconfig.setNetGateway(smap.gateway)
+                deviceconfig.setNetmask(smap.netmask)
+            }
+
+           deviceconfig.setDhcpenable(smap.dhcpenable);
+
         }else if("getimagparam" === strcmd){
 
             deviceconfig.imagparamflip = smap.flip
@@ -521,8 +548,6 @@ Rectangle {
             deviceconfig.imagparamwdr = smap.wdr
             deviceconfig.setWdr(smap.wdr);
 
-        }else if("getdeviceinfo" === strcmd){
-            mhomeStateBar.setVersionInfo(smap.softwarever);
         }else if("setimagparam" === strcmd){
             if(deviceconfig.wdrisChange){
                 msgdialog.width = 500
@@ -533,175 +558,110 @@ Rectangle {
                 case lChinese:
                     txtstr = "wdr设置成功，设备正在重启"
                     break;
-                case lKhmer:
-                    txtstr = "wdr设置成功，设备正在重启"
-                    break;
-                case lBolan:
-                    txtstr = "WDR jest włączony, kamera uruchamia się ponownie"
-                    break;
                 case lEnglish:
-                    txtstr = "WDR is ON, Camera is rebooting"
+                    txtstr = "The wdr setting is successful, the Camera is restarting"
+                    break;
+                case lItaly:
+                    txtstr = "La fotocamera si riavvierà dopo l'impostazione"
+                    break;
+                case lKorean:
+                    txtstr = "설정 후 카메라가 다시 시작됩니다"
                     break;
                 case lRussian:
-                    txtstr = "WDR включен, камера перезагружается"
+                    txtstr = "Камера перезагрузится после настройки"
+                    break;
+                case lLithuanian:
+                    txtstr = "Nustačius fotoaparatą, jis paleis iš naujo"
                     break;
                 case ltuerqi:
-                    txtstr = "WDR AÇIK, Kamera yeniden başlatılıyor"
+                    txtstr = "Kamera ayarlandıktan sonra yeniden başlatılacak"
+                    break;
+                case ltuerqi1:
+                    txtstr = "Kamera ayarlandıktan sonra yeniden başlatılacak"
+                    break;
+                case lputaoya:
+                    txtstr = "A câmera será reiniciada após a configuração"
                     break;
                 case lxibanya:
-                    txtstr = "WDR está encendido, la cámara se reinicia"
+                    txtstr = "La cámara se reiniciará después de configurar"
                     break;
                 case lfayu:
-                    txtstr = "Le WDR est activé, la caméra redémarre"
+                    txtstr = "La caméra redémarrera après le réglage"
+                    break;
+                case lniboer:
+                    txtstr = "क्यामेरा सेटिंग पछि रिस्टार्ट हुनेछ"
+                    break;
+                case lKhmer:
+                    txtstr = "កាមេរ៉ានឹងចាប់ផ្តើមឡើងវិញបន្ទាប់ពីកំណត់"
                     break;
                 }
-                msgdialog.msgStr = txtstr
-                msgdialog.open()
-            }else if("getvideoencodeparam"=== strcmd){
 
-                console.debug("*****************"  +smap.encoding )
-                deviceconfig.setVideoType(smap.encoding)
-
-            }else if("setvideoencodeparam"=== strcmd){//设置成功
-                //在重新获取
-
-                var map ={
-                    cmd:"getvideoencodeparam"
-                }
-                video.fun_sendCommonPar(map);
-            }else if("getinftempcolor" === strcmd){
-                deviceconfig.setTempcolor(smap.tempcolor);
-            }else if("getnetworkinfo" === strcmd){
-                deviceconfig.setNetip(smap.ip)
-                deviceconfig.setNetGateway(smap.gateway)
-                deviceconfig.setNetmask(smap.netmask)
-                deviceconfig.setDhcpenable(smap.dhcpenable);
-            }else if("getimagparam" === strcmd){
-
-                deviceconfig.imagparamflip = smap.flip
-                deviceconfig.imagparambrightness = smap.brightness
-                deviceconfig.imagparamcolorsaturation =smap.colorsaturation
-                deviceconfig.imagparamcontrast = smap.contrast
-                deviceconfig.imagparamhue = smap.hue
-                deviceconfig.imagparammirror = smap.mirror
-                deviceconfig.imagparamsharpness = smap.sharpness
-                deviceconfig.imagparamwdr = smap.wdr
-                deviceconfig.setWdr(smap.wdr);
-
-            }else if("setimagparam" === strcmd){
-                if(deviceconfig.wdrisChange){
-                    msgdialog.width = 500
-                    msgdialog.height = 176
-                    var txtstr ;
-                    switch(curLanguage)
-                    {
-                    case lChinese:
-                        txtstr = "wdr设置成功，设备正在重启"
-                        break;
-                    case lEnglish:
-                        txtstr = "The wdr setting is successful, the Camera is restarting"
-                        break;
-                    case lItaly:
-                        txtstr = "La fotocamera si riavvierà dopo l'impostazione"
-                        break;
-                    case lKorean:
-                        txtstr = "설정 후 카메라가 다시 시작됩니다"
-                        break;
-                    case lRussian:
-                        txtstr = "Камера перезагрузится после настройки"
-                        break;
-                    case lLithuanian:
-                        txtstr = "Nustačius fotoaparatą, jis paleis iš naujo"
-                        break;
-                    case ltuerqi:
-                        txtstr = "Kamera ayarlandıktan sonra yeniden başlatılacak"
-                        break;
-                    case ltuerqi1:
-                        txtstr = "Kamera ayarlandıktan sonra yeniden başlatılacak"
-                        break;
-                    case lputaoya:
-                        txtstr = "A câmera será reiniciada após a configuração"
-                        break;
-                    case lxibanya:
-                        txtstr = "La cámara se reiniciará después de configurar"
-                        break;
-                    case lfayu:
-                        txtstr = "La caméra redémarrera après le réglage"
-                        break;
-                    case lniboer:
-                        txtstr = "क्यामेरा सेटिंग पछि रिस्टार्ट हुनेछ"
-                        break;
-                    case lKhmer:
-                        txtstr = "កាមេរ៉ានឹងចាប់ផ្តើមឡើងវិញបន្ទាប់ពីកំណត់"
-                        break;
-                    }
-
-                    msgdialog.msgStr = txtstr;
-                    msgdialog.open();
-                }
+                msgdialog.msgStr = txtstr;
+                msgdialog.open();
             }
         }
-
-        function updateDate(){
-            video.fun_updateDate();
-        }
-
-        function adjustWindow(adjustw,dX,dY)
-        {
-            var dx = 0;
-            var dy = 0;
-            var dw = 0;
-            var dh = 0;
-            if(adjustw === wLEFT){
-                rectadmjt.x = rectadmjt.x + dX;
-                rectadmjt.width = rectadmjt.width - dX;
-            }else if(adjustw === wRIGHT){
-
-                rectadmjt.width = rectadmjt.width + dX;
-
-            }else if(adjustw === wTOP){
-                rectadmjt.y = rectadmjt.y + dY;
-                rectadmjt.height = rectadmjt.height - dY;
-
-            }else if(adjustw === wBOTTOM){
-                console.debug( "*****   " + dY)
-                rectadmjt.height = rectadmjt.height + dY;
-            }else if(adjustw === wRIGHTTOP){
-
-                rectadmjt.x = rectadmjt.x - dX;
-                rectadmjt.width = rectadmjt.width + dX;
-
-                rectadmjt.y = rectadmjt.y + dY;
-                rectadmjt.height = rectadmjt.height - dY;
-
-            }else if(adjustw === wLEFTTOP){
-
-                rectadmjt.x = rectadmjt.x + dX;
-                rectadmjt.width = rectadmjt.width - dX;
-
-                rectadmjt.y = rectadmjt.y + dY;
-                rectadmjt.height = rectadmjt.height - dY;
-
-            }else if(adjustw === wLEFTBOTTOM){
-                rectadmjt.x = rectadmjt.x + dX;
-                rectadmjt.width = rectadmjt.width - dX;
-
-                rectadmjt.height = rectadmjt.height + dY;
-
-            }else if(adjustw === wRIGHTBOTTOM){
-
-                rectadmjt.width = rectadmjt.width + dX;
-
-                rectadmjt.height = rectadmjt.height + dY;
-            }else if(wCenter === adjustw){
-
-                rectadmjt.x = rectadmjt.x + dX;
-                rectadmjt.y = rectadmjt.y + dY;
-
-            }
-            //video.fun_setRectPar(rectadmjt.x,rectadmjt.y,rectadmjt.width,rectadmjt.height,video.width,video.height)
-            console.debug("矩形位置："+rectadmjt.x+" "+rectadmjt.y+" "+rectadmjt.width+" "+rectadmjt.height+" "+video.width+" "+video.height);
-        }
-
     }
+
+    function updateDate(){
+        video.fun_updateDate();
+    }
+
+    function adjustWindow(adjustw,dX,dY)
+    {
+        var dx = 0;
+        var dy = 0;
+        var dw = 0;
+        var dh = 0;
+        if(adjustw === wLEFT){
+            rectadmjt.x = rectadmjt.x + dX;
+            rectadmjt.width = rectadmjt.width - dX;
+        }else if(adjustw === wRIGHT){
+
+            rectadmjt.width = rectadmjt.width + dX;
+
+        }else if(adjustw === wTOP){
+            rectadmjt.y = rectadmjt.y + dY;
+            rectadmjt.height = rectadmjt.height - dY;
+
+        }else if(adjustw === wBOTTOM){
+            console.debug( "*****   " + dY)
+            rectadmjt.height = rectadmjt.height + dY;
+        }else if(adjustw === wRIGHTTOP){
+
+            rectadmjt.x = rectadmjt.x - dX;
+            rectadmjt.width = rectadmjt.width + dX;
+
+            rectadmjt.y = rectadmjt.y + dY;
+            rectadmjt.height = rectadmjt.height - dY;
+
+        }else if(adjustw === wLEFTTOP){
+
+            rectadmjt.x = rectadmjt.x + dX;
+            rectadmjt.width = rectadmjt.width - dX;
+
+            rectadmjt.y = rectadmjt.y + dY;
+            rectadmjt.height = rectadmjt.height - dY;
+
+        }else if(adjustw === wLEFTBOTTOM){
+            rectadmjt.x = rectadmjt.x + dX;
+            rectadmjt.width = rectadmjt.width - dX;
+
+            rectadmjt.height = rectadmjt.height + dY;
+
+        }else if(adjustw === wRIGHTBOTTOM){
+
+            rectadmjt.width = rectadmjt.width + dX;
+
+            rectadmjt.height = rectadmjt.height + dY;
+        }else if(wCenter === adjustw){
+
+            rectadmjt.x = rectadmjt.x + dX;
+            rectadmjt.y = rectadmjt.y + dY;
+
+        }
+        //video.fun_setRectPar(rectadmjt.x,rectadmjt.y,rectadmjt.width,rectadmjt.height,video.width,video.height)
+        console.debug("矩形位置："+rectadmjt.x+" "+rectadmjt.y+" "+rectadmjt.width+" "+rectadmjt.height+" "+video.width+" "+video.height);
+    }
+
 }
+

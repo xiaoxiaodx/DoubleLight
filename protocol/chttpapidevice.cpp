@@ -410,7 +410,7 @@ int CHttpApiDevice::HttpMsgCallBack(char * pData) {
                 callbackMap.insert("ip",object.value("data").toObject().value("ip").toString());
                 callbackMap.insert("gateway",object.value("data").toObject().value("gateway").toString());
                 callbackMap.insert("netmask",object.value("data").toObject().value("netmask").toString());
-                callbackMap.insert("dhcpenable ",object.value("data").toObject().value("dhcpenable ").toInt());
+                callbackMap.insert("dhcpenable",object.value("data").toObject().value("dhcpenable").toInt());
             }
 
 
@@ -651,7 +651,7 @@ bool CHttpApiDevice::send_httpParSet(QMap<QString,QVariant> map)
 void CHttpApiDevice::HttpSetnetworkinfo(QVariantMap value)
 {
     JsonMsg_T info;
-    sprintf(info.cmd, "%s", "setinftempcolor");
+    sprintf(info.cmd, "%s", "setnetworkinfo");
     sprintf(info.msgID, "%s", value.value("msgid").toString().toLatin1().data());
     sprintf(info.method, "%s", "request");
     sprintf(info.ssionID, "%s", "");
@@ -669,7 +669,7 @@ void CHttpApiDevice::HttpSetnetworkinfo(QVariantMap value)
     dataObj.insert("ip",value.value("ip").toString());
     dataObj.insert("gateway",value.value("gateway").toString());
     dataObj.insert("netmask",value.value("netmask").toString());
-    dataObj.insert("dhcpenable",value.value("ip").toInt());
+    dataObj.insert("dhcpenable",value.value("dhcpenable").toInt());
     msgObject.insert("data", QJsonValue(dataObj));
     SendRequestMsg(msgObject);
 }

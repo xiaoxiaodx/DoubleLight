@@ -395,10 +395,10 @@ Rectangle {
             name.text = "总通行："
             break;
         case lKhmer:
-            name3.text =  "未带口罩："
-            name2.text =  "异常："
-            name1.text = "正常："
-            name.text = "总通行："
+            name3.text =  "គ្មានម៉ាស់："
+            name2.text =  "មិនប្រក្រតី："
+            name1.text = "ប្រក្រតី："
+            name.text = "ទូទៅ："
             break;
         case lBolan:
             name3.text =  "Bez znaku："
