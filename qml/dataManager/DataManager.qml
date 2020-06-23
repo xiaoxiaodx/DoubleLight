@@ -3,18 +3,15 @@ import QtQuick 2.0
 
 import "../playbackVideo"
 import "../dialog"
+import "../warnManager"
 Rectangle {
     id: root
     property int checkedHeaderLeftMargin: 20
-    property int warnTimeHeaderLeftMargin: 44
-    property int numberingHeaderLeftMargin: 282//编号
-    property int nameHeaderLeftMargin: 430//编号
-    property int warnTempHeaderLeftMargin: 578//温度
-    property int maskRecognitionHeaderLeftMargin: 732//口罩识别
-     property int warnImgHeaderLeftMargin: 908
-    property int deleteHeaderLeftMargin: 1181
-
-
+    property int avatarHeaderLeftMargin: 44
+    property int numberingHeaderLeftMargin: 224//编号
+    property int nameHeaderLeftMargin: 386//姓名
+    property int timeHeaderLeftMargin: 548//time
+    property int deleteHeaderLeftMargin: 806
 
     property int fontSize: lKhmer===curLanguage?28:14
     property int titlefontSize: lKhmer===curLanguage?36:18
@@ -23,20 +20,13 @@ Rectangle {
 
     signal s_allselect(bool isSelect);
 
-
     onIsAllSelectChanged: {
-        warnmodel.set
+       //warnmodel.set
     }
     property string curDateStr: ""
 
 
-    function screenShot(path,object,mx,my,mw,mh,temp){
-        warnmodel.funScreenShoot(path,object,mx ,my,mw,mh,temp);
-    }
 
-    function screenShot1(path,object,mx,my,mw,mh,temp,type){
-        warnmodel.funScreenShoot1(path,object,mx ,my,mw,mh,temp,type);
-    }
     //加个矩形是为了解决listview显示越界的问题
     Rectangle{
         id:rectTop
@@ -71,7 +61,7 @@ Rectangle {
             anchors.topMargin: 35
             font.pixelSize: lKhmer===curLanguage?36:18
             z:2
-            text: qsTr("日志列表")
+            text: qsTr("数据列表")
         }
 
         Rectangle{
@@ -108,6 +98,10 @@ Rectangle {
 
                 onClicked: {
 
+                    batchImportState.visible = true
+                    batchImportState.test()
+                    return
+
                     if(curLanguage===lRussian)
                         askDialog.width = 500
                     else
@@ -133,6 +127,85 @@ Rectangle {
                 }
                 onReleased: rectBatch.color = "#3B84F6"
                 onPressed: rectBatch.color = "#66B5FF"
+            }
+        }
+
+        Rectangle{
+            id:rectSingleImport
+            width: imgSingleImport.width + txtSingleImport.width +27
+            height: 36
+            color: "#71C648"
+            radius: 4
+            anchors.left: rectBatch.right
+            anchors.leftMargin: 20
+            anchors.verticalCenter: rectBatch.verticalCenter
+            z:2
+            Image {
+                id: imgSingleImport
+                width: 14
+                height: 15
+                anchors.left: parent.left
+                anchors.leftMargin: 9
+                anchors.verticalCenter: parent.verticalCenter
+                source: "qrc:/images/imgDelete.png"
+
+            }
+
+            Text {
+                id: txtSingleImport
+                font.pixelSize: fontSize
+                anchors.left: imgSingleImport.right
+                anchors.leftMargin: 9
+                anchors.verticalCenter: parent.verticalCenter
+                color: "#ffffff"
+                text: qsTr("单个导入")
+            }
+            MouseArea{
+                anchors.fill: parent
+
+                onClicked: {
+                    popSingleImport.open();
+                }
+                onReleased: rectSingleImport.color = "#71C648"
+                onPressed: rectSingleImport.color = "#66B5FF"
+            }
+        }
+
+        Rectangle{
+            id:rectBatchImport
+            width: imgBatchImport.width + txtBatchImport.width +27
+            height: 36
+            color: "#FB893F"
+            radius: 4
+            anchors.left: rectSingleImport.right
+            anchors.leftMargin: 20
+            anchors.verticalCenter: rectSingleImport.verticalCenter
+            z:2
+            Image {
+                id: imgBatchImport
+                width: 14
+                height: 15
+                anchors.left: parent.left
+                anchors.leftMargin: 9
+                anchors.verticalCenter: parent.verticalCenter
+                source: "qrc:/images/imgDelete.png"
+
+            }
+            Text {
+                id: txtBatchImport
+                font.pixelSize: fontSize
+                anchors.left: imgBatchImport.right
+                anchors.leftMargin: 9
+                anchors.verticalCenter: parent.verticalCenter
+                color: "#ffffff"
+                text: qsTr("批量导入")
+            }
+            MouseArea{
+                anchors.fill: parent
+
+                onClicked: popBatchImport.open()
+                onReleased: rectBatchImport.color = "#FB893F"
+                onPressed: rectBatchImport.color = "#66B5FF"
             }
         }
 
@@ -249,25 +322,23 @@ Rectangle {
                     anchors.fill: parent
                     onClicked: {
                         if(isAllSelect){
-                            // imgSelect.source ="qrc:/images/btnSelect.png"
                             isAllSelect = false;
                         }else{
-                            //imgSelect.source ="qrc:/images/btnSelect_s.png"
                             isAllSelect = true;
                         }
-                        warnmodel.funSetAllSelect(isAllSelect);
+                        datamodel.funSetAllSelect(isAllSelect);
                     }
                 }
             }
             Text {
-                id: txtWarnTime
+                id: txtAvatar
                 anchors.verticalCenter: parent.verticalCenter
                 anchors.left: parent.left
-                anchors.leftMargin: warnTimeHeaderLeftMargin
+                anchors.leftMargin: avatarHeaderLeftMargin
                 font.pixelSize: fontSize
                 color: "#333333"
                 font.bold: curLanguage===lKorean
-                text: qsTr("告警时间")
+                text: qsTr("头像")
             }
             Text {
                 id: txtNumbering
@@ -293,31 +364,12 @@ Rectangle {
                 id: txtWarnTemp
                 anchors.verticalCenter: parent.verticalCenter
                 anchors.left: parent.left
-                anchors.leftMargin: warnTempHeaderLeftMargin
+                anchors.leftMargin: timeHeaderLeftMargin
                 font.pixelSize: fontSize
                 color: "#333333"
+                visible: false
                 font.bold: curLanguage===lKorean
-                text: qsTr("告警温度")
-            }
-            Text {
-                id: warnImg
-                anchors.verticalCenter: parent.verticalCenter
-                anchors.left: parent.left
-                anchors.leftMargin: warnImgHeaderLeftMargin
-                font.pixelSize: fontSize
-                font.bold: curLanguage===lKorean
-                color: "#333333"
-                text: qsTr("抓拍图片")
-            }
-            Text {
-                id: txtMaskRecognition
-                anchors.verticalCenter: parent.verticalCenter
-                anchors.left: parent.left
-                anchors.leftMargin: maskRecognitionHeaderLeftMargin
-                font.pixelSize: fontSize
-                color: "#333333"
-                font.bold: curLanguage===lKorean
-                text: qsTr("口罩识别")
+                text: qsTr("导入时间")
             }
             Text {
                 id: txtDo
@@ -336,13 +388,13 @@ Rectangle {
             height: parent.height - 210 -warnHeader.height
             anchors.top: warnHeader.bottom
             anchors.left: warnHeader.left
-            model: warnmodel
+            model: dataModel
             z:0
             ScrollBar.vertical: ScrollBar {size:10}
             delegate: Rectangle{
                 property bool enter: false
                 width: parent.width
-                height: 59
+                height: 112
                 // color:warnList.currentIndex === index?"#DFEAF8":(listviewClickIndex === index?"#DFEAF8":(enter?"#EEF3FA":"#F8FAFD"))
                 color:(warnList.currentIndex === index?"#DFEAF8":(enter?"#EEF3FA":"#F8FAFD"))
                 Image{
@@ -360,106 +412,75 @@ Rectangle {
 
                             if(!model.isSelect){
                                 isAllSelect = false;
-                                warnmodel.funSetInitSelectFalse();
+                                datamodel.funSetInitSelectFalse();
                             }
                         }
                     }
                 }
-                Text {
-                    id: warnTime
+
+                Image {
+                    id: imgAvatar
+                    width: 60
+                    height: 72
                     anchors.verticalCenter: parent.verticalCenter
                     anchors.left: parent.left
-                    anchors.leftMargin: warnTimeHeaderLeftMargin
-                    font.pixelSize: 14
-                    text: model.warnTime;
+                    anchors.leftMargin: avatarHeaderLeftMargin
+                    source: model.avatarPath
                 }
+
                 Text {
-                    id: warnTemp
+                    id: numbering
                     anchors.verticalCenter: parent.verticalCenter
                     anchors.left: parent.left
-                    anchors.leftMargin: warnTempHeaderLeftMargin
+                    anchors.leftMargin: numberingHeaderLeftMargin
+                    font.pixelSize: 14
+                    text: model.numbering;
+                }
+
+                Text {
+                    id: name
+                    anchors.verticalCenter: parent.verticalCenter
+                    anchors.left: parent.left
+                    anchors.leftMargin: nameHeaderLeftMargin
                     font.pixelSize: fontSize
-                    text: model.warnTemp;
+                    text: model.name;
+                }
+
+
+                Text {
+                    id: time
+                    anchors.verticalCenter: parent.verticalCenter
+                    anchors.left: parent.left
+                    anchors.leftMargin: timeHeaderLeftMargin
+                    font.pixelSize: fontSize
+                    text: model.time;
                 }
 
                 Image {
-                    id: captureImg
-                    width: 13
-                    height: 14
-                    anchors.left: parent.left
-                    anchors.leftMargin: warnTempHeaderLeftMargin//warnImgHeaderLeftMargin
-                    anchors.verticalCenter: parent.verticalCenter
-                    source: index === warnList.currentIndex?"qrc:/images/capture_p.png":"qrc:/images/capture.png"
-                }
-                Text {
-                    id: captureTxt
-                    anchors.left: captureImg.right
-                    anchors.leftMargin: 7
-                    anchors.verticalCenter: parent.verticalCenter
-                    font.pixelSize: 14
-                    color: index === warnList.currentIndex?"#3B84F6":"#333333"
-                    text: model.imgName;
-                    MouseArea{
-                        anchors.fill: parent
-                        onClicked:{
-                            console.debug("absolutePath:"+model.absolutePath)
-                            imgshow.source ="file:///"+ model.absolutePath
-                            imgpop.open();
-                        }
-                    }
-                }
-
-
-                Text {
-                    id: deletetxt
-                    anchors.verticalCenter: parent.verticalCenter
+                    id: imgDelete
                     anchors.left: parent.left
                     anchors.leftMargin: deleteHeaderLeftMargin
-                    font.pixelSize: fontSize
-                    color: "#3B84F6"
-                    text:curLanguage === lChinese?"删除":
-                         curLanguage === lEnglish?"Remove":
-                         curLanguage === lKorean?"삭제":
-                         curLanguage === lItaly?"Cancella":
-                         curLanguage === lRussian?"Удалить":
-                         curLanguage === lLithuanian?"Išvalyti":
-                            curLanguage === ltuerqi?"Sil":
-                                             ltuerqi1 === curLanguage?"Sil":
-                                             lputaoya === curLanguage?"Sil":
-                                             lxibanya === curLanguage?"Eliminar":
-                                             lfayu === curLanguage?"Supprimer":
-                                             lniboer === curLanguage?"मेट्नुहोस् ":
-                    lKhmer === curLanguage?"លុបចោល":""
-                    MouseArea{
-                        anchors.fill: parent
-                        onClicked: {
-                            if(curLanguage === lRussian)
-                                askDialog.width = 500
-                            else
-                                askDialog.width = 427
-                            askDialog.height = 176
-                            askDialog.askStr = curLanguage=== lChinese?"确认删除信息吗？":
-                                               curLanguage===lEnglish?"Confirm to delete?":
-                                               curLanguage===lKorean?"삭제 정보를 확인합니까?":
-                                               curLanguage === lItaly?"Cancello L’Informazione?":
-                                               curLanguage === lRussian?"Вы уверены, что хотите удалить информацию?":
-                                               curLanguage === lLithuanian?"Patvirtinti ištrynimą?":
-                                               curLanguage === ltuerqi?"Kapı Bilgileri?":
-                                               curLanguage === ltuerqi1?"Tüm Seçimleri Sil?":
-                                               curLanguage === lputaoya?"Confirme a exclusão?":
-                                               curLanguage === lxibanya?"Confirmar para eliminar?":
-                                               curLanguage === lfayu?"Confirmer la suppression?":
-                                               curLanguage === lniboer?"साँचै मेट्ने हो ?":
-                                               curLanguage === lKhmer?"យល់ព្រមលុបចោល?":""
-
-                            askDialog.imgSrc = "qrc:/images/ico_warn.png"
-                            askDialog.curType = askDialog.warnInfoSingleDelete
-                            askDialog.open();
-                            // warnmodel.funDeleteIndex(index);
-                        }
-                    }
+                    anchors.verticalCenter: parent.verticalCenter
+                    source: "qrc:/images/delete.png"
                 }
 
+                Rectangle{
+                    id:doRect
+                    width: 1
+                    height: 12
+                    anchors.left: imgDelete.right
+                    anchors.leftMargin: 10
+                    anchors.verticalCenter: parent.verticalCenter
+                    color: "#0486FE"
+                }
+
+                Image {
+                    id: imgRevise
+                    anchors.left: doRect.right
+                    anchors.leftMargin: 10
+                    anchors.verticalCenter: parent.verticalCenter
+                    source: "qrc:/images/revise.png"
+                }
                 MouseArea{
                     anchors.fill: parent
                     hoverEnabled: true
@@ -467,13 +488,13 @@ Rectangle {
                     onEntered:enter = true
                     onExited: enter = false;
                     onClicked: {
-
                         warnList.currentIndex = index;
                         mouse.accepted = false
                     }
                 }
             }
         }
+
         MyCalendar{
             id:calendar
             width:280
@@ -484,11 +505,11 @@ Rectangle {
             Component.onCompleted: {
 
                 curDateStr = Qt.formatDate(calendar.getCurrentData(),"yyyyMMdd");
-                warnmodel.funFlushWarnInfo(deviceconfig.getScrennShotPath(),curDateStr);
+                datamodel.funFlushWarnInfo(deviceconfig.getScrennShotPath(),curDateStr);
             }
             onS_dayChange:{
                 curDateStr = value;
-                warnmodel.funFlushWarnInfo(deviceconfig.getScrennShotPath(),curDateStr);
+                datamodel.funFlushWarnInfo(deviceconfig.getScrennShotPath(),curDateStr);
             }
 
             onS_dayChange1: txtDate.text = value
@@ -497,6 +518,7 @@ Rectangle {
             onS_yearChange: ;
             // Component.onCompleted:getRecordInfo(2, Qt.formatDate(calendar.getCurrentData(),"yyyyMMdd000000"))
         }
+
 
         SelectTime{
             id:selecttime
@@ -508,75 +530,46 @@ Rectangle {
             onS_ensure: {
                 var timeStr = timeh+":"+timem+":"+times
                 txttime.text = timeStr
-                var curIndex = warnmodel.funFindIndex(timeh,timem,times)
+                var curIndex = datamodel.funFindIndex(timeh,timem,times)
                 console.debug("curIndex "+curIndex)
 
                 warnList.positionViewAtIndex(curIndex,ListView.Beginning)
                 warnList.currentIndex = curIndex;
                 //warnList.currentIndex = curIndex
             }
-
         }
     }
 
-    function funProcessPushAlarm(map){
-
-        warnmodel.funProcessPushAlarm2(deviceconfig.getScrennShotPath(),map);
+    BatchImportState{
+        id:batchImportState
+        visible: false
+        color: "#00000000"
+        anchors.fill: parent
     }
 
-
-
-    Popup {
-        id: imgpop
-        x:(parent.width-720)/2
-        y:(parent.height-520)/2
-        width: 720
-        height: 520
-        modal: true
-        focus: true
-        //设置窗口关闭方式为按“Esc”键关闭
-        closePolicy: Popup.CloseOnEscape|Popup.CloseOnPressOutside
-        //设置窗口的背景控件，不设置的话Popup的边框会显示出来
-        background: rect
-
-        Rectangle{
-            id:rect
-            color: "#00000000"
-            anchors.fill: parent
-            Image {
-                id: imgshow
-                width: 600
-                height: 400
-                anchors.horizontalCenter: parent.horizontalCenter
-                anchors.verticalCenter: parent.verticalCenter
-                source: ""
-            }
-
-            Image {
-                id: imgclose
-                width: 40
-                height: 40
-                anchors.left: imgshow.right
-                anchors.bottom: imgshow.top
-                anchors.leftMargin: 20
-                anchors.bottomMargin: 20
-                source: "qrc:/images/img_close.png"
-                MouseArea{
-                    anchors.fill: parent
-                    onClicked: imgpop.close();
-                }
-            }
-        }
+    SingleImport{
+        id:popSingleImport
+        width: 465
+        height:334
     }
+
+    BatchImport{
+        id:popBatchImport
+        width: 465
+        height:334
+
+    }
+
+    
 
     Connections{
         target: askDialog
         onS_CurTypeMsg:{
             if(askDialog.warnInfoMutipleDelete === type){
-                warnmodel.funDeleteSelect();
+                datamodel.funDeleteSelect();
                 isAllSelect = false;
             }else if(askDialog.warnInfoSingleDelete === type)
-                warnmodel.funDeleteIndex(warnList.currentIndex)
+                datamodel.funDeleteIndex(warnList.currentIndex)
         }
     }
 
@@ -594,117 +587,81 @@ Rectangle {
             textitle.text = "Log list";
             txtBatchDelete.text = "Batch Remove"
             txtDo.text = "Operation"
-            txtWarnTime.text = "Alarm Time"
-            txtWarnTemp.text = "Alarm Temperature"
-            warnImg.text = "Snapshots"
-            //deletetxt.text = "Remove"
+
             break;
         case lKorean:
             textitle.text = "로그정보";
             txtBatchDelete.text = "전체삭제"
             txtDo.text = "설정"
-            txtWarnTime.text = "알람시간"
-            txtWarnTemp.text = "알람온도"
-            warnImg.text = "화면저장"
+
             //deletetxt.text = "삭제"
             break;
         case lItaly:
             textitle.text = "Elenco eventi";
             txtBatchDelete.text = "Cancella tutti eventi"
             txtDo.text = "Operazione"
-            txtWarnTime.text = "Ora Allarme"
-            txtWarnTemp.text = "Temperatura Allarme"
-            warnImg.text = "Istantanea"
-            //deletetxt.text = "Cancella"
+
+
             break;
         case lChinese:
-            textitle.text = "日志列表";
+            textitle.text = "数据列表";
             txtBatchDelete.text = "批量删除"
             txtDo.text = "操作"
-            txtWarnTime.text = "告警时间"
-            txtWarnTemp.text = "告警温度"
-            warnImg.text = "抓拍图片"
-            //deletetxt.text = "删除"
+
             break;
         case lRussian:
             textitle.text = "Список журналов";
             txtBatchDelete.text = "Очистить все события"
             txtDo.text = "Операция"
-            txtWarnTime.text = "Время"
-            txtWarnTemp.text = "Температура"
-            warnImg.text = "Снимок"
-            //deletetxt.text = "删除"
+
             break;
         case lLithuanian:
             textitle.text = "Įvykių žurnalas";
             txtBatchDelete.text = "Išvalyti visus pranešimas"
             txtDo.text = "Valdymas"
-            txtWarnTime.text = "Laikas"
-            txtWarnTemp.text = "Tampartūra"
-            warnImg.text = "Nuotrauka"
-            //deletetxt.text = "删除"
+
             break;
         case ltuerqi:
             textitle.text = "Etkinlik listesi";
             txtBatchDelete.text = "Toplu olarak sil"
             txtDo.text = "İşlem"
-            txtWarnTime.text = "Zaman"
-            txtWarnTemp.text = "Sıcaklıklar"
-            warnImg.text = "Snapshot"
-            //deletetxt.text = "删除"
+
             break;
         case ltuerqi1:
             textitle.text = "Etkinlik Listesi";
             txtBatchDelete.text = "Toplu olarak Sil"
             txtDo.text = "İşlem"
-            txtWarnTime.text = "Zaman"
-            txtWarnTemp.text = "Sıcaklık"
-            warnImg.text = "Ekran Görüntüsü"
-            //deletetxt.text = "删除"
+
             break;
         case lputaoya:
             textitle.text = "lista de registro";
             txtBatchDelete.text = "Excluir em lote"
             txtDo.text = "Operar"
-            txtWarnTime.text = "Tempo"
-            txtWarnTemp.text = "Temperatura"
-            warnImg.text = "Instantâneo"
-            //deletetxt.text = "删除"
+
             break;
         case lxibanya:
             textitle.text = "lista de registro";
             txtBatchDelete.text = "Eliminar por lotes"
             txtDo.text = "Funcionar"
-            txtWarnTime.text = "Hora"
-            txtWarnTemp.text = "Temperatura"
-            warnImg.text = "Instantánea"
-            //deletetxt.text = "删除"
+
             break;
         case lfayu:
             textitle.text = "Liste des journaux";
             txtBatchDelete.text = "Supprimer en lot"
             txtDo.text = "Fonctionnement"
-            txtWarnTime.text = "Heure alarme"
-            txtWarnTemp.text = "Température"
-            warnImg.text = "Instantané"
-            //deletetxt.text = "删除"
+
             break;
         case lniboer:
             textitle.text = "लग विवरण ";
             txtBatchDelete.text = "एकैचोटी मेट्नुहोस् "
             txtDo.text = "चलाउनुहोस"
-            txtWarnTime.text = "समय"
-            txtWarnTemp.text = "तापक्रम"
-            warnImg.text = "स्न्यापशट"
-            //deletetxt.text = "删除"
+
             break;
         case lKhmer:
             textitle.text = "កំណត់ហេតុការចូលប្រើប្រាស់ឧបករណ៍";
             txtBatchDelete.text = "លុបចោលទាំងអស់"
             txtDo.text = "ប្រតិបត្តិការ"
-            txtWarnTime.text = "ពេល"
-            txtWarnTemp.text = "សីតុណ្ហភាព"
-            warnImg.text = "ថតរូប"
+
             break;
         }
     }

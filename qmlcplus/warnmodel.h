@@ -15,7 +15,10 @@ public:
     enum datasourceRoles {
         IsSelect = Qt::UserRole ,
         WarnTime,
+        Numbering,
+        Name,
         WarnTemp,
+        MaskRecognition,
         ImgName,
         AbsolutePath
     };
@@ -48,7 +51,6 @@ signals:
 private:
     void removeIndex(int index);
     void removeAll();
-
     void writeLogInfo(QString );
 
     QList<WarnModelData*> m_listWarn;

@@ -8,6 +8,7 @@ import QtQuick.Controls 2.5
 import "../qml/liveVedio"
 import "../qml/playbackVideo"
 import "../qml/warnManager"
+import "../qml/dataManager"
 import "simpleControl"
 Rectangle {
 
@@ -99,6 +100,12 @@ Rectangle {
               id:warnmanger
               color: "#DFE1E6"
           }
+
+          DataManager{
+            id:datamanager
+            color: "#DFE1E6"
+          }
+
       }
 
     ScreenVideo{

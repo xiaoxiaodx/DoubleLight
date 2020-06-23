@@ -11,8 +11,12 @@ class WarnModelData : public QObject
     Q_PROPERTY(QString warnTemp READ warnTime WRITE setWarnTemp NOTIFY warnTempChanged)
     Q_PROPERTY(QString absolutePath READ absolutePath WRITE setAbsolutePath NOTIFY absolutePathChanged)
     Q_PROPERTY(QString imgName READ imgName WRITE setImgName NOTIFY imgNameChanged)
-public:
 
+    Q_PROPERTY(QString numering READ numering WRITE setNumering NOTIFY numeringChanged)
+    Q_PROPERTY(QString name READ name WRITE setName NOTIFY nameChanged)
+    Q_PROPERTY(QString maskRecognition READ maskRecognition WRITE setMaskRecognition NOTIFY maskRecognitionChanged)
+
+public:
     WarnModelData(const bool &isSelect,const QString &warnTime,const QString &warnTemp,QString imgName,QString path,QObject *parent=nullptr);
 
     bool isSelect()const;
@@ -26,12 +30,21 @@ public:
     QString absolutePath()const;
     void setAbsolutePath(const QString &w);
 
+    QString numering() const;
+    void setNumering(const QString &w);
+    QString name() const;
+    void setName(const QString &w);
+    QString maskRecognition() const;
+    void setMaskRecognition(const QString &w);
 signals:
     void isSelectChanged();
     void warnTimeChanged();
     void warnTempChanged();
     void imgNameChanged();
     void absolutePathChanged();
+    void numeringChanged();
+    void nameChanged();
+    void maskRecognitionChanged();
 private:
     bool m_isSelect;
     QString m_warnTime;
@@ -39,6 +52,9 @@ private:
     QString m_imgName;
     QString m_absolutePath;
 
+    QString m_name;
+    QString m_numbering;
+    QString m_maskRecognition;
 };
 
 #endif // WARNMODELDATA_H

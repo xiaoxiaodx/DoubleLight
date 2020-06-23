@@ -50,6 +50,12 @@ QVariant WarnModel::data(const QModelIndex &index, int role) const
         return QVariant::fromValue(m_listWarn.at(index.row())->imgName());
     else if(role == AbsolutePath)
         return QVariant::fromValue(m_listWarn.at(index.row())->absolutePath());
+    else if(role == Name)
+        return QVariant::fromValue(m_listWarn.at(index.row())->name());
+    else if(role == Numbering)
+        return QVariant::fromValue(m_listWarn.at(index.row())->numering());
+    else if(role == MaskRecognition)
+        return QVariant::fromValue(m_listWarn.at(index.row())->maskRecognition());
     return QVariant();
 }
 
@@ -61,6 +67,9 @@ QHash<int, QByteArray> WarnModel::roleNames() const
     roles[WarnTemp] = "warnTemp";
     roles[ImgName] = "imgName";
     roles[AbsolutePath]="absolutePath";
+    roles[MaskRecognition]="maskRecognition";
+    roles[Numbering]="numbering";
+    roles[Name]="name";
     return roles;
 }
 
@@ -80,6 +89,12 @@ bool WarnModel::setData(const QModelIndex &index, const QVariant &value, int rol
             modelData->setImgName(value.toString());
         else if(role == AbsolutePath)
             modelData->setImgName(value.toString());
+        else if(role == Name)
+            modelData->setName(value.toString());
+        else if(role == Numbering)
+            modelData->setNumering(value.toString());
+        else if(role == MaskRecognition)
+            modelData->setMaskRecognition(value.toString());
         emit dataChanged(index, index, QVector<int>() << role);
         return true;
     }

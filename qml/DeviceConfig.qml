@@ -79,13 +79,11 @@ Rectangle {
         property alias switchBeer:swichBeer.checked
         property alias switchRecord:swichRecord.checked
         
-        
         //   if(swithTime.checked)
         //        osdenableV = 1
         //    else
         //        osdenableV = 0
         //    var alarmtempEnableV;
-        
         //    if(swichWarn.checked)
         //        alarmtempEnableV = 1;
         //    else

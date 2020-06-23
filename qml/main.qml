@@ -5,7 +5,7 @@ import QtQml 2.12
 
 import "./dialog"
 import WarnModel 1.0
-
+import DataModel 1.0
 Window {
 
     id: main;
@@ -85,6 +85,10 @@ Window {
     onVisibilityChanged: {
 
         console.debug("visibly change "+visibility)
+    }
+
+    DataModel{
+        id:dataModel
     }
 
     WarnModel{

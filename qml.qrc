@@ -120,5 +120,15 @@
         <file>images/logo13.jpg</file>
         <file>images/logo14.png</file>
         <file>images/logo15.png</file>
+        <file>qml/dataManager/DataManager.qml</file>
+        <file>images/delete.png</file>
+        <file>images/delete_p.png</file>
+        <file>images/revise.png</file>
+        <file>images/revise_p.png</file>
+        <file>qml/dataManager/SingleImport.qml</file>
+        <file>images/dataclos.png</file>
+        <file>qml/dataManager/BatchImport.qml</file>
+        <file>qml/dataManager/CircularProgress.qml</file>
+        <file>qml/dataManager/BatchImportState.qml</file>
     </qresource>
 </RCC>

@@ -59,7 +59,8 @@ SOURCES += \
     protocol/warntcpserver.cpp \
     consoleprocess.cpp \
     playVideo/xvideoreplay1.cpp \
-    qmlcplus/mylanguage.cpp
+    qmlcplus/mylanguage.cpp \
+    qmlcplus/datamodel.cpp
 
 HEADERS += \
     playVideo/XVideo.h \
@@ -103,7 +104,8 @@ HEADERS += \
     protocol/warntcpserver.h \
     consoleprocess.h \
     playVideo/xvideoreplay1.h \
-    qmlcplus/mylanguage.h
+    qmlcplus/mylanguage.h \
+    qmlcplus/datamodel.h
 
 #RESOURCES += qml.qrc
 
