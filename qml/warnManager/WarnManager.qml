@@ -51,11 +51,11 @@ Rectangle {
     }
 
     function screenShot(path,object,mx,my,mw,mh,temp){
-        warnmodel.funScreenShoot(path,object,mx ,my,mw,mh,temp);
+        //warnmodel.funScreenShoot(path,object,mx ,my,mw,mh,temp);
     }
 
-    function screenShot1(path,object,mx,my,mw,mh,temp,type){
-        warnmodel.funScreenShoot1(path,object,mx ,my,mw,mh,temp,type);
+    function screenShot1(path,devdid,object,mx,my,mw,mh,temp,type){
+        warnmodel.funScreenShoot1(path,devdid,object,mx ,my,mw,mh,temp,type);
     }
     //加个矩形是为了解决listview显示越界的问题
     Rectangle{
@@ -398,8 +398,8 @@ Rectangle {
 //                            imgshow.source ="file:///"+ model.absolutePath
 //                            imgpop.open();
 
-                            videopop.videoSrc = "file:///"+ model.absolutePath
-                            videopop.open();
+                            imgshow.source = "file:///"+ model.absolutePath
+                            imgpop.open();
                         }
                     }
                 }
@@ -469,6 +469,7 @@ Rectangle {
                 }
             }
         }
+
         MyCalendar{
             id:calendar
             width:280
@@ -477,7 +478,6 @@ Rectangle {
             x:dateRect.x
             y:67
             Component.onCompleted: {
-
                 curDateStr = Qt.formatDate(calendar.getCurrentData(),"yyyyMMdd");
                 warnmodel.funFlushWarnInfo(deviceconfig.getScrennShotPath(),curDateStr);
             }
@@ -510,32 +510,30 @@ Rectangle {
                 warnList.currentIndex = curIndex;
                 //warnList.currentIndex = curIndex
             }
-
         }
     }
 
     function funProcessPushAlarm(map){
-
-        warnmodel.funProcessPushAlarm1(deviceconfig.getScrennShotPath(),map);
+        warnmodel.funProcessPushAlarm2(deviceconfig.getScrennShotPath(),map);
     }
 
-    DialogPlayVideo{
-        id:videopop
-        x:(parent.width-720)/2
-        y:(parent.height-520)/2
-        width: 720
-        height: 520
-    }
-
+//    DialogPlayVideo{
+//        id:videopop
+//        x:(parent.width-720)/2
+//        y:(parent.height-520)/2
+//        width: 720
+//        height: 520
+//    }
 
     Popup {
         id: imgpop
         x:(parent.width-720)/2
-        y:(parent.height-520)/2
+        y:(parent.height-540)/2
         width: 720
-        height: 520
+        height: 540
         modal: true
-        focus: true
+      //  property alias imgSrc: imgshow.source
+      //  focus: true
         //设置窗口关闭方式为按“Esc”键关闭
         closePolicy: Popup.CloseOnEscape|Popup.CloseOnPressOutside
         //设置窗口的背景控件，不设置的话Popup的边框会显示出来
@@ -547,8 +545,8 @@ Rectangle {
             anchors.fill: parent
             Image {
                 id: imgshow
-                width: 600
-                height: 400
+                width: main.width*0.7
+                height: (main.height-68-50-160-57)*0.7
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.verticalCenter: parent.verticalCenter
                 source: ""

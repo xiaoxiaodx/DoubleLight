@@ -115,5 +115,6 @@
         <file>images/3.png</file>
         <file>qml/playbackVideo/MyCalendar.qml</file>
         <file>images/slider.png</file>
+        <file>nomask.mp3</file>
     </qresource>
 </RCC>

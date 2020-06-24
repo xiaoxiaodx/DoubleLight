@@ -480,7 +480,7 @@ Rectangle {
             deviceconfig.setSwitchTime(osdenable)
             deviceconfig.setTempContrl(tempcontrol)
             deviceconfig.setSwitchWarn(alarmtempEnable)
-
+            deviceconfig.setPushtime(smap.pushtime)
 
         }else if(strcmd === "pushalarm"){
 
@@ -488,22 +488,20 @@ Rectangle {
                 startWarn(smap.temperature);
             else{
 
-
                 if(deviceconfig.getSwitchScreenShot())
-                    warnmanger.screenShot1(deviceconfig.getScrennShotPath(),main,0 ,68,main.width,main.height-68-50-160-57,10,smap.alarmtype)
+                    warnmanger.screenShot1(deviceconfig.getScrennShotPath(),smap.deviceDid,main,0 ,68,main.width,main.height-68-50-160-57,10,smap.alarmtype)
 
                 warnmanger.funProcessPushAlarm(smap);
 
                 //开启动画
                 if(smap.alarmtype === 80){
-
                     imgWar.source = "qrc:/images/warn_ico.png"
                     imgWar.startAnimation();
-                    startWarn1()
+                    startWarn1(smap.alarmtype)
                 }else if(smap.alarmtype === 82){
                     imgWar.source = "qrc:/images/warn_nomask.png"
                     imgWar.startAnimation();
-                    startWarn1()
+                    startWarn1(smap.alarmtype)
                 }
 
 
@@ -512,8 +510,6 @@ Rectangle {
         }else if(strcmd === "update"){
             deviceconfig.updateDevice(smap.did,smap.url)
             // updateprogress.startupLoad(smap.did,smap.url,deviceconfig.getUpdateFilePath)
-        }else if("getiradrect" === strcmd){
-            s_testRect(smap.x0,smap.y0,smap.w0,smap.h0,smap.x1,smap.y1,smap.w1,smap.h1,smap.x2,smap.y2,smap.w2,smap.h2);
         }else if("alarmsubscription" === strcmd){
 
 
@@ -535,16 +531,19 @@ Rectangle {
             deviceconfig.imagparammirror = smap.mirror
             deviceconfig.imagparamsharpness = smap.sharpness
             deviceconfig.imagparamwdr = smap.wdr
+
+            deviceconfig.setContrast(smap.contrast)
+            deviceconfig.setBrightness(smap.brightness)
+            deviceconfig.setColorsaturation(smap.colorsaturation)
+            deviceconfig.setHue(smap.hue)
             deviceconfig.setWdr(smap.wdr);
 
         }else if("setimagparam" === strcmd){
 
             console.debug("***setimagparam***:"+deviceconfig.wdrisChange)
             if(deviceconfig.wdrisChange){
-
-                var txtstr ;
-                switch(curLanguage)
-                {
+                var txtstr;
+                switch(curLanguage){
                 case lChinese:
                     txtstr = "wdr设置成功，设备正在重启"
                     break;
@@ -585,7 +584,6 @@ Rectangle {
                     txtstr = "កាមេរ៉ានឹងចាប់ផ្តើមឡើងវិញបន្ទាប់ពីកំណត់"
                     break;
                 }
-
                 msgdialog.width = 500
                 msgdialog.height = 176
                 msgdialog.msgStr = txtstr
@@ -610,6 +608,10 @@ Rectangle {
             }
             video.fun_sendCommonPar(map2);
 
+        }else if("getiradrect" === strcmd){
+            s_testRect(smap.x0,smap.y0,smap.w0,smap.h0,smap.x1,smap.y1,smap.w1,smap.h1,smap.x2,smap.y2,smap.w2,smap.h2);
+        }else if("setcurrenttime"===strcmd){
+            deviceconfig.toastTimeSynchronization();
         }
     }
 

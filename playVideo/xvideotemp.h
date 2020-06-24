@@ -108,6 +108,10 @@ private:
 
     int tempdisplay = 0;
     QVariantList listrectinfo;
+
+    int timeInter = 30;
+    int rectUnUpdateCount = 0;
+    bool isRectUpdate = false;
 };
 
 

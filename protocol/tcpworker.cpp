@@ -737,7 +737,7 @@ void TcpWorker::parseShiGanRgb2(QByteArray arr,int arrlen,int resw,int resh)
 #include <QFile>
 void TcpWorker::parseShiGanRgb3(QByteArray arr,int arrlen,int resw,int resh)
 {
-    qDebug()<<" resw    "<<resw<<"  resh:"<<resh <<arrlen;
+   // qDebug()<<" resw    "<<resw<<"  resh:"<<resh <<arrlen;
     if(pNetMsgTmp == nullptr)
         pNetMsgTmp = new unsigned char[resw * resh* 2];
 
@@ -754,6 +754,8 @@ void TcpWorker::parseShiGanRgb3(QByteArray arr,int arrlen,int resw,int resh)
 
     QImage *pImg = ffmpegConvert->yuv422ToRgb32((char*)pNetMsgTmp,resw,resh);
 
+    if(pImg == nullptr)
+        return;
     //    QImage *pImg = nullptr;
     //    try {
     //        pImg =  new QImage(pNetMsgTmp, resw,resh, QImage::Format_RGB888);

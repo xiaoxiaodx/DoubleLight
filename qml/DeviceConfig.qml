@@ -76,7 +76,7 @@ Rectangle {
         property alias tempMin: inputTempMin.text
         //property alias tempMax: inputTempMax.text
         property alias warnTem:inputTem.text
-        property alias switchTime:swithTime.checked
+        //property alias switchTime:swithTime.checked
         property alias switchWarn:swichWarn.checked
         property alias switchScreenShot:swichScreenShot.checked
         property alias switchBeer:swichBeer.checked
@@ -187,7 +187,7 @@ Rectangle {
                         id: labelTime
                         font.pixelSize: fontSize
                         color: fontColor
-                        text: qsTr("时间显示")
+                        text: qsTr("时间设置")
                         anchors.bottom: lineTime.top
                         anchors.left: lineTime.left
                         anchors.bottomMargin: 20
@@ -207,39 +207,115 @@ Rectangle {
                     
                     Text {
                         id: labelSwitchTime
-                        text: qsTr("时间开关")
+                        text: qsTr("时间同步")
                         font.pixelSize: fontSize
                         color: fontColor
-                        anchors.right: swithTime.left
+                        anchors.right: rectTimeSynchronization.left
                         anchors.rightMargin: 20
-                        anchors.verticalCenter: swithTime.verticalCenter
+                        anchors.verticalCenter: rectTimeSynchronization.verticalCenter
                     }
                     
-                    SimpleSwich{
-                        id:swithTime
-                        width: 30
-                        height: 15
+                    //                    SimpleSwich{
+                    //                        id:swithTime
+                    //                        width: 30
+                    //                        height: 15
+                    //                        anchors.left: lineTime.left
+                    //                        anchors.leftMargin: parSetFirstAlignLine
+                    //                        anchors.top: lineTime.bottom
+                    //                        anchors.topMargin: firstTopMargin
+                    //                        onCheckedChanged: {
+
+                    //                            //s_timeSwith(checked)
+
+                    //                        }
+                    //                    }
+
+                    Rectangle{
+                        id:rectTimeSynchronization
                         anchors.left: lineTime.left
                         anchors.leftMargin: parSetFirstAlignLine
                         anchors.top: lineTime.bottom
                         anchors.topMargin: firstTopMargin
-                        onCheckedChanged: {
-                            
-                            //s_timeSwith(checked)
-                            
+                        width: 44
+                        height: 22
+                        gradient: Gradient {
+                            GradientStop { position: 0.0; color: "#5D9CFF"}
+                            GradientStop { position: 1.0; color: "#2D76E7"}
+                        }
+                        Image{
+                            id:imgTimeSynchronization
+                            width: 14
+                            height: 14
+                            source: "qrc:/images/deviceFlush.png"
+                            anchors.horizontalCenter: parent.horizontalCenter
+                            anchors.verticalCenter: parent.verticalCenter
+                        }
+                        MouseArea{
+                            anchors.fill: parent
+                            onClicked: {
+                                var map = {
+                                    cmd:"setcurrenttime"
+                                }
+                                s_sendcommoncmd(map);
+                            }
+                            onPressed: imgTimeSynchronization.source = "qrc:/images/deviceFlush_h.png"
+                            onReleased: imgTimeSynchronization.source = "qrc:/images/deviceFlush.png"
                         }
                     }
-                    
+
+                    Loader{
+                        id:loaderToast
+                        anchors.verticalCenter: rectTimeSynchronization.verticalCenter
+                        anchors.left: rectTimeSynchronization.right
+                        anchors.leftMargin: 100
+                        sourceComponent: null
+                    }
+
+                    Component{
+                        id: toastTimeSynchronizationTip
+                        Rectangle{
+                            id:timeSynchronizationTip
+                            width: imgTip.width + txtTip.width + 20 + 12+40
+                            height: 52
+                            color:"#FFFFFF"
+                            Image {
+                                id: imgTip
+                                width: 20
+                                height: 20
+                                anchors.left: parent.left
+                                anchors.leftMargin: 20
+                                anchors.verticalCenter: parent.verticalCenter
+                                source: "qrc:/images/connect_succ.png"
+                            }
+
+                            Text {
+                                id: txtTip
+                                font.pixelSize: 16
+                                color: fontColor
+                                anchors.left: imgTip.right
+                                anchors.leftMargin: 12
+                                anchors.verticalCenter: parent.verticalCenter
+                                text: curLanguage === lEnglish?"Synchronized Successfully":qsTr("同步成功")
+                            }
+
+                            SequentialAnimation on opacity {
+                                NumberAnimation {to: 1; easing.type: Easing.InQuad; duration: 500}
+                                PauseAnimation { duration: 1000}
+                                NumberAnimation { to: 0; easing.type: Easing.InQuad; duration: 500}
+                            }
+                        }
+                    }
+
                     Text {
                         id: txtparset
                         font.pixelSize: fontSize
                         color: fontColor
                         text: qsTr("参数设置")
-                        
                         anchors.bottom: lineParset.top
                         anchors.left: lineParset.left
                         anchors.bottomMargin: 20
                     }
+
                     Rectangle{
                         id:lineParset
                         width:parent.width - 20*2
@@ -1156,6 +1232,8 @@ Rectangle {
                         minimumValue: 0
                         maximumValue: 100
                         value: 0
+
+                        onValueChanged: imagparambrightness = brightnessSlider.value
                         style: SliderStyle {
                             groove: Rectangle {
                                 implicitWidth: 200
@@ -1227,6 +1305,7 @@ Rectangle {
                         minimumValue: 0
                         maximumValue: 100
                         value: 0
+                        onValueChanged: imagparamhue = hueSlider.value
                         style: SliderStyle {
                             groove: Rectangle {
                                 implicitWidth: 200
@@ -1295,6 +1374,7 @@ Rectangle {
                         minimumValue: 0
                         maximumValue: 100
                         value: 0
+                        onValueChanged: imagparamcontrast = contrastSlider.value
                         style: SliderStyle {
                             groove: Rectangle {
                                 implicitWidth: 200
@@ -1365,7 +1445,7 @@ Rectangle {
                         minimumValue: 0
                         maximumValue: 100
                         value: 0
-
+                        onValueChanged: imagparamcolorsaturation = colorsaturationSlider.value
                         style: SliderStyle {
                             groove: Rectangle {
                                 implicitWidth: 200
@@ -1402,6 +1482,8 @@ Rectangle {
                             }
 
                         }
+
+
                     }
 
 
@@ -1477,7 +1559,6 @@ Rectangle {
             if(isSucc){
                 
             }else{
-                
             }
         }
         onSignal_updateProgress:progressdialog.setProgressValue(progressvalue)
@@ -1528,9 +1609,33 @@ Rectangle {
     
     
     
+    function toastTimeSynchronization(){
+
+        loaderToast.sourceComponent = null
+        loaderToast.sourceComponent = toastTimeSynchronizationTip
+
+    }
     function setWdr(value){
         imagparamwdr = value
         swichKuandongtai.checked = value
+    }
+
+    function setBrightness(value){
+        brightnessSlider.value = value
+    }
+
+    function setHue(value){
+        hueSlider.value = value
+    }
+
+    function setContrast(value)
+    {
+        contrastSlider.value = value
+    }
+
+    function setColorsaturation(value)
+    {
+        colorsaturationSlider.value = value
     }
     
     function getiradInfo(){
@@ -1568,11 +1673,11 @@ Rectangle {
     //参数修改设置 全在此函数
     function iradInfoSet(){
 
-        var osdenableV;
-        if(swithTime.checked)
-            osdenableV = 1
-        else
-            osdenableV = 0
+        var osdenableV = 0;
+        //        if(swithTime.checked)
+        //            osdenableV = 1
+        //        else
+        //            osdenableV = 0
         var alarmtempEnableV;
         
         if(swichWarn.checked)
@@ -1580,6 +1685,19 @@ Rectangle {
         else
             alarmtempEnableV = 0;
         
+
+        var pusht ;
+        if(cmbsnapScrrenSelect.currentIndex === 0)
+            pusht = 1;
+        else if(cmbsnapScrrenSelect.currentIndex === 1)
+            pusht = 5;
+        else if(cmbsnapScrrenSelect.currentIndex === 2)
+            pusht = 10;
+        else if(cmbsnapScrrenSelect.currentIndex === 3)
+            pusht = 30;
+        else if(cmbsnapScrrenSelect.currentIndex === 4)
+            pusht = 60;
+
         var map ={
             osdenable:osdenableV,
             alarmtempEnable:alarmtempEnableV,
@@ -1587,6 +1705,7 @@ Rectangle {
             tempdrift:inputTempDrift.text,
             tempcontrol:inputTempMin.text,
             tempdisplay:cmbTempTypeSelect.currentIndex,
+            pushtime:pusht,
             cmd:"setiradinfo"}
 
 
@@ -1644,7 +1763,7 @@ Rectangle {
 
         s_beerSwith(swichBeer.checked)
         s_warnSwith(swichWarn.checked)
-        s_timeSwith(swithTime.checked)
+        //s_timeSwith(swithTime.checked)
     }
 
     function setSwitchTempdisplay(mvalue)
@@ -1686,6 +1805,19 @@ Rectangle {
         return setting.switchWarn;
     }
     
+    function setPushtime(mvalue){
+
+        if(mvalue === 1)
+            cmbsnapScrrenSelect.currentIndex = 0
+        else if(mvalue === 5)
+            cmbsnapScrrenSelect.currentIndex = 1
+        else if(mvalue === 10)
+            cmbsnapScrrenSelect.currentIndex = 2
+        else if(mvalue === 30)
+            cmbsnapScrrenSelect.currentIndex = 3
+        else if(mvalue === 60)
+            cmbsnapScrrenSelect.currentIndex = 4
+    }
     function setSwitchWarn(mvalue)
     {
         swichWarn.checked = mvalue
@@ -1696,7 +1828,7 @@ Rectangle {
     }
     
     function setSwitchTime(mvalue){
-        swithTime.checked = mvalue
+        //swithTime.checked = mvalue
     }
     
     function getSwitchRecord(){
@@ -1883,6 +2015,15 @@ Rectangle {
             txtImageSelect.text = "Image selectione"
             labelResolution.text = "Standard"
 
+            //txtTip.text = "Synchronized Successfully"
+            labelSwitchTime.text = "Time Sync"
+            labelTime.text = "Time Settings"
+            labelSnapInter.text = "Snapshot Interval"
+            txtbrightness.text = "Brightness"
+            txtcolorsaturation.text = "Saturation"
+            txtcontrast.text = "Contrast"
+            txthue.text = "Chroma"
+            txtWdr.text = "WDR Settings"
             break;
         case lKorean:
             txtRecordSet.text = "비디오 설정"
@@ -1945,12 +2086,19 @@ Rectangle {
             txtUpdate.text = "升级"
             txtUpdateFile.text = "设备升级"
             txtSave.text = "设置"
-
             txtencodetype.text = "编码方式"
             labelResolution.text = "温标选择"
             txtImageSet.text = "Image settings"
             txtImageSelect.text = "Image selectione"
-
+            //txtTip.text = "同步成功"
+            labelSwitchTime.text = "时间同步"
+            labelTime.text = "时间设置"
+            labelSnapInter.text = "抓拍间隔"
+            txtbrightness.text = "亮度"
+            txtcolorsaturation.text = "饱和度"
+            txtcontrast.text = "对比度"
+            txthue.text = "色度"
+            txtWdr.text = "WDR设置"
             break;
         case lRussian:
             txtRecordSet.text = "Настройка записи"

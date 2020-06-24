@@ -87,7 +87,11 @@ QImage* FfmpegConvert::yuv422ToRgb32(char* pbuff_in,int nwidth,int nheight)
             m_pFrameYUV->linesize, 0, nheight, m_pFrameRGB->data,
             m_pFrameRGB->linesize);
     //把这个RGB数据 用QImage加载
-  return new QImage((uchar *)m_rgbBuffer,nwidth,nheight,QImage::Format_RGB32);
+
+
+    return    new QImage((uchar *)m_rgbBuffer,nwidth,nheight,QImage::Format_RGB32);
+
+
      //把图像复制一份 传递给界面显示
    // m_mapImage[nWindowIndex] = tmpImg.copy();
 }

@@ -8,7 +8,7 @@ CONFIG += c++11
 # deprecated API to know how to port your code away from it.
 DEFINES += QT_DEPRECATED_WARNINGS
 
-VERSION = 2.0.2.1
+VERSION = 2.0.2.2
 
 RC_ICONS = myicon11.ico
 TARGET=VMukti_VMS

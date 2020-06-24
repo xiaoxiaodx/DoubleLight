@@ -27,10 +27,7 @@ void XVideoTemp::fun_recTestRect(int x,int y,int w,int h,int x1,int y1,int w1,in
 void XVideoTemp::destroyAllFunction()
 {
 
-
-
     if(j07device != nullptr){
-
         j07device->forceFinish();
         delete j07device;
         j07device = nullptr;
@@ -39,11 +36,11 @@ void XVideoTemp::destroyAllFunction()
 }
 void XVideoTemp::startTemperatureVideo(float tp,QVariant type,QVariant par1,QVariant par2)
 {
+
     QString typeStr = type.toString();
-
     QString curip = par1.toString();
-    DebugLog::getInstance()->writeLog("startTemperatureVideo :"+typeStr + " curip:"+curip + "  m_ip:"+m_ip);
 
+    qDebug()<<("startTemperatureVideo,curip:"+curip +"  typeStr:"+typeStr+ "  m_ip:"+m_ip);
 
     if(m_ip.compare(curip) != 0){
         destroyAllFunction();
@@ -69,12 +66,13 @@ void XVideoTemp::startTemperatureVideo(float tp,QVariant type,QVariant par1,QVar
         createJ07(m_ip,3);//rgb8888
     }else{
         DebugLog::getInstance()->writeLog("------>>> tempVideo type is unknow <<<------");
+
     }
     warnTemp = tp;
 
     connect(&timerUpdate,&QTimer::timeout,this,&XVideoTemp::slot_timeout);
     if(!timerUpdate.isActive())
-        timerUpdate.start(20);
+        timerUpdate.start(timeInter);
 }
 
 void XVideoTemp::createJ07(QString ip,int type)
@@ -98,7 +96,7 @@ void XVideoTemp::slot_recRect(int tempdisplay,QVariantList listmap)
         QVariantMap map = listmap.at(i).toMap();
         listrectinfo.append(map);
     }
-   // update();
+    isRectUpdate = true;
 }
 
 
@@ -231,14 +229,8 @@ void XVideoTemp::paint(QPainter *painter)
 
     painter->drawImage(QRect(0,0,this->width(),this->height()), *(mRenderImginfo.pImg));
 
-
-
-
-
     QRectF desRect;
     for(int i=0;i<listrectinfo.size();i++){
-
-
         QVariantMap map = listrectinfo.at(i).toMap();
         qreal x1 = kX * map.value("x").toInt() -10;
         qreal y1 = kY * map.value("y").toInt() -10;
@@ -246,7 +238,7 @@ void XVideoTemp::paint(QPainter *painter)
         qreal h1 = kY * map.value("h").toInt() + 20;
         float tempv = map.value("tempvalue").toFloat();
         int tyep = map.value("type").toInt();
-       // qDebug()<<"rect : "<<x1<<"  "<<y1<<"    "<<w1<<"    "<<h1<<"    "<<tempv<<" "<<tyep;
+        //qDebug()<<"rect : "<<x1<<"  "<<y1<<"    "<<w1<<"    "<<h1<<"    "<<tempv<<" "<<tyep;
 
         desRect.setX(x1);
         desRect.setY(y1);
@@ -265,10 +257,19 @@ void XVideoTemp::paint(QPainter *painter)
 
         painter->drawText(desRect.x(),desRect.y()-3,strText);
         painter->restore();
-    }
-    if(listrectinfo.size()>0)
-        listrectinfo.clear();
 
+    }
+
+
+    if(!isRectUpdate)
+        rectUnUpdateCount++;
+    else
+        rectUnUpdateCount = 0;
+    if(rectUnUpdateCount*timeInter >= 500){
+        listrectinfo.clear();
+        rectUnUpdateCount = 0;
+    }
+    isRectUpdate = false;
 
     /********************/
     /*

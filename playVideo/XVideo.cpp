@@ -251,20 +251,22 @@ void XVideo::slot_httpConnected()
     QMap<QString,QVariant> map;
     map.insert("cmd","getinftempmodel");
     emit signal_httpParSet(map);
+
 }
 
 void XVideo::slog_HttpmsgCb(QMap<QString,QVariant> map) {
 
     DebugLog::getInstance()->writeLog("http_RecCallback :"+ map.value("cmd").toString());
     emit signal_httpUiParSet(QVariant::fromValue(map));
+
 }
 
 void XVideo::createSearchIp()
 {
+
     if(psearch == nullptr){
+
         psearch = new MySearch1;
-
-
         connect(psearch,&MySearch1::signal_sendDeviceinfo,this,&XVideo::recSearchDeviceinfo);
 
     }

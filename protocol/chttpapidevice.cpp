@@ -64,7 +64,7 @@ void CHttpApiDevice::slot_destoryConnect()
 
             SendTimer = nullptr;
             reconnectTimer = nullptr;
-
+            deviceDid = "";
         }
 
     }
@@ -278,7 +278,6 @@ int CHttpApiDevice::HttpMsgCallBack(char * pData) {
                                 QMap<QString,QVariant> map;
                                 map.insert("cmd","getinftempmodel");
                                 send_httpParSet(map);
-
                                 map.insert("cmd","getdeviceinfo");
                                 slot_httpParSet(map);
                                 map.insert("cmd","getiradinfo");
@@ -323,6 +322,23 @@ int CHttpApiDevice::HttpMsgCallBack(char * pData) {
                 qDebug()<<"rec getinftempmodel";
                 callbackMap.insert("timeenable",object.value("data").toObject().value("timeenable").toInt());
                 callbackMap.insert("tempmodel",object.value("data").toObject().value("tempmodel").toString());
+            }else if ("getiradrect"==cmd) {
+                callbackMap.insert("x0",object.value("data").toObject().value("x0").toInt());
+                callbackMap.insert("y0",object.value("data").toObject().value("y0").toInt());
+                callbackMap.insert("w0",object.value("data").toObject().value("w0").toInt());
+                callbackMap.insert("h0",object.value("data").toObject().value("h0").toInt());
+
+                callbackMap.insert("x1",object.value("data").toObject().value("x1").toInt());
+                callbackMap.insert("y1",object.value("data").toObject().value("y1").toInt());
+                callbackMap.insert("w1",object.value("data").toObject().value("w1").toInt());
+                callbackMap.insert("h1",object.value("data").toObject().value("h1").toInt());
+
+                callbackMap.insert("x2",object.value("data").toObject().value("x2").toInt());
+                callbackMap.insert("y2",object.value("data").toObject().value("y2").toInt());
+                callbackMap.insert("w2",object.value("data").toObject().value("w2").toInt());
+                callbackMap.insert("h2",object.value("data").toObject().value("h2").toInt());
+
+                qDebug()<<"rec rect:"<<object.value("data").toObject().value("x").toInt();
             }else if ("getiradinfo" == cmd) {
                 qDebug()<<"rec getiradinfo  "<<object.value("data").toObject().value("alarmparam").toObject().value("alarmtemp").toDouble();
 
@@ -339,6 +355,17 @@ int CHttpApiDevice::HttpMsgCallBack(char * pData) {
                 callbackMap.insert("tempcontrol",object.value("data").toObject().value("ctrlparam").toObject().value("tempcontrol").toInt());
                 callbackMap.insert("tempdisplay",object.value("data").toObject().value("ctrlparam").toObject().value("tempdisplay").toInt());
                 callbackMap.insert("osdenable",object.value("data").toObject().value("osdenable").toInt());
+                callbackMap.insert("pushtime",object.value("data").toObject().value("pushtime").toInt());
+
+
+                if(object.value("data").toObject().value("alarmparam").toObject().value("enable").toInt()>0){
+
+                    QVariantMap map;
+                    map.insert("cmd","alarmsubscription");
+                    map.insert("isSubscription",true);
+                    slot_httpParSet(map);
+
+                }
 
             }else if("pushalarm" == cmd){
                 callbackMap.insert("alarmtype",object.value("data").toObject().value("alarmtype").toInt());
@@ -400,6 +427,8 @@ int CHttpApiDevice::HttpMsgCallBack(char * pData) {
                 callbackMap.insert("model",object.value("data").toObject().value("model").toString());
                 callbackMap.insert("uuid",object.value("data").toObject().value("uuid").toString());
 
+
+                deviceDid = object.value("data").toObject().value("uuid").toString();
             }
 
 
@@ -820,6 +849,7 @@ void CHttpApiDevice::createWarnService(QString ip,int port)
 }
 void CHttpApiDevice::slot_WarnMsg(QMap<QString,QVariant> map)
 {
+    map.insert("deviceDid",deviceDid);
     emit signal_ReadMsg(map);
 }
 
@@ -949,7 +979,7 @@ void CHttpApiDevice::HttpSetIraInfo(QVariantMap value,QString msgid)
 
 
     dataObj.insert("osdenable",value.value("osdenable").toInt());
-
+    dataObj.insert("pushtime",value.value("pushtime").toInt());
     alarmparamObj.insert("enable", value.value("alarmtempEnable").toInt());
     alarmparamObj.insert("alarmtemp", value.value("alarmtemp").toString().toDouble());
 

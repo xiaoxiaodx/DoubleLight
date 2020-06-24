@@ -111,6 +111,7 @@ Rectangle {
 
     MediaPlayer {
         id: playWarn
+        property int alarmType: 0
         source: "qrc:/alarm.wav"
     }
 

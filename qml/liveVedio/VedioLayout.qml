@@ -208,6 +208,7 @@ Rectangle {
 
                         //source: "qrc:/images/arrow_low.png"
                         //source: "file:///"+"F:/work/doubleLight/build-DoubleLight-Desktop_Qt_5_12_2_MinGW_64_bit-Release/image/111.png"
+
                     }
                     Rectangle{
                         color: "#cc193548"
@@ -223,6 +224,7 @@ Rectangle {
                             color: temptype===80?"#FA3F00":(temptype===81?"#179B0E":(temptype===82?"#EF9D36":"#FFFFFF"))
                             text: warnTemp
                         }
+
                         Text {
                             anchors.horizontalCenter: parent.horizontalCenter
                             anchors.top: txttemp.bottom
@@ -231,6 +233,7 @@ Rectangle {
                             color: "#ffffff"
                             text: warnTime
                         }
+
                     }
                 }
             }
@@ -323,13 +326,32 @@ Rectangle {
     }
 
 
-    function startWarn1()
+    function startWarn1(type)
     {
 
 
+        console.debug("startWarn1:"+ playWarn.availability)
+
         //开启声音
-        if(deviceconfig.getSwitchBeer())
-            playWarn.play()
+        if(deviceconfig.getSwitchBeer()){
+
+            playWarn.alarmType = type
+
+            if(playWarn.alarmType === 80){//告警
+
+                playWarn.source = "qrc:/alarm.wav"
+                playWarn.play()
+
+            }else if(playWarn.alarmType === 82){//不带口罩
+
+                playWarn.source = "qrc:/nomask.mp3"
+                playWarn.play()
+
+            }
+
+
+        }
+
     }
 
     function startRecordLable(){
