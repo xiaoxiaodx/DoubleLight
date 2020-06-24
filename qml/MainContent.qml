@@ -111,7 +111,7 @@ Rectangle {
 
     MediaPlayer {
         id: playWarn
-        source: "qrc:/alarm.wav"
+        source: "qrc:/attention.wav"
     }
 
     Timer{
