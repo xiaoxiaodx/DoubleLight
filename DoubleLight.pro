@@ -60,7 +60,8 @@ SOURCES += \
     consoleprocess.cpp \
     playVideo/xvideoreplay1.cpp \
     qmlcplus/mylanguage.cpp \
-    qmlcplus/datamodel.cpp
+    qmlcplus/datamodel.cpp \
+    protocol/faceimport.cpp
 
 HEADERS += \
     playVideo/XVideo.h \
@@ -105,7 +106,8 @@ HEADERS += \
     consoleprocess.h \
     playVideo/xvideoreplay1.h \
     qmlcplus/mylanguage.h \
-    qmlcplus/datamodel.h
+    qmlcplus/datamodel.h \
+    protocol/faceimport.h
 
 #RESOURCES += qml.qrc
 

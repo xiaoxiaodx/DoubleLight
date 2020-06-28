@@ -147,7 +147,7 @@ Rectangle {
                 anchors.left: parent.left
                 anchors.leftMargin: 9
                 anchors.verticalCenter: parent.verticalCenter
-                source: "qrc:/images/imgDelete.png"
+                source: "qrc:/images/dataAdd.png"
 
             }
 
@@ -167,7 +167,7 @@ Rectangle {
                     popSingleImport.open();
                 }
                 onReleased: rectSingleImport.color = "#71C648"
-                onPressed: rectSingleImport.color = "#66B5FF"
+                onPressed: rectSingleImport.color = "#99D67C"
             }
         }
 
@@ -188,7 +188,7 @@ Rectangle {
                 anchors.left: parent.left
                 anchors.leftMargin: 9
                 anchors.verticalCenter: parent.verticalCenter
-                source: "qrc:/images/imgDelete.png"
+                source: "qrc:/images/import.png"
 
             }
             Text {
@@ -205,7 +205,7 @@ Rectangle {
 
                 onClicked: popBatchImport.open()
                 onReleased: rectBatchImport.color = "#FB893F"
-                onPressed: rectBatchImport.color = "#66B5FF"
+                onPressed: rectBatchImport.color = "#FCAA75"
             }
         }
 
@@ -505,7 +505,7 @@ Rectangle {
             Component.onCompleted: {
 
                 curDateStr = Qt.formatDate(calendar.getCurrentData(),"yyyyMMdd");
-                datamodel.funFlushWarnInfo(deviceconfig.getScrennShotPath(),curDateStr);
+                //datamodel.funFlushWarnInfo(deviceconfig.getScrennShotPath(),curDateStr);
             }
             onS_dayChange:{
                 curDateStr = value;

@@ -2,7 +2,7 @@ import QtQuick 2.0
 import QtQuick.Controls 2.5
 import "../simpleControl"
 import QtGraphicalEffects 1.12
-
+import QtQuick.Dialogs 1.3
 Popup {
     id: root
     x: parent.width/2 - root.width/2
@@ -118,31 +118,42 @@ Popup {
             id: txtAvatar
             font.pixelSize: 14
             color: "#333333"
-            anchors.right: inputname.left
+            anchors.right: imgAdd.left
             anchors.rightMargin: 8
-            anchors.top: inputname.top
+            anchors.top: imgAdd.top
             text: qsTr("照片")
         }
 
         Image {
-            id: imgtip
+            id: imgAdd
             width: 100
             height: 120
             anchors.left: inputname.left
             anchors.top: inputname.bottom
             anchors.topMargin: 10
-            source: ""
+            source: "qrc:/images/pictrueAdd.png"
+
+            MouseArea{
+                anchors.fill: parent
+                //onPressed: imgAdd.source = "qrc:/images/pictrueAdd_P.png"
+                //onReleased: imgAdd.source = "qrc:/images/pictrueAdd.png"
+                onClicked: {
+
+                    fileDialog.open();
+                }
+            }
         }
 
-        Image {
-            id: imgSelect
-            width: 14
-            height: 14
-            anchors.left: imgtip.right
-            anchors.leftMargin: 8
-            anchors.bottom: imgtip.bottom
-            source: ""
+        Text {
+            id: texttip
+            font.pixelSize: 12
+            color: "#999999"
+            anchors.left: imgAdd.left
+            anchors.top: imgAdd.bottom
+            anchors.topMargin: 4
+            text: qsTr("仅支持jpeg格式")
         }
+
         Rectangle{
             id:btnEnsure
             width: txtEnsure.width +24
@@ -164,7 +175,12 @@ Popup {
             }
             MouseArea{
                 anchors.fill: parent
-                onClicked:root.close()
+                onClicked:{
+
+                    var str = imgAdd.source.toString()
+                    dataModel.funImportSingle(inputname.text,inputnumber.text,str.replace('file:///',''));
+                    root.close()
+                }
             }
         }
 
@@ -202,6 +218,23 @@ Popup {
     }
 
 
+
+    FileDialog {
+        id: fileDialog
+        property string pathname:""
+        title: "Please choose a file path"
+        selectFolder:false
+        selectMultiple: false
+        //folder: shortcuts.home
+        onAccepted: {
+            var str = fileDialog.fileUrl.toString();
+            imgAdd.source = str
+
+        }
+        onRejected: {
+        }
+    }
+
     Connections{
         target: main
         onS_setLanguage:setLanguage(typeL);
@@ -232,7 +265,6 @@ Popup {
         //        case lLithuanian:
         //           // txtCancel.text = "Taip"
         //            txtEnsure.text = "Ne"
-
         //            break;
         //        case ltuerqi:
         //           // txtCancel.text = "İptal"

@@ -585,7 +585,6 @@ Rectangle {
                         anchors.verticalCenter: swichScreenShot.verticalCenter
                     }
                     Rectangle{
-                        
                         id:rectScreenShotPath
                         color: "#F8FAFD"
                         border.color: "#DEDFE3"

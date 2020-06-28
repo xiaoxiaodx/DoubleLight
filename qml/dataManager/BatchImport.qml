@@ -2,7 +2,7 @@ import QtQuick 2.0
 import QtQuick.Controls 2.5
 import "../simpleControl"
 import QtGraphicalEffects 1.12
-
+import QtQuick.Dialogs 1.3
 Popup {
     id: root
     x: parent.width/2 - root.width/2
@@ -63,7 +63,7 @@ Popup {
             anchors.leftMargin: 30
             anchors.top: parent.top
             anchors.topMargin: 120
-            source: ""
+            source: "qrc:/images/importfloder.png"
         }
         
         Text {
@@ -137,18 +137,9 @@ Popup {
             }
             MouseArea{
                 anchors.fill: parent
-                onClicked: {
-                    if(screenv.funIsExitFile(inputUpdatePath.text)){
-                        askDialog.askStr = screenv.funGetFileName(inputUpdatePath.text)
-                        askDialog.curType = askDialog.fileupdate
-                        askDialog.imgSrc = "qrc:/images/icon_question.png"
-                        askDialog.width = 340
-                        askDialog.height = 176
-                        askDialog.open();
-                    }
-                }
-                onPressed: btnUpdate.color = "#81C3FF"
-                onReleased: btnUpdate.color = "#3B84F6"
+                onClicked: fileDialog.open();
+                onPressed: ;
+                onReleased:;
             }
         }
         
@@ -176,6 +167,8 @@ Popup {
                 anchors.fill: parent
                 onClicked:{
                     
+
+                    dataModel.funImportBatch(inputUpdatePath.text);
                     root.close()
                     
                 }
@@ -190,6 +183,21 @@ Popup {
             horizontalOffset: 4
             verticalOffset: 4
             color:"#20000000"
+        }
+    }
+
+    FileDialog {
+        id: fileDialog
+        property string pathname:""
+        title: "Please choose a file path"
+        selectFolder:true
+        selectMultiple: false
+        //folder: shortcuts.home
+        onAccepted: {
+            var str = fileDialog.fileUrl.toString();
+            inputUpdatePath.text = str.replace('file:///','');
+        }
+        onRejected: {
         }
     }
 

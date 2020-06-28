@@ -81,6 +81,8 @@ Rectangle {
         onSignal_connected:{
             deviceconfig.setTcpip(ip)
             homeMenu.setDeviceConnectState(istrue)
+
+
         }
 //                MouseArea{
 //                    id:mouse22

@@ -4,7 +4,7 @@
 #include <QFile>
 #include <QTextStream>
 #include "debuglog.h"
-
+#include <QDir>
 DataModel::DataModel(QObject *parent ):QAbstractListModel(parent)
 {
 
@@ -99,6 +99,111 @@ void DataModel::removeAll()
 
     }
     endRemoveRows();
+}
+
+void DataModel::funSetIp(QString ip)
+{
+    if(mip.compare(ip) != 0){
+
+        mip = ip;
+        isIpChange = true;
+    }
+
+}
+
+void DataModel::funImportSingle(QString name,QString seq,QString imgPath)
+{
+    QVariantMap map;
+    map.insert("name",name);
+    map.insert("seq",seq);
+    map.insert("filePath",imgPath);
+
+    funSendCmd(map);
+}
+void DataModel::funImportBatch(QString folderPath)
+{
+
+    QDir dir(folderPath);
+    if(!dir.exists())
+    {
+        DebugLog::getInstance()->writeLog("Batch import fail --- > folder path is not exists");
+
+    }else {
+
+        QFileInfoList list = dir.entryInfoList();
+
+        for (int i=0;i<list.size();i++) {
+
+            QFileInfo fileInfo = list.at(i);
+
+            if(!fileInfo.isDir()){
+
+                QString filename = fileInfo.fileName();
+                QString filepath = fileInfo.filePath();
+                qDebug()<<"filename:"<<filename;
+                qDebug()<<"filepath:"<<filepath;
+
+                if(filename.contains(".jpeg")){
+
+
+                    QString usefulInfo = filename.replace(".jpeg","");
+
+                    QStringList listinfo = usefulInfo.split("_");
+
+                    QString name = listinfo.at(0);
+                    QString seq = listinfo.at(1);
+                    funImportSingle(name,seq,filepath);
+
+                }else{
+
+                    DebugLog::getInstance()->writeLog("import image isValid :"+filepath);
+                }
+
+            }
+        }
+    }
+}
+
+void DataModel::funSendCmd(QVariantMap map)
+{
+
+    if(isIpChange){
+
+        if(faceImport != nullptr){
+            emit signal_destroyConnect();
+            faceImportThread->quit();
+            faceImportThread->wait(1000);
+            faceImport = nullptr;
+            faceImportThread = nullptr;
+        }
+
+    }
+
+    if(faceImport == nullptr){
+
+        faceImport = new FaceImport;
+        faceImportThread = new QThread;
+
+        connect(this,&DataModel::signal_createFaceImportWork,faceImport,&FaceImport::slot_createConnect);
+        connect(this,&DataModel::signal_sendMsg,faceImport,&FaceImport::slot_sendMsg);
+        connect(faceImport,&FaceImport::signal_importCallback,this,&DataModel::slot_importCallback);
+        connect(this, &DataModel::signal_destroyConnect,faceImport,&FaceImport::slot_destoryConnect);
+        connect(faceImportThread, &QThread::finished,faceImport,&FaceImport::deleteLater);
+        connect(faceImportThread, &QThread::finished,faceImport,&QThread::deleteLater);
+
+        faceImport->moveToThread(faceImportThread);
+        faceImportThread->start();
+
+        emit signal_createFaceImportWork("",0);
+    }
+
+    emit signal_sendMsg(map);
+}
+
+void DataModel::slot_importCallback(QVariantMap map)
+{
+
+
 }
 
 //void DataModel::funDeleteIndex(int index)

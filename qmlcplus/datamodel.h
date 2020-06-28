@@ -3,7 +3,7 @@
 
 #include <QObject>
 #include <QAbstractListModel>
-
+#include "faceimport.h"
 #define QML_PROPERTY(type,name) \
     Q_PROPERTY(type name READ name WRITE set##name NOTIFY name##Change) \
     public: type name() const { return m_##name;} \
@@ -13,6 +13,8 @@
     private: \
     type m_##name; \
 
+
+#include <QThread>
 class DataModelData: public QObject
 {
 
@@ -42,10 +44,18 @@ public:
         Name,
         Time,
     };
+    Q_INVOKABLE void funSendCmd(QVariantMap map);
 
+    Q_INVOKABLE void funImportSingle(QString name,QString number,QString imgPath);
+    Q_INVOKABLE void funImportBatch(QString folderPath);
+    Q_INVOKABLE void funSetIp(QString ip);
 signals:
-
+    void signal_createFaceImportWork(QString ip,int port);
+    void signal_sendMsg(QVariantMap map);
+    void signal_destroyConnect();
 public slots:
+    void slot_importCallback(QVariantMap map);
+protected:
     int rowCount(const QModelIndex &parent = QModelIndex()) const override;
 
     QVariant data(const QModelIndex &index, int role ) const override;
@@ -53,7 +63,7 @@ public slots:
                  int role = Qt::EditRole) override;
     Qt::ItemFlags flags(const QModelIndex& index) const override;
     virtual QHash<int, QByteArray> roleNames() const override;
-signals:
+
 
 private:
     void removeIndex(int index);
@@ -61,6 +71,13 @@ private:
 
 
     QList<DataModelData*> m_listData;
+
+    FaceImport *faceImport = nullptr;
+    QThread *faceImportThread = nullptr;
+    QString mip = "";
+    int port = 8866;
+    bool isIpChange = false;
+
 };
 
 #endif // DATAMODEL_H

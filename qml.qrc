@@ -130,5 +130,23 @@
         <file>qml/dataManager/BatchImport.qml</file>
         <file>qml/dataManager/CircularProgress.qml</file>
         <file>qml/dataManager/BatchImportState.qml</file>
+        <file>images/dataAdd.png</file>
+        <file>images/datanull.png</file>
+        <file>images/groupBg.png</file>
+        <file>images/import.png</file>
+        <file>images/select1.png</file>
+        <file>images/select1_h.png</file>
+        <file>images/select1_p.png</file>
+        <file>images/sort_down.png</file>
+        <file>images/sort_down_h.png</file>
+        <file>images/sort_down_p.png</file>
+        <file>images/sort_up.png</file>
+        <file>images/sort_up_h.png</file>
+        <file>images/sort_up_p.png</file>
+        <file>images/upload.png</file>
+        <file>images/upload_p.png</file>
+        <file>images/pictrueAdd.png</file>
+        <file>images/pictrueAdd_P.png</file>
+        <file>images/importfloder.png</file>
     </qresource>
 </RCC>
