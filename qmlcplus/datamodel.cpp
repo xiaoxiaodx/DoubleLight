@@ -5,9 +5,12 @@
 #include <QTextStream>
 #include "debuglog.h"
 #include <QDir>
+#include <QTimer>
+#include <QDateTime>
 DataModel::DataModel(QObject *parent ):QAbstractListModel(parent)
 {
 
+    connect(&sendTimer,&QTimer::timeout,this,&DataModel::slot_sendtimerout);
 }
 
 int DataModel::rowCount(const QModelIndex &) const
@@ -114,9 +117,12 @@ void DataModel::funSetIp(QString ip)
 void DataModel::funImportSingle(QString name,QString seq,QString imgPath)
 {
     QVariantMap map;
+    map.insert("cmd","addface");
     map.insert("name",name);
     map.insert("seq",seq);
     map.insert("filePath",imgPath);
+    map.insert("msgid","single:"+imgPath);
+
 
     funSendCmd(map);
 }
@@ -132,6 +138,9 @@ void DataModel::funImportBatch(QString folderPath)
 
         QFileInfoList list = dir.entryInfoList();
 
+
+        int batchAddAmount = list.size();
+        emit signal_batchAmount(batchAddAmount);
         for (int i=0;i<list.size();i++) {
 
             QFileInfo fileInfo = list.at(i);
@@ -150,9 +159,19 @@ void DataModel::funImportBatch(QString folderPath)
 
                     QStringList listinfo = usefulInfo.split("_");
 
+
                     QString name = listinfo.at(0);
                     QString seq = listinfo.at(1);
-                    funImportSingle(name,seq,filepath);
+
+
+                    QVariantMap map;
+                    map.insert("cmd","addface");
+                    map.insert("name",name);
+                    map.insert("seq",seq);
+                    map.insert("filePath",filepath);
+                    map.insert("msgid","batch:"+filepath);
+
+                    funSendCmd(map);
 
                 }else{
 
@@ -164,8 +183,8 @@ void DataModel::funImportBatch(QString folderPath)
     }
 }
 
-void DataModel::funSendCmd(QVariantMap map)
-{
+
+void DataModel::createFaceImport(QString ip,int port){
 
     if(isIpChange){
 
@@ -193,49 +212,166 @@ void DataModel::funSendCmd(QVariantMap map)
 
         faceImport->moveToThread(faceImportThread);
         faceImportThread->start();
-
-        emit signal_createFaceImportWork("",0);
     }
 
-    emit signal_sendMsg(map);
+    emit signal_createFaceImportWork(ip,port);
+
+}
+void DataModel::funSendCmd(QVariantMap map)
+{
+
+
+    map.insert("msgid",createMsgId(map.value("cmd").toString()));
+    listMsg.append(map);
+    if(!sendTimer.isActive()){
+        sendTimer.start(200);
+    }
+
+}
+
+
+void DataModel::slot_sendtimerout(){
+
+    qDebug()<<"slot_sendtimerout    ";
+    if(listMsg.size() > 0){
+
+        if(!isConnected){
+
+            createFaceImport(mip,port);
+
+            return;
+        }
+
+
+        QVariantMap map =  listMsg.takeFirst();
+
+        if(map.contains("sendTime")){
+
+            qint64 curt = QDateTime::currentMSecsSinceEpoch();
+            qint64 sendt = map.value("sendTime").toLongLong();
+
+            if(curt - sendt > 2000){
+
+                emit signal_destroyConnect();
+            }
+        }else {
+
+            qint64 sendt = QDateTime::currentMSecsSinceEpoch();
+            map.insert("sendTime",sendt);
+            emit signal_sendMsg(map);
+            //listMsg.append(map);
+        }
+    }else{
+        sendTimer.stop();
+    }
 }
 
 void DataModel::slot_importCallback(QVariantMap map)
 {
 
+    QString cmd = map.value("cmd").toString();
+    QString msgid = map.value("msgid").toString();
+    QString stateCode = map.value("stateCode").toString();
+
+    if(cmd.compare("connect") == 0){
+
+        if(map.value("state").toBool())
+            isConnected = true;
+        else
+            isConnected = false;
+    }else if(cmd.compare("addface") == 0){
+
+        QVariantMap imginfomap = removeAlreadySend(cmd,msgid);
+
+        if(msgid.contains("batch:") || msgid.contains("single:")){
+
+            QString filepath = msgid.replace("batch:","");
+
+            if(stateCode.compare("200")==0){
+
+                QString filePath = imginfomap.value("filePath").toString();
+                QString seq = imginfomap.value("seq").toString();
+                QString name = imginfomap.value("name").toString();
+                QString time = QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss");
+                DataModelData *modedata = new DataModelData(curSelect,filepath,seq,time,name);
+                m_listData.append(modedata);
+
+                if(msgid.contains("batch:")){
+
+                    if(stateCode.compare("200")==0)
+                        emit signal_batchAdd(true);
+                    else
+                        emit signal_batchAdd(false);
+
+                }
+
+                if(msgid.contains("single:")){
+                    emit signal_singleAdd(true);
+                }
+
+            }else {
+
+                if(msgid.contains("batch:")){
+
+                    if(stateCode.compare("200")==0)
+                        emit signal_batchAdd(true);
+                    else
+                        emit signal_batchAdd(false);
+
+                }
+                if(msgid.contains("single:")){
+                    emit signal_singleAdd(false);
+                }
+
+            }
+
+        }
+
+
+        return;
+    }
+
+    removeAlreadySend(cmd,msgid);
 
 }
 
-//void DataModel::funDeleteIndex(int index)
-//{
-//    qDebug()<<" funDeleteIndex:"<<index;
-//    if(m_listData.size() <= index){
-//        DebugLog::getInstance()->writeLog("删除警报信息异常:index 越界");
-//        return;
-//    }
 
-//    beginRemoveRows(QModelIndex(),index,index);
-//    DataModelData *date = m_listData.takeAt(index);
-//    QString fileAbsolutePath = date->absolutePath();
-//    QFile::remove(fileAbsolutePath);
-//    delete date;
-//    endRemoveRows();
 
-//    if(curPath == ""||curDate=="")
-//        return;
 
-//    //日志文件的绝对路径，重写文件,倒序写入文件
-//    QString logAbsolutePath = curPath+"/log/"+curDate+".log";
-//    QFile file(logAbsolutePath);
-//    if(file.open(QIODevice::WriteOnly)){
-//        for (int i=m_listData.size()-1;i>=0;i--) {
-//            DataModelData *modelData = m_listData.at(i);
-//            QString imgInfoStr = modelData->absolutePath()+" "+modelData->warnTemp()+" "+modelData->imgName()+".jpeg";
-//            QTextStream out(&file);
-//            out <<imgInfoStr << "\n";
-//        }
-//        file.close();
-//    }
+QString DataModel::createMsgId(QString cmd){
+    //QMutexLocker locker(&m_msgMutex);
+    int msgId = 0;
+    for (int i=0;i<listMsg.size();i++) {
+        QMap<QString,QVariant> map = listMsg.at(i);
+        QString tmpCmd = map.value("cmd").toString();
+        QString msgid = map.value("msgid").toString();
+        if(cmd.compare(tmpCmd)==0){
+            int tmpid = msgid.toInt();
+            if(msgId < tmpid){
+                msgId = tmpid+1;
+            }
+        }
+    }
+    return QString::number(msgId);
+}
 
-//}
+QVariantMap DataModel::removeAlreadySend(QString cmd,QString msgid1){
+
+    //QMutexLocker locker(&m_msgMutex);
+
+    int msgLen = listMsg.size();
+    for (int i=msgLen-1;i>=0;i--){
+        QVariantMap map = listMsg.at(i);
+        QString tmpCmd = map.value("cmd").toString();
+        QString msgid = map.value("msgid").toString();
+        if(cmd.compare(tmpCmd)==0 && msgid.compare(msgid1) ==0){
+            listMsg.removeAt(i);
+            DebugLog::getInstance()->writeLog("faceObject :remove msg "+cmd);
+            return map;
+        }
+    }
+
+    return QVariantMap();
+}
+
 

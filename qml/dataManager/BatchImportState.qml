@@ -7,11 +7,12 @@ Rectangle{
     property string importSuccStr: ""
     property string importFailStr: ""
 
-    property int progressvalue: 50
-    property int maxValue: 100
-    property real valuePercentage: progressvalue/maxValue
 
 
+
+    property int importAmount: 100
+    property int importSuccCount:50
+    property int importFailCount: 0
     signal s_finished();
     Rectangle{
         id:rectBatchImportState
@@ -220,7 +221,7 @@ Rectangle{
                     height: 80
                     anchors.top: parent.top
                     anchors.topMargin: 30
-                    progress: valuePercentage
+                    progress: importSuccCount/importAmount
                     arcBackgroundColor:"#DBE6F8"
                     arcColor: "#0486FE"
                     arcWidth:4
@@ -235,7 +236,7 @@ Rectangle{
                     anchors.horizontalCenter: parent.horizontalCenter
                     anchors.top: circularprogress.bottom
                     anchors.topMargin: 13
-                    text: progressvalue + "/"+maxValue
+                    text: importSuccCount + "/"+importAmount
                 }
                 Text {
                     id: txt2

@@ -357,6 +357,7 @@ int CHttpApiDevice::HttpMsgCallBack(char * pData) {
                 callbackMap.insert("min",object.value("data").toObject().value("alarmtime").toObject().value("min").toInt());
                 callbackMap.insert("sec",object.value("data").toObject().value("alarmtime").toObject().value("sec").toInt());
                 callbackMap.insert("temperature",object.value("data").toObject().value("temperature").toDouble());
+
             }else if("update" == cmd){
 
                 QString tmp="http://"+g_ip+":80/cgi-bin/hi3510/upgrade.cgi";

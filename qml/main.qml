@@ -109,8 +109,8 @@ Window {
                 break;
             }
 
-            pushwarnmodel.numberOfPeople ++ ;
-            pushwarnmodel.insert(0,{"warnTime":time,"absolutePath":path,"warnTemp":tempvalue.toFixed(2),"temptype":type})
+            pushwarnmodel.numberOfPeople ++;
+            pushwarnmodel.insert(0,{"warnTime":time,"absolutePath":path,"warnTemp":tempvalue.toFixed(2),"temptype":type,"name":name,"number":number})
         }
     }
 

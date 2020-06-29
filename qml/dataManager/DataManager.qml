@@ -1,6 +1,6 @@
 import QtQuick.Controls 2.5
 import QtQuick 2.0
-
+import QtGraphicalEffects 1.12
 import "../playbackVideo"
 import "../dialog"
 import "../warnManager"
@@ -21,7 +21,7 @@ Rectangle {
     signal s_allselect(bool isSelect);
 
     onIsAllSelectChanged: {
-       //warnmodel.set
+        //warnmodel.set
     }
     property string curDateStr: ""
 
@@ -100,6 +100,7 @@ Rectangle {
 
                     batchImportState.visible = true
                     batchImportState.test()
+
                     return
 
                     if(curLanguage===lRussian)
@@ -108,18 +109,18 @@ Rectangle {
                         askDialog.width = 427
                     askDialog.height = 176
                     askDialog.askStr = curLanguage=== lChinese?"确认要删除所选信息吗？":
-                                       curLanguage===lEnglish?"Confirm to delete?":
-                                       curLanguage===lKorean?"삭제하시겠습니까?":
-                                       curLanguage===lItaly?"Cancella Tutta la Selezione?":
-                                       curLanguage===lRussian?"Вы уверены, что хотите удалить информацию?":
-                                       curLanguage===lLithuanian?"Patvirtinti ištrynimą?":
-                                                                  curLanguage === ltuerqi?"Kapı Bilgileri?":
-                                                                  curLanguage === ltuerqi1?"Tüm Seçimleri Sil?":
-                                                                  curLanguage === lputaoya?"Confirme a exclusão?":
-                                                                  curLanguage === lxibanya?"Confirmar para eliminar?":
-                                                                  curLanguage === lfayu?"Confirmer la suppression?":
-                                                                  curLanguage === lniboer?"साँचै मेट्ने हो ?":
-                                                                    curLanguage === lKhmer?"យល់ព្រមលុបចោល?":""
+                                                                curLanguage===lEnglish?"Confirm to delete?":
+                                                                                        curLanguage===lKorean?"삭제하시겠습니까?":
+                                                                                                               curLanguage===lItaly?"Cancella Tutta la Selezione?":
+                                                                                                                                     curLanguage===lRussian?"Вы уверены, что хотите удалить информацию?":
+                                                                                                                                                             curLanguage===lLithuanian?"Patvirtinti ištrynimą?":
+                                                                                                                                                                                        curLanguage === ltuerqi?"Kapı Bilgileri?":
+                                                                                                                                                                                                                 curLanguage === ltuerqi1?"Tüm Seçimleri Sil?":
+                                                                                                                                                                                                                                           curLanguage === lputaoya?"Confirme a exclusão?":
+                                                                                                                                                                                                                                                                     curLanguage === lxibanya?"Confirmar para eliminar?":
+                                                                                                                                                                                                                                                                                               curLanguage === lfayu?"Confirmer la suppression?":
+                                                                                                                                                                                                                                                                                                                      curLanguage === lniboer?"साँचै मेट्ने हो ?":
+                                                                                                                                                                                                                                                                                                                                               curLanguage === lKhmer?"យល់ព្រមលុបចោល?":""
 
                     askDialog.imgSrc = "qrc:/images/ico_warn.png"
                     askDialog.curType = askDialog.warnInfoMutipleDelete
@@ -561,6 +562,79 @@ Rectangle {
     }
 
     
+    Popup{
+        id:popimportimg
+        width: 136
+        height: 52
+        x: parent.width/2 - popimportimg.width/2
+        y: parent.height/2 - popimportimg.height/2
+        property alias msgStr: txt.text
+        property alias msgImg: img.source
+        modal: true
+        focus: true
+        //设置窗口关闭方式为按“Esc”键关闭
+        closePolicy: Popup.OnEscape
+        //设置窗口的背景控件，不设置的话Popup的边框会显示出来
+        background: rect
+        dim:false
+
+        onOpened: {
+            poptimer.start();
+        }
+        onClosed: {
+        }
+        Rectangle {
+            id: rect
+            anchors.fill: parent
+            color: "#ffffff"
+            radius: 3
+
+            //设置标题栏区域为拖拽区域
+            Rectangle{
+
+                width: parent.width
+                height: parent.height
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.verticalCenter: parent.verticalCenter
+
+                Image {
+                    id: img
+                    width: 20
+                    height: 20
+                    anchors.verticalCenter: parent.verticalCenter
+                    anchors.left: parent.left
+                    anchors.leftMargin: 20
+                    source: "qrc:/images/icon_msg.png"
+                }
+
+                Text {
+                    id: txt
+                    anchors.left: img.right
+                    anchors.leftMargin: 12
+                    anchors.verticalCenter: img.verticalCenter
+                    font.pixelSize:16
+                    text: qsTr("")
+                }
+            }
+            layer.enabled: true
+            layer.effect: DropShadow {
+                transparentBorder: true
+                horizontalOffset: 4
+                verticalOffset: 4
+                color:"#80000000"
+            }
+        }
+
+        Timer{
+            id:poptimer
+            interval: 600;
+            repeat: false
+            onTriggered: {
+                poptimer.stop();
+                popimportimg.close();
+            }
+        }
+    }
 
     Connections{
         target: askDialog
@@ -577,7 +651,37 @@ Rectangle {
         target: main
         onS_setLanguage:setLanguage(typeL);
     }
+    Connections{
+        target: dataModel
+        onSignal_singleAdd:{
 
+            if(isSucc){
+                popimportimg.msgImg = "qrc:/images/connect_succ.png"
+                popimportimg.msgStr = "导入成功"
+                popimportimg.open()
+            }else{
+                popimportimg.msgImg = "qrc:/images/connect_fail.png"
+                popimportimg.msgStr = "导入失败"
+                popimportimg.open()
+            }
+        }
+
+        onSignal_batchAmount:{
+
+            batchImportState.importAmount = amount
+            batchImportState.importSuccCount = 0
+            batchImportState.importFailCount = 0
+
+        }
+
+        onSignal_batchAdd:{
+            if(isSucc)
+                batchImportState.importSuccCount ++;
+            else
+                batchImportState.importFailCount ++;
+        }
+
+    }
 
 
     function setLanguage(type){

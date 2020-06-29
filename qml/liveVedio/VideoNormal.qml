@@ -81,7 +81,7 @@ Rectangle {
         onSignal_connected:{
             deviceconfig.setTcpip(ip)
             homeMenu.setDeviceConnectState(istrue)
-
+            dataModel.funSetIp(ip);
 
         }
 //                MouseArea{

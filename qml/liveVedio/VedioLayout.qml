@@ -58,8 +58,8 @@ Rectangle {
 
     Rectangle{
         id:rectlistwarninfo
-        property int preHeight: 160
-        property int preWidth: 120
+        property int preHeight: 120
+        property int preWidth: 240
         width: parent.width
         height: rectlistwarninfo.preHeight + 57
         anchors.top: rowlayout.bottom
@@ -195,15 +195,15 @@ Rectangle {
                 height: rectlistwarninfo.preHeight + 20
                 color: "#202020"
                 Rectangle{
+
                     width: rectlistwarninfo.preWidth
                     height: rectlistwarninfo.preHeight
                     anchors.horizontalCenter: parent.horizontalCenter
                     anchors.verticalCenter: parent.verticalCenter
                     Image {
                         id:warnimg
-                        width: parent.width
-                        height: parent.width
-
+                        width: parent.width/2
+                        height: parent.height
                         source: "file:///"+absolutePath
 
                         //source: "qrc:/images/arrow_low.png"
@@ -211,18 +211,92 @@ Rectangle {
                     }
                     Rectangle{
                         color: "#cc193548"
-                        width: parent.width
-                        height: parent.height-warnimg.height
-                        anchors.top: warnimg.bottom
+                        width: parent.width/2
+                        height: parent.height
+                        anchors.left: warnimg.right
+                        anchors.top: warnimg.top
+
+                        Image {
+                            id: imgTemp
+                            width: 12
+                            height: 12
+                            anchors.left: parent.left
+                            anchors.leftMargin: 10
+                            anchors.top: parent.top
+                            anchors.topMargin: 11
+                            source: ""
+                        }
                         Text {
                             id:txttemp
-                            anchors.horizontalCenter: parent.horizontalCenter
-                            anchors.top: parent.top
-                            anchors.topMargin: 2
-                            font.pixelSize: 14
+                            anchors.left: imgTemp.left
+                            anchors.leftMargin: 6
+                            anchors.verticalCenter: imgTemp.verticalCenter
+                            font.pixelSize: 10
                             color: temptype===80?"#FA3F00":(temptype===81?"#179B0E":(temptype===82?"#EF9D36":"#FFFFFF"))
                             text: warnTemp
                         }
+
+                        Image {
+                            id: imgWarnType
+                            width: 12
+                            height: 12
+                            anchors.left: parent.left
+                            anchors.leftMargin: 10
+                            anchors.top: imgTemp.bottom
+                            anchors.topMargin: 8
+                            source: ""
+                        }
+
+                        Text {
+                            id:txtWarnType
+                            anchors.left: imgWarnType.left
+                            anchors.leftMargin: 6
+                            anchors.verticalCenter: imgWarnType.verticalCenter
+                            font.pixelSize: 10
+                            color: temptype===82?"#FA3F00":"#FFFFFF"
+                            text: temptype===82?"不带口罩":"戴口罩"
+                        }
+
+                        Image {
+                            id: imgName
+                            width: 12
+                            height: 12
+                            anchors.left: parent.left
+                            anchors.leftMargin: 10
+                            anchors.top: imgWarnType.bottom
+                            anchors.topMargin: 8
+                            source: ""
+                        }
+                        Text {
+                            id:txtName
+                            anchors.left: imgName.left
+                            anchors.leftMargin: 6
+                            anchors.verticalCenter: imgName.verticalCenter
+                            font.pixelSize: 10
+                            color: temptype===82?"#FA3F00":"#FFFFFF"
+                            text: name
+                        }
+
+                        Image {
+                            id: imgNumber
+                            width: 12
+                            height: 12
+                            anchors.left: parent.left
+                            anchors.leftMargin: 10
+                            anchors.top: imgWarnType.bottom
+                            anchors.topMargin: 8
+                            source: ""
+                        }
+                        Text {
+                            id:txtNumber
+                            anchors.left: imgName.left
+                            anchors.leftMargin: 6
+                            anchors.verticalCenter: imgName.verticalCenter
+                            font.pixelSize: 10
+                            color: temptype===82?"#FA3F00":"#FFFFFF"
+                            text: number
+                        }
+
                         Text {
                             anchors.horizontalCenter: parent.horizontalCenter
                             anchors.top: txttemp.bottom

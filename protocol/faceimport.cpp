@@ -11,43 +11,9 @@ FaceImport::FaceImport(QObject *parent) : QObject(parent)
 
 }
 
-QString FaceImport::createMsgId(QString cmd){
-    //QMutexLocker locker(&m_msgMutex);
-    int msgId = 0;
-    for (int i=0;i<listMsg.size();i++) {
-        QMap<QString,QVariant> map = listMsg.at(i);
-        QString tmpCmd = map.value("cmd").toString();
-        QString msgid = map.value("msgid").toString();
-        if(cmd.compare(tmpCmd)==0){
-            int tmpid = msgid.toInt();
-            if(msgId < tmpid){
-                msgId = tmpid+1;
-            }
-        }
-    }
-    return QString::number(msgId);
-}
-
-void FaceImport::removeAlreadySend(QString cmd,QString msgid1){
-
-    //QMutexLocker locker(&m_msgMutex);
-
-    int msgLen = listMsg.size();
-    for (int i=msgLen-1;i>=0;i--){
-        QMap<QString,QVariant> map = listMsg.at(i);
-        QString tmpCmd = map.value("cmd").toString();
-        QString msgid = map.value("msgid").toString();
-        if(cmd.compare(tmpCmd)==0 && msgid.compare(msgid1) ==0){
-            listMsg.removeAt(i);
-            DebugLog::getInstance()->writeLog("faceObject :remove msg "+cmd);
-            break;
-        }
-    }
-}
 
 void FaceImport::slot_createConnect(QString ip,int port){
 
-    listMsg.clear();
     if (g_tcpsocket == nullptr)
     {
         g_tcpsocket = new QTcpSocket;
@@ -55,10 +21,6 @@ void FaceImport::slot_createConnect(QString ip,int port){
 
         connect(g_tcpsocket, SIGNAL(readyRead()), this, SLOT(slot_ReadMsg()));
         connect(g_tcpsocket, &QTcpSocket::connected, this, &FaceImport::slot_Connected);
-
-        sendTimer = new QTimer;
-
-        connect(sendTimer,&QTimer::timeout,this,&FaceImport::slot_sendtimerout);
 
     }else {
         g_tcpsocket->disconnectFromHost();
@@ -76,90 +38,28 @@ void FaceImport::slot_destoryConnect()
 
     qDebug()<<" slot_destoryConnect ";
     if(g_tcpsocket != NULL){
-
-
-
-        if(sendTimer != nullptr){
-
-            qDebug()<<" slot_destoryConnect 2";
-            disconnect(g_tcpsocket, SIGNAL(readyRead()), this, SLOT(slot_ReadMsg()));
-            disconnect(sendTimer,&QTimer::timeout,this,&FaceImport::slot_sendtimerout);
-
-
-
-            sendTimer->stop();
-
-            listMsg.clear();
-
-
-            sendTimer->deleteLater();
-
-
-            g_tcpsocket->disconnectFromHost();
-            g_tcpsocket->abort();
-            g_tcpsocket = nullptr;
-
-            sendTimer = nullptr;
-
-
-        }
-
+        qDebug()<<" slot_destoryConnect 4";
+        g_tcpsocket->disconnectFromHost();
+        g_tcpsocket->abort();
+        g_tcpsocket = nullptr;
     }
 }
 
 void FaceImport::slot_sendMsg(QVariantMap map)
 {
-
-    if(!isConnected){
-        DebugLog::getInstance()->writeLog("face import fail,--- network is disconnnect ");
-        return;
-    }
-
-    qDebug()<<"slot_sendMsg";
-    listMsg.append(map);
-
-    if(sendTimer->isActive())
-        sendTimer->start(200);
-
+    SendRequestMsg(makeJsonData(map));
 }
 
-void FaceImport::slot_sendtimerout()
-{
 
-
-    if(listMsg.size() > 0){
-
-        QVariantMap map =  listMsg.at(0);
-
-        if(map.contains("sendTime")){
-
-            qint64 curt = QDateTime::currentMSecsSinceEpoch();
-            qint64 sendt = map.value("sendTime").toLongLong();
-
-            if(curt - sendt > 2000){
-
-
-            }
-
-
-        }else {
-
-            qint64 sendt = QDateTime::currentMSecsSinceEpoch();
-            map.insert("sendTime",sendt);
-            SendRequestMsg(makeJsonData(map));
-            listMsg.append(map);
-        }
-
-
-    }else{
-        sendTimer->stop();
-    }
-
-}
 
 void FaceImport::slot_Connected()
 {
+    qDebug()<<">>>>>>> face import connect is succ <<<<<<";
 
+    QVariantMap map;
+    map.insert("cmd","connect");
+    map.insert("state",true);
+    emit signal_importCallback(map);
 }
 
 void FaceImport::SendRequestMsg(QJsonObject obj){
@@ -169,17 +69,31 @@ void FaceImport::SendRequestMsg(QJsonObject obj){
     QString strJson(byteArray);
 
     QString httpSendmsg = "POST /faceput  HTTP/1.1\r\nHost:"
-                          +g_ip+":"+QString::number(g_port)+"\r\nConnection: keep-alive\r\nContent-Length:"
-                        +QString::number(strJson.length())+"\r\nPragma: no-cache\r\nUser-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/66.0.3359.181 Safari/537.36\r\n"
-                         +"Content-Type: application/json\r\nAccept: */*\r\nAccept-Encoding: gzip, deflate, br\r\nAccept-Language: zh-CN,zh;q=0.9\r\n\r\n";
+            +g_ip+":"+QString::number(g_port)+"\r\nConnection: keep-alive\r\nContent-Length: "
+            +QString::number(strJson.length())+"\r\nPragma: no-cache\r\nUser-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/66.0.3359.181 Safari/537.36\r\n"
+            +"Content-Type: application/json\r\nAccept: */*\r\nAccept-Encoding: gzip, deflate, br\r\nAccept-Language: zh-CN,zh;q=0.9\r\n\r\n"+strJson;
 
 
-    qDebug() <<"http send msg :"<<httpSendmsg;
+    QString httpSendmsg1 = "POST /faceput  HTTP/1.1\r\nHost:"
+            +g_ip+":"+QString::number(g_port)+"\r\nConnection: keep-alive\r\nContent-Length: "
+            +QString::number(strJson.length())+"\r\nPragma: no-cache\r\nUser-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/66.0.3359.181 Safari/537.36\r\n"
+            +"Content-Type: application/json\r\nAccept: */*\r\nAccept-Encoding: gzip, deflate, br\r\nAccept-Language: zh-CN,zh;q=0.9\r\n\r\n";
 
-    if(g_tcpsocket != nullptr && g_tcpsocket->isWritable()){
+    qDebug() <<"http send msg :"<<QString::number(strJson.length());
+    qDebug() <<"http send msg1 :"<<httpSendmsg1;
+
+    if(g_tcpsocket != nullptr){
         qint64 sendlen = g_tcpsocket->write(httpSendmsg.toStdString().c_str(), httpSendmsg.length());
         qDebug()<<"-----sendlen----:"<<sendlen;
         g_tcpsocket->flush();//不缓存，直接发送
+        if(sendlen < 0){
+            slot_destoryConnect();
+            QVariantMap map;
+            map.insert("cmd","connect");
+            map.insert("state",false);
+            emit signal_importCallback(map);
+        }
+
     }
 }
 
@@ -190,8 +104,8 @@ QJsonObject FaceImport::makeJsonData(QVariantMap map){
 
     QJsonObject objMain;
     objMain.insert("cmd",map.value("cmd").toString());
-    objMain.insert("msgid",createMsgId(cmd));
-    objMain.insert("methods",map.value("request").toString());
+    objMain.insert("msgid",map.value("msgid").toString());
+    objMain.insert("methods","request");
     QJsonObject objData;
     if(cmd.compare("addface") == 0){
 
@@ -199,6 +113,8 @@ QJsonObject FaceImport::makeJsonData(QVariantMap map){
 
         QFile file(imgFileAbsolute);
         if(file.open(QIODevice::ReadOnly)){
+
+            objMain.insert("msgid",map.value("msgid").toString());
             objData.insert("name",map.value("name").toString());
             objData.insert("seq",map.value("seq").toString());
             QByteArray arr = file.readAll();
@@ -287,8 +203,35 @@ void FaceImport::slot_ReadMsg() {
             QString bodyData = oneData.mid(jsonOffset+keyJson.length(),contentLen);
             charOffset =charOffset + oneData.length() + httpheadLen;
             qDebug()<<"    bodyData    "<<bodyData<<"  " <<bodyData.length();
-            HttpMsgCallBack(bodyData.toLatin1().data());
+            //HttpMsgCallBack(bodyData.toLatin1().data());
 
+            QJsonParseError jsonError;
+            QJsonDocument doucment = QJsonDocument::fromJson(bodyData.toLatin1().data(), &jsonError);  // 转化为 JSON 文档
+            if (!doucment.isNull() && (jsonError.error == QJsonParseError::NoError)) {  // 解析未发生错误
+                if (doucment.isObject()) { // JSON 文档为对象
+
+                    QJsonObject object = doucment.object();  // 转化为对象
+                    QString cmd = object.value("cmd").toString();
+                    QString msgid = object.value("msgid").toString();
+
+                    qDebug()<<"接收的命令:"<<cmd;
+                    QMap<QString,QVariant> callbackMap;
+                    callbackMap.insert("cmd",cmd);
+                    callbackMap.insert("stateCode",stateCode);
+                    if("addface" == cmd) {
+
+                        callbackMap.insert("filepath",msgid);
+
+                    }
+
+
+                    emit signal_importCallback(callbackMap);
+                } else {
+                    qDebug()<<"not is document !";
+                }
+            }else {
+                qDebug()<<"parse error ";
+            }
         }
 
 
@@ -307,11 +250,12 @@ int FaceImport::HttpMsgCallBack(char * pData) {
             QJsonObject object = doucment.object();  // 转化为对象
             QString cmd = object.value("cmd").toString();
             QString msgid = object.value("msgid").toString();
-            removeAlreadySend(cmd,msgid);
+
             qDebug()<<"接收的命令:"<<cmd;
             QMap<QString,QVariant> callbackMap;
             callbackMap.insert("cmd",cmd);
-            if("login" == cmd) {
+            callbackMap.insert("msgid",msgid);
+            if("addface" == cmd) {
 
             }
 

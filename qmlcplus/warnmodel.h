@@ -47,7 +47,7 @@ public:
     Qt::ItemFlags flags(const QModelIndex& index) const override;
     virtual QHash<int, QByteArray> roleNames() const override;
 signals:
-    void signal_sendWarnMsg(int type,QString path,QString time,float tempvalue);
+    void signal_sendWarnMsg(int type,QString path,QString time,float tempvalue,QString name,QString number);
 private:
     void removeIndex(int index);
     void removeAll();

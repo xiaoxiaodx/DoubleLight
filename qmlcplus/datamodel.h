@@ -20,7 +20,7 @@ class DataModelData: public QObject
 
     Q_OBJECT
 public:
-    DataModelData(const bool &isSelect,const QString &avatarPath,const QString &numbering,const QString &time,QString imgName,QString name,QObject *parent=nullptr)
+    DataModelData(const bool &isSelect,const QString &avatarPath,const QString &numbering,const QString &time,QString name,QObject *parent=nullptr)
     :QObject(parent),m_isSelect(isSelect),m_numbering(numbering),m_time(time),m_name(name),m_avatarPath(avatarPath){  }
     QML_PROPERTY(bool,isSelect)
     QML_PROPERTY(QString,numbering)
@@ -53,8 +53,13 @@ signals:
     void signal_createFaceImportWork(QString ip,int port);
     void signal_sendMsg(QVariantMap map);
     void signal_destroyConnect();
+
+    void signal_singleAdd(bool isSucc);
+    void signal_batchAdd(bool isSucc);
+    void signal_batchAmount(int amount);
 public slots:
     void slot_importCallback(QVariantMap map);
+    void slot_sendtimerout();
 protected:
     int rowCount(const QModelIndex &parent = QModelIndex()) const override;
 
@@ -68,15 +73,23 @@ protected:
 private:
     void removeIndex(int index);
     void removeAll();
+    void createFaceImport(QString ip,int port);
 
+    QString createMsgId(QString cmd);
+    QVariantMap removeAlreadySend(QString cmd,QString msgid1);
 
+    bool curSelect = false;
     QList<DataModelData*> m_listData;
 
     FaceImport *faceImport = nullptr;
     QThread *faceImportThread = nullptr;
-    QString mip = "";
+    QString mip = "10.67.1.148";
     int port = 8866;
     bool isIpChange = false;
+
+    bool isConnected = false;
+    QTimer sendTimer;
+    QList<QVariantMap> listMsg;
 
 };
 

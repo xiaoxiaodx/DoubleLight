@@ -13,7 +13,6 @@ public:
 signals:
     void signal_importCallback(QVariantMap map);
 public slots:
-    void slot_sendtimerout();
     void slot_Connected();
     void slot_ReadMsg();
     void slot_createConnect(QString ip,int port);
@@ -23,18 +22,15 @@ private:
     int HttpMsgCallBack(char * pData);
     QJsonObject makeJsonData(QVariantMap map);
     void SendRequestMsg(QJsonObject obj);
-    QString createMsgId(QString cmd);
-    void removeAlreadySend(QString cmd,QString msgid1);
+
 
     QTcpSocket *g_tcpsocket = nullptr;
     QString g_ip = "";
     int g_port;
-    QTimer *sendTimer;
     QString parseStr = "";
 
 
-    bool isConnected = false;
-    QList<QVariantMap> listMsg;
+
 };
 
 #endif // FACEIMPORT_H

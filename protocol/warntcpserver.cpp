@@ -260,6 +260,8 @@ int WarnTcpServer::HttpMsgCallBack(QByteArray arr) {
                 callbackMap.insert("min",object.value("data").toObject().value("alarmtime").toObject().value("min").toInt());
                 callbackMap.insert("sec",object.value("data").toObject().value("alarmtime").toObject().value("sec").toInt());
                 callbackMap.insert("temperature",object.value("data").toObject().value("temperature").toString().toFloat());
+                callbackMap.insert("name",object.value("data").toObject().value("name").toString());
+                callbackMap.insert("seq",object.value("data").toObject().value("seq").toString());
                 if(object.value("data").toObject().contains("imagedata"))
                     callbackMap.insert("imagedata",object.value("data").toObject().value("imagedata").toString());
                 if(object.value("data").toObject().contains("snapimagedata")){

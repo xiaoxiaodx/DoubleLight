@@ -312,9 +312,11 @@ void WarnModel::funProcessPushAlarm2(QString path,QVariantMap map){
     if(flagI > 100000)
         flagI = 0;
 
-    qDebug()<<"funProcessPushAlarm********  "<<map.value("year").toInt() <<"    "<<map.value("month").toInt()<<"    "<<map.value("day").toInt();
+    qDebug()<<"funProcessPushAlarm******** :"<<map.value("year").toInt() <<"    "<<map.value("month").toInt()<<"    "<<map.value("day").toInt()<<"  name:"<<map.value("name").toString();
     QDate tmpDate(map.value("year").toInt(),map.value("month").toInt(),map.value("day").toInt());
     QTime tmptime(map.value("hour").toInt(),map.value("min").toInt(),map.value("sec").toInt());
+    QString name = map.value("name").toString();
+    QString number = map.value("seq").toString();
     float warnTemp = map.value("temperature").toFloat();
     int alarmtype = map.value("alarmtype").toInt();
 
@@ -363,7 +365,7 @@ void WarnModel::funProcessPushAlarm2(QString path,QVariantMap map){
             qDebug()<<"funProcessPushAlarm******** file open:"+imgAbsolutePath;
             file.close();
             //存完文件 将消息发给qml
-            emit signal_sendWarnMsg(alarmtype,imgAbsolutePath,curDateTime.toString("yyyy-MM-dd hh:mm:ss"),warnTemp);
+            emit signal_sendWarnMsg(alarmtype,imgAbsolutePath,curDateTime.toString("yyyy-MM-dd hh:mm:ss"),warnTemp,name,number);
         }else {
             DebugLog::getInstance()->writeLog("slot_screenShot open log file is fail");
             return ;
