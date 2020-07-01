@@ -21,7 +21,7 @@ Row {
         id:mymodel
 
     }
-    spacing: 57
+    spacing: 30
     Repeater{
         width: parent.width
         height: parent.height

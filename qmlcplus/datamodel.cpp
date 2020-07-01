@@ -13,6 +13,7 @@ DataModel::DataModel(QObject *parent ):QAbstractListModel(parent)
     connect(&sendTimer,&QTimer::timeout,this,&DataModel::slot_sendtimerout);
 }
 
+
 int DataModel::rowCount(const QModelIndex &) const
 {
     return m_listData.count();
@@ -82,9 +83,140 @@ Qt::ItemFlags DataModel::flags(const QModelIndex &index) const
     return Qt::ItemIsEditable; // FIXME: Implement me!
 }
 
+void DataModel::funSetInitSelectFalse()
+{
+    curSelect = false;
+
+}
+
+void DataModel::funSendReviseRequest(int index,QString name,QString number)
+{
+    QVariantMap map;
+    map.insert("cmd","modifyface");
+    map.insert("name",name);
+    map.insert("seq",number);
+    map.insert("index",index);
+    funSendCmd(map);
+}
+
+void DataModel::reviseIndex(int index,QString name,QString number)
+{
+
+    qDebug()<<"     reviseIndex "<<name<<"  "<<number;
+    beginResetModel();
+    DataModelData *date = m_listData.takeAt(index);
+   QString tmpFilePath = date->avatarPath();
+
+
+
+    QString oriFilePath = tmpFilePath.replace("file:///","");
+
+    QFileInfo fileinfo(oriFilePath);
+
+    QString desFilePath = oriFilePath.replace(fileinfo.fileName(),"") + name+"_"+number+".jpeg";
+
+
+    qDebug()<<"reviseIndex:"<<tmpFilePath<<"    "<<oriFilePath<<"    "<<desFilePath;
+    QFile file(tmpFilePath);
+
+    file.rename(desFilePath);
+    m_listData.insert(index,new DataModelData(date->isSelect(),"file:///"+desFilePath,number,date->time(),name));
+
+    delete  date;
+    endResetModel();
+
+
+    rewriteLogFile();
+}
+
 void DataModel::removeIndex(int index)
 {
 
+    qDebug()<<" funDeleteIndex:"<<index;
+    if(m_listData.size() <= index){
+        DebugLog::getInstance()->writeLog("删除人脸信息异常:index 越界");
+        return;
+    }
+
+    beginRemoveRows(QModelIndex(),index,index);
+    DataModelData *date = m_listData.takeAt(index);
+    QString tmpFilePath = date->avatarPath();
+    delete date;
+    QString desFilePath = tmpFilePath.replace("file:///","");
+    QFile file(desFilePath);
+    file.remove();
+    endRemoveRows();
+
+    rewriteLogFile();
+}
+
+void DataModel::rewriteLogFile()
+{
+
+    //日志文件的绝对路径，重写文件,倒序写入文件
+    QString curDir = QDir::currentPath();
+    QString logAbsolutePath = curDir+"/Face import/"+mdid+"/Log/"+curCalendarDate+".log";
+
+    QFile file(logAbsolutePath);
+    if(file.open(QIODevice::WriteOnly)){
+        for (int i=m_listData.size()-1;i>=0;i--) {
+            DataModelData *modelData = m_listData.at(i);
+
+            QString name = modelData->name();
+            QString filepath = modelData->avatarPath().replace("file:///","");
+            QString number = modelData->numbering();
+            QString importtime = modelData->time();
+
+            QString imgInfoStr = filepath+"***"+name+"***"+number+"***"+importtime;
+            QTextStream out(&file);
+            out <<imgInfoStr << "\n";
+        }
+        file.close();
+    }
+
+}
+
+
+void DataModel::funSendDeleteSelectRequest()
+{
+
+
+    for (int i=m_listData.size()-1;i>=0;i--) {
+        if(m_listData.at(i)->isSelect()){
+
+            funSendDeleteRequest(i);
+        }
+    }
+    curSelect = false;
+}
+
+void DataModel::funSendDeleteRequest(int index)
+{
+
+    qDebug()<<" funSendDeleteRequest:"<<index;
+    if(m_listData.size() <= index){
+        DebugLog::getInstance()->writeLog("删除人脸信息异常:index 越界");
+        return;
+    }
+
+    DataModelData *date = m_listData.at(index);
+    QVariantMap map;
+    map.insert("cmd","delface");
+    map.insert("name",date->name());
+    map.insert("seq",date->numbering());
+    map.insert("index",index);
+    funSendCmd(map);
+
+}
+
+void DataModel::funSetAllSelect(bool isSelect)
+{
+    curSelect = isSelect;
+    beginResetModel();
+    for (int i=0;i<m_listData.size();i++) {
+        m_listData.at(i)->setisSelect(isSelect);
+    }
+    endResetModel();
 }
 
 void DataModel::removeAll()
@@ -104,12 +236,14 @@ void DataModel::removeAll()
     endRemoveRows();
 }
 
-void DataModel::funSetIp(QString ip)
+void DataModel::funSetDeviceInfo(QString ip,QString did)
 {
     if(mip.compare(ip) != 0){
-
+        mdid = did;
         mip = ip;
         isIpChange = true;
+
+        funUpdateCurCalendarDate(curCalendarDate);
     }
 
 }
@@ -121,7 +255,7 @@ void DataModel::funImportSingle(QString name,QString seq,QString imgPath)
     map.insert("name",name);
     map.insert("seq",seq);
     map.insert("filePath",imgPath);
-    map.insert("msgid","single:"+imgPath);
+    map.insert("importType","single");
 
 
     funSendCmd(map);
@@ -135,9 +269,11 @@ void DataModel::funImportBatch(QString folderPath)
         DebugLog::getInstance()->writeLog("Batch import fail --- > folder path is not exists");
 
     }else {
+        QStringList filter;
+        filter<<"*.jpeg";
+        dir.setNameFilters(filter);
 
         QFileInfoList list = dir.entryInfoList();
-
 
         int batchAddAmount = list.size();
         emit signal_batchAmount(batchAddAmount);
@@ -169,7 +305,8 @@ void DataModel::funImportBatch(QString folderPath)
                     map.insert("name",name);
                     map.insert("seq",seq);
                     map.insert("filePath",filepath);
-                    map.insert("msgid","batch:"+filepath);
+                    map.insert("importType","batch");
+
 
                     funSendCmd(map);
 
@@ -196,6 +333,7 @@ void DataModel::createFaceImport(QString ip,int port){
             faceImportThread = nullptr;
         }
 
+        isIpChange = false;
     }
 
     if(faceImport == nullptr){
@@ -220,11 +358,12 @@ void DataModel::createFaceImport(QString ip,int port){
 void DataModel::funSendCmd(QVariantMap map)
 {
 
-
     map.insert("msgid",createMsgId(map.value("cmd").toString()));
+
+    qDebug()<<"funSendCmd   "<<map;
     listMsg.append(map);
     if(!sendTimer.isActive()){
-        sendTimer.start(200);
+        sendTimer.start(500);
     }
 
 }
@@ -232,38 +371,93 @@ void DataModel::funSendCmd(QVariantMap map)
 
 void DataModel::slot_sendtimerout(){
 
-    qDebug()<<"slot_sendtimerout    ";
+    qDebug()<<"slot_sendtimerout    "<<listMsg.size();
     if(listMsg.size() > 0){
 
         if(!isConnected){
-
             createFaceImport(mip,port);
-
             return;
         }
 
-
         QVariantMap map =  listMsg.takeFirst();
 
-        if(map.contains("sendTime")){
+        //    if(map.contains("sendTime")){
+        // qint64 curt = QDateTime::currentMSecsSinceEpoch();
+        // qint64 sendt = map.value("sendTime").toLongLong();
+        //            if(curt - sendt > 2000){
+        //                emit signal_destroyConnect();
+        //            }
+        //        }else {
 
-            qint64 curt = QDateTime::currentMSecsSinceEpoch();
-            qint64 sendt = map.value("sendTime").toLongLong();
+        qint64 sendt = QDateTime::currentMSecsSinceEpoch();
+        map.insert("sendTime",sendt);
+        emit signal_sendMsg(map);
 
-            if(curt - sendt > 2000){
 
-                emit signal_destroyConnect();
-            }
-        }else {
 
-            qint64 sendt = QDateTime::currentMSecsSinceEpoch();
-            map.insert("sendTime",sendt);
-            emit signal_sendMsg(map);
-            //listMsg.append(map);
-        }
+        // }
+        listMsg.append(map);
+
     }else{
         sendTimer.stop();
     }
+}
+
+void DataModel::funUpdateCurCalendarDate(QString datetime){
+
+    curCalendarDate = datetime;
+
+    qDebug()<<"funUpdateCurCalendarDate "<<datetime;
+
+    QString curDate = QDate::currentDate().toString("yyyyMMdd");
+
+    //同一天的数据则不进行刷新，会在列表中添加完后在进行写文件
+//    if(!isFirst && curDate.compare(curCalendarDate)==0)
+//        return;
+
+    if(mdid == "")
+        return;
+
+    //不是同一天则移除原有数据,刷新新的列表
+    removeAll();
+    QString curDir = QDir::currentPath();
+    QString logAbsolutePath = curDir+"/Face import/"+mdid+"/Log/"+curCalendarDate+".log";
+
+    qDebug()<<"logAbsolutePath  "<<logAbsolutePath;
+    QFile file(logAbsolutePath);
+    //每次读取都是往0位置插入值
+    if(file.open(QIODevice::ReadOnly)){
+        QTextStream in(&file);
+        QString warnStr = in.readLine();
+
+        while (!warnStr.isNull()) {
+            QStringList strlist = warnStr.split("***");
+            qDebug()<<"strlist:"<<strlist;
+            if(strlist.size() != 4){
+                DebugLog::getInstance()->writeLog("读取人脸日志数据异常 "+strlist.size());
+                break;
+            }
+
+            QString absolutepath = strlist[0];
+            QString name = strlist[1];
+            QString number = strlist[2];
+            QString datetime = strlist[3];
+
+
+            m_listData.insert(0,new DataModelData(curSelect,"file:///"+absolutepath,number,datetime,name));
+            warnStr = in.readLine();
+        }
+
+        if(m_listData.size() >0){
+            beginInsertRows(QModelIndex(),0,m_listData.size()-1);
+            endInsertRows();
+        }
+
+    }else {
+        qDebug()<<"日志文件打开失败";
+    }
+
+
 }
 
 void DataModel::slot_importCallback(QVariantMap map)
@@ -272,7 +466,8 @@ void DataModel::slot_importCallback(QVariantMap map)
     QString cmd = map.value("cmd").toString();
     QString msgid = map.value("msgid").toString();
     QString stateCode = map.value("stateCode").toString();
-
+    QVariantMap tmpInfoMap = removeAlreadySend(cmd,msgid);
+    qDebug()<<"slot_importCallback1:"<<tmpInfoMap;
     if(cmd.compare("connect") == 0){
 
         if(map.value("state").toBool())
@@ -281,61 +476,198 @@ void DataModel::slot_importCallback(QVariantMap map)
             isConnected = false;
     }else if(cmd.compare("addface") == 0){
 
-        QVariantMap imginfomap = removeAlreadySend(cmd,msgid);
+        if(tmpInfoMap.contains("importType")){
 
-        if(msgid.contains("batch:") || msgid.contains("single:")){
+            QString importType = tmpInfoMap.value("importType").toString();
+            QString filePath = tmpInfoMap.value("filePath").toString();
+            QString seq = tmpInfoMap.value("seq").toString();
+            QString name = tmpInfoMap.value("name").toString();
 
-            QString filepath = msgid.replace("batch:","");
+            bool isImportSucc = false;
+            bool isBatchImport = false;
 
-            if(stateCode.compare("200")==0){
+            if(importType.compare("single") == 0)
+                isBatchImport = false;
 
-                QString filePath = imginfomap.value("filePath").toString();
-                QString seq = imginfomap.value("seq").toString();
-                QString name = imginfomap.value("name").toString();
-                QString time = QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss");
-                DataModelData *modedata = new DataModelData(curSelect,filepath,seq,time,name);
-                m_listData.append(modedata);
+            if(importType.compare("batch") == 0)
+                isBatchImport = true;
 
-                if(msgid.contains("batch:")){
 
-                    if(stateCode.compare("200")==0)
-                        emit signal_batchAdd(true);
-                    else
-                        emit signal_batchAdd(false);
+            if(stateCode.compare("200") == 0)
+                isImportSucc = true;
+            else
+                isImportSucc = false;
 
-                }
-
-                if(msgid.contains("single:")){
-                    emit signal_singleAdd(true);
-                }
-
-            }else {
-
-                if(msgid.contains("batch:")){
-
-                    if(stateCode.compare("200")==0)
-                        emit signal_batchAdd(true);
-                    else
-                        emit signal_batchAdd(false);
-
-                }
-                if(msgid.contains("single:")){
-                    emit signal_singleAdd(false);
-                }
-
-            }
-
+            addInfoInList(isBatchImport,isImportSucc,name,seq,filePath);
         }
+    }else if(cmd.compare("delface") == 0){
 
+        int index = tmpInfoMap.value("index").toInt();
+        removeIndex(index);
 
-        return;
+    }else if(cmd.compare("modifyface") == 0){
+
+        int index =  tmpInfoMap.value("index").toInt();
+        QString name = tmpInfoMap.value("name").toString();
+        QString number = tmpInfoMap.value("seq").toString();
+
+        reviseIndex(index,name,number);
+
     }
-
-    removeAlreadySend(cmd,msgid);
 
 }
 
 
+void DataModel::addInfoInList(bool isBatch,bool isSucc,QString name,QString number,QString filePath)
+{
+
+    if(isSucc){
+
+        QString desFilePath;
+
+        QString desPath = filePath;
+
+        QString newname = "";
+        if(isBatch){
+
+            emit signal_batchAdd(true);
+
+        }else {//单个导入的图片修改文件名
+            newname = name+"_"+number+".jpeg";
+            emit signal_singleAdd(true);
+
+        }
+
+        desPath = transferImportFile(isSucc,filePath,newname);
+
+
+        qDebug()<<"addInfoInList:"<<desPath;
+
+        writeLogInfo(desPath,name,number,QDateTime::currentDateTime());
+
+        qDebug()<<"addInfoInList:222"<<desPath;
+    }else{
+
+        QString newname = "";
+        if(isBatch){
+
+            emit signal_batchAdd(false);
+
+        }else{
+            newname = name+"_"+number+".jpeg";
+            emit signal_singleAdd(false);
+
+        }
+
+        transferImportFile(isSucc,filePath,newname);
+    }
+}
+
+void DataModel::writeLogInfo(QString filepath,QString name,QString number,QDateTime importdatetime)
+{
+
+    qDebug()<<"writeLogInfo ";
+
+    qDebug()<<"writeLogInfo "<<filepath;
+    qDebug()<<"writeLogInfo "<<name;
+    qDebug()<<"writeLogInfo "<<number;
+    qDebug()<<"writeLogInfo 1";
+
+    QString curpath = QDir::currentPath();
+
+    QString dirpath = curpath + "/Face import/"+mdid+ "/Log";
+
+
+    QDir dir;
+    if (!dir.exists(dirpath)){
+        bool res = dir.mkpath(dirpath);
+        if(res)
+            DebugLog::getInstance()->writeLog("batch import create new dir is succ");
+        else{
+            DebugLog::getInstance()->writeLog("batch import create new dir is fail");
+            //return "";
+        }
+    }
+
+    qDebug()<<"writeLogInfo 2";
+    QString time = QDate::currentDate().toString("yyyyMMdd");
+
+    QString desfile = dirpath+"/"+time+".log";
+
+    QFile imgInfofile(desfile);
+    if(imgInfofile.open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Append)){
+
+        QString importtime = importdatetime.toString("yyyy-MM-dd hh:mm:ss");
+        QString imgInfoStr = filepath+"***"+name+"***"+number+"***"+importtime;
+        QTextStream out(&imgInfofile);
+        out <<imgInfoStr << "\n";
+        imgInfofile.close();
+
+        QString date = importdatetime.toString("yyyyMMdd");
+        QString time = importdatetime.toString("hh:mm:ss");
+
+
+        qDebug()<<"writeLogInfo 3";
+        //是当前日期才加入列表日志
+        if(curCalendarDate.compare(date)==0){
+            qDebug()<<"writeLogInfo 4";
+            beginInsertRows(QModelIndex(),0,0);
+            DataModelData *modedata = new DataModelData(curSelect,"file:///"+filepath,number,importtime,name);
+            m_listData.insert(0,modedata);
+            endInsertRows();
+            qDebug()<<"writeLogInfo 5";
+        }
+
+    }else {
+        DebugLog::getInstance()->writeLog("writeLogInfo open log file is fail");
+
+    }
+
+}
+
+QString DataModel::transferImportFile(bool isSucc,QString filePath,QString newName)
+{
+
+    QString tmpStr = "";
+
+    if(isSucc)
+        tmpStr = "succ";
+    else
+        tmpStr = "fail";
+
+    QFile file(filePath);
+    QFileInfo fileinfo(filePath);
+    QString desFileDir = QDir::currentPath();
+
+    desFileDir = desFileDir+"/Face import/"+mdid+ "/"+tmpStr;
+
+    qDebug()<<"desFileDir   "<<desFileDir;
+    QDir dir;
+    if (!dir.exists(desFileDir)){
+        bool res = dir.mkpath(desFileDir);
+        if(res)
+            DebugLog::getInstance()->writeLog("batch import create new dir is succ");
+        else{
+            DebugLog::getInstance()->writeLog("batch import create new dir is fail");
+            return "";
+        }
+    }
+    QString desFilePath;
+    if(newName.compare("") == 0)
+        desFilePath = desFileDir + "/"+fileinfo.fileName();
+    else {
+        desFilePath = desFileDir + "/"+newName;
+    }
+    qDebug()<<"desFilePath:"<<desFilePath;
+    if(file.copy(desFilePath)){
+
+
+        //file.remove();
+        return  desFilePath;
+    }
+
+    return "";
+}
 
 
 QString DataModel::createMsgId(QString cmd){
@@ -345,14 +677,16 @@ QString DataModel::createMsgId(QString cmd){
         QMap<QString,QVariant> map = listMsg.at(i);
         QString tmpCmd = map.value("cmd").toString();
         QString msgid = map.value("msgid").toString();
+
         if(cmd.compare(tmpCmd)==0){
             int tmpid = msgid.toInt();
             if(msgId < tmpid){
-                msgId = tmpid+1;
+                msgId = tmpid;
             }
         }
+
     }
-    return QString::number(msgId);
+    return QString::number(msgId+1);
 }
 
 QVariantMap DataModel::removeAlreadySend(QString cmd,QString msgid1){
@@ -373,5 +707,3 @@ QVariantMap DataModel::removeAlreadySend(QString cmd,QString msgid1){
 
     return QVariantMap();
 }
-
-

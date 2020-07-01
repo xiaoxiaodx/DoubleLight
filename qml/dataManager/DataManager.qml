@@ -98,10 +98,6 @@ Rectangle {
 
                 onClicked: {
 
-                    batchImportState.visible = true
-                    batchImportState.test()
-
-                    return
 
                     if(curLanguage===lRussian)
                         askDialog.width = 500
@@ -123,7 +119,7 @@ Rectangle {
                                                                                                                                                                                                                                                                                                                                                curLanguage === lKhmer?"យល់ព្រមលុបចោល?":""
 
                     askDialog.imgSrc = "qrc:/images/ico_warn.png"
-                    askDialog.curType = askDialog.warnInfoMutipleDelete
+                    askDialog.curType = askDialog.faceInfoMutipleDelete
                     askDialog.open();
                 }
                 onReleased: rectBatch.color = "#3B84F6"
@@ -327,7 +323,7 @@ Rectangle {
                         }else{
                             isAllSelect = true;
                         }
-                        datamodel.funSetAllSelect(isAllSelect);
+                        dataModel.funSetAllSelect(isAllSelect);
                     }
                 }
             }
@@ -362,13 +358,12 @@ Rectangle {
                 text: qsTr("姓名")
             }
             Text {
-                id: txtWarnTemp
+                id: txtimporttime
                 anchors.verticalCenter: parent.verticalCenter
                 anchors.left: parent.left
                 anchors.leftMargin: timeHeaderLeftMargin
                 font.pixelSize: fontSize
                 color: "#333333"
-                visible: false
                 font.bold: curLanguage===lKorean
                 text: qsTr("导入时间")
             }
@@ -413,7 +408,7 @@ Rectangle {
 
                             if(!model.isSelect){
                                 isAllSelect = false;
-                                datamodel.funSetInitSelectFalse();
+                                dataModel.funSetInitSelectFalse();
                             }
                         }
                     }
@@ -459,10 +454,41 @@ Rectangle {
 
                 Image {
                     id: imgDelete
+                    width: 16
+                    height: 16
                     anchors.left: parent.left
                     anchors.leftMargin: deleteHeaderLeftMargin
                     anchors.verticalCenter: parent.verticalCenter
                     source: "qrc:/images/delete.png"
+
+                    MouseArea{
+                        anchors.fill: parent
+                        onClicked: {
+
+                            if(curLanguage === lRussian)
+                                askDialog.width = 500
+                            else
+                                askDialog.width = 427
+                            askDialog.height = 176
+                            askDialog.askStr = curLanguage=== lChinese?"确认删除信息吗？":
+                                               curLanguage===lEnglish?"Confirm to delete?":
+                                               curLanguage===lKorean?"삭제 정보를 확인합니까?":
+                                               curLanguage === lItaly?"Cancello L’Informazione?":
+                                               curLanguage === lRussian?"Вы уверены, что хотите удалить информацию?":
+                                               curLanguage === lLithuanian?"Patvirtinti ištrynimą?":
+                                               curLanguage === ltuerqi?"Kapı Bilgileri?":
+                                               curLanguage === ltuerqi1?"Tüm Seçimleri Sil?":
+                                               curLanguage === lputaoya?"Confirme a exclusão?":
+                                               curLanguage === lxibanya?"Confirmar para eliminar?":
+                                               curLanguage === lfayu?"Confirmer la suppression?":
+                                               curLanguage === lniboer?"साँचै मेट्ने हो ?":
+                                               curLanguage === lKhmer?"យល់ព្រមលុបចោល?":""
+
+                            askDialog.imgSrc = "qrc:/images/ico_warn.png"
+                            askDialog.curType = askDialog.faceInfoSingleDelete
+                            askDialog.open();
+                        }
+                    }
                 }
 
                 Rectangle{
@@ -477,10 +503,20 @@ Rectangle {
 
                 Image {
                     id: imgRevise
+                    width: 16
+                    height: 16
                     anchors.left: doRect.right
                     anchors.leftMargin: 10
                     anchors.verticalCenter: parent.verticalCenter
                     source: "qrc:/images/revise.png"
+
+                    MouseArea{
+                        anchors.fill: parent
+                        onClicked: {
+                            popReviseinfo.imgSrc = model.avatarPath
+                            popReviseinfo.open();
+                        }
+                    }
                 }
                 MouseArea{
                     anchors.fill: parent
@@ -504,22 +540,22 @@ Rectangle {
             x:dateRect.x
             y:67
             Component.onCompleted: {
-
                 curDateStr = Qt.formatDate(calendar.getCurrentData(),"yyyyMMdd");
-                //datamodel.funFlushWarnInfo(deviceconfig.getScrennShotPath(),curDateStr);
+                dataModel.funUpdateCurCalendarDate(curDateStr)
             }
+
             onS_dayChange:{
                 curDateStr = value;
-                datamodel.funFlushWarnInfo(deviceconfig.getScrennShotPath(),curDateStr);
+                dataModel.funUpdateCurCalendarDate(curDateStr)
             }
 
-            onS_dayChange1: txtDate.text = value
+            onS_dayChange1: {
 
-            //onS_mouthChange:getRecordInfo(1,value)
+                txtDate.text = value
+            }
+
             onS_yearChange: ;
-            // Component.onCompleted:getRecordInfo(2, Qt.formatDate(calendar.getCurrentData(),"yyyyMMdd000000"))
         }
-
 
         SelectTime{
             id:selecttime
@@ -531,7 +567,7 @@ Rectangle {
             onS_ensure: {
                 var timeStr = timeh+":"+timem+":"+times
                 txttime.text = timeStr
-                var curIndex = datamodel.funFindIndex(timeh,timem,times)
+                var curIndex = dataModel.funFindIndex(timeh,timem,times)
                 console.debug("curIndex "+curIndex)
 
                 warnList.positionViewAtIndex(curIndex,ListView.Beginning)
@@ -554,11 +590,27 @@ Rectangle {
         height:334
     }
 
+    ReviseFaceInfo{
+
+        id:popReviseinfo
+        width: 465
+        height:334
+
+        onS_reviseFaceinfo:{
+            dataModel.funSendReviseRequest(warnList.currentIndex,name,number)
+        }
+    }
+
     BatchImport{
         id:popBatchImport
         width: 465
         height:334
 
+        onS_startImport:{
+
+            batchImportState.visible = true
+            batchImportState.startImport();
+        }
     }
 
     
@@ -627,7 +679,7 @@ Rectangle {
 
         Timer{
             id:poptimer
-            interval: 600;
+            interval: 800;
             repeat: false
             onTriggered: {
                 poptimer.stop();
@@ -639,11 +691,11 @@ Rectangle {
     Connections{
         target: askDialog
         onS_CurTypeMsg:{
-            if(askDialog.warnInfoMutipleDelete === type){
-                datamodel.funDeleteSelect();
+            if(askDialog.faceInfoMutipleDelete === type){
+                dataModel.funSendDeleteSelectRequest();
                 isAllSelect = false;
-            }else if(askDialog.warnInfoSingleDelete === type)
-                datamodel.funDeleteIndex(warnList.currentIndex)
+            }else if(askDialog.faceInfoSingleDelete === type)
+                dataModel.funSendDeleteRequest(warnList.currentIndex)
         }
     }
 
@@ -654,6 +706,8 @@ Rectangle {
     Connections{
         target: dataModel
         onSignal_singleAdd:{
+
+            console.debug(">>>  onSignal_singleAdd   <<<"+isSucc)
 
             if(isSucc){
                 popimportimg.msgImg = "qrc:/images/connect_succ.png"
@@ -675,10 +729,30 @@ Rectangle {
         }
 
         onSignal_batchAdd:{
-            if(isSucc)
+
+             console.debug(">>>  onSignal_batchAdd   <<<"+isSucc)
+
+            if(isSucc){
+
                 batchImportState.importSuccCount ++;
-            else
+
+            }else{
                 batchImportState.importFailCount ++;
+
+            }
+
+            if(batchImportState.importSuccCount >= batchImportState.importAmount){
+
+                batchImportState.endImport(true)
+                return
+
+            }
+
+            if(batchImportState.importSuccCount + batchImportState.importFailCount >= batchImportState.importAmount){
+
+                batchImportState.endImport(false)
+
+            }
         }
 
     }

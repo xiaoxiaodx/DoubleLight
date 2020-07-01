@@ -4,8 +4,8 @@ Rectangle{
     id:rectfullScreen
 
 
-    property string importSuccStr: ""
-    property string importFailStr: ""
+//    property string importSuccStr: ""
+//    property string importFailStr: ""
 
 
 
@@ -97,7 +97,7 @@ Rectangle{
                     anchors.horizontalCenter: parent.horizontalCenter
                     anchors.top: txt1.bottom
                     anchors.topMargin: 10
-                    text: importSuccStr
+                    text: "成功:"+importSuccCount//importSuccStr
                 }
                 Rectangle{
                     id:rectbtn
@@ -117,12 +117,12 @@ Rectangle{
                         anchors.verticalCenter: parent.verticalCenter
                         text: qsTr("完成")
                     }
+
                     MouseArea{
                         anchors.fill: parent
                         onClicked:s_finished();
                     }
                 }
-
             }
         }
 
@@ -156,7 +156,7 @@ Rectangle{
                     anchors.horizontalCenter: parent.horizontalCenter
                     anchors.top: txt1.bottom
                     anchors.topMargin: 10
-                    text: importFailStr
+                    text: "成功:"+importSuccCount+"  失败:"+importFailCount//importFailStr
                 }
 
                 Rectangle{
@@ -253,6 +253,19 @@ Rectangle{
 
     }
 
+
+    function startImport(){
+        loaderToast.sourceComponent = cmpImporting
+    }
+
+    function endImport(isFullSucc){
+
+
+        if(isFullSucc)
+            loaderToast.sourceComponent = cmpSucc
+        else
+            loaderToast.sourceComponent = cmpFail
+    }
 
     function test(){
         console.debug("***test***")

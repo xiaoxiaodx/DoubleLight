@@ -79,8 +79,8 @@ void FaceImport::SendRequestMsg(QJsonObject obj){
             +QString::number(strJson.length())+"\r\nPragma: no-cache\r\nUser-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/66.0.3359.181 Safari/537.36\r\n"
             +"Content-Type: application/json\r\nAccept: */*\r\nAccept-Encoding: gzip, deflate, br\r\nAccept-Language: zh-CN,zh;q=0.9\r\n\r\n";
 
-    qDebug() <<"http send msg :"<<QString::number(strJson.length());
-    qDebug() <<"http send msg1 :"<<httpSendmsg1;
+    //qDebug() <<"http send msg :"<<QString::number(strJson.length());
+    qDebug() <<"http send msg :"<<httpSendmsg;
 
     if(g_tcpsocket != nullptr){
         qint64 sendlen = g_tcpsocket->write(httpSendmsg.toStdString().c_str(), httpSendmsg.length());
@@ -114,9 +114,8 @@ QJsonObject FaceImport::makeJsonData(QVariantMap map){
         QFile file(imgFileAbsolute);
         if(file.open(QIODevice::ReadOnly)){
 
-            objMain.insert("msgid",map.value("msgid").toString());
             objData.insert("name",map.value("name").toString());
-            objData.insert("seq",map.value("seq").toString());
+            objData.insert("seq",map.value("seq").toInt());
             QByteArray arr = file.readAll();
             QString facedata = arr.toBase64();
             objData.insert("facedata",facedata);
@@ -127,12 +126,12 @@ QJsonObject FaceImport::makeJsonData(QVariantMap map){
     }else if(cmd.compare("delface") == 0){
 
         objData.insert("name",map.value("name").toString());
-        objData.insert("seq",map.value("seq").toString());
+        objData.insert("seq",map.value("seq").toInt());
 
     }else if(cmd.compare("modifyface") == 0){
 
         objData.insert("name",map.value("name").toString());
-        objData.insert("seq",map.value("seq").toString());
+        objData.insert("seq",map.value("seq").toInt());
 
     }
 
@@ -217,12 +216,9 @@ void FaceImport::slot_ReadMsg() {
                     qDebug()<<"接收的命令:"<<cmd;
                     QMap<QString,QVariant> callbackMap;
                     callbackMap.insert("cmd",cmd);
+                    callbackMap.insert("msgid",msgid);
                     callbackMap.insert("stateCode",stateCode);
-                    if("addface" == cmd) {
 
-                        callbackMap.insert("filepath",msgid);
-
-                    }
 
 
                     emit signal_importCallback(callbackMap);

@@ -171,7 +171,7 @@ Popup {
                     //color: "transparent"
                     height: the_calendar.height/8
                     Label {
-                        text: getWeeklyStr(styleData.dayOfWeek+1)//control.__locale.dayName(styleData.dayOfWeek, control.dayOfWeekFormat)
+                        text: getWeeklyStr(styleData.dayOfWeek)//control.__locale.dayName(styleData.dayOfWeek, control.dayOfWeekFormat)
                         anchors.centerIn: parent
                         color:Qt.rgba(0,0,0,0.65)
                         font.pixelSize: 12
@@ -440,6 +440,10 @@ Popup {
     function getWeeklyStr(week){
 
         // console.debug("week:"+week);
+
+        if(week === 0)
+            week = 7
+
         switch(curLanguage){
         case lChinese:
             return getChineseWeekly(week);
@@ -455,6 +459,7 @@ Popup {
             return getLithuanianWeekly(week);
         case lniboer:
             return getNiboerWeekly(week);
+
         }
 
     }

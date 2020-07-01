@@ -741,7 +741,7 @@ void TcpWorker::parseShiGanRgb2(QByteArray arr,int arrlen,int resw,int resh)
 #include <QFile>
 void TcpWorker::parseShiGanRgb3(QByteArray arr,int arrlen,int resw,int resh)
 {
-    qDebug()<<" resw    "<<resw<<"  resh:"<<resh <<arrlen;
+    //qDebug()<<" resw    "<<resw<<"  resh:"<<resh <<arrlen;
     if(pNetMsgTmp == nullptr)
         pNetMsgTmp = new unsigned char[resw * resh* 2];
 

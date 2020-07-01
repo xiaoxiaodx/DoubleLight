@@ -161,8 +161,8 @@ void WarnModel::funDeleteIndex(int index)
         }
         file.close();
     }
-
 }
+
 void WarnModel::funFlushWarnInfo(QString capturePath,QString logFileName)//这里文件名就是日期"yyMMdd"
 {
     qDebug()<<"logPath:"<<capturePath<<"    logFileName"<<logFileName;
@@ -188,13 +188,20 @@ void WarnModel::funFlushWarnInfo(QString capturePath,QString logFileName)//这�
         while (!warnStr.isNull()) {
             QStringList strlist = warnStr.split(" ");
             //qDebug()<<"strlist:"<<strlist;
-            if(strlist.size() != 3){
+            if(strlist.size() != 6){
                 DebugLog::getInstance()->writeLog("读取警报日志数据异常"+strlist.size());
                 break;
             }
+
+               //  QString imgInfoStr = imgAbsolutePath1+" "+tempStr+" "+name+" "+number+" "+QString::number(alarmtype)+" "+curDatetimeStr+".jpeg";
+
             QString absolutepath = strlist[0];
-            QString fileName = strlist[2];
+            QString fileName = strlist[5];
             QString temp = strlist[1];
+            QString name = strlist[2];
+            QString number = strlist[3];
+            QString type = strlist[4];
+
             QString datetime = fileName.remove(".jpeg");
             QStringList datetStr = datetime.split("_");
             if(datetStr.size() != 2){
@@ -204,7 +211,7 @@ void WarnModel::funFlushWarnInfo(QString capturePath,QString logFileName)//这�
             QString date = datetStr[0].mid(0,4)+"-"+datetStr[0].mid(4,2)+"-"+datetStr[0].mid(6,2);
             QString time = datetStr[1].mid(0,2)+":"+datetStr[1].mid(2,2)+":"+datetStr[1].mid(4,2);
 
-            m_listWarn.insert(0,new WarnModelData(false,date+" "+time,temp,fileName,absolutepath));
+            m_listWarn.insert(0,new WarnModelData(false,date+" "+time,temp,fileName,absolutepath,name,number,type=="82"?"0":"1"));
             warnStr = in.readLine();
         }
         if(m_listWarn.size() >0){
@@ -267,6 +274,7 @@ void WarnModel::funSetInitSelectFalse()
 {
     curSelect = false;
 }
+
 void WarnModel::funSetAllSelect(bool isSelect)
 {
     curSelect = isSelect;
@@ -276,6 +284,8 @@ void WarnModel::funSetAllSelect(bool isSelect)
     }
     endResetModel();
 }
+
+
 
 void WarnModel::funDeleteSelect(){
     beginResetModel();
@@ -396,7 +406,6 @@ void WarnModel::funProcessPushAlarm2(QString path,QVariantMap map){
         else
             DebugLog::getInstance()->writeLog("slot_screenShot create new dir is fail");
     }
-
     QString imgAbsolutePath1 = path+"/image/"+curDatetimeStr+".jpeg";
 
     QFile file1(imgAbsolutePath1);
@@ -426,7 +435,7 @@ void WarnModel::funProcessPushAlarm2(QString path,QVariantMap map){
         QFile imgInfofile(warnLogAbsoluteFileName);
         if(imgInfofile.open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Append)){
             QString tempStr = QString::number(warnTemp,'f',2);
-            QString imgInfoStr = imgAbsolutePath1+" "+tempStr+" "+curDatetimeStr+".jpeg";
+            QString imgInfoStr = imgAbsolutePath1+" "+tempStr+" "+name+" "+number+" "+QString::number(alarmtype)+" "+curDatetimeStr+".jpeg";
             QTextStream out(&imgInfofile);
             out <<imgInfoStr << "\n";
             imgInfofile.close();
@@ -437,7 +446,7 @@ void WarnModel::funProcessPushAlarm2(QString path,QVariantMap map){
             //是当前日期才加入列表日志
             if(curDate.compare(datestr)==0){
                 beginInsertRows(QModelIndex(),0,0);
-                m_listWarn.insert(0,new WarnModelData(curSelect,date+" "+time,tempStr,curDatetimeStr,imgAbsolutePath1));
+                m_listWarn.insert(0,new WarnModelData(curSelect,date+" "+time,tempStr,curDatetimeStr,imgAbsolutePath1,name,number,alarmtype == 82?"0":"1"));
                 endInsertRows();
             }
 
@@ -502,7 +511,7 @@ void WarnModel::funProcessPushAlarm1(QString path,QVariantMap map){
         qDebug()<<"funProcessPushAlarm******** file open:"+imgAbsolutePath;
         file.close();
         //存完文件 将消息发给qml
-        emit signal_sendWarnMsg(alarmtype,imgAbsolutePath,curDateTime.toString("yyyy-MM-dd hh:mm:ss"),warnTemp);
+      //  emit signal_sendWarnMsg(alarmtype,imgAbsolutePath,curDateTime.toString("yyyy-MM-dd hh:mm:ss"),warnTemp,name,);
     }else {
         DebugLog::getInstance()->writeLog("slot_screenShot open log file is fail");
         return ;
@@ -563,7 +572,7 @@ void WarnModel::funProcessPushAlarm(QString path,QVariantMap map)
         qDebug()<<"funProcessPushAlarm******** file open:"+imgAbsolutePath;
         file.close();
 
-        emit signal_sendWarnMsg(alarmtype,imgAbsolutePath,curDateTime.toString("yyyy-MM-dd hh:mm:ss"),warnTemp);
+        //emit signal_sendWarnMsg(alarmtype,imgAbsolutePath,curDateTime.toString("yyyy-MM-dd hh:mm:ss"),warnTemp);
         //        if(alarmtype != 80){//不是超温告警  不记录log信息
         //            return;
         //        }
@@ -601,7 +610,7 @@ void WarnModel::funProcessPushAlarm(QString path,QVariantMap map)
             //是当前日期才加入列表日志
             if(curDate.compare(datestr)==0){
                 beginInsertRows(QModelIndex(),0,0);
-                m_listWarn.insert(0,new WarnModelData(curSelect,date+" "+time,tempStr,curDatetimeStr,imgAbsolutePath));
+                //m_listWarn.insert(0,new WarnModelData(curSelect,date+" "+time,tempStr,curDatetimeStr,imgAbsolutePath));
                 endInsertRows();
             }
 
@@ -691,7 +700,7 @@ bool WarnModel::funScreenShoot(QString path,QQuickWindow *quic,int capx,int capy
             //是当前日期才加入列表日志
             if(curDate.compare(datestr)==0){
                 beginInsertRows(QModelIndex(),0,0);
-                m_listWarn.insert(0,new WarnModelData(curSelect,date+" "+time,tempStr,curDatetimeStr,imgAbsolutePath));
+               // m_listWarn.insert(0,new WarnModelData(curSelect,date+" "+time,tempStr,curDatetimeStr,imgAbsolutePath));
                 endInsertRows();
             }
 
@@ -791,7 +800,7 @@ bool WarnModel::funScreenShoot1(QString path,QQuickWindow *quic,int capx,int cap
             //是当前日期才加入列表日志
             if(curDate.compare(datestr)==0){
                 beginInsertRows(QModelIndex(),0,0);
-                m_listWarn.insert(0,new WarnModelData(curSelect,date+" "+time,tempStr,curDatetimeStr,imgAbsolutePath));
+               // m_listWarn.insert(0,new WarnModelData(curSelect,date+" "+time,tempStr,curDatetimeStr,imgAbsolutePath));
                 endInsertRows();
             }
 

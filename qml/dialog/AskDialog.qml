@@ -30,6 +30,8 @@ Popup {
     property int warnInfoMutipleDelete: 2
     property int fileupdate: 3
 
+    property int faceInfoSingleDelete: 4
+    property int faceInfoMutipleDelete: 5
     Rectangle {
         id: rect
         anchors.fill: parent

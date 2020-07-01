@@ -14,14 +14,14 @@ Window {
           Qt.Window
     visible: true
 
-    width:1400
+    width:1500
     height:900
 
     property bool isLocker: false
     visibility : "AutomaticVisibility"
 
     property int mouseAdjustWidth: 10
-    property int minW: 1400
+    property int minW: 1500
     property int minH: 900
 
     property string toastStr: ""
@@ -107,6 +107,9 @@ Window {
             case 82:
                 pushwarnmodel.numberOfNoMaskPeople++
                 break;
+            case 83:
+                pushwarnmodel.numberOfUnrecognized++
+                break;
             }
 
             pushwarnmodel.numberOfPeople ++;
@@ -120,6 +123,8 @@ Window {
         property int numberOfNormalPeople: 0
         property int numberOfAbnormalTemperaturePeople: 0
         property int numberOfNoMaskPeople: 0
+        property int numberOfUnrecognized: 0
+
     }
     MainContent{
         id:maincontent

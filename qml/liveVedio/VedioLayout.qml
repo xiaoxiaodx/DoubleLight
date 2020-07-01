@@ -13,6 +13,8 @@ Rectangle {
 
     property int lockPreIndex: -1
 
+
+    property string animalimgQrc: ""
     RowLayout{
 
         id: rowlayout
@@ -143,6 +145,7 @@ Rectangle {
                     anchors.leftMargin: 12
                     anchors.verticalCenter: parent.verticalCenter
                 }
+
                 Text {
                     id: txtnumberOfAbnormalTemperaturePeople
                     text: pushwarnmodel.numberOfAbnormalTemperaturePeople
@@ -178,7 +181,35 @@ Rectangle {
                     anchors.leftMargin: 2
                     anchors.verticalCenter: parent.verticalCenter
                     font.pixelSize: 12
-                    color: "#EF9D36"
+                    color: "#FA3F00"
+                }
+            }
+
+            Rectangle{
+                id:rectunrecognized
+                width: txtnumberOfUnrecognized.width + 24 +name4.width
+                height: parent.height - 10
+                anchors.verticalCenter: parent.verticalCenter
+                anchors.left: rectnomask.right
+                anchors.leftMargin: 10
+                color: "#cc193548"
+                Text {
+                    id: name4
+                    text: qsTr("未识别：")
+                    color:"white"
+                    font.pixelSize: 12
+                    anchors.left: parent.left
+                    anchors.leftMargin: 12
+                    anchors.verticalCenter: parent.verticalCenter
+                }
+                Text {
+                    id: txtnumberOfUnrecognized
+                    text: pushwarnmodel.numberOfUnrecognized
+                    anchors.left: name4.right
+                    anchors.leftMargin: 2
+                    anchors.verticalCenter: parent.verticalCenter
+                    font.pixelSize: 12
+                    color: "#FA3F00"
                 }
             }
         }
@@ -210,7 +241,7 @@ Rectangle {
                         //source: "file:///"+"F:/work/doubleLight/build-DoubleLight-Desktop_Qt_5_12_2_MinGW_64_bit-Release/image/111.png"
                     }
                     Rectangle{
-                        color: "#cc193548"
+                        color: "#193548"
                         width: parent.width/2
                         height: parent.height
                         anchors.left: warnimg.right
@@ -224,15 +255,16 @@ Rectangle {
                             anchors.leftMargin: 10
                             anchors.top: parent.top
                             anchors.topMargin: 11
-                            source: ""
+                            source: "qrc:/images/face_warn.png"
                         }
+
                         Text {
                             id:txttemp
-                            anchors.left: imgTemp.left
+                            anchors.left: imgTemp.right
                             anchors.leftMargin: 6
                             anchors.verticalCenter: imgTemp.verticalCenter
                             font.pixelSize: 10
-                            color: temptype===80?"#FA3F00":(temptype===81?"#179B0E":(temptype===82?"#EF9D36":"#FFFFFF"))
+                            color: temptype===80?"#FA3F00":"#FFFFFF"
                             text: warnTemp
                         }
 
@@ -244,17 +276,17 @@ Rectangle {
                             anchors.leftMargin: 10
                             anchors.top: imgTemp.bottom
                             anchors.topMargin: 8
-                            source: ""
+                            source: "qrc:/images/face_mask.png"
                         }
 
                         Text {
                             id:txtWarnType
-                            anchors.left: imgWarnType.left
+                            anchors.left: imgWarnType.right
                             anchors.leftMargin: 6
                             anchors.verticalCenter: imgWarnType.verticalCenter
                             font.pixelSize: 10
                             color: temptype===82?"#FA3F00":"#FFFFFF"
-                            text: temptype===82?"不带口罩":"戴口罩"
+                            text: temptype===83?"???":(temptype===82?"不带口罩":"戴口罩")
                         }
 
                         Image {
@@ -265,16 +297,17 @@ Rectangle {
                             anchors.leftMargin: 10
                             anchors.top: imgWarnType.bottom
                             anchors.topMargin: 8
-                            source: ""
+                            source: "qrc:/images/face_name.png"
                         }
+
                         Text {
                             id:txtName
-                            anchors.left: imgName.left
+                            anchors.left: imgName.right
                             anchors.leftMargin: 6
                             anchors.verticalCenter: imgName.verticalCenter
                             font.pixelSize: 10
-                            color: temptype===82?"#FA3F00":"#FFFFFF"
-                            text: name
+                            color: temptype===83?"#FA3F00":"#FFFFFF"
+                            text: temptype===83?"???":name
                         }
 
                         Image {
@@ -283,24 +316,25 @@ Rectangle {
                             height: 12
                             anchors.left: parent.left
                             anchors.leftMargin: 10
-                            anchors.top: imgWarnType.bottom
+                            anchors.top: imgName.bottom
                             anchors.topMargin: 8
-                            source: ""
+                            source: "qrc:/images/face_number.png"
                         }
+
                         Text {
                             id:txtNumber
-                            anchors.left: imgName.left
+                            anchors.left: imgNumber.right
                             anchors.leftMargin: 6
-                            anchors.verticalCenter: imgName.verticalCenter
+                            anchors.verticalCenter: imgNumber.verticalCenter
                             font.pixelSize: 10
-                            color: temptype===82?"#FA3F00":"#FFFFFF"
-                            text: number
+                            color: temptype===83?"#FA3F00":"#FFFFFF"
+                            text: temptype===83?"???":number
                         }
 
                         Text {
                             anchors.horizontalCenter: parent.horizontalCenter
-                            anchors.top: txttemp.bottom
-                            anchors.topMargin: 3
+                            anchors.top: txtNumber.bottom
+                            anchors.topMargin: 10
                             font.pixelSize: 8
                             color: "#ffffff"
                             text: warnTime
@@ -314,36 +348,73 @@ Rectangle {
     }
 
 
-    Image{
-        id:imgWar
-        width: 58
-        height: 58
+    //    Image{
+    //        id:imgWar
+    //        width: 58
+    //        height: 58
+    //        anchors.right: parent.right
+    //        anchors.rightMargin: 13
+    //        anchors.top: parent.top
+    //        anchors.topMargin: 68
+    //        source: "qrc:/images/warn_ico.png"
+    //        z:2
+    //        opacity: 0
+    //        SequentialAnimation {
+    //            id:animationWarnOpacity
+    //            //loops: Animation.Infinite
+    //            alwaysRunToEnd: false
+    //            NumberAnimation { target: imgWar; property: "opacity"; to: 1; duration: 200 }
+    //            NumberAnimation { target: imgWar; property: "opacity"; to: 1; duration: 500 }
+    //            NumberAnimation { target: imgWar; property: "opacity"; to: 0; duration: 200 }
+    //        }
+
+    //        function startAnimation(){
+    //            animationWarnOpacity.start();
+    //        }
+
+    //        function stopAnimation(){
+    //            animationWarnOpacity.stop();
+    //            imgWar.opacity = 0;
+    //        }
+    //    }
+
+    Loader{
+        id:loaderImgAnimal
+        z:1
         anchors.right: parent.right
         anchors.rightMargin: 13
         anchors.top: parent.top
         anchors.topMargin: 68
-        source: "qrc:/images/warn_ico.png"
-        z:2
-        opacity: 0
-        SequentialAnimation {
-            id:animationWarnOpacity
-            //loops: Animation.Infinite
-            alwaysRunToEnd: false
-            NumberAnimation { target: imgWar; property: "opacity"; to: 1; duration: 200 }
-            NumberAnimation { target: imgWar; property: "opacity"; to: 1; duration: 500 }
-            NumberAnimation { target: imgWar; property: "opacity"; to: 0; duration: 200 }
-        }
+        sourceComponent: null
+    }
 
-        function startAnimation(){
-            animationWarnOpacity.start();
-        }
-
-        function stopAnimation(){
-            animationWarnOpacity.stop();
-            imgWar.opacity = 0;
+    Component {
+        id: cptimgAnimal
+        Image{
+          //  id:imgWar
+            width: 58
+            height: 58
+            anchors.right: parent.right
+            anchors.rightMargin: 13
+            anchors.top: parent.top
+            anchors.topMargin: 0
+            source: animalimgQrc//"qrc:/images/warn_ico.png"
+            z:2
+            opacity: 0
+            SequentialAnimation on opacity {
+                NumberAnimation {to: 1; easing.type: Easing.InQuad; duration: 300}
+                PauseAnimation { duration: 200}
+                NumberAnimation { to: 0; easing.type: Easing.InQuad; duration: 300}
+            }
         }
     }
 
+
+    function showAnimalImg(qrcStr){
+        animalimgQrc = qrcStr;
+        loaderImgAnimal.sourceComponent = null;
+        loaderImgAnimal.sourceComponent = cptimgAnimal
+    }
 
     Image{
         id:imgRecord

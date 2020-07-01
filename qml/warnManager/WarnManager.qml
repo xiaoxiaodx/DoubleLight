@@ -8,7 +8,7 @@ Rectangle {
     property int checkedHeaderLeftMargin: 20
     property int warnTimeHeaderLeftMargin: 44
     property int numberingHeaderLeftMargin: 282//编号
-    property int nameHeaderLeftMargin: 430//编号
+    property int nameHeaderLeftMargin: 430//姓名
     property int warnTempHeaderLeftMargin: 578//温度
     property int maskRecognitionHeaderLeftMargin: 732//口罩识别
      property int warnImgHeaderLeftMargin: 908
@@ -373,6 +373,26 @@ Rectangle {
                     font.pixelSize: 14
                     text: model.warnTime;
                 }
+
+
+                Text {
+                    id: txtname
+                    anchors.verticalCenter: parent.verticalCenter
+                    anchors.left: parent.left
+                    anchors.leftMargin: nameHeaderLeftMargin
+                    font.pixelSize: fontSize
+                    text: model.name;
+                }
+
+                Text {
+                    id: txtnumber
+                    anchors.verticalCenter: parent.verticalCenter
+                    anchors.left: parent.left
+                    anchors.leftMargin: numberingHeaderLeftMargin
+                    font.pixelSize: fontSize
+                    text: model.numbering;
+                }
+
                 Text {
                     id: warnTemp
                     anchors.verticalCenter: parent.verticalCenter
@@ -382,12 +402,21 @@ Rectangle {
                     text: model.warnTemp;
                 }
 
+                Text {
+                    id: textmask
+                    anchors.verticalCenter: parent.verticalCenter
+                    anchors.left: parent.left
+                    anchors.leftMargin: maskRecognitionHeaderLeftMargin
+                    font.pixelSize: fontSize
+                    text: model.maskRecognition==="1"?"戴口罩":"不带口罩";
+                }
+
                 Image {
                     id: captureImg
                     width: 13
                     height: 14
                     anchors.left: parent.left
-                    anchors.leftMargin: warnTempHeaderLeftMargin//warnImgHeaderLeftMargin
+                    anchors.leftMargin: warnImgHeaderLeftMargin//warnImgHeaderLeftMargin
                     anchors.verticalCenter: parent.verticalCenter
                     source: index === warnList.currentIndex?"qrc:/images/capture_p.png":"qrc:/images/capture.png"
                 }

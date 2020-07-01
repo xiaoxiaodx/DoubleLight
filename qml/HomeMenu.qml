@@ -61,7 +61,7 @@ Rectangle {
             mflagColor:"white"
             textColor: "white"
             textSelectColor:"white"
-            txtLeftMargin:7
+            txtLeftMargin:2
             textSize:18
             Component.onCompleted: {
 

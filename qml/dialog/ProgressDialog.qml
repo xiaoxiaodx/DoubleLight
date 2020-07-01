@@ -89,7 +89,7 @@ Popup {
             txttitle.text = "Pls cihaz yükseltmesini bekleyin"
             break;
         case lxibanya:
-            txtCancel.text = "Por favor espere la actualización del dispositivo"
+            txttitle.text = "Por favor espere la actualización del dispositivo"
             break;
         case lfayu:
             txttitle.text = "Veuillez attendre la mise à niveau de l'appareil"

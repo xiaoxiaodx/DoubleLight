@@ -405,6 +405,7 @@ int CHttpApiDevice::HttpMsgCallBack(char * pData) {
 
             }else if("getdeviceinfo" == cmd){
                 callbackMap.insert("softwarever",object.value("data").toObject().value("softwarever").toString());
+                callbackMap.insert("uuid",object.value("data").toObject().value("uuid").toString());
             }
 
             DebugLog::getInstance()->writeLog("callbackMap:"+callbackMap.value("cmd").toString());

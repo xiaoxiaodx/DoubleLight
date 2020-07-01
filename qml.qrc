@@ -148,5 +148,14 @@
         <file>images/pictrueAdd.png</file>
         <file>images/pictrueAdd_P.png</file>
         <file>images/importfloder.png</file>
+        <file>images/face_mask.png</file>
+        <file>images/face_mask_t.png</file>
+        <file>images/face_name.png</file>
+        <file>images/face_name_t.png</file>
+        <file>images/face_number.png</file>
+        <file>images/face_number_t.png</file>
+        <file>images/face_warn.png</file>
+        <file>images/face_warn_t.png</file>
+        <file>qml/dataManager/ReviseFaceInfo.qml</file>
     </qresource>
 </RCC>

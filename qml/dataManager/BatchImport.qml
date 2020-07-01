@@ -19,8 +19,10 @@ Popup {
     dim:false
     property int curType: -1;
 
-    signal s_showToast(var str1)
-    signal s_CurTypeMsg(var type);
+    signal s_startImport()
+
+
+
 
 
     Rectangle {
@@ -169,6 +171,8 @@ Popup {
                     
 
                     dataModel.funImportBatch(inputUpdatePath.text);
+
+                        s_startImport();
                     root.close()
                     
                 }

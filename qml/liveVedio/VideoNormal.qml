@@ -81,7 +81,7 @@ Rectangle {
         onSignal_connected:{
             deviceconfig.setTcpip(ip)
             homeMenu.setDeviceConnectState(istrue)
-            dataModel.funSetIp(ip);
+            //dataModel.funSetIp(ip);
 
         }
 //                MouseArea{
@@ -487,12 +487,14 @@ Rectangle {
                 warnmanger.funProcessPushAlarm(smap);
                 //开启动画
                 if(smap.alarmtype === 80){
-                    imgWar.source = "qrc:/images/warn_ico.png"
-                    imgWar.startAnimation();
+//                    imgWar.source = "qrc:/images/warn_ico.png"
+//                    imgWar.startAnimation();
+                    showAnimalImg("qrc:/images/warn_ico.png");
                     startWarn1()
                 }else if(smap.alarmtype === 82){
-                    imgWar.source = "qrc:/images/warn_nomask.png"
-                    imgWar.startAnimation();
+//                    imgWar.source = "qrc:/images/warn_nomask.png"
+//                    imgWar.startAnimation();
+                    showAnimalImg("qrc:/images/warn_nomask.png");
                     startWarn1()
                 }
             //}
@@ -525,6 +527,10 @@ Rectangle {
 
         }else if("getdeviceinfo" === strcmd){
             mhomeStateBar.setVersionInfo(smap.softwarever);
+
+
+            dataModel.funSetDeviceInfo(deviceconfig.getTcpip(),smap.uuid)
+
         }else if("setimagparam" === strcmd){
             if(deviceconfig.wdrisChange){
                 msgdialog.width = 500

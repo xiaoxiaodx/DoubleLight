@@ -17,7 +17,7 @@ class WarnModelData : public QObject
     Q_PROPERTY(QString maskRecognition READ maskRecognition WRITE setMaskRecognition NOTIFY maskRecognitionChanged)
 
 public:
-    WarnModelData(const bool &isSelect,const QString &warnTime,const QString &warnTemp,QString imgName,QString path,QObject *parent=nullptr);
+    WarnModelData(const bool &isSelect,const QString &warnTime,const QString &warnTemp,QString imgName,QString path,QString name,QString number,QString maskRecognition,QObject *parent=nullptr);
 
     bool isSelect()const;
     void setIsSelect(const bool &v);
