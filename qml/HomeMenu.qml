@@ -32,11 +32,10 @@ Rectangle {
 //                    anchors.verticalCenter: parent.verticalCenter
 //        //            anchors.bottom: parent.bottom
 //        //            anchors.bottomMargin: 10
-//        //            width: parent.height - 26
-//        //           parent.height - 26
-//                    width: 50
-//                    height: 50
-//                    source: "qrc:/images/logo9.png"
+
+//                    width: 4*height
+//                    height: 40
+//                    source: "qrc:/images/logo17.png"
 //                }
 
 
@@ -61,7 +60,7 @@ Rectangle {
             textColor: "white"
             textSelectColor:"white"
             txtLeftMargin:7
-            textSize:18
+            textSize:curLanguage === lKhmer ?30:18
             Component.onCompleted: {
 
                 console.debug("curLanguagev     11:"+curLanguage)
@@ -220,8 +219,16 @@ Rectangle {
 
           //  enabled: false
 
+//            property int lKhmer:0
+//            property int lEnglish: 1
+//            property int lRussian: 2
+//            property int ltuerqi: 3
+//            property int lxibanya: 4
+//            property int lfayu: 5
+//            property int lChinese:6
+
             model: ListModel{
-                ListElement{showStr:"简体中文"}
+                ListElement{showStr:"lKhmer"}
                 ListElement{showStr:"English"}
                 //ListElement{showStr:"Italian"}
                 //ListElement{showStr:"Korean"}
@@ -232,6 +239,7 @@ Rectangle {
                // ListElement{showStr:"Português"}//葡萄牙
                 ListElement{showStr:"Español"}//西班牙
                 ListElement{showStr:"Française"}//法语
+                ListElement{showStr:"简体中文"}
                 //ListElement{showStr:"नेपाली"}//尼泊尔文
                 //ListElement{showStr:"Khmer"}//高棉
             }
@@ -334,10 +342,20 @@ Rectangle {
             tabbarBtn.barModel.get(index++).txtStr =  "Settaggio"
             tabbarBtn.barModel.get(index++).txtStr =  "Gestione Allarmi"
             break;
+        case lKhmer:
+            tabbarBtn.barModel.get(index++).txtStr =  "ផ្ទាំងមុខ"
+            tabbarBtn.barModel.get(index++).txtStr =  "ការកំណត់រចនាសម្ព័ន្ធឧបករណ៍"
+            tabbarBtn.barModel.get(index++).txtStr =  "សម្លេងរោទ៍"
+            break;
         case lChinese:
             tabbarBtn.barModel.get(index++).txtStr =  "主预览"
             tabbarBtn.barModel.get(index++).txtStr =  "设备配置"
             tabbarBtn.barModel.get(index++).txtStr =  "告警管理"
+            break;
+        case lBolan:
+            tabbarBtn.barModel.get(index++).txtStr =  "Podgląd główny"
+            tabbarBtn.barModel.get(index++).txtStr =  "Konfiguracja urządzenia"
+            tabbarBtn.barModel.get(index++).txtStr =  "Alarm"
             break;
         case lRussian:
             tabbarBtn.barModel.get(index++).txtStr =  "Основной просмотр"

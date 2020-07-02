@@ -286,6 +286,8 @@ int CHttpApiDevice::HttpMsgCallBack(char * pData) {
                                 map.insert("cmd","getdeviceinfo");
                                 slot_httpParSet(map);
 
+                                map.insert("cmd","getnetworkinfo");
+                                slot_httpParSet(map);
 
                                 if(warnPushMap.value("switchSubscription").toBool()){
                                     HttpSubscriptionWarn(warnPushMap, "0");
@@ -404,7 +406,14 @@ int CHttpApiDevice::HttpMsgCallBack(char * pData) {
 
             }else if("getdeviceinfo" == cmd){
                 callbackMap.insert("softwarever",object.value("data").toObject().value("softwarever").toString());
+            }else if("getnetworkinfo" == cmd){
+                callbackMap.insert("ip",object.value("data").toObject().value("ip").toString());
+                callbackMap.insert("gateway",object.value("data").toObject().value("gateway").toString());
+                callbackMap.insert("netmask",object.value("data").toObject().value("netmask").toString());
+                callbackMap.insert("dhcpenable",object.value("data").toObject().value("dhcpenable").toInt());
             }
+
+
 
             DebugLog::getInstance()->writeLog("callbackMap:"+callbackMap.value("cmd").toString());
             emit signal_ReadMsg(callbackMap);
@@ -632,10 +641,37 @@ bool CHttpApiDevice::send_httpParSet(QMap<QString,QVariant> map)
         HttpSetimagparam(map);
     }else if(cmd.compare("setinftempcolor")==0){
         HttpSetTempColor(map);
-
+    }else if(cmd.compare("setnetworkinfo")==0){
+        HttpSetnetworkinfo(map);
     }else
         httpSendCommonCmd(cmd,msgid);
 
+}
+
+void CHttpApiDevice::HttpSetnetworkinfo(QVariantMap value)
+{
+    JsonMsg_T info;
+    sprintf(info.cmd, "%s", "setnetworkinfo");
+    sprintf(info.msgID, "%s", value.value("msgid").toString().toLatin1().data());
+    sprintf(info.method, "%s", "request");
+    sprintf(info.ssionID, "%s", "");
+    if(!strlen(this->sessionId)) {
+        qDebug() <<"ssionId error "<<sessionId;
+        return ;
+    }
+    sprintf(info.ssionID, "%s", this->sessionId);
+
+    QJsonObject msgObject;
+    QJsonObject dataObj;
+
+    CjsonMakeHttpHead(&msgObject, &info);
+
+    dataObj.insert("ip",value.value("ip").toString());
+    dataObj.insert("gateway",value.value("gateway").toString());
+    dataObj.insert("netmask",value.value("netmask").toString());
+    dataObj.insert("dhcpenable",value.value("dhcpenable").toInt());
+    msgObject.insert("data", QJsonValue(dataObj));
+    SendRequestMsg(msgObject);
 }
 
 void CHttpApiDevice::HttpSetTempColor(QVariantMap value)

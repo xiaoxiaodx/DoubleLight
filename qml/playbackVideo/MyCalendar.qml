@@ -316,7 +316,8 @@ Popup {
             return year + " "+getLithuanianMouth(month);
         case lniboer:
             return year + " " +getEnglishMouth(month);
-
+        default:
+            return year + " "+getEnglishMouth(month);
         }
 
     }
@@ -442,6 +443,7 @@ Popup {
         // console.debug("week:"+week);
         if(week === 0)
             week = 7
+
         switch(curLanguage){
         case lChinese:
             return getChineseWeekly(week);
@@ -457,6 +459,8 @@ Popup {
             return getLithuanianWeekly(week);
         case lniboer:
             return getNiboerWeekly(week);
+        default:
+            return getEnglishWeekly(week);
         }
 
     }
@@ -590,7 +594,11 @@ Popup {
         switch(type){
         case lEnglish:
             txtCancel.text = "Cancel"
-            txtEnsure.text = "Confirm "
+            txtEnsure.text = "Confirm"
+            break;
+        case lBolan:
+            txtCancel.text = "Anuluj"
+            txtEnsure.text = "Potwierdź"
             break;
         case lKorean:
             txtCancel.text = "취소"
@@ -603,6 +611,10 @@ Popup {
         case lChinese:
             txtCancel.text = "取消"
             txtEnsure.text = "确定"
+            break;
+        case lKhmer:
+            txtCancel.text = "បោះបង់"
+            txtEnsure.text = "យល់ព្រម"
             break;
         case lLithuanian:
             txtCancel.text = "Atšaukti"

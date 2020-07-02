@@ -118,5 +118,6 @@
         <file>images/imgVersionCopy.png</file>
         <file>images/imgVersionCopy_h.png</file>
         <file>attention.wav</file>
+
     </qresource>
 </RCC>

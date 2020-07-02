@@ -7,16 +7,17 @@ CONFIG += c++11
 # deprecated API to know how to port your code away from it.
 DEFINES += QT_DEPRECATED_WARNINGS
 
+
 VERSION = 3.0.2.0
 
+
 RC_ICONS = myicon6.ico
-TARGET=TTM-S
+TARGET= TTM-S
 
 QMAKE_TARGET_COMPANY = " "
 QMAKE_TARGET_PRODUCT = " "
 QMAKE_TARGET_DESCRIPTION = "Qt Creator based on Qt 5.12.2 (MINGW 2020, 64 bit)"
-QMAKE_TARGET_COPYRIGHT = "Copyright 2020-2016 The Qt Company Ltd. All rights reserved."
-
+QMAKE_TARGET_COPYRIGHT = ""
 
 RC_LANG = 0x0004
 
@@ -58,7 +59,8 @@ SOURCES += \
     qmlcplus/upcontrol.cpp \
     protocol/warntcpserver.cpp \
     consoleprocess.cpp \
-    playVideo/xvideoreplay1.cpp
+    playVideo/xvideoreplay1.cpp \
+    qmlcplus/mylanguage.cpp
 
 HEADERS += \
     playVideo/XVideo.h \
@@ -101,7 +103,8 @@ HEADERS += \
     qmlcplus/upcontrol.h \
     protocol/warntcpserver.h \
     consoleprocess.h \
-    playVideo/xvideoreplay1.h
+    playVideo/xvideoreplay1.h \
+    qmlcplus/mylanguage.h
 
 #RESOURCES += qml.qrc
 

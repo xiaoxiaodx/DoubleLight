@@ -55,19 +55,21 @@ Window {
 
 
     property int curLanguage: 1
-    property int lChinese: 0
+    property int lKhmer:0
     property int lEnglish: 1
     property int lRussian: 2
     property int ltuerqi: 3
     property int lxibanya: 4
     property int lfayu: 5
-    property int lItaly: 6
+    property int lChinese:6
+    property int lItaly: 13
     property int lLithuanian: 7
     property int lKorean: 8
     property int ltuerqi1: 9
     property int lputaoya: 10
     property int lniboer: 11
-    property int lKhmer:12
+    property int lBolan: 11
+
 
 
 
@@ -138,6 +140,8 @@ Window {
             askDialog.width = 427
             askDialog.height = 176
             askDialog.askStr = curLanguage=== lChinese?"确认退出系统吗？":
+                                                        curLanguage=== lKhmer?"យល់ព្រមចាកចេញ?":
+                               curLanguage=== lBolan?"Potwierdź, by wyjść?":
                                curLanguage===lEnglish?"Confirm to exit ?":
                                curLanguage===lKorean?"나가시겠습니까?":
                                curLanguage===lItaly?"Uscita Dal Sistema?":

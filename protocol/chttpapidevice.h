@@ -196,6 +196,8 @@ private:
     void HttpGetVideoEncode(QVariantMap value);
     void HttpSetimagparam(QVariantMap value);
     void HttpSetTempColor(QVariantMap value);
+    void HttpSetnetworkinfo(QVariantMap value);
+
 
 
 

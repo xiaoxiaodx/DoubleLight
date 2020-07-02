@@ -245,6 +245,7 @@ Popup {
                 txtEnsure.text = "ទេ"
                 break;
             }
+
         }
     }
 }

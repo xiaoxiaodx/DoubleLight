@@ -108,7 +108,9 @@ Rectangle {
                         askDialog.width = 427
                     askDialog.height = 176
                     askDialog.askStr = curLanguage=== lChinese?"确认要删除所选信息吗？":
+                                                                curLanguage=== lKhmer?"យល់ព្រមលុបចោល?":
                                        curLanguage===lEnglish?"Confirm to delete?":
+                                       curLanguage===lBolan?"Potwierdzasz usuwanie?":
                                        curLanguage===lKorean?"삭제하시겠습니까?":
                                        curLanguage===lItaly?"Cancella Tutta la Selezione?":
                                        curLanguage===lRussian?"Вы уверены, что хотите удалить информацию?":
@@ -384,7 +386,9 @@ Rectangle {
                     font.pixelSize: fontSize
                     color: "#3B84F6"
                     text:curLanguage === lChinese?"删除":
+                                                   curLanguage === lChinese?"លុបចោល":
                          curLanguage === lEnglish?"Remove":
+                        curLanguage === lBolan?"Usuń ":
                          curLanguage === lKorean?"삭제":
                          curLanguage === lItaly?"Cancella":
                          curLanguage === lRussian?"Удалить":
@@ -405,6 +409,8 @@ Rectangle {
                                 askDialog.width = 427
                             askDialog.height = 176
                             askDialog.askStr = curLanguage=== lChinese?"确认删除信息吗？":
+                                                curLanguage=== lChinese?"យល់ព្រមលុបចោល?":
+                                               curLanguage===lBolan?"Potwierdzasz usuwanie?":
                                                curLanguage===lEnglish?"Confirm to delete?":
                                                curLanguage===lKorean?"삭제 정보를 확인합니까?":
                                                curLanguage === lItaly?"Cancello L’Informazione?":
@@ -591,6 +597,24 @@ Rectangle {
             txtWarnTemp.text = "告警温度"
             warnImg.text = "抓拍图片"
             //deletetxt.text = "删除"
+            break;
+        case lKhmer:
+            textitle.text = "កំណត់ហេតុការចូលប្រើប្រាស់ឧបករណ៍";
+            txtBatchDelete.text = "លុបចោលទាំងអស់"
+            txtDo.text = "ប្រតិបត្តិការ"
+            txtWarnTime.text = "ពេល"
+            txtWarnTemp.text = "សីតុណ្ហភាព"
+            warnImg.text = "ថតរូប"
+            //deletetxt.text = "删除"
+            break;
+        case lBolan:
+            textitle.text = "Lista zdarzeń";
+            txtBatchDelete.text = "Usuń wsad"
+            txtDo.text = "Działaj"
+            txtWarnTime.text = "Czas"
+            txtWarnTemp.text = "Temperatura"
+            warnImg.text = "Zdjęcie"
+            //deletetxt.text = "Usuń"
             break;
         case lRussian:
             textitle.text = "Список журналов";
