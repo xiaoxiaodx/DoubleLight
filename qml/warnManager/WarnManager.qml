@@ -212,7 +212,7 @@ Rectangle {
                 anchors.fill: parent
                 hoverEnabled: true
                 onPressed: {
-                    selecttime.visible = true
+                    selecttime.open()
                 }
                 onEntered: imgtime.source = "qrc:/images/time.png"
                 onReleased: imgtime.source = "qrc:/images/time.png"
@@ -466,8 +466,8 @@ Rectangle {
 
         SelectTime{
             id:selecttime
-            anchors.left: timeRect.left
-            anchors.top: timeRect.bottom
+            x: timeRect.x
+            y: timeRect.y + timeRect.height
             z:1
             width: 120
             height: 245
