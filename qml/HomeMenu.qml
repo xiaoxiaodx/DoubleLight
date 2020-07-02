@@ -24,33 +24,33 @@ Rectangle {
         height: parent.height
         color: "#00ffffff"
 
-                Image {
-                    id: btnImg
-                    anchors.left: parent.left
-                    anchors.leftMargin: 30
-                    anchors.topMargin: 5
-                    anchors.top: parent.top
-         //           anchors.verticalCenter: parent.verticalCenter
-        //            anchors.bottom: parent.bottom
-        //            anchors.bottomMargin: 10
-        //            width: parent.height - 26
-        //           parent.height - 26
-                    width: 128
-                    height: 64
-                    source: "qrc:/images/logo15.png"
-                }
+//                Image {
+//                    id: btnImg
+//                    anchors.left: parent.left
+//                    anchors.leftMargin: 30
+//                    anchors.topMargin: 5
+//                    anchors.top: parent.top
+//         //           anchors.verticalCenter: parent.verticalCenter
+//        //            anchors.bottom: parent.bottom
+//        //            anchors.bottomMargin: 10
+//        //            width: parent.height - 26
+//        //           parent.height - 26
+//                    width: 128
+//                    height: 64
+//                    source: "qrc:/images/logo15.png"
+//                }
 
 
-//        Text {
-//            id: btnImg
-//            anchors.left: parent.left
-//            anchors.leftMargin: 40
-//            anchors.verticalCenter: parent.verticalCenter
-//            color: "white"
-//            font.pixelSize: 30
-//            font.bold: true
-//            text: ""
-//        }
+        Text {
+            id: btnImg
+            anchors.left: parent.left
+            anchors.leftMargin: 40
+            anchors.verticalCenter: parent.verticalCenter
+            color: "white"
+            font.pixelSize: 30
+            font.bold: true
+            text: ""
+        }
         QmlTabBarButtonH{
             id:tabbarBtn
             height: parent.height
