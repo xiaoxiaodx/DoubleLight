@@ -73,11 +73,11 @@ Rectangle {
         property alias tempMin: inputTempMin.text
         //property alias tempMax: inputTempMax.text
         property alias warnTem:inputTem.text
-        property alias switchTime:swithTime.checked
+        //property alias switchTime:swithTime.checked
         property alias switchWarn:swichWarn.checked
         property alias switchScreenShot:swichScreenShot.checked
         property alias switchBeer:swichBeer.checked
-        property alias switchRecord:swichRecord.checked
+        property bool switchRecord:true
         
         //   if(swithTime.checked)
         //        osdenableV = 1
@@ -201,46 +201,64 @@ Rectangle {
                         id: labelTime
                         font.pixelSize: fontSize
                         color: fontColor
-                        text: qsTr("时间显示")
-                        anchors.bottom: line1.top
-                        anchors.left: line1.left
+                        text: qsTr("时间设置")
+                        anchors.bottom: lineTime.top
+                        anchors.left: lineTime.left
                         anchors.bottomMargin: 20
-                        
+
                     }
-                    
+
                     Rectangle{
-                        id:line1
+                        id:lineTime
                         width: parent.width - 20*2
                         height: 1
                         color: "#e2e2e2"
                         anchors.top: parent.top
                         anchors.topMargin: 62
                         anchors.horizontalCenter: parent.horizontalCenter
-                        
+
                     }
-                    
+
                     Text {
                         id: labelSwitchTime
-                        text: qsTr("时间开关")
+                        text: qsTr("时间同步")
                         font.pixelSize: fontSize
                         color: fontColor
-                        anchors.right: swithTime.left
+                        anchors.right: rectTimeSynchronization.left
                         anchors.rightMargin: 20
-                        anchors.verticalCenter: swithTime.verticalCenter
+                        anchors.verticalCenter: rectTimeSynchronization.verticalCenter
                     }
-                    
-                    SimpleSwich{
-                        id:swithTime
-                        width: 30
-                        height: 15
-                        anchors.left: line1.left
+
+                    Rectangle{
+                        id:rectTimeSynchronization
+                        anchors.left: lineTime.left
                         anchors.leftMargin: parSetFirstAlignLine
-                        anchors.top: line1.bottom
+                        anchors.top: lineTime.bottom
                         anchors.topMargin: 20
-                        onCheckedChanged: {
-                            
-                            //s_timeSwith(checked)
-                            
+                        width: 44
+                        height: 22
+                        gradient: Gradient {
+                            GradientStop { position: 0.0; color: "#5D9CFF"}
+                            GradientStop { position: 1.0; color: "#2D76E7"}
+                        }
+                        Image{
+                            id:imgTimeSynchronization
+                            width: 14
+                            height: 14
+                            source: "qrc:/images/deviceFlush.png"
+                            anchors.horizontalCenter: parent.horizontalCenter
+                            anchors.verticalCenter: parent.verticalCenter
+                        }
+                        MouseArea{
+                            anchors.fill: parent
+                            onClicked: {
+                                var map = {
+                                    cmd:"setcurrenttime"
+                                }
+                                s_sendcommoncmd(map);
+                            }
+                            onPressed: imgTimeSynchronization.source = "qrc:/images/deviceFlush_h.png"
+                            onReleased: imgTimeSynchronization.source = "qrc:/images/deviceFlush.png"
                         }
                     }
                     
@@ -834,25 +852,25 @@ Rectangle {
                         anchors.horizontalCenter: parent.horizontalCenter
                     }
                     
-                    Text {
-                        id: txtSwichRecord
-                        text: qsTr("录像开关")
-                        color: fontColor
-                        font.pixelSize: fontSize
-                        anchors.verticalCenter: swichRecord.verticalCenter
-                        anchors.right: swichRecord.left
-                        anchors.rightMargin: 20
-                    }
-                    SimpleSwich{
-                        id:swichRecord
-                        width: 30
-                        height: 15
-                        anchors.left: line3.left
-                        anchors.leftMargin: parSetFirstAlignLine
-                        anchors.top: line3.bottom
-                        anchors.topMargin: 27
-                        onCheckedChanged: s_recordSwith(checked)
-                    }
+//                    Text {
+//                        id: txtSwichRecord
+//                        text: qsTr("录像开关")
+//                        color: fontColor
+//                        font.pixelSize: fontSize
+//                        anchors.verticalCenter: swichRecord.verticalCenter
+//                        anchors.right: swichRecord.left
+//                        anchors.rightMargin: 20
+//                    }
+//                    SimpleSwich{
+//                        id:swichRecord
+//                        width: 30
+//                        height: 15
+//                        anchors.left: line3.left
+//                        anchors.leftMargin: parSetFirstAlignLine
+//                        anchors.top: line3.bottom
+//                        anchors.topMargin: 27
+//                        onCheckedChanged: s_recordSwith(checked)
+//                    }
                     
                     Text {
                         id: txtRecortPath
@@ -861,7 +879,7 @@ Rectangle {
                         font.pixelSize: fontSize
                         anchors.right: rectRecordPath.left
                         anchors.rightMargin: 20
-                        anchors.verticalCenter: swichRecord.verticalCenter
+                        anchors.verticalCenter: rectRecordPath.verticalCenter
                     }
                     Rectangle{
                         id:rectRecordPath
@@ -871,8 +889,9 @@ Rectangle {
                         width: 200
                         height: 28
                         anchors.left: line3.left
-                        anchors.leftMargin: parSetSecondAlignLine
-                        anchors.verticalCenter: swichRecord.verticalCenter
+                        anchors.leftMargin: parSetFirstAlignLine
+                                                anchors.top: line3.bottom
+                                                anchors.topMargin: 27
                         LineEdit {
                             id: inputRecordPath
                             width: rectRecordPath.width - imgRecordPath.width - 22
@@ -1257,11 +1276,8 @@ Rectangle {
     //参数修改设置 全在此函数
     function iradInfoSet(){
         
-        var osdenableV;
-        if(swithTime.checked)
-            osdenableV = 1
-        else
-            osdenableV = 0
+        var osdenableV = 0;
+
         var alarmtempEnableV;
         
         if(swichWarn.checked)
@@ -1552,11 +1568,11 @@ Rectangle {
             txtRecortPath.text = "Storage Path"
             txtScreenShotPath.text = "Storage Path"
             txtWarnTemSet.text = "Alarm Temperature"
-            labelSwitchTime.text = "Time"
+            labelSwitchTime.text = "Time Sync"
             labelTime.text = "Time OSD"
             txtparset.text = "Parameter Settings"
             txtSwichBeer.text = "Buzzer"
-            txtSwichRecord.text = "Video"
+           // txtSwichRecord.text = "Video"
             txtSwichScreenShot.text = "Snapshot"
             txtSwichWarn.text = "Alarm"
             txtTempMin.text = "Temperature control valve"
@@ -1574,11 +1590,11 @@ Rectangle {
             txtRecortPath.text = "录像存储路径"
             txtScreenShotPath.text = "抓拍存储路径"
             txtWarnTemSet.text = "告警温度设置"
-            labelSwitchTime.text = "时间开关"
+            labelSwitchTime.text = "时间同步"
             labelTime.text = "时间显示"
             txtparset.text = "参数设置"
             txtSwichBeer.text = "蜂鸣开关"
-            txtSwichRecord.text = "录像开关"
+           // txtSwichRecord.text = "录像开关"
             txtSwichScreenShot.text = "抓拍开关"
             txtSwichWarn.text = "报警开关"
             txtTempMin.text = "温度控制阀"
@@ -1595,11 +1611,11 @@ Rectangle {
             txtRecortPath.text = "Путь хранения видео"
             txtScreenShotPath.text = "Путь сохранения снимка"
             txtWarnTemSet.text = "Температура тревоги"
-            labelSwitchTime.text = "Время"
+            labelSwitchTime.text = "Синхронизация времени"
             labelTime.text = "Время OSD"
             txtparset.text = "Настройка параметров"
             txtSwichBeer.text = "Звуковой сигнал"
-            txtSwichRecord.text = "Запись"
+            //txtSwichRecord.text = "Запись"
             txtSwichScreenShot.text = "Снимок"
             txtSwichWarn.text = "Тревога"
             txtTempMin.text = "Max Min температура"
@@ -1616,11 +1632,11 @@ Rectangle {
             txtRecortPath.text = "Depolama yolu"
             txtScreenShotPath.text = "Depolama yolu"
             txtWarnTemSet.text = "Alarm Sıcaklığı"
-            labelSwitchTime.text = "Zaman OSD'si"
+            labelSwitchTime.text = "Zaman Senkronizasyonu"
             labelTime.text = "Zaman OSD'si"
             txtparset.text = "Parametre ayarı"
             txtSwichBeer.text = "Buzzer"
-            txtSwichRecord.text = "Video"
+           // txtSwichRecord.text = "Video"
             txtSwichScreenShot.text = "Snapshot"
             txtSwichWarn.text = "Alarm (anahtar)"
             txtTempMin.text = "Max Min Sıcaklık"
@@ -1638,11 +1654,11 @@ Rectangle {
             txtRecortPath.text = "ruta de almacenamiento"
             txtScreenShotPath.text = "ruta de almacenamiento"
             txtWarnTemSet.text = "alarma de temperatura"
-            labelSwitchTime.text = "tiempo OSD"
+            labelSwitchTime.text = "Sincronización de tiempo"
             labelTime.text = "tiempo OSD"
             txtparset.text = "Ajuste de parámetros"
             txtSwichBeer.text = "Zumbador"
-            txtSwichRecord.text = "Vídeo"
+            //txtSwichRecord.text = "Vídeo"
             txtSwichScreenShot.text = "Instantánea"
             txtSwichWarn.text = "Alarma (interruptor)"
             txtTempMin.text = "válvula de control de temperatura"
@@ -1659,11 +1675,11 @@ Rectangle {
             txtRecortPath.text = "Chemin de stockage vidéo"
             txtScreenShotPath.text = "Chemin de stockage photo"
             txtWarnTemSet.text = "Température d'alarme"
-            labelSwitchTime.text = "Heure OSD"
+            labelSwitchTime.text = "Synchronisation horaire"
             labelTime.text = "Heure OSD"
             txtparset.text = "Réglage des paramètres"
             txtSwichBeer.text = "Avertisseur sonore"
-            txtSwichRecord.text = "Vidéo"
+           // txtSwichRecord.text = "Vidéo"
             txtSwichScreenShot.text = "Instantané"
             txtSwichWarn.text = "Alarme(interrupteur)"
             txtTempMin.text = "Température max/min"
