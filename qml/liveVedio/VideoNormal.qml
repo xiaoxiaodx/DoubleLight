@@ -46,19 +46,19 @@ Rectangle {
         onDoubleClicked:doubleClick(true);
     }
 
-//    Text {
-//        id: pos1
-//        anchors.horizontalCenter: parent.horizontalCenter
-//        anchors.bottomMargin: 10
-//        anchors.bottom:parent.bottom
-//        color: "red"
-//        text: qsTr("text")
-//    }
+    //    Text {
+    //        id: pos1
+    //        anchors.horizontalCenter: parent.horizontalCenter
+    //        anchors.bottomMargin: 10
+    //        anchors.bottom:parent.bottom
+    //        color: "red"
+    //        text: qsTr("text")
+    //    }
     XVideo{
         id:video
 
         //property real whradia:  0.75
-       //property real hwradia: 1.333
+        //property real hwradia: 1.333
         property real whradia: 0.5625
         property real hwradia: 1.778
         //anchors.fill: parent
@@ -71,7 +71,7 @@ Rectangle {
 
         Component.onCompleted:{
             //video.fun_setInitPar(deviceconfig.getTcpip(),deviceconfig.getShowParentW(),deviceconfig.getShowParentH(),deviceconfig.getShowRectX(),deviceconfig.getShowRectY(),deviceconfig.getShowRectW(),deviceconfig.getShowRectH())
-           // video.startNormalVideo(deviceconfig.getWarnTem())
+            // video.startNormalVideo(deviceconfig.getWarnTem())
         }
 
         onSignal_loginStatus: main.showToast(msg);
@@ -82,18 +82,18 @@ Rectangle {
             deviceconfig.setTcpip(ip)
             homeMenu.setDeviceConnectState(istrue)
         }
-//                MouseArea{
-//                    id:mouse22
-//                    anchors.fill: parent
-//                    cursorShape: Qt.CrossCursor
-//                    onClicked: {
-//                        var kx = video.width / 1920;
-//                        var ky = video.height / 1080;
-//                        var x1 = mouse.x / kx;
-//                        var y1 = mouse.y / ky;
-//                        pos1.text ="pos:"+ x1 +"    "+y1
-//                    }
-//                }
+        //                MouseArea{
+        //                    id:mouse22
+        //                    anchors.fill: parent
+        //                    cursorShape: Qt.CrossCursor
+        //                    onClicked: {
+        //                        var kx = video.width / 1920;
+        //                        var ky = video.height / 1080;
+        //                        var x1 = mouse.x / kx;
+        //                        var y1 = mouse.y / ky;
+        //                        pos1.text ="pos:"+ x1 +"    "+y1
+        //                    }
+        //                }
         Rectangle{
             id:rectadmjt
             x:0//deviceconfig.getShowRectX()
@@ -444,7 +444,9 @@ Rectangle {
                     }
                     video.fun_sendCommonPar(map1)
                 }
-            }
+            }else
+                deviceconfig.curDevTypeStr  = smap.tempmodel
+
 
             deviceconfig.getiradInfo();
             video.fun_setInitPar(deviceconfig.getTcpip(),deviceconfig.getShowParentW(),deviceconfig.getShowParentH(),deviceconfig.getShowRectX(),deviceconfig.getShowRectY(),deviceconfig.getShowRectW(),deviceconfig.getShowRectH())
@@ -472,27 +474,27 @@ Rectangle {
             deviceconfig.setSwitchTime(osdenable)
             deviceconfig.setTempContrl(tempcontrol)
             deviceconfig.setSwitchWarn(alarmtempEnable)
-           deviceconfig.setSwithMask(maskenable)
+            deviceconfig.setSwithMask(maskenable)
 
         }else if(strcmd === "pushalarm"){
 
-//            if(smap.imagedata === undefined)//老版本没有这个字段
-//                startWarn(smap.temperature);
-//            else{
-//                if(deviceconfig.getSwitchScreenShot())
-//                    warnmanger.screenShot1(deviceconfig.getScrennShotPath(),main,0 ,68,main.width,main.height-68-50-160-57,10,smap.alarmtype)
+            //            if(smap.imagedata === undefined)//老版本没有这个字段
+            //                startWarn(smap.temperature);
+            //            else{
+            //                if(deviceconfig.getSwitchScreenShot())
+            //                    warnmanger.screenShot1(deviceconfig.getScrennShotPath(),main,0 ,68,main.width,main.height-68-50-160-57,10,smap.alarmtype)
 
-                warnmanger.funProcessPushAlarm(smap);
-                //开启动画
-                if(smap.alarmtype === 80){
-                    imgWar.source = "qrc:/images/warn_ico.png"
-                    imgWar.startAnimation();
-                    startWarn1()
-                }else if(smap.alarmtype === 82){
-                    imgWar.source = "qrc:/images/warn_nomask.png"
-                    imgWar.startAnimation();
-                    startWarn1()
-                }
+            warnmanger.funProcessPushAlarm(smap);
+            //开启动画
+            if(smap.alarmtype === 80){
+                imgWar.source = "qrc:/images/warn_ico.png"
+                imgWar.startAnimation();
+                startWarn1()
+            }else if(smap.alarmtype === 82){
+                imgWar.source = "qrc:/images/warn_nomask.png"
+                imgWar.startAnimation();
+                startWarn1()
+            }
             //}
 
         }else if(strcmd === "update"){
@@ -537,20 +539,21 @@ Rectangle {
                     txtstr = "WDR is ON, Camera is rebooting"
                     break;
                 case lRussian:
-                     txtstr = "WDR включен, камера перезагружается"
+                    txtstr = "WDR включен, камера перезагружается"
                     break;
                 case ltuerqi:
-                     txtstr = "WDR AÇIK, Kamera yeniden başlatılıyor"
+                    txtstr = "WDR AÇIK, Kamera yeniden başlatılıyor"
                     break;
                 case lxibanya:
-                     txtstr = "WDR está encendido, la cámara se reinicia"
+                    txtstr = "WDR está encendido, la cámara se reinicia"
                     break;
                 case lfayu:
-                     txtstr = "Le WDR est activé, la caméra redémarre"
+                    txtstr = "Le WDR est activé, la caméra redémarre"
                     break;
                 }
                 msgdialog.msgStr = txtstr
                 msgdialog.open()
+            }
         }else if("getvideoencodeparam"=== strcmd){
 
             console.debug("*****************"  +smap.encoding )
@@ -594,40 +597,42 @@ Rectangle {
                     txtstr = "La fotocamera si riavvierà dopo l'impostazione"
                     break;
                 case lKorean:
-                     txtstr = "설정 후 카메라가 다시 시작됩니다"
+                    txtstr = "설정 후 카메라가 다시 시작됩니다"
                     break;
                 case lRussian:
-                     txtstr = "Камера перезагрузится после настройки"
+                    txtstr = "Камера перезагрузится после настройки"
                     break;
                 case lLithuanian:
-                     txtstr = "Nustačius fotoaparatą, jis paleis iš naujo"
+                    txtstr = "Nustačius fotoaparatą, jis paleis iš naujo"
                     break;
                 case ltuerqi:
-                     txtstr = "Kamera ayarlandıktan sonra yeniden başlatılacak"
+                    txtstr = "Kamera ayarlandıktan sonra yeniden başlatılacak"
                     break;
                 case ltuerqi1:
-                     txtstr = "Kamera ayarlandıktan sonra yeniden başlatılacak"
+                    txtstr = "Kamera ayarlandıktan sonra yeniden başlatılacak"
                     break;
                 case lputaoya:
-                     txtstr = "A câmera será reiniciada após a configuração"
+                    txtstr = "A câmera será reiniciada após a configuração"
                     break;
                 case lxibanya:
-                     txtstr = "La cámara se reiniciará después de configurar"
+                    txtstr = "La cámara se reiniciará después de configurar"
                     break;
                 case lfayu:
-                     txtstr = "La caméra redémarrera après le réglage"
+                    txtstr = "La caméra redémarrera après le réglage"
                     break;
                 case lniboer:
-                     txtstr = "क्यामेरा सेटिंग पछि रिस्टार्ट हुनेछ"
+                    txtstr = "क्यामेरा सेटिंग पछि रिस्टार्ट हुनेछ"
                     break;
                 case lKhmer:
-                     txtstr = "កាមេរ៉ានឹងចាប់ផ្តើមឡើងវិញបន្ទាប់ពីកំណត់"
+                    txtstr = "កាមេរ៉ានឹងចាប់ផ្តើមឡើងវិញបន្ទាប់ពីកំណត់"
                     break;
                 }
 
                 msgdialog.msgStr = txtstr;
                 msgdialog.open();
             }
+        }else if("setcurrenttime"===strcmd){
+            deviceconfig.toastTimeSynchronization();
         }
     }
 
@@ -692,4 +697,4 @@ Rectangle {
     }
 
 }
-}
+

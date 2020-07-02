@@ -75,7 +75,7 @@ void XVideoTemp::startTemperatureVideo(float tp,QVariant type,QVariant par1,QVar
 
     connect(&timerUpdate,&QTimer::timeout,this,&XVideoTemp::slot_timeout);
     if(!timerUpdate.isActive())
-        timerUpdate.start(20);
+        timerUpdate.start(timeInter);
 }
 
 void XVideoTemp::createJ07(QString ip,int type)
@@ -91,15 +91,13 @@ void XVideoTemp::createJ07(QString ip,int type)
 void XVideoTemp::slot_recRect(int tempdisplay,QVariantList listmap)
 {
 
-    //qDebug()<<"XVideoTemp slot_recRect";
-
     listrectinfo.clear();
     this->tempdisplay = tempdisplay;
     for (int i=0;i<listmap.size();i++) {
         QVariantMap map = listmap.at(i).toMap();
         listrectinfo.append(map);
     }
-   // update();
+    isRectUpdate = true;
 }
 
 void XVideoTemp::createYouseePull()
@@ -309,8 +307,16 @@ void XVideoTemp::paint(QPainter *painter)
         painter->drawText(desRect.x(),desRect.y()-3,strText);
         painter->restore();
     }
-    if(listrectinfo.size()>0)
+
+    if(!isRectUpdate)
+        rectUnUpdateCount++;
+    else
+        rectUnUpdateCount = 0;
+    if(rectUnUpdateCount*timeInter >= 500){
         listrectinfo.clear();
+        rectUnUpdateCount = 0;
+    }
+    isRectUpdate = false;
 
 
     /********************/
