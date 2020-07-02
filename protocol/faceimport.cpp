@@ -93,7 +93,6 @@ void FaceImport::SendRequestMsg(QJsonObject obj){
             map.insert("state",false);
             emit signal_importCallback(map);
         }
-
     }
 }
 
@@ -120,7 +119,6 @@ QJsonObject FaceImport::makeJsonData(QVariantMap map){
             QString facedata = arr.toBase64();
             objData.insert("facedata",facedata);
         }else {
-
             qDebug()<<"face Image open fail";
         }
     }else if(cmd.compare("delface") == 0){

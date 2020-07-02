@@ -105,7 +105,7 @@ void DataModel::reviseIndex(int index,QString name,QString number)
     qDebug()<<"     reviseIndex "<<name<<"  "<<number;
     beginResetModel();
     DataModelData *date = m_listData.takeAt(index);
-   QString tmpFilePath = date->avatarPath();
+    QString tmpFilePath = date->avatarPath();
 
 
 
@@ -245,7 +245,6 @@ void DataModel::funSetDeviceInfo(QString ip,QString did)
 
         funUpdateCurCalendarDate(curCalendarDate);
     }
-
 }
 
 void DataModel::funImportSingle(QString name,QString seq,QString imgPath)
@@ -256,7 +255,6 @@ void DataModel::funImportSingle(QString name,QString seq,QString imgPath)
     map.insert("seq",seq);
     map.insert("filePath",imgPath);
     map.insert("importType","single");
-
 
     funSendCmd(map);
 }
@@ -363,7 +361,7 @@ void DataModel::funSendCmd(QVariantMap map)
     qDebug()<<"funSendCmd   "<<map;
     listMsg.append(map);
     if(!sendTimer.isActive()){
-        sendTimer.start(500);
+        sendTimer.start(300);
     }
 
 }
@@ -381,21 +379,26 @@ void DataModel::slot_sendtimerout(){
 
         QVariantMap map =  listMsg.takeFirst();
 
-        //    if(map.contains("sendTime")){
-        // qint64 curt = QDateTime::currentMSecsSinceEpoch();
-        // qint64 sendt = map.value("sendTime").toLongLong();
-        //            if(curt - sendt > 2000){
-        //                emit signal_destroyConnect();
-        //            }
-        //        }else {
+        if(map.contains("sendTime")){
+            qint64 curt = QDateTime::currentMSecsSinceEpoch();
+            qint64 sendt = map.value("sendTime").toLongLong();
 
-        qint64 sendt = QDateTime::currentMSecsSinceEpoch();
-        map.insert("sendTime",sendt);
-        emit signal_sendMsg(map);
+            qint64 detime = curt - sendt ;
+            if(detime > 6000){
+                emit signal_destroyConnect();
+            }else if(detime > 2000){//如果命令超过2秒还在消息里面，则认为发送失败，重新发送
 
+                emit signal_sendMsg(map);
+            }
 
+        }else {
 
-        // }
+            qint64 sendt = QDateTime::currentMSecsSinceEpoch();
+            map.insert("sendTime",sendt);
+            emit signal_sendMsg(map);
+
+        }
+
         listMsg.append(map);
 
     }else{
@@ -412,8 +415,8 @@ void DataModel::funUpdateCurCalendarDate(QString datetime){
     QString curDate = QDate::currentDate().toString("yyyyMMdd");
 
     //同一天的数据则不进行刷新，会在列表中添加完后在进行写文件
-//    if(!isFirst && curDate.compare(curCalendarDate)==0)
-//        return;
+    //    if(!isFirst && curDate.compare(curCalendarDate)==0)
+    //        return;
 
     if(mdid == "")
         return;
@@ -507,12 +510,15 @@ void DataModel::slot_importCallback(QVariantMap map)
 
     }else if(cmd.compare("modifyface") == 0){
 
-        int index =  tmpInfoMap.value("index").toInt();
-        QString name = tmpInfoMap.value("name").toString();
-        QString number = tmpInfoMap.value("seq").toString();
 
-        reviseIndex(index,name,number);
-
+        if(stateCode.compare("200") == 0){
+            int index =  tmpInfoMap.value("index").toInt();
+            QString name = tmpInfoMap.value("name").toString();
+            QString number = tmpInfoMap.value("seq").toString();
+            reviseIndex(index,name,number);
+            emit signal_revise(true);
+        }else
+            emit signal_revise(false);
     }
 
 }

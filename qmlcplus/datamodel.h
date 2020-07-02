@@ -68,6 +68,7 @@ signals:
     void signal_singleAdd(bool isSucc);
     void signal_batchAdd(bool isSucc);
     void signal_batchAmount(int amount);
+    void signal_revise(bool isSucc);
 public slots:
     void slot_importCallback(QVariantMap map);
     void slot_sendtimerout();

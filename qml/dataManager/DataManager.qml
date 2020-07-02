@@ -577,17 +577,19 @@ Rectangle {
         }
     }
 
-    BatchImportState{
-        id:batchImportState
-        visible: false
-        color: "#00000000"
-        anchors.fill: parent
-    }
 
     SingleImport{
         id:popSingleImport
         width: 465
         height:334
+    }
+
+    BatchImportState{
+
+        id:batchImportState
+        visible: false
+        color: "#00000000"
+        anchors.fill: parent
     }
 
     ReviseFaceInfo{
@@ -752,6 +754,18 @@ Rectangle {
 
                 batchImportState.endImport(false)
 
+            }
+        }
+
+        onSignal_revise:{
+            if(isSucc){
+                popimportimg.msgImg = "qrc:/images/connect_succ.png"
+                popimportimg.msgStr = "修改成功"
+                popimportimg.open()
+            }else{
+                popimportimg.msgImg = "qrc:/images/connect_fail.png"
+                popimportimg.msgStr = "修改失败"
+                popimportimg.open()
             }
         }
 
