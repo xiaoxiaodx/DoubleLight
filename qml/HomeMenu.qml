@@ -228,7 +228,7 @@ Rectangle {
 //            property int lChinese:6
 
             model: ListModel{
-                ListElement{showStr:"lKhmer"}
+                ListElement{showStr:"简体中文"}
                 ListElement{showStr:"English"}
                 //ListElement{showStr:"Italian"}
                 //ListElement{showStr:"Korean"}
@@ -239,13 +239,14 @@ Rectangle {
                // ListElement{showStr:"Português"}//葡萄牙
                 ListElement{showStr:"Español"}//西班牙
                 ListElement{showStr:"Française"}//法语
-                ListElement{showStr:"简体中文"}
+                //ListElement{showStr:"lKhmer"}
+
                 //ListElement{showStr:"नेपाली"}//尼泊尔文
                 //ListElement{showStr:"Khmer"}//高棉
             }
 
             onCurrentIndexChanged:{
-                console.debug("**********************" + cmb.currentIndex)
+                console.debug("language select:" + cmb.currentIndex)
                 curLanguage = cmb.currentIndex
                 main.s_setLanguage(curLanguage);
             }

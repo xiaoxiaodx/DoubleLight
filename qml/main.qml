@@ -55,13 +55,13 @@ Window {
 
 
     property int curLanguage: 1
-    property int lKhmer:0
+    property int lChinese:0
     property int lEnglish: 1
     property int lRussian: 2
     property int ltuerqi: 3
     property int lxibanya: 4
     property int lfayu: 5
-    property int lChinese:6
+    property int lKhmer:6
     property int lItaly: 13
     property int lLithuanian: 7
     property int lKorean: 8

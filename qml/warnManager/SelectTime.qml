@@ -185,67 +185,70 @@ Popup {
         }
 
 
-        Connections{
-            target: main
-            onS_setLanguage:setLanguage(typeL);
+
+    }
+
+    Connections{
+        target: main
+        onS_setLanguage:setLanguage(typeL);
+    }
+
+    function setLanguage(type){
+         console.debug("setLanguage**********************")
+        switch(type){
+        case lEnglish:
+            txtCancel.text = "no"
+            txtEnsure.text = "yes"
+            break;
+        case lKorean:
+            txtCancel.text = "취소"
+            txtEnsure.text = "확인"
+            break;
+        case lItaly:
+            txtCancel.text = "no"
+            txtEnsure.text = "sì"
+            break;
+        case lChinese:
+            txtCancel.text = "取消"
+            txtEnsure.text = "确定"
+            break
+        case lRussian:
+            txtCancel.text = "нет"
+            txtEnsure.text = "да"
+            break;
+        case lLithuanian:
+            txtCancel.text = "Ne"
+            txtEnsure.text = "Taip"
+            break;
+        case ltuerqi:
+            txtCancel.text = "İptal"
+            txtEnsure.text = "Onayla"
+            break;
+        case ltuerqi1:
+            txtCancel.text = "İptal"
+            txtEnsure.text = "Onayla"
+            break;
+        case lputaoya:
+            txtCancel.text = "no"
+            txtEnsure.text = "yes"
+            break;
+        case lxibanya:
+            txtCancel.text = "no"
+            txtEnsure.text = "yes"
+            break;
+        case lfayu:
+            txtCancel.text = "no"
+            txtEnsure.text = "yes"
+            break;
+        case lniboer:
+            txtCancel.text = "रद्द"
+            txtEnsure.text = "निश्चित"
+            break;
+        case lKhmer:
+            txtCancel.text = "បាទ/ចាស"
+            txtEnsure.text = "ទេ"
+            break;
         }
 
-        function setLanguage(type){
-            switch(type){
-            case lEnglish:
-                txtCancel.text = "no"
-                txtEnsure.text = "yes"
-                break;
-            case lKorean:
-                txtCancel.text = "취소"
-                txtEnsure.text = "확인"
-                break;
-            case lItaly:
-                txtCancel.text = "no"
-                txtEnsure.text = "sì"
-                break;
-            case lChinese:
-                txtCancel.text = "取消"
-                txtEnsure.text = "确定"
-                break
-            case lRussian:
-                txtCancel.text = "нет"
-                txtEnsure.text = "да"
-                break;
-            case lLithuanian:
-                txtCancel.text = "Ne"
-                txtEnsure.text = "Taip"
-                break;
-            case ltuerqi:
-                txtCancel.text = "İptal"
-                txtEnsure.text = "Onayla"
-                break;
-            case ltuerqi1:
-                txtCancel.text = "İptal"
-                txtEnsure.text = "Onayla"
-                break;
-            case lputaoya:
-                txtCancel.text = "no"
-                txtEnsure.text = "yes"
-                break;
-            case lxibanya:
-                txtCancel.text = "no"
-                txtEnsure.text = "yes"
-                break;
-            case lfayu:
-                txtCancel.text = "no"
-                txtEnsure.text = "yes"
-                break;
-            case lniboer:
-                txtCancel.text = "रद्द"
-                txtEnsure.text = "निश्चित"
-                break;
-            case lKhmer:
-                txtCancel.text = "បាទ/ចាស"
-                txtEnsure.text = "ទេ"
-                break;
-            }
-
-        }
     }
 }

@@ -561,6 +561,7 @@ Rectangle {
 
     function setLanguage(type){
 
+
         switch(type){
         case lEnglish:
             textitle.text = "Log list";

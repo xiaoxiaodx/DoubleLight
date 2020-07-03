@@ -22,7 +22,7 @@ int main(int argc, char *argv[])
     app.setFont(font);
     app.setOrganizationName("GaoZhi"); //1
     app.setOrganizationDomain("gaozhi.com"); //2
-    app.setApplicationName("DoubleLight"); //3
+    app.setApplicationName("TTM-S"); //3
 
     QQmlApplicationEngine engine;
 
