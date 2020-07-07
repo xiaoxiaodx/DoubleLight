@@ -1,6 +1,7 @@
 import QtQuick.Controls 2.5
 import QtQuick 2.0
-
+import QtQuick.Dialogs 1.3
+import Qt.labs.settings 1.0
 import "../playbackVideo"
 import "../dialog"
 Rectangle {
@@ -131,7 +132,47 @@ Rectangle {
                 onPressed: rectBatch.color = "#66B5FF"
             }
         }
+        Rectangle{
+            id:rectexportExcel
+            width: txtBatchDelete.width + imgBatchDelete.width +27
+            height: 36
+            visible: false
+            color: "#71C648"
+            radius: 4
+            anchors.left: rectBatch.right
+            anchors.leftMargin: 20
+            anchors.verticalCenter: rectBatch.verticalCenter
+            z:2
+            Image {
+                id: imgexportExcel
+                width: 14
+                height: 15
+                anchors.left: parent.left
+                anchors.leftMargin: 9
+                anchors.verticalCenter: parent.verticalCenter
+                source: "qrc:/images/imgDelete.png"
 
+            }
+            Text {
+                id: txtexportExcel
+                font.pixelSize: fontSize
+                anchors.left: imgexportExcel.right
+                anchors.leftMargin: 9
+                anchors.verticalCenter: parent.verticalCenter
+                color: "#ffffff"
+                text: qsTr("导出Excel")
+            }
+            MouseArea{
+                anchors.fill: parent
+                onClicked: {
+
+                    fileDialog.open();
+
+                }
+                onReleased: rectexportExcel.color = "#71C648"
+                onPressed: rectexportExcel.color = "#99D67C"
+            }
+        }
         //日期选择
         Rectangle{
 
@@ -496,6 +537,22 @@ Rectangle {
         warnmodel.funProcessPushAlarm2(deviceconfig.getScrennShotPath(),map);
     }
 
+
+    FileDialog {
+        id: fileDialog
+        property string pathname:""
+        title: "Please choose a excel file"
+        selectFolder:false
+        selectMultiple: false
+        //folder: shortcuts.home
+        onAccepted: {
+
+                var excelpath = fileDialog.fileUrl.toString().replace('file:///','');
+                warnmodel.exportExcel(excelpath);
+
+            }
+
+    }
 
 
     Popup {

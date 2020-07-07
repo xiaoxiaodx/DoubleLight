@@ -8,7 +8,6 @@ import UpdateProgressC 1.0
 import QtQuick.Controls 1.4
 import QtQuick.Controls.Styles 1.4
 import "dialog"
-import QtQuick.Controls.Styles 1.4
 Rectangle {
     id: root
     
@@ -44,9 +43,12 @@ Rectangle {
     
     property string curDevTypeStr:"E03"
     //第一根左对齐线
-    property int parSetFirstAlignLine: curLanguage === lChinese?134:curLanguage === lEnglish?230:curLanguage === lKorean?204:curLanguage ===lRussian?210:300
-    property int parSetSecondAlignLine: curLanguage === lChinese?368:curLanguage === lEnglish?488:curLanguage === lKorean?388:curLanguage ===lRussian?538:700
+    property int parSetFirstAlignLine: curLanguage === lChinese?134:curLanguage === lEnglish?230:curLanguage === lKorean?204:curLanguage ===lRussian?280:300
+    property int parSetSecondAlignLine: curLanguage === lChinese?368:curLanguage === lEnglish?488:curLanguage === lKorean?388:curLanguage ===lRussian?558:700
     
+    property int firsttopmargin: 15
+    property int topmargin: 20
+
     property int tempdriftcapMax: 2
     property int tempdriftcapMin: -2
     property int tempcontrolcapMax: 6
@@ -235,7 +237,7 @@ Rectangle {
                         anchors.left: lineTime.left
                         anchors.leftMargin: parSetFirstAlignLine
                         anchors.top: lineTime.bottom
-                        anchors.topMargin: 20
+                        anchors.topMargin: firsttopmargin
                         width: 44
                         height: 22
                         gradient: Gradient {
@@ -362,7 +364,7 @@ Rectangle {
                         anchors.left: line2.left
                         anchors.leftMargin: parSetFirstAlignLine
                         anchors.top: line2.bottom
-                        anchors.topMargin: 20
+                        anchors.topMargin: firsttopmargin
                         LineEdit {
                             id: inputTempDrift
                             width: rectTempDrift.width  - 22
@@ -463,8 +465,8 @@ Rectangle {
                         height: 32
                         radius: 4
                         anchors.left: line2.left
-                        anchors.top:line2.bottom
-                        anchors.topMargin: 73
+                        anchors.top:rectTempDrift.bottom
+                        anchors.topMargin: topmargin
                         anchors.leftMargin: parSetFirstAlignLine
                         LineEdit {
                             id: inputTempMin
@@ -582,8 +584,8 @@ Rectangle {
                         height: 15
                         anchors.left: line2.left
                         anchors.leftMargin: parSetFirstAlignLine
-                        anchors.top: line2.bottom
-                        anchors.topMargin: 125
+                        anchors.top: rectTempMin.bottom
+                        anchors.topMargin: topmargin
                         onCheckedChanged:{
                             
                             // s_warnSwith(checked)
@@ -640,6 +642,7 @@ Rectangle {
                         font.pixelSize: fontSize
                         color: fontColor
                         anchors.right: swichScreenShot.left
+                        visible: false
                         anchors.rightMargin: 20
                         anchors.verticalCenter: swichScreenShot.verticalCenter
                     }
@@ -650,13 +653,14 @@ Rectangle {
                         anchors.left: line2.left
                         anchors.leftMargin: parSetFirstAlignLine
                         anchors.top: line2.bottom
+                        visible: false
                         anchors.topMargin: 172
                         onCheckedChanged: s_screenShotSwith(checked)
                     }
                     
                     Text {
                         id: txtScreenShotPath
-                        text: qsTr("抓拍存储路径")
+                        text: qsTr("告警图片存储路径")
                         font.pixelSize: fontSize
                         color: fontColor
                         anchors.right: rectScreenShotPath.left
@@ -664,7 +668,6 @@ Rectangle {
                         anchors.verticalCenter: swichScreenShot.verticalCenter
                     }
                     Rectangle{
-                        
                         id:rectScreenShotPath
                         color: "#F8FAFD"
                         border.color: "#DEDFE3"
@@ -672,7 +675,7 @@ Rectangle {
                         width: 200
                         height: 28
                         anchors.left: line2.left
-                        anchors.leftMargin: parSetSecondAlignLine
+                        anchors.leftMargin: parSetFirstAlignLine
                         anchors.verticalCenter: swichScreenShot.verticalCenter
                         LineEdit {
                             id: inputScreenShotPath
@@ -1331,36 +1334,43 @@ Rectangle {
                             }
                         }
                     }
-                    Rectangle{
-                        id:btnSave
-                        width: txtSave.width +24
-                        height: 28
-                        color: "#3B84F6"
-                        radius: 2
-                        anchors.left: parent.left
-                        anchors.leftMargin: 20
-                        anchors.bottom: parent.bottom
-                        anchors.bottomMargin: 10
-                        Text {
-                            id: txtSave
-                            anchors.horizontalCenter: parent.horizontalCenter
-                            anchors.verticalCenter: parent.verticalCenter
-                            elide: Text.ElideMiddle
-                            font.pixelSize: 14
-                            color: "#ffffff"
-                            text: qsTr("设置")
-                        }
-                        MouseArea{
-                            anchors.fill: parent
-                            onClicked: {
-                                iradInfoSet();
-                            }
-                            onPressed: btnSave.color = "#81C3FF"
-                            onReleased: btnSave.color = "#3B84F6"
-                        }
-                    }
+
+
+
+
                 }
+
+
                 
+            }
+
+            Rectangle{
+                id:btnSave
+                width: txtSave.width +50
+                height: 30
+                color: "#3B84F6"
+                radius: 2
+                anchors.right: parent.right
+                anchors.rightMargin: 40
+                anchors.bottom: parent.bottom
+                anchors.bottomMargin: 20
+                Text {
+                    id: txtSave
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    anchors.verticalCenter: parent.verticalCenter
+                    elide: Text.ElideMiddle
+                    font.pixelSize: 16
+                    color: "#ffffff"
+                    text: qsTr("设置")
+                }
+                MouseArea{
+                    anchors.fill: parent
+                    onClicked: {
+                        iradInfoSet();
+                    }
+                    onPressed: btnSave.color = "#81C3FF"
+                    onReleased: btnSave.color = "#3B84F6"
+                }
             }
         }
         
@@ -1811,7 +1821,7 @@ Rectangle {
         case lEnglish:
             txtRecordSet.text = "Video Settings"
             txtRecortPath.text = "Storage Path"
-            txtScreenShotPath.text = "Storage Path"
+            txtScreenShotPath.text = "Storage path of alarm picture"
             txtWarnTemSet.text = "Alarm Temperature"
             labelSwitchTime.text = "Time synchronization"
             labelTime.text = "Time OSD"
@@ -1838,7 +1848,7 @@ Rectangle {
         case lChinese:
             txtRecordSet.text = "录像设置"
             txtRecortPath.text = "录像存储路径"
-            txtScreenShotPath.text = "抓拍存储路径"
+            txtScreenShotPath.text = "告警图片存储路径"
             txtWarnTemSet.text = "告警温度设置"
             labelSwitchTime.text = "时间同步"
             labelTime.text = "时间显示"
@@ -1910,7 +1920,7 @@ Rectangle {
         case lRussian:
             txtRecordSet.text = "Настройка записи"
             txtRecortPath.text = "Путь хранения видео"
-            txtScreenShotPath.text = "Путь сохранения снимка"
+            txtScreenShotPath.text = "Путь хранения тревожной картинки"
             txtWarnTemSet.text = "Температура тревоги"
             labelSwitchTime.text = "Синхронизация времени"
             labelTime.text = "Время OSD"
@@ -1936,7 +1946,7 @@ Rectangle {
         case ltuerqi:
             txtRecordSet.text = "Video ayarları"
             txtRecortPath.text = "Depolama yolu"
-            txtScreenShotPath.text = "Depolama yolu"
+            txtScreenShotPath.text = "Alarm resminin saklama yolu"
             txtWarnTemSet.text = "Alarm Sıcaklığı"
             labelSwitchTime.text = "Zaman senkronizasyonu"
             labelTime.text = "Zaman OSD'si"
@@ -1962,7 +1972,7 @@ Rectangle {
         case lxibanya:
             txtRecordSet.text = "Ajustes de video"
             txtRecortPath.text = "ruta de almacenamiento"
-            txtScreenShotPath.text = "ruta de almacenamiento"
+            txtScreenShotPath.text = "Ruta de almacenamiento de la imagen de alarma"
             txtWarnTemSet.text = "alarma de temperatura"
             labelSwitchTime.text = "Sincronización de tiempo"
             labelTime.text = "tiempo OSD"
@@ -1988,7 +1998,7 @@ Rectangle {
         case lfayu:
             txtRecordSet.text = "Paramètres vidéo"
             txtRecortPath.text = "Chemin de stockage vidéo"
-            txtScreenShotPath.text = "Chemin de stockage photo"
+            txtScreenShotPath.text = "Chemin de stockage de l'image d'alarme"
             txtWarnTemSet.text = "Température d'alarme"
             labelSwitchTime.text = "Synchronisation horaire"
             labelTime.text = "Heure OSD"

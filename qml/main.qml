@@ -317,7 +317,6 @@ Window {
         anchors.left: parent.left
         anchors.leftMargin: 10
         anchors.bottom: parent.bottom
-
         sourceComponent: null
     }
 
