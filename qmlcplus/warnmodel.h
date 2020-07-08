@@ -22,7 +22,7 @@ public:
 
     Q_INVOKABLE void setClipbord(QString str);
 
-    Q_INVOKABLE void funFlushWarnInfo(QString capturePaht,QString logFileName);
+    Q_INVOKABLE void funFlushWarnInfo(QString capturePaht,QString did,QString logFileName);
     Q_INVOKABLE void funDeleteIndex(int index);
     Q_INVOKABLE int funFindIndex(QString h,QString m,QString s);
     Q_INVOKABLE void funSetAllSelect(bool isSelect);//选中所有数据

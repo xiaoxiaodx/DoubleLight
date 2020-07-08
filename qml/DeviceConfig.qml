@@ -64,6 +64,8 @@ Rectangle {
     property int imagparamwdr: -1
     property bool wdrisChange: false
     
+
+    property string deviceDid: ""
     Settings {
         id:setting
         
@@ -569,7 +571,7 @@ Rectangle {
                     
                     Text {
                         id: txtSwichWarn
-                        text: qsTr("报警开关")
+                        text: qsTr("高温告警")
                         font.pixelSize: fontSize
                         color: fontColor
                         anchors.right: swichWarn.left
@@ -650,22 +652,21 @@ Rectangle {
                         id:swichScreenShot
                         width: 30
                         height: 15
-                        anchors.left: line2.left
-                        anchors.leftMargin: parSetFirstAlignLine
-                        anchors.top: line2.bottom
+                        anchors.left: swichWarn.left
+                        anchors.top: swichWarn.bottom
+                        anchors.topMargin: topmargin
                         visible: false
-                        anchors.topMargin: 172
                         onCheckedChanged: s_screenShotSwith(checked)
                     }
                     
                     Text {
                         id: txtScreenShotPath
-                        text: qsTr("告警图片存储路径")
+                        text: qsTr("图片存储路径")
                         font.pixelSize: fontSize
                         color: fontColor
                         anchors.right: rectScreenShotPath.left
                         anchors.rightMargin: 20
-                        anchors.verticalCenter: swichScreenShot.verticalCenter
+                        anchors.verticalCenter: rectScreenShotPath.verticalCenter
                     }
                     Rectangle{
                         id:rectScreenShotPath
@@ -674,9 +675,9 @@ Rectangle {
                         border.width: 1
                         width: 200
                         height: 28
-                        anchors.left: line2.left
-                        anchors.leftMargin: parSetFirstAlignLine
-                        anchors.verticalCenter: swichScreenShot.verticalCenter
+                        anchors.left: rectRecordPath.left
+                        anchors.top: rectRecordPath.bottom
+                        anchors.topMargin: topmargin
                         LineEdit {
                             id: inputScreenShotPath
                             width: rectScreenShotPath.width - imgScreenShotPath.width - 22
@@ -735,10 +736,9 @@ Rectangle {
                         id:swichBeer
                         width: 30
                         height: 15
-                        anchors.left: line2.left
-                        anchors.leftMargin: parSetFirstAlignLine
-                        anchors.top: line2.bottom
-                        anchors.topMargin:218
+                        anchors.left: swichWarn.left
+                        anchors.top: swichWarn.bottom
+                        anchors.topMargin: topmargin
                         onCheckedChanged:{
                             
                             //s_beerSwith(checked)
@@ -749,10 +749,9 @@ Rectangle {
                         id:swichKuandongtai
                         width: 30
                         height: 15
-                        anchors.left: line2.left
-                        anchors.leftMargin: parSetFirstAlignLine
-                        anchors.top: line2.bottom
-                        anchors.topMargin:263
+                        anchors.left: swichBeer.left
+                        anchors.top: swichBeer.bottom
+                        anchors.topMargin:topmargin
                         
                     }
                     
@@ -835,10 +834,9 @@ Rectangle {
                         id:swichMask
                         width: 30
                         height: 15
-                        anchors.left: line2.left
-                        anchors.leftMargin: parSetFirstAlignLine
-                        anchors.top: line2.bottom
-                        anchors.topMargin:303
+                        anchors.left: swichKuandongtai.left
+                        anchors.top: swichKuandongtai.bottom
+                        anchors.topMargin:topmargin
 
                     }
 
@@ -869,7 +867,7 @@ Rectangle {
                         height: 1
                         color: "#e2e2e2"
                         anchors.top: parent.top
-                        anchors.topMargin: 580
+                        anchors.topMargin: 500
                         anchors.horizontalCenter: parent.horizontalCenter
                     }
                     
@@ -1819,19 +1817,19 @@ Rectangle {
         
         switch(type){
         case lEnglish:
-            txtRecordSet.text = "Video Settings"
-            txtRecortPath.text = "Storage Path"
-            txtScreenShotPath.text = "Storage path of alarm picture"
+            txtRecordSet.text = "Storage Path"
+            txtRecortPath.text = "Video"
+            txtScreenShotPath.text = "Picture Storage Path"
             txtWarnTemSet.text = "Alarm Temperature"
-            labelSwitchTime.text = "Time synchronization"
+            labelSwitchTime.text = "Time Synchronization"
             labelTime.text = "Time OSD"
             txtparset.text = "Parameter Settings"
             txtSwichBeer.text = "Buzzer"
            // txtSwichRecord.text = "Video"
             txtSwichScreenShot.text = "Snapshot"
-            txtSwichWarn.text = "Alarm"
-            txtTempMin.text = "Temperature control valve"
-            txtTempDrift.text = "Temperature drift setting"
+            txtSwichWarn.text = "High Temperature Alarm"
+            txtTempMin.text = "Temperature Control Valve"
+            txtTempDrift.text = "Temperature Drift Setting"
             txtUpdate.text = "Upgrade"
             txtUpdateFile.text = "Upgrade"
             txtSave.text = "Confirm"
@@ -1846,8 +1844,8 @@ Rectangle {
             txtGateway.text = "Default Gateway"
             break;
         case lChinese:
-            txtRecordSet.text = "录像设置"
-            txtRecortPath.text = "录像存储路径"
+            txtRecordSet.text = "存储路径"
+            txtRecortPath.text = "视频"
             txtScreenShotPath.text = "告警图片存储路径"
             txtWarnTemSet.text = "告警温度设置"
             labelSwitchTime.text = "时间同步"
@@ -1856,7 +1854,7 @@ Rectangle {
             txtSwichBeer.text = "蜂鸣开关"
             //txtSwichRecord.text = "录像开关"
             txtSwichScreenShot.text = "抓拍开关"
-            txtSwichWarn.text = "报警开关"
+            txtSwichWarn.text = "高温告警"
             txtTempMin.text = "温度控制阀"
             txtTempDrift.text = "温漂设置"
             txtUpdate.text = "升级"
@@ -1918,9 +1916,9 @@ Rectangle {
             txtMask.text = "Alarm maski"
             break;
         case lRussian:
-            txtRecordSet.text = "Настройка записи"
-            txtRecortPath.text = "Путь хранения видео"
-            txtScreenShotPath.text = "Путь хранения тревожной картинки"
+            txtRecordSet.text = "Путь хранения"
+            txtRecortPath.text = "Запись"
+            txtScreenShotPath.text = "Путь к хранилищу изображений"
             txtWarnTemSet.text = "Температура тревоги"
             labelSwitchTime.text = "Синхронизация времени"
             labelTime.text = "Время OSD"
@@ -1928,7 +1926,7 @@ Rectangle {
             txtSwichBeer.text = "Звуковой сигнал"
             //txtSwichRecord.text = "Запись"
             txtSwichScreenShot.text = "Снимок"
-            txtSwichWarn.text = "Тревога"
+            txtSwichWarn.text = "Сигнализация высокой температуры"
             txtTempMin.text = "Max Min температура"
             txtTempDrift.text = "Коррекция температуры"
             txtUpdate.text = "Обновить"
@@ -1944,9 +1942,9 @@ Rectangle {
             txtGateway.text = "Шлюз по умолчанию"
             break;
         case ltuerqi:
-            txtRecordSet.text = "Video ayarları"
-            txtRecortPath.text = "Depolama yolu"
-            txtScreenShotPath.text = "Alarm resminin saklama yolu"
+            txtRecordSet.text = "Depolama Yolu"
+            txtRecortPath.text = "Video"
+            txtScreenShotPath.text = "Resim Saklama Yolu"
             txtWarnTemSet.text = "Alarm Sıcaklığı"
             labelSwitchTime.text = "Zaman senkronizasyonu"
             labelTime.text = "Zaman OSD'si"
@@ -1954,7 +1952,7 @@ Rectangle {
             txtSwichBeer.text = "Buzzer"
            // txtSwichRecord.text = "Video"
             txtSwichScreenShot.text = "Snapshot"
-            txtSwichWarn.text = "Alarm (anahtar)"
+            txtSwichWarn.text = "Yüksek Sıcaklık Alarmı"
             txtTempMin.text = "Max Min Sıcaklık"
             txtTempDrift.text = "Sıcaklık sapması ayarı"
             txtUpdate.text = "Yükselt"
@@ -1971,8 +1969,8 @@ Rectangle {
             break;
         case lxibanya:
             txtRecordSet.text = "Ajustes de video"
-            txtRecortPath.text = "ruta de almacenamiento"
-            txtScreenShotPath.text = "Ruta de almacenamiento de la imagen de alarma"
+            txtRecortPath.text = "Vídeo"
+            txtScreenShotPath.text = "Ruta de almacenamiento de imágenes"
             txtWarnTemSet.text = "alarma de temperatura"
             labelSwitchTime.text = "Sincronización de tiempo"
             labelTime.text = "tiempo OSD"
@@ -1980,7 +1978,7 @@ Rectangle {
             txtSwichBeer.text = "Zumbador"
            // txtSwichRecord.text = "Vídeo"
             txtSwichScreenShot.text = "Instantánea"
-            txtSwichWarn.text = "Alarma (interruptor)"
+            txtSwichWarn.text = "Alarma de alta temperatura"
             txtTempMin.text = "válvula de control de temperatura"
             txtTempDrift.text = "ajuste de la deriva térmica"
             txtUpdate.text = "Upgrade"
@@ -1996,9 +1994,9 @@ Rectangle {
             txtGateway.text = "Puerta de enlace predeterminada"
             break;
         case lfayu:
-            txtRecordSet.text = "Paramètres vidéo"
-            txtRecortPath.text = "Chemin de stockage vidéo"
-            txtScreenShotPath.text = "Chemin de stockage de l'image d'alarme"
+            txtRecordSet.text = "Chemin de stockage"
+            txtRecortPath.text = "Vidéo"
+            txtScreenShotPath.text = "Chemin de stockage des images"
             txtWarnTemSet.text = "Température d'alarme"
             labelSwitchTime.text = "Synchronisation horaire"
             labelTime.text = "Heure OSD"
@@ -2006,7 +2004,7 @@ Rectangle {
             txtSwichBeer.text = "Avertisseur sonore"
           //  txtSwichRecord.text = "Vidéo"
             txtSwichScreenShot.text = "Instantané"
-            txtSwichWarn.text = "Alarme(interrupteur)"
+            txtSwichWarn.text = "Alarme haute température"
             txtTempMin.text = "Température max/min"
             txtTempDrift.text = "Correction de la température"
             txtUpdate.text = "Améliorer"

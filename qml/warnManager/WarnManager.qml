@@ -496,12 +496,12 @@ Rectangle {
             y:67
             Component.onCompleted: {
 
-                curDateStr = Qt.formatDate(calendar.getCurrentData(),"yyyyMMdd");
-                warnmodel.funFlushWarnInfo(deviceconfig.getScrennShotPath(),curDateStr);
+               // curDateStr = Qt.formatDate(calendar.getCurrentData(),"yyyyMMdd");
+               // warnmodel.funFlushWarnInfo(deviceconfig.getScrennShotPath(),deviceconfig.deviceDid,curDateStr);
             }
             onS_dayChange:{
                 curDateStr = value;
-                warnmodel.funFlushWarnInfo(deviceconfig.getScrennShotPath(),curDateStr);
+                warnmodel.funFlushWarnInfo(deviceconfig.getScrennShotPath(),deviceconfig.deviceDid,curDateStr);
             }
 
             onS_dayChange1: txtDate.text = value
@@ -535,6 +535,16 @@ Rectangle {
     function funProcessPushAlarm(map){
 
         warnmodel.funProcessPushAlarm2(deviceconfig.getScrennShotPath(),map);
+    }
+
+    function flushAlarm(did)
+    {
+
+        var curDateStr = Qt.formatDate(calendar.getCurrentData(),"yyyyMMdd");
+
+        console.debug("***********************flushAlarm "+curDateStr+" "+did)
+
+        warnmodel.funFlushWarnInfo(deviceconfig.getScrennShotPath(),did,curDateStr);
     }
 
 

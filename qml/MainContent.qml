@@ -104,7 +104,7 @@ Rectangle {
     ScreenVideo{
         id:screenv
         Component.onCompleted: {
-            screenv.funCreateAviRecordThread(deviceconfig.getScrennShotPath(),deviceconfig.getRecordPath(),captureScrennTimer.interval);
+            screenv.funCreateAviRecordThread(deviceconfig.getRecordPath()+"/"+deviceconfig.deviceDid,captureScrennTimer.interval);
         }
     }
 
@@ -132,7 +132,7 @@ Rectangle {
                 return;
             }
 
-            screenv.funScreenRecrod(deviceconfig.getRecordPath(),main,0 ,68,main.width,main.height-68);
+            screenv.funScreenRecrod(deviceconfig.getRecordPath()+"/"+deviceconfig.deviceDid+"/video",main,0 ,68,main.width,main.height-68);
         }
     }
 

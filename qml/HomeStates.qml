@@ -53,7 +53,7 @@ Rectangle{
                            captureScrennTimer.isRecord = true
                            vedioLayout.startRecordLable();
                            if(!captureScrennTimer.running){
-                               screenv.funCreateAviRecordThread(deviceconfig.getScrennShotPath(),deviceconfig.getRecordPath(),captureScrennTimer.interval);
+                               screenv.funCreateAviRecordThread(deviceconfig.getRecordPath()+"/"+deviceconfig.deviceDid,captureScrennTimer.interval);
                                captureScrennTimer.start()
                            }
                        } else{

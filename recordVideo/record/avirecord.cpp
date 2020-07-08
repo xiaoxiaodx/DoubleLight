@@ -31,7 +31,6 @@ void AviRecord::slot_writeImage(QString path,QImage img,int capx,int capy,int ca
         slot_endRecord();
     }
 
-
     QImage img1 = img.copy(QRect(capx,capy,curResW,curResH));
 
     slot_startRecord("",0,img1.width(),img1.height());

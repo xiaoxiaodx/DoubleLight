@@ -77,6 +77,7 @@ void ScreenVideo::funCreateScreenThread(QString capturePath,QString recordPath,i
 
 void ScreenVideo::funCreateAviRecordThread(QString recordPath,int period)
 {
+    qDebug()<<"funCreateAviRecordThread:"<<recordPath;
     if(aviRecord == nullptr){
         aviRecord = new AviRecord("");
         aviThread = new  QThread;

@@ -478,12 +478,6 @@ Rectangle {
 
         }else if(strcmd === "pushalarm"){
 
-            //            if(smap.imagedata === undefined)//老版本没有这个字段
-            //                startWarn(smap.temperature);
-            //            else{
-            //                if(deviceconfig.getSwitchScreenShot())
-            //                    warnmanger.screenShot1(deviceconfig.getScrennShotPath(),main,0 ,68,main.width,main.height-68-50-160-57,10,smap.alarmtype)
-
             warnmanger.funProcessPushAlarm(smap);
             //开启动画
             if(smap.alarmtype === 80){
@@ -513,6 +507,10 @@ Rectangle {
             deviceconfig.setTempcolor(smap.tempcolor);
         }else if("getdeviceinfo" === strcmd){
 
+            console.debug("qml getdeviceinfo:"+smap.uuid)
+            deviceconfig.deviceDid = smap.uuid
+
+            warnmanger.flushAlarm(smap.uuid);
             mhomeStateBar.setVersionInfo(smap.softwarever);
 
         }else if("setimagparam" === strcmd){

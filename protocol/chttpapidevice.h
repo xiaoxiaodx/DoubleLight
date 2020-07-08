@@ -243,6 +243,8 @@ private:
 
     bool isForceFinish = false;
 
+    QString deviceDid = "";
+
 };
 
 #endif

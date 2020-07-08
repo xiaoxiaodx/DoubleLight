@@ -66,6 +66,7 @@ void CHttpApiDevice::slot_destoryConnect()
             SendTimer = nullptr;
             reconnectTimer = nullptr;
 
+            deviceDid = "";
             qDebug()<<" slot_destoryConnect 5";
         }
 
@@ -404,13 +405,18 @@ int CHttpApiDevice::HttpMsgCallBack(char * pData) {
                 callbackMap.insert("wdr",object.value("data").toObject().value("wdr").toInt());
 
 
-            }else if("getdeviceinfo" == cmd){
-                callbackMap.insert("softwarever",object.value("data").toObject().value("softwarever").toString());
             }else if("getnetworkinfo" == cmd){
                 callbackMap.insert("ip",object.value("data").toObject().value("ip").toString());
                 callbackMap.insert("gateway",object.value("data").toObject().value("gateway").toString());
                 callbackMap.insert("netmask",object.value("data").toObject().value("netmask").toString());
                 callbackMap.insert("dhcpenable",object.value("data").toObject().value("dhcpenable").toInt());
+            }else if("getdeviceinfo" == cmd){
+
+                callbackMap.insert("model",object.value("data").toObject().value("model").toString());
+                callbackMap.insert("uuid",object.value("data").toObject().value("uuid").toString());
+                callbackMap.insert("softwarever",object.value("data").toObject().value("softwarever").toString());
+
+                deviceDid = object.value("data").toObject().value("uuid").toString();
             }
 
 
@@ -867,9 +873,9 @@ void CHttpApiDevice::createWarnService(QString ip,int port)
 }
 void CHttpApiDevice::slot_WarnMsg(QMap<QString,QVariant> map)
 {
-    qDebug()<<"slot_WarnMsg :";
-     qDebug()<<"slot_WarnMsg :"<<map;
+    map.insert("deviceDid",deviceDid);
     emit signal_ReadMsg(map);
+
 }
 
 void CHttpApiDevice::httpSendCommonCmd(QString cmd,QString msgid)
