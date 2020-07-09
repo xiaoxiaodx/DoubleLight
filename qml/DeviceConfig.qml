@@ -200,7 +200,7 @@ Rectangle {
                     anchors.verticalCenter: parent.verticalCenter
                     anchors.horizontalCenter: parent.horizontalCenter
                     width: rectcontent.width
-                    height: 1200
+                    height: 1000
                     color: "#F8FAFD"
                     
 //                    Text {
