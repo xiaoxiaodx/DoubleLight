@@ -72,7 +72,7 @@ Rectangle {
         fileName: "config.ini"
         
         property alias recordPath: inputRecordPath.text
-        property alias screenShotPath: inputScreenShotPath.text
+        //property alias screenShotPath: inputScreenShotPath.text
         property alias temDrift:inputTempDrift.text
         property alias tempMin: inputTempMin.text
         //property alias tempMax: inputTempMax.text
@@ -143,7 +143,7 @@ Rectangle {
     
     Component.onCompleted: {
         
-        setting.screenShotPath =  screenv.funIsExitCurCapturePath(setting.screenShotPath)
+      //  setting.screenShotPath =  screenv.funIsExitCurCapturePath(setting.screenShotPath)
         setting.recordPath = screenv.funIsExitCurRecordPath(setting.recordPath)
     }
     
@@ -203,26 +203,26 @@ Rectangle {
                     height: 1200
                     color: "#F8FAFD"
                     
-                    Text {
-                        id: labelTime
-                        font.pixelSize: fontSize
-                        color: fontColor
-                        text: qsTr("时间设置")
-                        anchors.bottom: lineTime.top
-                        anchors.left: lineTime.left
-                        anchors.bottomMargin: 20
-                    }
+//                    Text {
+//                        id: //labelTime
+//                        font.pixelSize: fontSize
+//                        color: fontColor
+//                        text: qsTr("时间设置")
+//                        anchors.bottom: lineTime.top
+//                        anchors.left: lineTime.left
+//                        anchors.bottomMargin: 20
+//                    }
 
-                    Rectangle{
-                        id:lineTime
-                        width: parent.width - 20*2
-                        height: 1
-                        color: "#e2e2e2"
-                        anchors.top: parent.top
-                        anchors.topMargin: 62
-                        anchors.horizontalCenter: parent.horizontalCenter
+//                    Rectangle{
+//                        id:lineTime
+//                        width: parent.width - 20*2
+//                        height: 1
+//                        color: "#e2e2e2"
+//                        anchors.top: parent.top
+//                        anchors.topMargin: 62
+//                        anchors.horizontalCenter: parent.horizontalCenter
 
-                    }
+//                    }
 
                     Text {
                         id: labelSwitchTime
@@ -236,9 +236,9 @@ Rectangle {
 
                     Rectangle{
                         id:rectTimeSynchronization
-                        anchors.left: lineTime.left
+                        anchors.left: line2.left
                         anchors.leftMargin: parSetFirstAlignLine
-                        anchors.top: lineTime.bottom
+                        anchors.top: line2.bottom
                         anchors.topMargin: firsttopmargin
                         width: 44
                         height: 22
@@ -343,7 +343,7 @@ Rectangle {
                         height: 1
                         color: "#e2e2e2"
                         anchors.top: parent.top
-                        anchors.topMargin: 187
+                        anchors.topMargin: 62
                         anchors.horizontalCenter: parent.horizontalCenter
                     }
                     
@@ -363,10 +363,9 @@ Rectangle {
                         width: 88
                         height: 32
                         radius: 4
-                        anchors.left: line2.left
-                        anchors.leftMargin: parSetFirstAlignLine
-                        anchors.top: line2.bottom
-                        anchors.topMargin: firsttopmargin
+                        anchors.left: rectTimeSynchronization.left
+                        anchors.top: rectTimeSynchronization.bottom
+                        anchors.topMargin: topmargin
                         LineEdit {
                             id: inputTempDrift
                             width: rectTempDrift.width  - 22
@@ -659,69 +658,69 @@ Rectangle {
                         onCheckedChanged: s_screenShotSwith(checked)
                     }
                     
-                    Text {
-                        id: txtScreenShotPath
-                        text: qsTr("图片存储路径")
-                        font.pixelSize: fontSize
-                        color: fontColor
-                        anchors.right: rectScreenShotPath.left
-                        anchors.rightMargin: 20
-                        anchors.verticalCenter: rectScreenShotPath.verticalCenter
-                    }
-                    Rectangle{
-                        id:rectScreenShotPath
-                        color: "#F8FAFD"
-                        border.color: "#DEDFE3"
-                        border.width: 1
-                        width: 200
-                        height: 28
-                        anchors.left: rectRecordPath.left
-                        anchors.top: rectRecordPath.bottom
-                        anchors.topMargin: topmargin
-                        LineEdit {
-                            id: inputScreenShotPath
-                            width: rectScreenShotPath.width - imgScreenShotPath.width - 22
-                            height: rectScreenShotPath.height -2
-                            anchors.left: parent.left
-                            anchors.leftMargin: 2
-                            anchors.verticalCenter: rectScreenShotPath.verticalCenter
-                            border.width: 0
-                            text:screenv.funGetCurPath()
-                            font.pixelSize: lineeditfontSize
-                            placeholderText: ""
-                            isNeedDoubleClickEdit: false
-                            textLeftPadding:0
-                            txtColor: Qt.rgba(0,0,0,0.65)
-                            color: "#F8FAFD"
-                            //onTextChanged: s_screenShotPathSet(inputScreenShotPath.text)
-                        }
-                        Image {
-                            id: imgScreenShotPath
-                            width: 16
-                            height: 13
-                            source: "qrc:/images/file.png"
-                            anchors.right: parent.right
-                            anchors.rightMargin: 10
-                            anchors.verticalCenter: parent.verticalCenter
-                            MouseArea{
-                                anchors.fill: parent
-                                onPressed: {
-                                    imgScreenShotPath.source = "qrc:/images/fileopen.png"
-                                }
+//                    Text {
+//                        id: //txtScreenShotPath
+//                        text: qsTr("图片存储路径")
+//                        font.pixelSize: fontSize
+//                        color: fontColor
+//                        anchors.right: rectScreenShotPath.left
+//                        anchors.rightMargin: 20
+//                        anchors.verticalCenter: rectScreenShotPath.verticalCenter
+//                    }
+//                    Rectangle{
+//                        id:rectScreenShotPath
+//                        color: "#F8FAFD"
+//                        border.color: "#DEDFE3"
+//                        border.width: 1
+//                        width: 200
+//                        height: 28
+//                        anchors.left: rectRecordPath.left
+//                        anchors.top: rectRecordPath.bottom
+//                        anchors.topMargin: topmargin
+//                        LineEdit {
+//                            id: inputScreenShotPath
+//                            width: rectScreenShotPath.width - imgScreenShotPath.width - 22
+//                            height: rectScreenShotPath.height -2
+//                            anchors.left: parent.left
+//                            anchors.leftMargin: 2
+//                            anchors.verticalCenter: rectScreenShotPath.verticalCenter
+//                            border.width: 0
+//                            text:screenv.funGetCurPath()
+//                            font.pixelSize: lineeditfontSize
+//                            placeholderText: ""
+//                            isNeedDoubleClickEdit: false
+//                            textLeftPadding:0
+//                            txtColor: Qt.rgba(0,0,0,0.65)
+//                            color: "#F8FAFD"
+//                            //onTextChanged: s_screenShotPathSet(inputScreenShotPath.text)
+//                        }
+//                        Image {
+//                            id: imgScreenShotPath
+//                            width: 16
+//                            height: 13
+//                            source: "qrc:/images/file.png"
+//                            anchors.right: parent.right
+//                            anchors.rightMargin: 10
+//                            anchors.verticalCenter: parent.verticalCenter
+//                            MouseArea{
+//                                anchors.fill: parent
+//                                onPressed: {
+//                                    imgScreenShotPath.source = "qrc:/images/fileopen.png"
+//                                }
                                 
-                                onReleased: {
-                                    imgScreenShotPath.source = "qrc:/images/file.png"
-                                }
+//                                onReleased: {
+//                                    imgScreenShotPath.source = "qrc:/images/file.png"
+//                                }
                                 
-                                onClicked: {
-                                    fileDialog.folder = "file:///"+inputScreenShotPath.text
-                                    fileDialog.pathname = "screenShotPath";
-                                    fileDialog.setSelectFolder(true)
-                                    fileDialog.open()
-                                }
-                            }
-                        }
-                    }
+//                                onClicked: {
+//                                    fileDialog.folder = "file:///"+inputScreenShotPath.text
+//                                    fileDialog.pathname = "screenShotPath";
+//                                    fileDialog.setSelectFolder(true)
+//                                    fileDialog.open()
+//                                }
+//                            }
+//                        }
+//                    }
                     
                     Text {
                         id: txtSwichBeer
@@ -851,49 +850,30 @@ Rectangle {
                     }
 
                     
-                    Text {
-                        id: txtRecordSet
-                        text: qsTr("录像设置")
-                        color: fontColor
-                        font.pixelSize: fontSize
-                        anchors.bottom: line3.top
-                        anchors.left: line3.left
-                        anchors.bottomMargin: 20
-                    }
-                    
-                    Rectangle{
-                        id:line3
-                        width: parent.width - 20*2
-                        height: 1
-                        color: "#e2e2e2"
-                        anchors.top: parent.top
-                        anchors.topMargin: 500
-                        anchors.horizontalCenter: parent.horizontalCenter
-                    }
-                    
 //                    Text {
-//                        id: txtSwichRecord
-//                        text: qsTr("录像开关")
+//                        id: //txtRecordSet
+//                        text: qsTr("录像设置")
 //                        color: fontColor
 //                        font.pixelSize: fontSize
-//                        anchors.verticalCenter: swichRecord.verticalCenter
-//                        anchors.right: swichRecord.left
-//                        anchors.rightMargin: 20
-//                    }
-//                    SimpleSwich{
-//                        id:swichRecord
-//                        width: 30
-//                        height: 15
+//                        anchors.bottom: line3.top
 //                        anchors.left: line3.left
-//                        anchors.leftMargin: parSetFirstAlignLine
-//                        anchors.top: line3.bottom
-//                        anchors.topMargin: 27
-//                        onCheckedChanged: s_recordSwith(checked)
+//                        anchors.bottomMargin: 20
 //                    }
+                    
+//                    Rectangle{
+//                        id:line3
+//                        width: parent.width - 20*2
+//                        height: 1
+//                        color: "#e2e2e2"
+//                        anchors.top: parent.top
+//                        anchors.topMargin: 500
+//                        anchors.horizontalCenter: parent.horizontalCenter
+//                    }
+                    
                     
                     Text {
                         id: txtRecortPath
-                        text: qsTr("录像存储路径")
+                        text: qsTr("存储路径")
                         color: fontColor
                         font.pixelSize: fontSize
                         anchors.right: rectRecordPath.left
@@ -907,10 +887,9 @@ Rectangle {
                         border.width: 1
                         width: 200
                         height: 28
-                        anchors.left: line3.left
-                        anchors.leftMargin: parSetFirstAlignLine
-                        anchors.top: line3.bottom
-                        anchors.topMargin: 20
+                        anchors.left: swichMask.left
+                        anchors.top: swichMask.bottom
+                        anchors.topMargin: topmargin
                         LineEdit {
                             id: inputRecordPath
                             width: rectRecordPath.width - imgRecordPath.width - 22
@@ -957,27 +936,27 @@ Rectangle {
                     
                     
                     
-                    Text {
-                        id: txtImageSet
-                        font.pixelSize: fontSize
-                        text: qsTr("图像设置")
-                        color: fontColor
-                        visible: curDevTypeStr!=="J07-T"
-                        anchors.bottom: line4.top
-                        anchors.left: line4.left
-                        anchors.bottomMargin: 20
-                    }
+//                    Text {
+//                        id: //txtImageSet
+//                        font.pixelSize: fontSize
+//                        text: qsTr("图像设置")
+//                        color: fontColor
+//                        visible: curDevTypeStr!=="J07-T"
+//                        anchors.bottom: line4.top
+//                        anchors.left: line4.left
+//                        anchors.bottomMargin: 20
+//                    }
                     
-                    Rectangle{
-                        id:line4
-                        width:parent.width - 20*2
-                        height: 1
-                        visible: curDevTypeStr!=="J07-T"
-                        color: "#e2e2e2"
-                        anchors.top: line6.bottom
-                        anchors.topMargin: 220
-                        anchors.horizontalCenter: parent.horizontalCenter
-                    }
+//                    Rectangle{
+//                        id:line4
+//                        width:parent.width - 20*2
+//                        height: 1
+//                        visible: curDevTypeStr!=="J07-T"
+//                        color: "#e2e2e2"
+//                        anchors.top: line6.bottom
+//                        anchors.topMargin: 220
+//                        anchors.horizontalCenter: parent.horizontalCenter
+//                    }
                     
                     Text {
                         id: txtImageSelect
@@ -995,10 +974,9 @@ Rectangle {
                         width:88
                         height: 28
                         visible: curDevTypeStr!=="J07-T"
-                        anchors.left: line4.left
-                        anchors.leftMargin: parSetFirstAlignLine
-                        anchors.top: line4.bottom
-                        anchors.topMargin: 20
+                        anchors.left: rectRecordPath.left
+                        anchors.top: rectRecordPath.bottom
+                        anchors.topMargin: topmargin
                         contentBg: "#F8FAFD"
                         itemColorBgNor:"#FFFFFF"
                         itemColorBgHoverd: "#E7EAF1"
@@ -1042,8 +1020,8 @@ Rectangle {
                         height: 1
                         //visible: curDevTypeStr==="f03"
                         color: "#e2e2e2"
-                        anchors.top: parent.top
-                        anchors.topMargin: 690
+                        anchors.top: cmbImgSelect.bottom
+                        anchors.topMargin: 60
                         anchors.horizontalCenter: parent.horizontalCenter
                     }
                     
@@ -1157,8 +1135,8 @@ Rectangle {
                         height: 1
                         visible: true//curDevTypeStr==="J07"
                         color: "#e2e2e2"
-                        anchors.top: parent.top
-                        anchors.topMargin: 820
+                        anchors.top: rectUpdatePath.bottom
+                        anchors.topMargin: 60
                         anchors.horizontalCenter: parent.horizontalCenter
                     }
 
@@ -1435,7 +1413,7 @@ Rectangle {
                 inputRecordPath.text = str.replace('file:///','');
                 // devicemanagerment.recordingPath = txtVedioSavePath.text
             }else if(pathname === "screenShotPath"){
-                inputScreenShotPath.text = fileDialog.fileUrl.toString().replace('file:///','');
+                //inputScreenShotPath.text = fileDialog.fileUrl.toString().replace('file:///','');
                 //devicemanagerment.screenShotPath = txtscreenshotSavePath.text
             }else if(pathname === "updatePath"){
                 inputUpdatePath.text = fileDialog.fileUrl.toString().replace('file:///','');
@@ -1605,7 +1583,7 @@ Rectangle {
         return setting.recordPath;
     }
     function getScrennShotPath(){
-        return setting.screenShotPath;
+        return setting.recordPath;
     }
     function getTemDrift(){
         return setting.temDrift
@@ -1817,12 +1795,12 @@ Rectangle {
         
         switch(type){
         case lEnglish:
-            txtRecordSet.text = "Storage Path"
-            txtRecortPath.text = "Video"
-            txtScreenShotPath.text = "Picture Storage Path"
+            //txtRecordSet.text = "Storage Path"
+            txtRecortPath.text = "Storage Path"
+            //txtScreenShotPath.text = "Picture Storage Path"
             txtWarnTemSet.text = "Alarm Temperature"
             labelSwitchTime.text = "Time Synchronization"
-            labelTime.text = "Time OSD"
+            //labelTime.text = "Time OSD"
             txtparset.text = "Parameter Settings"
             txtSwichBeer.text = "Buzzer"
            // txtSwichRecord.text = "Video"
@@ -1834,7 +1812,7 @@ Rectangle {
             txtUpdateFile.text = "Upgrade"
             txtSave.text = "Confirm"
             // txtencodetype.text = "Encoding Style"
-            txtImageSet.text = "Thermal Image Color"
+            //txtImageSet.text = "Thermal Image Color"
             txtImageSelect.text = "Color Setting "
             txtMask.text = "Mask Alarm"
             //labelNetType.text = "Network Address"
@@ -1844,12 +1822,12 @@ Rectangle {
             txtGateway.text = "Default Gateway"
             break;
         case lChinese:
-            txtRecordSet.text = "存储路径"
-            txtRecortPath.text = "视频"
-            txtScreenShotPath.text = "告警图片存储路径"
+            //txtRecordSet.text = "存储路径"
+            txtRecortPath.text = "存储路径"
+            //txtScreenShotPath.text = "告警图片存储路径"
             txtWarnTemSet.text = "告警温度设置"
             labelSwitchTime.text = "时间同步"
-            labelTime.text = "时间显示"
+            //labelTime.text = "时间显示"
             txtparset.text = "参数设置"
             txtSwichBeer.text = "蜂鸣开关"
             //txtSwichRecord.text = "录像开关"
@@ -1860,7 +1838,7 @@ Rectangle {
             txtUpdate.text = "升级"
             txtUpdateFile.text = "设备升级"
             txtSave.text = "设置"
-            txtImageSet.text = "图像设置"
+            //txtImageSet.text = "图像设置"
             txtImageSelect.text = "图像选择"
             txtMask.text = "口罩告警"
             //labelNetType.text = "网络地址"
@@ -1870,12 +1848,12 @@ Rectangle {
             txtGateway.text = "网关"
             break;
         case lKhmer:
-            txtRecordSet.text = "ការកំណត់វីដេអូ"
+            //txtRecordSet.text = "ការកំណត់វីដេអូ"
             txtRecortPath.text = "កន្លែងផ្ទុកទិន្នន័យ"
-            txtScreenShotPath.text = "កន្លែងផ្ទុកទិន្នន័យ"
+            //txtScreenShotPath.text = "កន្លែងផ្ទុកទិន្នន័យ"
             txtWarnTemSet.text = "កំណត់សីតុណ្ហភាពដែលត្រូវរោទ៍"
             labelSwitchTime.text = "បង្ហាញពេលវេលា"
-            labelTime.text = "បង្ហាញពេលវេលា"
+            //labelTime.text = "បង្ហាញពេលវេលា"
             txtparset.text = "ការកំណត់ប៉ារ៉ាម៉ែត្រ"
             txtSwichBeer.text = "បិទបើកកុងតាក់ (បុហ្ស័រ)"
             txtSwichRecord.text = "វីដេអូ"
@@ -1886,7 +1864,7 @@ Rectangle {
             txtUpdate.text = "ធ្វើឱ្យប្រសើរឡើង"
             txtUpdateFile.text = "ធ្វើឧបករណ៍ឱ្យប្រសើរឡើង"
             txtSave.text = "រក្សាទុក"
-            txtImageSet.text = "កំណត់ពណ៌"
+            //txtImageSet.text = "កំណត់ពណ៌"
             txtImageSelect.text = "ពណ៌រូបភាពកម្តៅ"
             txtMask.text = "សំឡេងរោរ៍ ម៉ាស់"
             txtNetSet.text = "Network Settings"
@@ -1895,12 +1873,12 @@ Rectangle {
             txtGateway.text = "Default Gateway"
             break;
         case lBolan:
-            txtRecordSet.text = "Ustawienia wideo"
+            //txtRecordSet.text = "Ustawienia wideo"
             txtRecortPath.text = "Ścieżka przechowywania"
-            txtScreenShotPath.text = "Ścieżka przechowywania"
+            //txtScreenShotPath.text = "Ścieżka przechowywania"
             txtWarnTemSet.text = "Alarm Temperatury"
             labelSwitchTime.text = "Czas OSD"
-            labelTime.text = "Czas"
+            //labelTime.text = "Czas"
             txtparset.text = "Ustawienia parametrów"
             txtSwichBeer.text = "Brzęczek"
             txtSwichRecord.text = "Wideo"
@@ -1911,17 +1889,17 @@ Rectangle {
             txtUpdate.text = "Aktualizacja"
             txtUpdateFile.text = "Aktualizacja urządzenia"
             txtSave.text = "Zapisz"
-            txtImageSet.text = "Kolor obrazu termicznego"
+            //txtImageSet.text = "Kolor obrazu termicznego"
             txtImageSelect.text = "Ustawienie koloru"
             txtMask.text = "Alarm maski"
             break;
         case lRussian:
-            txtRecordSet.text = "Путь хранения"
-            txtRecortPath.text = "Запись"
-            txtScreenShotPath.text = "Путь к хранилищу изображений"
+            //txtRecordSet.text = "Путь хранения"
+            txtRecortPath.text = "Путь хранения"
+            //txtScreenShotPath.text = "Путь к хранилищу изображений"
             txtWarnTemSet.text = "Температура тревоги"
             labelSwitchTime.text = "Синхронизация времени"
-            labelTime.text = "Время OSD"
+            //labelTime.text = "Время OSD"
             txtparset.text = "Настройка параметров"
             txtSwichBeer.text = "Звуковой сигнал"
             //txtSwichRecord.text = "Запись"
@@ -1932,7 +1910,7 @@ Rectangle {
             txtUpdate.text = "Обновить"
             txtUpdateFile.text = "Обновление устройства"
             txtSave.text = "Подтверждение"
-            txtImageSet.text = "Цвет теплового изображения"
+            //txtImageSet.text = "Цвет теплового изображения"
             txtImageSelect.text = "Настройка цвета"
             txtMask.text = "Маска тревоги"
             //labelNetType.text = "Айпи адрес"
@@ -1942,12 +1920,12 @@ Rectangle {
             txtGateway.text = "Шлюз по умолчанию"
             break;
         case ltuerqi:
-            txtRecordSet.text = "Depolama Yolu"
-            txtRecortPath.text = "Video"
-            txtScreenShotPath.text = "Resim Saklama Yolu"
+            //txtRecordSet.text = "Depolama Yolu"
+            txtRecortPath.text = "Depolama Yolu"
+            //txtScreenShotPath.text = "Resim Saklama Yolu"
             txtWarnTemSet.text = "Alarm Sıcaklığı"
             labelSwitchTime.text = "Zaman senkronizasyonu"
-            labelTime.text = "Zaman OSD'si"
+            //labelTime.text = "Zaman OSD'si"
             txtparset.text = "Parametre ayarı"
             txtSwichBeer.text = "Buzzer"
            // txtSwichRecord.text = "Video"
@@ -1958,7 +1936,7 @@ Rectangle {
             txtUpdate.text = "Yükselt"
             txtUpdateFile.text = "Cihaz Yükseltme"
             txtSave.text = "Onaylamak"
-            txtImageSet.text = "Termal Görüntü Rengi"
+            //txtImageSet.text = "Termal Görüntü Rengi"
             txtImageSelect.text = "Renk Ayarı"
             txtMask.text = "Maske Alarmı"
             //labelNetType.text = "Ağ adresi"
@@ -1968,12 +1946,12 @@ Rectangle {
             txtGateway.text = "Varsayılan giriş"
             break;
         case lxibanya:
-            txtRecordSet.text = "Ajustes de video"
-            txtRecortPath.text = "Vídeo"
-            txtScreenShotPath.text = "Ruta de almacenamiento de imágenes"
+            //txtRecordSet.text = "Ajustes de video"
+            txtRecortPath.text = "Ajustes de video"
+            //txtScreenShotPath.text = "Ruta de almacenamiento de imágenes"
             txtWarnTemSet.text = "alarma de temperatura"
             labelSwitchTime.text = "Sincronización de tiempo"
-            labelTime.text = "tiempo OSD"
+            //labelTime.text = "tiempo OSD"
             txtparset.text = "Ajuste de parámetros"
             txtSwichBeer.text = "Zumbador"
            // txtSwichRecord.text = "Vídeo"
@@ -1984,7 +1962,7 @@ Rectangle {
             txtUpdate.text = "Upgrade"
             txtUpdateFile.text = "Potenciar"
             txtSave.text = "Confirmar"
-            txtImageSet.text = "Color de imagen térmica"
+            //txtImageSet.text = "Color de imagen térmica"
             txtImageSelect.text = "Ajuste de color"
             txtMask.text = "Alarma de máscara"
             // labelNetType.text = "Dirección de red"
@@ -1994,12 +1972,12 @@ Rectangle {
             txtGateway.text = "Puerta de enlace predeterminada"
             break;
         case lfayu:
-            txtRecordSet.text = "Chemin de stockage"
-            txtRecortPath.text = "Vidéo"
-            txtScreenShotPath.text = "Chemin de stockage des images"
+            //txtRecordSet.text = "Chemin de stockage"
+            txtRecortPath.text = "Chemin de stockage"
+            //txtScreenShotPath.text = "Chemin de stockage des images"
             txtWarnTemSet.text = "Température d'alarme"
             labelSwitchTime.text = "Synchronisation horaire"
-            labelTime.text = "Heure OSD"
+            //labelTime.text = "Heure OSD"
             txtparset.text = "Réglage des paramètres"
             txtSwichBeer.text = "Avertisseur sonore"
           //  txtSwichRecord.text = "Vidéo"
@@ -2010,7 +1988,7 @@ Rectangle {
             txtUpdate.text = "Améliorer"
             txtUpdateFile.text = "Mise à niveau de l'appareil"
             txtSave.text = "Confirmer"
-            txtImageSet.text = "Couleur de l'image thermique"
+            //txtImageSet.text = "Couleur de l'image thermique"
             txtImageSelect.text = "Réglage des couleurs"
             txtMask.text = "Masque d'alarme"
             //labelNetType.text = "Adresse réseau"

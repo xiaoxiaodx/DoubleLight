@@ -57,8 +57,8 @@ QString ScreenVideo::funIsExitCurRecordPath(QString path)
 //如果还没有创建则新建记录线程，如果创建了则发送参数信息
 void ScreenVideo::funCreateScreenThread(QString capturePath,QString recordPath,int period)
 {
-    //    if(writeH264 == nullptr){
 
+    //    if(writeH264 == nullptr){
     //        writeH264 = new WriteH264(capturePath,recordPath,period);
     //        writeThread = new QThread;
     //        connect(this,&ScreenVideo::signal_writeH264,writeH264,&WriteH264::slot_writeH264);

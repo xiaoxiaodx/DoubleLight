@@ -44,10 +44,7 @@ Rectangle{
 
                        if(!img2.isChecked){
 
-                           if(!deviceconfig.getSwitchRecord()){
-                               //main.showToast(qsTr("禁止录像"))
-                               return;
-                           }
+
                            img2.isChecked = true;
                            img2.source = "qrc:/images/recordv_p.png"
                            captureScrennTimer.isRecord = true
@@ -68,22 +65,6 @@ Rectangle{
             }
         }
 
-//        Image{
-//            id:img3
-//            width: 34
-//            height: 34
-//            source: "qrc:/images/replay.png"
-//            MouseArea{
-//                anchors.fill:parent
-//                onPressed: {
-//                    img3.source = "qrc:/images/replay_p.png"
-
-//                }
-//                onReleased:img3.source = "qrc:/images/replay.png"
-
-//                onClicked: qmlLanguage.setLanguage(1)
-//            }
-//        }
     }
 
 
