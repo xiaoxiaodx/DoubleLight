@@ -963,7 +963,7 @@ Rectangle {
                         font.pixelSize: fontSize
                         text: qsTr("图像选择")
                         color: fontColor
-                        visible: curDevTypeStr!=="J07-T"
+                        visible: curDevTypeStr!=="J07-T" && curDevTypeStr!=="J07-I"
                         anchors.right: cmbImgSelect.left
                         anchors.rightMargin: 20
                         anchors.verticalCenter: cmbImgSelect.verticalCenter
@@ -973,7 +973,7 @@ Rectangle {
                         id:cmbImgSelect
                         width:88
                         height: 28
-                        visible: curDevTypeStr!=="J07-T"
+                        visible: curDevTypeStr!=="J07-T" && curDevTypeStr!=="J07-I"
                         anchors.left: rectRecordPath.left
                         anchors.top: rectRecordPath.bottom
                         anchors.topMargin: topmargin

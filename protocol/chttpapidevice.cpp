@@ -349,6 +349,14 @@ int CHttpApiDevice::HttpMsgCallBack(char * pData) {
                 callbackMap.insert("osdenable",object.value("data").toObject().value("osdenable").toInt());
                 callbackMap.insert("maskenable",object.value("data").toObject().value("maskenable").toInt());
 
+                int switchEnable = callbackMap.value("alarmtempEnable").toInt();
+
+                QVariantMap alarmMap;
+                if(switchEnable == 1)
+                    alarmMap .insert("cmd","alarmsubscription");
+                else
+                    alarmMap .insert("cmd","unalarmsubscription");
+                slot_httpParSet(alarmMap);
 
 
             }else if("pushalarm" == cmd){

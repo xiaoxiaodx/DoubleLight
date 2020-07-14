@@ -211,6 +211,7 @@ Rectangle {
                 hoverEnabled: true
                 onPressed: {
                     calendar.open()
+                    //calendar.getCurrentData()
                 }
                 onEntered: imgdate.source = "qrc:/images/data1.png"
                 onReleased: imgdate.source = "qrc:/images/data1.png"
