@@ -34,6 +34,7 @@ public:
     Q_INVOKABLE void funProcessPushAlarm2(QString path,QVariantMap map);
 
 
+    Q_INVOKABLE void exportExcel(QString filepath);
     //截屏
     Q_INVOKABLE bool funScreenShoot(QString path,QQuickWindow *quic,int capx,int capy,int capw,int caph,float warnTemp);
     Q_INVOKABLE bool funScreenShoot1(QString path,QString did,QQuickWindow *quic,int capx,int capy,int capw,int caph,float warnTemp,int tempType);

@@ -436,7 +436,7 @@ Rectangle {
             else if(smap.tempmodel === "F03")
                 deviceconfig.curDevTypeStr = "f03"
             else if(smap.tempmodel === "J07-S" || smap.tempmodel === "J07"){
-                deviceconfig.curDevTypeStr = "J07-S"
+
 
                 if(deviceconfig.getSwitchWarn()){
                     var map1 ={
@@ -446,6 +446,7 @@ Rectangle {
                     video.fun_sendCommonPar(map1)
                 }
             }
+            deviceconfig.curDevTypeStr = smap.tempmodel
 
             deviceconfig.getiradInfo();
 
@@ -464,7 +465,7 @@ Rectangle {
             var tempcontrol = smap.tempcontrol;
             var osdenable = smap.osdenable;
             var tempdisplay = smap.tempdisplay;
-
+            var maskenable = smap.maskenable
             deviceconfig.setSwitchTempdisplay(tempdisplay);
             deviceconfig.tempcontrolcapMax = tempcontrolcaplevelMax
             deviceconfig.tempcontrolcapMin = tempcontrolcaplevelMin;
@@ -481,6 +482,7 @@ Rectangle {
             deviceconfig.setTempContrl(tempcontrol)
             deviceconfig.setSwitchWarn(alarmtempEnable)
             deviceconfig.setPushtime(smap.pushtime)
+            deviceconfig.setSwithMask(maskenable)
 
         }else if(strcmd === "pushalarm"){
 
@@ -489,7 +491,7 @@ Rectangle {
             else{
 
                 if(deviceconfig.getSwitchScreenShot())
-                    warnmanger.screenShot1(deviceconfig.getScrennShotPath(),smap.deviceDid,main,0 ,68,main.width,main.height-68-50-160-57,10,smap.alarmtype)
+                    warnmanger.screenShot1(deviceconfig.getScrennShotPath(),smap.deviceDid,main,0 ,68,main.width,main.height-68-50-160-57,smap.temperature,smap.alarmtype)
 
                 warnmanger.funProcessPushAlarm(smap);
 

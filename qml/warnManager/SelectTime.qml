@@ -1,10 +1,20 @@
 import QtQuick 2.12
 import QtQuick.Controls 2.5
 
-Rectangle {
+
+Popup {
     id: root
-    visible: false;
+
+
+    modal: true
+    focus: true
+    dim:false
+    //设置窗口关闭方式为按“Esc”键关闭
+    closePolicy: Popup.CloseOnEscape|Popup.CloseOnPressOutside
+    //设置窗口的背景控件，不设置的话Popup的边框会显示出来
     signal s_ensure(var timeh,var timem,var times);
+    background: rect
+
     ListModel{
         id:hourModel
         Component.onCompleted: {
@@ -42,6 +52,7 @@ Rectangle {
         color: "#DFE1E6"
         radius: 4
 
+        layer.enabled: true
         MouseArea{
             anchors.fill: parent
             hoverEnabled: true
@@ -59,7 +70,7 @@ Rectangle {
                 width: parent.width
                 height: 34
                 border.width: 0
-                color: index === listhour.currentIndex?"#F7F7F7":"#ffffff"
+                color: index === listhour.currentIndex?"#8AB8FF":"#ffffff"
                 Text {
                     id: txtHour
                     anchors.centerIn: parent
@@ -94,7 +105,7 @@ Rectangle {
                 width: parent.width
                 height: 34
                 border.width: 0
-                color: index === listmin.currentIndex?"#F7F7F7":"#ffffff"
+                color: index === listmin.currentIndex?"#8AB8FF":"#ffffff"
                 Text {
                     id: txtmin
                     anchors.centerIn: parent
@@ -119,7 +130,7 @@ Rectangle {
                 width: parent.width
                 height: 34
                 border.width: 0
-                color: index === listsec.currentIndex?"#F7F7F7":"#ffffff"
+                color: index === listsec.currentIndex?"#8AB8FF":"#ffffff"
                 Text {
                     id: txtSec
                     anchors.centerIn: parent
@@ -145,10 +156,10 @@ Rectangle {
                 anchors.bottomMargin: 6
                 anchors.leftMargin: 20
                 font.pixelSize: 12
-                text: qsTr("取消")
+                text: qsTr("no")
                 MouseArea{
                     anchors.fill: parent
-                    onClicked: root.visible =false
+                    onClicked: root.close()
                 }
             }
 
@@ -158,7 +169,7 @@ Rectangle {
                 anchors.right: parent.right
                 anchors.bottomMargin: 6
                 anchors.rightMargin: 20
-                text: qsTr("确定")
+                text: qsTr("yes")
                 font.pixelSize: 12
                 MouseArea{
                     anchors.fill: parent
@@ -167,72 +178,73 @@ Rectangle {
                         var minstr = ""+minModel.get(listmin.currentIndex).time
                         var secstr = ""+secModel.get(listsec.currentIndex).time
                         s_ensure(hourstr,minstr,secstr);
-                        root.visible = false;
+                        root.close()
                     }
                 }
             }
         }
-    }
 
-    Connections{
-        target: main
-        onS_setLanguage:setLanguage(typeL);
-    }
 
-    function setLanguage(type){
-        switch(type){
-        case lEnglish:
-            txtCancel.text = "no"
-            txtEnsure.text = "yes"
-            break;
-        case lKorean:
-            txtCancel.text = "취소"
-            txtEnsure.text = "확인"
-            break;
-        case lItaly:
-            txtCancel.text = "no"
-            txtEnsure.text = "sì"
-            break;
-        case lChinese:
-            txtCancel.text = "取消"
-            txtEnsure.text = "确定"
-            break
-        case lRussian:
-            txtCancel.text = "нет"
-            txtEnsure.text = "да"
-            break;
-        case lLithuanian:
-            txtCancel.text = "Ne"
-            txtEnsure.text = "Taip"
-            break;
-        case ltuerqi:
-            txtCancel.text = "İptal"
-            txtEnsure.text = "Onayla"
-            break;
-        case ltuerqi1:
-            txtCancel.text = "İptal"
-            txtEnsure.text = "Onayla"
-            break;
-        case lputaoya:
-            txtCancel.text = "no"
-            txtEnsure.text = "yes"
-            break;
-        case lxibanya:
-            txtCancel.text = "no"
-            txtEnsure.text = "yes"
-            break;
-        case lfayu:
-            txtCancel.text = "no"
-            txtEnsure.text = "yes"
-            break;
-        case lniboer:
-            txtCancel.text = "रद्द"
-            txtEnsure.text = "निश्चित"
-            break;
-        case lKhmer:
-            txtCancel.text = "បាទ/ចាស"
-            txtEnsure.text = "ទេ"
-            break;
+        Connections{
+            target: main
+            onS_setLanguage:setLanguage(typeL);
+        }
+
+        function setLanguage(type){
+            switch(type){
+            case lEnglish:
+                txtCancel.text = "no"
+                txtEnsure.text = "yes"
+                break;
+            case lKorean:
+                txtCancel.text = "취소"
+                txtEnsure.text = "확인"
+                break;
+            case lItaly:
+                txtCancel.text = "no"
+                txtEnsure.text = "sì"
+                break;
+            case lChinese:
+                txtCancel.text = "取消"
+                txtEnsure.text = "确定"
+                break
+            case lRussian:
+                txtCancel.text = "нет"
+                txtEnsure.text = "да"
+                break;
+            case lLithuanian:
+                txtCancel.text = "Ne"
+                txtEnsure.text = "Taip"
+                break;
+            case ltuerqi:
+                txtCancel.text = "İptal"
+                txtEnsure.text = "Onayla"
+                break;
+            case ltuerqi1:
+                txtCancel.text = "İptal"
+                txtEnsure.text = "Onayla"
+                break;
+            case lputaoya:
+                txtCancel.text = "no"
+                txtEnsure.text = "yes"
+                break;
+            case lxibanya:
+                txtCancel.text = "no"
+                txtEnsure.text = "yes"
+                break;
+            case lfayu:
+                txtCancel.text = "no"
+                txtEnsure.text = "yes"
+                break;
+            case lniboer:
+                txtCancel.text = "रद्द"
+                txtEnsure.text = "निश्चित"
+                break;
+            case lKhmer:
+                txtCancel.text = "បាទ/ចាស"
+                txtEnsure.text = "ទេ"
+                break;
+            }
         }
     }
 }

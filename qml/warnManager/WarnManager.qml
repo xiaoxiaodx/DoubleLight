@@ -1,6 +1,9 @@
 import QtQuick.Controls 2.5
 import QtQuick 2.0
 import WarnModel 1.0
+import QtQuick.Dialogs 1.3
+import QtGraphicalEffects 1.12
+import Qt.labs.settings 1.0
 import "../playbackVideo"
 import "../dialog"
 Rectangle {
@@ -134,18 +137,18 @@ Rectangle {
                         askDialog.width = 427
                     askDialog.height = 176
                     askDialog.askStr = curLanguage=== lChinese?"确认要删除所选信息吗？":
-                                       curLanguage===lEnglish?"Confirm to delete?":
-                                       curLanguage===lKorean?"삭제하시겠습니까?":
-                                       curLanguage===lItaly?"Cancella Tutta la Selezione?":
-                                       curLanguage===lRussian?"Вы уверены, что хотите удалить информацию?":
-                                       curLanguage===lLithuanian?"Patvirtinti ištrynimą?":
-                                                                  curLanguage === ltuerqi?"Kapı Bilgileri?":
-                                                                  curLanguage === ltuerqi1?"Tüm Seçimleri Sil?":
-                                                                  curLanguage === lputaoya?"Confirme a exclusão?":
-                                                                  curLanguage === lxibanya?"Confirmar para eliminar?":
-                                                                  curLanguage === lfayu?"Confirmer la suppression?":
-                                                                  curLanguage === lniboer?"साँचै मेट्ने हो ?":
-                                                                    curLanguage === lKhmer?"យល់ព្រមលុបចោល?":""
+                                                                curLanguage===lEnglish?"Confirm to delete?":
+                                                                                        curLanguage===lKorean?"삭제하시겠습니까?":
+                                                                                                               curLanguage===lItaly?"Cancella Tutta la Selezione?":
+                                                                                                                                     curLanguage===lRussian?"Вы уверены, что хотите удалить информацию?":
+                                                                                                                                                             curLanguage===lLithuanian?"Patvirtinti ištrynimą?":
+                                                                                                                                                                                        curLanguage === ltuerqi?"Kapı Bilgileri?":
+                                                                                                                                                                                                                 curLanguage === ltuerqi1?"Tüm Seçimleri Sil?":
+                                                                                                                                                                                                                                           curLanguage === lputaoya?"Confirme a exclusão?":
+                                                                                                                                                                                                                                                                     curLanguage === lxibanya?"Confirmar para eliminar?":
+                                                                                                                                                                                                                                                                                               curLanguage === lfayu?"Confirmer la suppression?":
+                                                                                                                                                                                                                                                                                                                      curLanguage === lniboer?"साँचै मेट्ने हो ?":
+                                                                                                                                                                                                                                                                                                                                               curLanguage === lKhmer?"យល់ព្រមលុបចោល?":""
 
                     askDialog.imgSrc = "qrc:/images/ico_warn.png"
                     askDialog.curType = askDialog.warnInfoMutipleDelete
@@ -156,6 +159,47 @@ Rectangle {
             }
         }
 
+        Rectangle{
+            id:rectexportExcel
+            width: txtexportExcel.width + imgexportExcel.width +27
+            height: 36
+            color: "#71C648"
+            radius: 4
+            anchors.left: rectBatch.right
+            anchors.leftMargin: 20
+            anchors.verticalCenter: rectBatch.verticalCenter
+            z:2
+            Image {
+                id: imgexportExcel
+                width: 14
+                height: 15
+                anchors.left: parent.left
+                anchors.leftMargin: 9
+                anchors.verticalCenter: parent.verticalCenter
+                source: "qrc:/images/date.png"
+
+            }
+            Text {
+                id: txtexportExcel
+                font.pixelSize: fontSize
+                anchors.left: imgexportExcel.right
+                anchors.leftMargin: 9
+                anchors.verticalCenter: parent.verticalCenter
+                color: "#ffffff"
+                text: qsTr("Export to excel")
+            }
+            MouseArea{
+                anchors.fill: parent
+                onClicked: {
+
+                    excelimportpop.open();
+                    fileDialog.open();
+
+                }
+                onReleased: rectexportExcel.color = "#71C648"
+                onPressed: rectexportExcel.color = "#99D67C"
+            }
+        }
         //日期选择
         Rectangle{
 
@@ -238,7 +282,7 @@ Rectangle {
                 anchors.fill: parent
                 hoverEnabled: true
                 onPressed: {
-                    selecttime.visible = true
+                    selecttime.open()
                 }
                 onEntered: imgtime.source = "qrc:/images/time.png"
                 onReleased: imgtime.source = "qrc:/images/time.png"
@@ -394,10 +438,9 @@ Rectangle {
                     MouseArea{
                         anchors.fill: parent
                         onClicked:{
-//                            console.debug("absolutePath:"+model.absolutePath)
-//                            imgshow.source ="file:///"+ model.absolutePath
-//                            imgpop.open();
-
+                            //                            console.debug("absolutePath:"+model.absolutePath)
+                            //                            imgshow.source ="file:///"+ model.absolutePath
+                            //                            imgpop.open();
                             imgshow.source = "file:///"+ model.absolutePath
                             imgpop.open();
                         }
@@ -413,18 +456,18 @@ Rectangle {
                     font.pixelSize: fontSize
                     color: "#3B84F6"
                     text:curLanguage === lChinese?"删除":
-                         curLanguage === lEnglish?"Remove":
-                         curLanguage === lKorean?"삭제":
-                         curLanguage === lItaly?"Cancella":
-                         curLanguage === lRussian?"Удалить":
-                         curLanguage === lLithuanian?"Išvalyti":
-                            curLanguage === ltuerqi?"Sil":
-                                             ltuerqi1 === curLanguage?"Sil":
-                                             lputaoya === curLanguage?"Sil":
-                                             lxibanya === curLanguage?"Eliminar":
-                                             lfayu === curLanguage?"Supprimer":
-                                             lniboer === curLanguage?"मेट्नुहोस् ":
-                    lKhmer === curLanguage?"លុបចោល":""
+                                                   curLanguage === lEnglish?"Remove":
+                                                                             curLanguage === lKorean?"삭제":
+                                                                                                      curLanguage === lItaly?"Cancella":
+                                                                                                                              curLanguage === lRussian?"Удалить":
+                                                                                                                                                        curLanguage === lLithuanian?"Išvalyti":
+                                                                                                                                                                                     curLanguage === ltuerqi?"Sil":
+                                                                                                                                                                                                              ltuerqi1 === curLanguage?"Sil":
+                                                                                                                                                                                                                                        lputaoya === curLanguage?"Sil":
+                                                                                                                                                                                                                                                                  lxibanya === curLanguage?"Eliminar":
+                                                                                                                                                                                                                                                                                            lfayu === curLanguage?"Supprimer":
+                                                                                                                                                                                                                                                                                                                   lniboer === curLanguage?"मेट्नुहोस् ":
+                                                                                                                                                                                                                                                                                                                                            lKhmer === curLanguage?"លុបចោល":""
                     MouseArea{
                         anchors.fill: parent
                         onClicked: {
@@ -434,18 +477,18 @@ Rectangle {
                                 askDialog.width = 427
                             askDialog.height = 176
                             askDialog.askStr = curLanguage=== lChinese?"确认删除信息吗？":
-                                               curLanguage===lEnglish?"Confirm to delete?":
-                                               curLanguage===lKorean?"삭제 정보를 확인합니까?":
-                                               curLanguage === lItaly?"Cancello L’Informazione?":
-                                               curLanguage === lRussian?"Вы уверены, что хотите удалить информацию?":
-                                               curLanguage === lLithuanian?"Patvirtinti ištrynimą?":
-                                               curLanguage === ltuerqi?"Kapı Bilgileri?":
-                                               curLanguage === ltuerqi1?"Tüm Seçimleri Sil?":
-                                               curLanguage === lputaoya?"Confirme a exclusão?":
-                                               curLanguage === lxibanya?"Confirmar para eliminar?":
-                                               curLanguage === lfayu?"Confirmer la suppression?":
-                                               curLanguage === lniboer?"साँचै मेट्ने हो ?":
-                                               curLanguage === lKhmer?"យល់ព្រមលុបចោល?":""
+                                                                        curLanguage===lEnglish?"Confirm to delete?":
+                                                                                                curLanguage===lKorean?"삭제 정보를 확인합니까?":
+                                                                                                                       curLanguage === lItaly?"Cancello L’Informazione?":
+                                                                                                                                               curLanguage === lRussian?"Вы уверены, что хотите удалить информацию?":
+                                                                                                                                                                         curLanguage === lLithuanian?"Patvirtinti ištrynimą?":
+                                                                                                                                                                                                      curLanguage === ltuerqi?"Kapı Bilgileri?":
+                                                                                                                                                                                                                               curLanguage === ltuerqi1?"Tüm Seçimleri Sil?":
+                                                                                                                                                                                                                                                         curLanguage === lputaoya?"Confirme a exclusão?":
+                                                                                                                                                                                                                                                                                   curLanguage === lxibanya?"Confirmar para eliminar?":
+                                                                                                                                                                                                                                                                                                             curLanguage === lfayu?"Confirmer la suppression?":
+                                                                                                                                                                                                                                                                                                                                    curLanguage === lniboer?"साँचै मेट्ने हो ?":
+                                                                                                                                                                                                                                                                                                                                                             curLanguage === lKhmer?"យល់ព្រមលុបចោល?":""
 
                             askDialog.imgSrc = "qrc:/images/ico_warn.png"
                             askDialog.curType = askDialog.warnInfoSingleDelete
@@ -495,8 +538,8 @@ Rectangle {
 
         SelectTime{
             id:selecttime
-            anchors.left: timeRect.left
-            anchors.top: timeRect.bottom
+            x: timeRect.x
+            y: timeRect.y + timeRect.height
             z:1
             width: 120
             height: 245
@@ -513,17 +556,39 @@ Rectangle {
         }
     }
 
+
+
     function funProcessPushAlarm(map){
         warnmodel.funProcessPushAlarm2(deviceconfig.getScrennShotPath(),map);
     }
 
-//    DialogPlayVideo{
-//        id:videopop
-//        x:(parent.width-720)/2
-//        y:(parent.height-520)/2
-//        width: 720
-//        height: 520
-//    }
+    //    DialogPlayVideo{
+    //        id:videopop
+    //        x:(parent.width-720)/2
+    //        y:(parent.height-520)/2
+    //        width: 720
+    //        height: 520
+    //    }
+
+    FileDialog {
+        id: fileDialog
+        property string pathname:""
+        title: "Please choose a excel file"
+        selectFolder:false
+        selectMultiple: false
+        selectExisting:false
+        nameFilters: [ "excel files (*.xlsx)", "All files (*)"]
+        //.xlsx
+        onAccepted: {
+
+            var excelpath = fileDialog.fileUrl.toString().replace('file:///','');
+
+            warnmodel.exportExcel(excelpath);
+            excelimportpop.close()
+
+        }
+        onRejected: excelimportpop.close();
+    }
 
     Popup {
         id: imgpop
@@ -532,8 +597,8 @@ Rectangle {
         width: 720
         height: 540
         modal: true
-      //  property alias imgSrc: imgshow.source
-      //  focus: true
+        //  property alias imgSrc: imgshow.source
+        //  focus: true
         //设置窗口关闭方式为按“Esc”键关闭
         closePolicy: Popup.CloseOnEscape|Popup.CloseOnPressOutside
         //设置窗口的背景控件，不设置的话Popup的边框会显示出来
@@ -565,6 +630,41 @@ Rectangle {
                     anchors.fill: parent
                     onClicked: imgpop.close();
                 }
+            }
+        }
+    }
+
+    Popup {
+        id: excelimportpop
+        x:(parent.width-width)/2
+        y:(parent.height-height)/2
+        width: improttxt.width + 40
+        height: 50
+        modal: true
+        //  property alias imgSrc: imgshow.source
+        focus: true
+        //设置窗口关闭方式为按“Esc”键关闭
+        closePolicy: Popup.NoAutoClose
+        //设置窗口的背景控件，不设置的话Popup的边框会显示出来
+        background: rectimport
+       // dim:false
+        Rectangle{
+            id:rectimport
+            color: "#FFFFFF"
+            anchors.fill: parent
+            Text {
+                id:improttxt
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.verticalCenter: parent.verticalCenter
+                font.pixelSize: 18
+                text: qsTr("Please wait for exporting data to end !")
+            }
+            layer.enabled: true
+            layer.effect: DropShadow {
+                transparentBorder: true
+                horizontalOffset: 4
+                verticalOffset: 4
+                color:"#80000000"
             }
         }
     }

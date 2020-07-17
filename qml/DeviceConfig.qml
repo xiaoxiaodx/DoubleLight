@@ -878,6 +878,28 @@ Rectangle {
                         }
                     }
 
+
+                    SimpleSwich{
+                        id:swichMask
+                        width: 30
+                        height: 15
+                        anchors.left: lineParset.left
+                        anchors.leftMargin: parSetFirstAlignLine
+                        anchors.top: cmbTempTypeSelect.bottom
+                        anchors.topMargin:perTopMargin
+
+                    }
+
+                    Text {
+                        id: txtMask
+                        text: qsTr("Mask Alarm")
+                        font.pixelSize: fontSize
+                        color: fontColor
+                        anchors.right: swichMask.left
+                        anchors.rightMargin: 20
+                        anchors.verticalCenter: swichMask.verticalCenter
+                    }
+
                     
                     
                     Text {
@@ -896,7 +918,7 @@ Rectangle {
                         height: 1
                         color: "#e2e2e2"
                         anchors.top: lineWDR.bottom
-                        anchors.topMargin: 238
+                        anchors.topMargin: 258
                         anchors.horizontalCenter: parent.horizontalCenter
                     }
                     
@@ -991,7 +1013,7 @@ Rectangle {
                         font.pixelSize: fontSize
                         text: qsTr("图像设置")
                         color: fontColor
-                        visible: true//curDevTypeStr==="J07"
+                        visible:  curDevTypeStr!=="J07-S"
                         anchors.bottom: lineImageSet.top
                         anchors.left: lineImageSet.left
                         anchors.bottomMargin: 20
@@ -1001,7 +1023,7 @@ Rectangle {
                         id:lineImageSet
                         width:parent.width - 20*2
                         height: 1
-                        visible: true//curDevTypeStr==="J07"
+                        visible: curDevTypeStr!=="J07-S"
                         color: "#e2e2e2"
                         anchors.top: lineDeviceUpdate.bottom
                         anchors.topMargin: 122
@@ -1013,7 +1035,7 @@ Rectangle {
                         font.pixelSize: fontSize
                         text: qsTr("图像选择")
                         color: fontColor
-                        visible: true//curDevTypeStr==="J07"
+                        visible:curDevTypeStr!=="J07-S"
                         anchors.right: cmbImgSelect.left
                         anchors.rightMargin: firstTopMargin
                         anchors.verticalCenter: cmbImgSelect.verticalCenter
@@ -1023,7 +1045,7 @@ Rectangle {
                         id:cmbImgSelect
                         width:88
                         height: 28
-                        visible: true//curDevTypeStr==="J07"
+                        visible: curDevTypeStr!=="J07-S"
                         anchors.left: lineImageSet.left
                         anchors.leftMargin: parSetFirstAlignLine
                         anchors.top: lineImageSet.bottom
@@ -1185,7 +1207,7 @@ Rectangle {
                         height: 1
                         color: "#e2e2e2"
                         anchors.top: lineParset.bottom
-                        anchors.topMargin: 404
+                        anchors.topMargin: 434
                         anchors.horizontalCenter: parent.horizontalCenter
                     }
 
@@ -1232,7 +1254,7 @@ Rectangle {
                         minimumValue: 0
                         maximumValue: 100
                         value: 0
-
+                        wheelEnabled:false
                         onValueChanged: imagparambrightness = brightnessSlider.value
                         style: SliderStyle {
                             groove: Rectangle {
@@ -1305,6 +1327,7 @@ Rectangle {
                         minimumValue: 0
                         maximumValue: 100
                         value: 0
+                        wheelEnabled:false
                         onValueChanged: imagparamhue = hueSlider.value
                         style: SliderStyle {
                             groove: Rectangle {
@@ -1374,6 +1397,7 @@ Rectangle {
                         minimumValue: 0
                         maximumValue: 100
                         value: 0
+                        wheelEnabled:false
                         onValueChanged: imagparamcontrast = contrastSlider.value
                         style: SliderStyle {
                             groove: Rectangle {
@@ -1445,6 +1469,7 @@ Rectangle {
                         minimumValue: 0
                         maximumValue: 100
                         value: 0
+                        wheelEnabled:false
                         onValueChanged: imagparamcolorsaturation = colorsaturationSlider.value
                         style: SliderStyle {
                             groove: Rectangle {
@@ -1697,7 +1722,7 @@ Rectangle {
             pusht = 30;
         else if(cmbsnapScrrenSelect.currentIndex === 4)
             pusht = 60;
-
+        var maskenable = swichMask.checked?1:0
         var map ={
             osdenable:osdenableV,
             alarmtempEnable:alarmtempEnableV,
@@ -1706,11 +1731,11 @@ Rectangle {
             tempcontrol:inputTempMin.text,
             tempdisplay:cmbTempTypeSelect.currentIndex,
             pushtime:pusht,
+            maskenable:maskenable,
             cmd:"setiradinfo"}
-
-
         s_sendcommoncmd(map);
         
+
         
         var typeStr;
         if(checkh264.checked)
@@ -1965,7 +1990,9 @@ Rectangle {
             return setting.d06showParentH
         }
     }
-
+    function setSwithMask(mvalue){
+        swichMask.checked = mvalue
+    }
     
     function setVideoType(typeStr){
         

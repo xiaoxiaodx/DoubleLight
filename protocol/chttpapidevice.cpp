@@ -356,7 +356,7 @@ int CHttpApiDevice::HttpMsgCallBack(char * pData) {
                 callbackMap.insert("tempdisplay",object.value("data").toObject().value("ctrlparam").toObject().value("tempdisplay").toInt());
                 callbackMap.insert("osdenable",object.value("data").toObject().value("osdenable").toInt());
                 callbackMap.insert("pushtime",object.value("data").toObject().value("pushtime").toInt());
-
+                callbackMap.insert("maskenable",object.value("data").toObject().value("maskenable").toInt());
 
                 if(object.value("data").toObject().value("alarmparam").toObject().value("enable").toInt()>0){
 
@@ -979,6 +979,7 @@ void CHttpApiDevice::HttpSetIraInfo(QVariantMap value,QString msgid)
 
 
     dataObj.insert("osdenable",value.value("osdenable").toInt());
+    dataObj.insert("maskenable", value.value("maskenable").toInt());
     dataObj.insert("pushtime",value.value("pushtime").toInt());
     alarmparamObj.insert("enable", value.value("alarmtempEnable").toInt());
     alarmparamObj.insert("alarmtemp", value.value("alarmtemp").toString().toDouble());

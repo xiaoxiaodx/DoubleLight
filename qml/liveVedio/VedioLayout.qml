@@ -156,7 +156,7 @@ Rectangle {
 
             Rectangle{
                 id:rectnomask
-                width: txtnumberOfAbnormalTemperaturePeople.width + 24 +name3.width
+                width: txtnumberOfAbnormalTemperaturePeople.width + 24 +name3.width+txtnumberOfNoMaskPeople.width
                 height: parent.height - 10
                 anchors.verticalCenter: parent.verticalCenter
                 anchors.left: rectnumberOfAbnormalTemperaturePeople.right

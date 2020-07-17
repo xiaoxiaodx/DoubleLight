@@ -19,6 +19,23 @@
 #define MAX_AUDIO_FRAME_SIZE 192000
 
 
+
+// 媒体头
+typedef struct tagMediaContexHead
+{
+    unsigned char ImageFlag		:1;		// 图像存在标识
+    unsigned char ImageByte		:7;		// 每个图像单元占字节
+    unsigned char ImageType		:8;		// 图像类型
+    unsigned short ImageHeigh	:16;	// 图像长度
+    unsigned short ImageWidth	:16;	// 图像宽度
+
+    unsigned char TemperFlag	:1;		// 温度存在标识
+    unsigned char TemperByte	:7;		// 每个温度单元占字节
+    unsigned char TemperType	:8;		// 温度类型
+    unsigned short TemperHeigh	:16;	// 温度长度
+    unsigned short TemperWidth	:16;	// 温度宽度
+}MediaContexHead;
+
 class ImageInfo{
 public:
     QImage *pImg;
